@@ -26,27 +26,56 @@
     />
   </div>
   <div class="mb-3">
-    <label for="itemDescription" class="form-label">Description</label>
-    <textarea class="form-control" id="itemDescription" name="itemDescription">
-{{ item.itemDescription }}</textarea
-    >
+        <a class="btn btn-primary" href="/admin/items/{{ item.itemSku }}/upload-image/"
+          >Upload Image</a
+        >
   </div>
-  <!-- TODO: image input integrated with api -->
+
+    {% if item.itemPrice %}
+  {% for price in item.itemPrice %}
   <div class="mb-3">
-    <label for="itemPrice" class="form-label">Prices</label>
+      <label for="itemPrice" class="form-label">Price {{ forloop.counter }}</label>
     <input
-      type="text"
+      type="number"
+      pattern="\d*\.\d{2}"
       class="form-control"
-      id="itemPrice"
-      name="itemPrice"
-      value="{{ item.itemPrice|join:',' }}"
+      id="itemPrice-{{ forloop.counter }}"
+      name="itemPrice-{{ forloop.counter }}"
+      value="{{ price }}"
     />
-    <small class="form-text text-muted"
-      >Enter prices, for groups I-IV separated by commas.</small
-    >
-    <!-- TODO: do input for 4 prices-->
+    <small class="form-text text-muted" ></small >
   </div>
-  <!-- TODO: think which directory input is better if json - json validation -->
+    {% endfor %}
+    {% else %}
+  {% for index in range %}
+  <div class="mb-3">
+      <label for="itemPrice" class="form-label">Price {{ index }}</label>
+    <input
+      type="number"
+      pattern="\d*\.\d\d}"
+      class="form-control"
+      id="itemPrice-{{ index }}"
+      name="itemPrice-{{ index }}"
+      value="{{ item.itemPrice.index }}"
+    />
+    <small class="form-text text-muted" ></small >
+  </div>
+    {% endfor %}
+    {% endif %}
+  <!--   {% for lang in langs %} -->
+  <!--     <div class="mb-3"> -->
+  <!--         <label for="{{ lang }}-n" class="form-label">{{ lang }}</label> -->
+  <!--       <input -->
+  <!--         type="text" -->
+  <!--         class="form-control" -->
+  <!--         id="{{lang}}-n" -->
+  <!--         name="{{lang}}-n" -->
+  <!--         value="{{ item.itemName.lang }}" -->
+  <!--       /> -->
+  <!--     </div> -->
+  <!---->
+  <!--   {% endfor %} -->
+
   <div class="mb-3"><p>Name:</p></div>
   <div class="mb-3">
     <label for="EN-n" class="form-label">EN</label>

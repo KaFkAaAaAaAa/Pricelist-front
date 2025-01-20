@@ -1,8 +1,20 @@
 import requests
 from django.shortcuts import render, redirect
 from .forms import LoginForm, RegisterForm
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 
 API_BASE_URL = "http://127.0.0.1:8888"  # Replace with your API base URL
+
+GROUPS = ["FIRST", "SECOND", "THIRD", "FOURTH"]
+
+GROUPS_ROMAN = ["I", "II", "III", "IV"]
+
+LANGS = ["PL", "EN", "DE", "FR", "IT"]
+
+CATEGORIES = {
+        "PL": ""
+        }
 
 # TODO: JSON errors -> if json error then redirect(login)
 
@@ -134,9 +146,9 @@ def edit_item(request, item_sku):
                 "FR": request.POST.get('FR-d'),
                 "PL": request.POST.get('PL-d'),
             },
-            "itemPrice": request.POST.get('itemPrice').split(','),
+            "itemPrice":
+                [request.POST.get(f"itemPrice-{i}") for i in range(1, 5)],
         }
-        payload["itemPrice"] = [int(price) for price in payload["itemPrice"]]
         response = requests.put(f"{API_BASE_URL}/items/admin/{item_sku}",
                                 headers=headers, json=payload)
         if response.status_code == 200:
@@ -149,7 +161,12 @@ def edit_item(request, item_sku):
                                 headers=headers)
         item = response.json() if response.status_code == 200 else None
         if item:
-            return render(request, 'edit_item.html', {'item': item})
+            return render(request, 'edit_item.html',
+                          {
+                              'item': item,
+                              'langs': LANGS,
+                              'range': range(1, 5),
+                          })
         else:
             return render(request, 'edit_item.html',
                           {'error': 'Item not found!'})
@@ -170,7 +187,32 @@ def delete_item(request, item_sku):
         return redirect('item_list')
 
 
+def upload_image(request, item_sku):
+    token = request.session.get('token')
+    if not token:
+        return redirect('login')
+    headers = {"Authorization": f"Bearer {token}"}
+
+    uploaded_url = None
+    print(item_sku)
+    if request.method == 'POST' and request.FILES['image']:
+        image = request.FILES['image']
+        fs = FileSystemStorage()
+        filename = fs.save(f"{item_sku}_{image.name}", image)
+        uploaded_url = fs.url(filename)
+        response = requests.post(f"{API_BASE_URL}/items/admin/{item_sku}/img-path",
+                                 headers=headers, data={"path": uploaded_url})
+        # TODO: Error handling
+        if response.status_code == 200:
+            pass
+        else:
+            pass
+    return render(request, 'upload_image.html',
+                  {'uploaded_url': uploaded_url})
+
+
 def add_item(request):
+    __import__('pdb').set_trace()
     token = request.session.get('token')
     if not token:
         return redirect('login')
@@ -178,10 +220,14 @@ def add_item(request):
     headers = {"Authorization": f"Bearer {token}"}
     # TODO: Errors and success messages
     if request.method == "POST":
+        image = request.POST.get('image')
+        fs = FileSystemStorage()
+        filename = fs.save(f"{request.POST.get('itemSku')}_{image}", image)
+        uploaded_url = fs.url(filename)
         payload = {
             "itemSku": request.POST.get('itemSku'),
             "itemGroup": request.POST.get('itemGroup'),
-            "itemImgPath": request.POST.get('itemImgPath'),
+            "itemImgPath": uploaded_url,
             "itemName": {
                 "DE": request.POST.get('DE-n'),
                 "EN": request.POST.get('EN-n'),
@@ -196,9 +242,9 @@ def add_item(request):
                 "FR": request.POST.get('FR-d'),
                 "PL": request.POST.get('PL-d'),
             },
-            "itemPrice": request.POST.get('itemPrice'),
+            "itemPrice":
+                [request.POST.get(f"itemPrice-{i}") for i in range(1, 5)],
         }
-        payload["itemPrice"] = [int(price) for price in payload["itemPrice"].split(',')]
         response = requests.post(f"{API_BASE_URL}/items/admin/",
                                  headers=headers, json=payload)
         if response.status_code == 200:
@@ -206,4 +252,5 @@ def add_item(request):
         else:
             return redirect('item_list')
     else:
-        return render(request, 'add_item.html')
+        return render(request, 'add_item.html',
+                      {"range": range(1, 5)})

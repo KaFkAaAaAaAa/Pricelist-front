@@ -14,8 +14,11 @@
   <tbody>
     {% for item in items %}
     <tr onclick="window.location.href='/{{ item.sku }}';" style="cursor: pointer;">
-
-      <td>{{ item.image }}</td>
+      {% if item.image %}
+      <td> <img src="{{ item.image }}" alt="Item Image" class="img-fluid" /> </td>
+      {% else %}
+      <td></td>
+      {% endif %}
       <td>{{ item.sku }}</td>
       <td>{{ item.group }}</td>
       <td>{{ item.name }}</td>
