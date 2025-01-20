@@ -14,7 +14,8 @@
   </thead>
   <tbody>
     {% for item in items %}
-    <tr onclick="window.location.href='/{{ item.itemSku }}';" style="cursor: pointer;">
+    <!-- <tr onclick="window.location.href='/{{ item.itemSku }}';" style="cursor: pointer;"> -->
+    <tr>
 
       <td>{{ item.itemImage }}</td>
       <td>{{ item.itemSku }}</td>
@@ -25,10 +26,19 @@
         <a class="btn btn-primary" href="/admin/items/{{ item.itemSku }}/edit"
           >Edit</a
         >
+        <!-- TODO: red delete button -->
+        <a class="btn btn-primary" href="/admin/items/{{ item.itemSku }}/delete"
+          >Delete</a
+        >
       </td>
 
     </tr>
     {% endfor %}
+    <tr>
+        <a class="btn btn-primary" href="/admin/items/add"
+          >Add new</a
+        >
+    </tr>
   </tbody>
 </table>
 {% endblock %}
