@@ -1,10 +1,73 @@
-{% extends 'base.html' %} {% block title %}Register{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+
 {% block content %}
-<h2>Register</h2>
-<form method="post">
-  {% csrf_token %} {{ form.as_p }}
-  <button class="btn btn-success">Register</button>
-</form>
-{% if error %}
-<div class="alert alert-danger">{{ error }}</div>
-{% endif %} {% endblock %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title text-center">Register</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <!-- Email -->
+                        <div class="form-group mb-3">
+                            {{ form.userEmail.label_tag }}
+                            {{ form.userEmail }}
+                        </div>
+
+                        <!-- Telephone Number -->
+                        <div class="form-group mb-3">
+                            {{ form.userTelephoneNumber.label_tag }}
+                            {{ form.userTelephoneNumber }}
+                        </div>
+
+                        <!-- Company Name -->
+                        <div class="form-group mb-3">
+                            {{ form.clientCompanyName.label_tag }}
+                            {{ form.clientCompanyName }}
+                        </div>
+
+                        <!-- Street -->
+                        <div class="form-group mb-3">
+                            {{ form.clientStreet.label_tag }}
+                            {{ form.clientStreet }}
+                        </div>
+
+                        <!-- Code -->
+                        <div class="form-group mb-3">
+                            {{ form.clientCode.label_tag }}
+                            {{ form.clientCode }}
+                        </div>
+
+                        <!-- City -->
+                        <div class="form-group mb-3">
+                            {{ form.clientCity.label_tag }}
+                            {{ form.clientCity }}
+                        </div>
+
+                        <!-- Bank Number -->
+                        <div class="form-group mb-3">
+                            {{ form.clientBankNumber.label_tag }}
+                            {{ form.clientBankNumber }}
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="text-center">
+                            <a class="btn btn-secondary" href="{% url 'login' %}">Back</a>
+                            <button class="btn btn-success">Register</button>
+                        </div>
+                    </form>
+
+                    {% if error %}
+                        <div class="alert alert-danger mt-3">{{ error }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
