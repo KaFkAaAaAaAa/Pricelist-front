@@ -1,0 +1,158 @@
+{% extends 'base.html' %} {% block title %}Edit Item{% endblock %}
+{% block content %}
+<h2>Edit Item</h2>
+{% if item %}
+<form method="post">
+  {% csrf_token %}
+  <!-- TODO: think if some inputs could be smaller -->
+  <div class="mb-3">
+    <label for="itemSku" class="form-label">SKU</label>
+    <input
+      type="text"
+      class="form-control"
+      id="itemSku"
+      name="itemSku"
+      value="{{ item.itemSku }}"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="itemGroup" class="form-label">Group</label>
+    <input
+      type="text"
+      class="form-control"
+      id="itemGroup"
+      name="itemGroup"
+      value="{{ item.itemGroup }}"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="itemDescription" class="form-label">Description</label>
+    <textarea class="form-control" id="itemDescription" name="itemDescription">
+{{ item.itemDescription }}</textarea
+    >
+  </div>
+  <!-- TODO: image input integrated with api -->
+  <div class="mb-3">
+    <label for="itemPrice" class="form-label">Prices</label>
+    <input
+      type="text"
+      class="form-control"
+      id="itemPrice"
+      name="itemPrice"
+      value="{{ item.itemPrice|join:',' }}"
+    />
+    <small class="form-text text-muted"
+      >Enter list items separated by commas.</small
+    >
+    <!-- TODO: do input for 4 prices-->
+  </div>
+  <!-- TODO: think which directory input is better if json - json validation -->
+  <div class="mb-3"><p>Name:</p></div>
+  <div class="mb-3">
+    <label for="EN" class="form-label">EN</label>
+    <input
+      type="text"
+      class="form-control"
+      id="EN"
+      name="EN"
+      value="{{ item.itemName.EN }}"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="DE" class="form-label">DE</label>
+    <input
+      type="text"
+      class="form-control"
+      id="DE"
+      name="DE"
+      value="{{ item.itemName.DE }}"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="IT" class="form-label">IT</label>
+    <input
+      type="text"
+      class="form-control"
+      id="IT"
+      name="IT"
+      value="{{ item.itemName.IT }}"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="FR" class="form-label">FR</label>
+    <input
+      type="text"
+      class="form-control"
+      id="FR"
+      name="FR"
+      value="{{ item.itemName.FR }}"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="PL" class="form-label">PL</label>
+    <input
+      type="text"
+      class="form-control"
+      id="PL"
+      name="PL"
+      value="{{ item.itemName.PL }}"
+    />
+  </div>
+  <div class="mb-3"><p>Descripton:</p></div>
+  <div class="mb-3">
+    <label for="EN" class="form-label">EN</label>
+    <input
+      type="text"
+      class="form-control"
+      id="EN"
+      name="EN"
+      value="{{ item.itemDescription.EN }}"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="DE" class="form-label">DE</label>
+    <input
+      type="text"
+      class="form-control"
+      id="DE"
+      name="DE"
+      value="{{ item.itemDescription.DE }}"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="IT" class="form-label">IT</label>
+    <input
+      type="text"
+      class="form-control"
+      id="IT"
+      name="IT"
+      value="{{ item.itemDescription.IT }}"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="FR" class="form-label">FR</label>
+    <input
+      type="text"
+      class="form-control"
+      id="FR"
+      name="FR"
+      value="{{ item.itemDescription.FR }}"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="PL" class="form-label">PL</label>
+    <input
+      type="text"
+      class="form-control"
+      id="PL"
+      name="PL"
+      value="{{ item.itemDescription.PL }}"
+    />
+  </div>
+  <button class="btn btn-success">Save Changes</button>
+</form>
+{% else %}
+<div class="alert alert-danger">Item not found.</div>
+{% endif %}
+<a class="btn btn-secondary" href="/admin/items">Back to List</a>
+{% endblock %}
