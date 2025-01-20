@@ -27,7 +27,10 @@ SECRET_KEY = 'django-insecure-lyby7jdd*)$cyb9#6@0^4p!w%mk0ox&^_0amsk_holc#cka0pp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['alku-gmbh.pl', 'dev.alku-gmbh.pl']
+
+MEDIA_URL = '/images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
 
 STATIC_URL = '/static/'
 
