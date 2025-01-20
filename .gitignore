@@ -1,0 +1,6 @@
+Pricelist/__pycache__
+front/__pycache__
+front/migrations/__pycache__
+db.sqlite3
+.idea
+.vscode
