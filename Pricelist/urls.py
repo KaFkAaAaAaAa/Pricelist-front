@@ -29,4 +29,6 @@ urlpatterns = [
     path('admin/dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('admin/items/', views.admin_items, name='item_list'),
     path('admin/items/<str:item_sku>/edit', views.edit_item, name='edit_item'),
+    path('admin/items/<str:item_sku>/delete', views.delete_item, name='delete_item'),
+    path('admin/items/add', views.add_item, name='add_item'),
 ]

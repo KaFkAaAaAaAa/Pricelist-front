@@ -3,6 +3,7 @@
 <h2>Login</h2>
 <form method="post">
   {% csrf_token %} {{ form.as_p }}
+  <a href="/register/">No account? Register</a><br/>
   <button class="btn btn-primary">Login</button>
 </form>
 {% if error %}

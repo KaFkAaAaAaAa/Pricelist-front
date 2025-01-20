@@ -1,0 +1,96 @@
+{% extends 'base.html' %} {% block title %}Add Item{% endblock %}
+
+<!-- <foo>bar</foo> -->
+{% block content %}
+<h2>Add Item</h2>
+<form method="post">
+  {% csrf_token %}
+  <!-- TODO: think if some inputs could be smaller -->
+  <div class="mb-3">
+    <label for="itemSku" class="form-label">SKU</label>
+    <input
+      type="text"
+      class="form-control"
+      id="itemSku"
+      name="itemSku"
+      value=""
+    />
+  </div>
+  <div class="mb-3">
+    <label for="itemGroup" class="form-label">Group</label>
+    <input
+      type="text"
+      class="form-control"
+      id="itemGroup"
+      name="itemGroup"
+      value=""
+    />
+  </div>
+  <!-- <div class="mb-3"> -->
+  <!--   <label for="itemDescription" class="form-label">Description</label> -->
+  <!--   <textarea class="form-control" id="itemDescription" name="itemDescription"> -->
+  <!--           {"PL": "", "EN": "", "DE": "", "IT": "", "FR": ""}</textarea -->
+  <!--   > -->
+  <!-- </div> -->
+  <!-- TODO: image input integrated with api -->
+  <div class="mb-3">
+    <label for="itemPrice" class="form-label">Prices</label>
+    <input
+      type="text"
+      class="form-control"
+      id="itemPrice"
+      name="itemPrice"
+      value="[0, 0, 0, 0]"
+    />
+    <small class="form-text text-muted"
+      >Enter prices, for groups I-IV separated by commas.</small
+    >
+    <!-- TODO: do input for 4 prices-->
+  </div>
+  <!-- TODO: think which directory input is better if json - json validation -->
+  <div class="mb-3"><p>Name:</p></div>
+  <div class="mb-3">
+    <label for="EN-n" class="form-label">EN</label>
+    <input type="text" class="form-control" id="EN-n" name="EN-n" value="" />
+  </div>
+  <div class="mb-3">
+    <label for="DE-n" class="form-label">DE</label>
+    <input type="text" class="form-control" id="DE-n" name="DE-n" value="" />
+  </div>
+  <div class="mb-3">
+    <label for="IT" -n class="form-label">IT</label>
+    <input type="text" class="form-control" id="IT-n" name="IT-n" value="" />
+  </div>
+  <div class="mb-3">
+    <label for="FR-n" class="form-label">FR</label>
+    <input type="text" class="form-control" id="FR-n" name="FR-n" value="" />
+  </div>
+  <div class="mb-3">
+    <label for="PL-n" class="form-label">PL</label>
+    <input type="text" class="form-control" id="PL-n" name="PL-n" value="" />
+  </div>
+  <div class="mb-3"><p>Descripton:</p></div>
+  <div class="mb-3">
+    <label for="EN-d" class="form-label">EN</label>
+    <input type="text" class="form-control" id="EN-d" name="EN-d" value="" />
+  </div>
+  <div class="mb-3">
+    <label for="DE-d" class="form-label">DE</label>
+    <input type="text" class="form-control" id="DE-d" name="DE-d" value="" />
+  </div>
+  <div class="mb-3">
+    <label for="IT-d" class="form-label">IT</label>
+    <input type="text" class="form-control" id="IT-d" name="IT-d" value="" />
+  </div>
+  <div class="mb-3">
+    <label for="FR-d" class="form-label">FR</label>
+    <input type="text" class="form-control" id="FR-d" name="FR-d" value="" />
+  </div>
+  <div class="mb-3">
+    <label for="PL-d" class="form-label">PL</label>
+    <input type="text" class="form-control" id="PL-d" name="PL-d" value="" />
+  </div>
+  <button class="btn btn-success">Save Item</button>
+</form>
+<a class="btn btn-secondary" href="/admin/items">Back to List</a>
+{% endblock %}
