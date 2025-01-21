@@ -18,14 +18,14 @@
     <tr>
 
       {% if item.itemImgPath %}
-      <td> <img src="{{ item.itemImgPath }}" alt="Item Image" class="img-fluid" /> </td>
+      <td> <img src="{{ item.itemImgPath }}" alt="Item Image" class="img-fluid w-25" /> </td>
       {% else %}
       <td></td>
       {% endif %}
       <td>{{ item.itemSku }}</td>
       <td>{{ item.itemGroup }}</td>
       <td>{{ item.itemName.EN }}</td>
-      <td>{{ item.itemPrice }}</td>
+      <td>{{ item.itemPrice }} €</td>
       <td>
         <a class="btn btn-primary" href="/admin/items/{{ item.itemSku }}/edit">Edit</a>
         <!-- TODO: red delete button -->

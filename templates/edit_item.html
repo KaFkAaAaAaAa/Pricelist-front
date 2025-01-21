@@ -30,6 +30,15 @@
           >Upload Image</a
         >
   </div>
+  <div class="mb-3">
+      <label for="deleteItem" class="form-label">Delete item?</label>
+      <input
+              type="checkbox"
+              class="checkbox"
+              id="deleteItem"
+              name="deleteItem"
+      />
+  </div>
 
     {% if item.itemPrice %}
   {% for price in item.itemPrice %}
@@ -37,7 +46,7 @@
       <label for="itemPrice" class="form-label">Price {{ forloop.counter }}</label>
     <input
       type="number"
-      pattern="\d*\.\d{2}"
+      step="0.01"
       class="form-control"
       id="itemPrice-{{ forloop.counter }}"
       name="itemPrice-{{ forloop.counter }}"

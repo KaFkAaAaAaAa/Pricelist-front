@@ -26,16 +26,6 @@
       value=""
     />
   </div>
-  <div class="mb-3">
-    <label for="image" class="form-label">Choose an image to upload:</label>
-    <input
-      type="file"
-      class="form-control"
-      id="image"
-      name="image"
-      accept="image/*"
-    />
-  </div>
   {% for index in range %}
   <div class="mb-3">
       <label for="itemPrice" class="form-label">Price {{ index }}</label>
@@ -92,7 +82,8 @@
     <label for="PL-d" class="form-label">PL</label>
     <input type="text" class="form-control" id="PL-d" name="PL-d" value="" />
   </div>
-  <button class="btn btn-success">Save Item</button>
+  <button class="btn btn-success">Add Image and Save Item</button>
 </form>
+<br/>
 <a class="btn btn-secondary" href="/admin/items">Back to List</a>
 {% endblock %}
