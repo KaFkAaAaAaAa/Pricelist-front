@@ -1,4 +1,5 @@
 import requests
+import pdb
 from django.shortcuts import render, redirect
 from .forms import LoginForm, RegisterForm
 from django.conf import settings
@@ -15,8 +16,14 @@ GROUPS_ROMAN = ["I", "II", "III", "IV"]
 LANGS = ["PL", "EN", "DE", "FR", "IT"]
 
 CATEGORIES = {
-        "PL": ""
-        }
+    "PL": ["Procesory", "Płytki", "Pamięci", "Elementy Komputera", "Całe urządzenia", "Kable i wtyczki", "Elementy z zawartością miedzi"],
+    "DE": ["Prozessoren", "Platinen", "Speicher", "Computerkomponenten", "Ganze Geräte", "Kabel und Stecker", "Kupferhaltige Elemente"],
+    "EN": ["Processors", "Boards", "Memory", "Computer Components", "Complete Devices", "Cables and Plugs", "Copper Components"],
+    "FR": ["Processeurs", "Carrelage", "En mémoire", "Composants informatiques", "Appareils entiers", "Câbles et prises", "Éléments contenant du cuivre"],
+    "IT": ["Processori", "Piastrelle", "In memoria", "Componenti del computer", "Dispositivi interi", "Cavi e spine", "Elementi contenenti rame"]
+}
+
+
 
 # TODO: JSON errors -> if json error then redirect(login)
 
@@ -153,8 +160,7 @@ def edit_item(request, item_sku):
                 "PL": request.POST.get('PL-d'),
             },
             "itemPrice":
-                [int(floor(float(request.POST.get(f"itemPrice-{i}"))*100))
-                    for i in range(1, 5)],
+                [int(floor(float(request.POST.get(f"itemPrice-{i}"))*100)) for i in range(1, 5)],
         }
         if request.POST.get('deleteItem'):
             # print(request.POST.get('deleteItem'))
@@ -177,6 +183,7 @@ def edit_item(request, item_sku):
                           {
                               'item': item,
                               'range': range(1, 5),
+                              'categories': CATEGORIES["EN"],
                           })
         else:
             return render(request, 'edit_item.html',
@@ -205,7 +212,7 @@ def upload_image(request, item_sku):
     headers = {"Authorization": f"Bearer {token}"}
 
     uploaded_url = None
-    if request.method == 'POST' and request.FILES['image']:
+    if request.method == 'POST' and "image" in request.FILES.keys():
         image = request.FILES['image']
         fs = FileSystemStorage()
         filename = fs.save(f"{item_sku}_{image.name}", image)
@@ -214,11 +221,11 @@ def upload_image(request, item_sku):
                                  headers=headers, data={"path": uploaded_url})
         # TODO: Error handling
         if response.status_code == 200:
-            pass
+            redirect('edit_item', item_sku)
         else:
-            pass
+            redirect('edit_item', item_sku)
     return render(request, 'upload_image.html',
-                  {'uploaded_url': uploaded_url})
+            {'uploaded_url': uploaded_url, "item_sku": item_sku})
 
 
 def delete_image(request, item_sku, item_path):
@@ -244,6 +251,13 @@ def add_item(request):
         item_sku = request.POST.get('itemSku')
         # filename = fs.save(f"{item_sku}_{image.name}", image)
         # uploaded_url = fs.url(filename)
+        prices = [request.POST.get(f"itemPrice-{i}") for i in range(1, 5)]
+        for price_group in prices:
+            if price_group:
+                price_group = int(100*float(price_group))
+            else:
+                price_group = none
+        print(prices)
         payload = {
             "itemSku": item_sku,
             "itemGroup": request.POST.get('itemGroup'),
@@ -261,11 +275,9 @@ def add_item(request):
                 "FR": request.POST.get('FR-d'),
                 "PL": request.POST.get('PL-d'),
             },
-            "itemPrice":
-                [request.POST.get(f"itemPrice-{i}") for i in range(1, 5)],
+            "itemPrice": [ int(100*float(price)) if price else none for price in prices],
         }
-        for price_group in payload["itemPrice"]:
-            price_group = int(100*float(price_group))
+
         response = requests.post(f"{API_BASE_URL}/items/admin/",
                                  headers=headers, json=payload)
         if response.status_code == 200:
@@ -274,4 +286,7 @@ def add_item(request):
             return redirect('item_list')
     else:
         return render(request, 'add_item.html',
-                      {"range": range(1, 5)})
+                      {
+                          "range": range(1, 5),
+                          'categories': CATEGORIES["EN"],
+                      })
