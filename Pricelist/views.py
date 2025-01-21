@@ -175,7 +175,7 @@ def edit_item(request, item_sku):
     else:
         response = requests.get(f"{API_BASE_URL}/items/admin/{item_sku}",
                                 headers=headers)
-        item = response.json() if response.status_code == 200 else None
+        item = response.json() if response.status_code == 200 else 0
         if item:
             item["itemPrice"] = [f"{group_price / 100:.2f}"
                                  for group_price in item["itemPrice"]]
@@ -270,7 +270,7 @@ def add_item(request):
             if price_group:
                 price_group = int(100*float(price_group))
             else:
-                price_group = none
+                price_group = 0
         print(prices)
         payload = {
             "itemSku": item_sku,
@@ -289,7 +289,7 @@ def add_item(request):
                 "FR": request.POST.get('FR-d'),
                 "PL": request.POST.get('PL-d'),
             },
-            "itemPrice": [ int(100*float(price)) if price else none for price in prices],
+            "itemPrice": [ int(100*float(price)) if price else None for price in prices],
         }
 
         response = requests.post(f"{API_BASE_URL}/items/admin/",
