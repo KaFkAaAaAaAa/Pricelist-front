@@ -17,6 +17,9 @@
         <a class="navbar-brand" href="/">ALKU-GMBH</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/dashboard/">Admin Dashboard</a>
+                    </li>
                 {% if request.session.token %}
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">Logout</a>

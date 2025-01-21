@@ -26,28 +26,20 @@
       value=""
     />
   </div>
-  <!-- <div class="mb-3"> -->
-  <!--   <label for="itemDescription" class="form-label">Description</label> -->
-  <!--   <textarea class="form-control" id="itemDescription" name="itemDescription"> -->
-  <!--           {"PL": "", "EN": "", "DE": "", "IT": "", "FR": ""}</textarea -->
-  <!--   > -->
-  <!-- </div> -->
-  <!-- TODO: image input integrated with api -->
+  {% for index in range %}
   <div class="mb-3">
-    <label for="itemPrice" class="form-label">Prices</label>
+      <label for="itemPrice" class="form-label">Price {{ index }}</label>
     <input
-      type="text"
+      type="number"
+      pattern="\d*\.\d\d}"
       class="form-control"
-      id="itemPrice"
-      name="itemPrice"
-      value="0, 0, 0, 0"
+      id="itemPrice-{{ index }}"
+      name="itemPrice-{{ index }}"
+      value="{{ item.itemPrice.index }}"
     />
-    <small class="form-text text-muted"
-      >Enter prices, for groups I-IV separated by commas.</small
-    >
-    <!-- TODO: do input for 4 prices-->
+    <small class="form-text text-muted" ></small >
   </div>
-  <!-- TODO: think which directory input is better if json - json validation -->
+    {% endfor %}
   <div class="mb-3"><p>Name:</p></div>
   <div class="mb-3">
     <label for="EN-n" class="form-label">EN</label>
@@ -90,7 +82,8 @@
     <label for="PL-d" class="form-label">PL</label>
     <input type="text" class="form-control" id="PL-d" name="PL-d" value="" />
   </div>
-  <button class="btn btn-success">Save Item</button>
+  <button class="btn btn-success">Add Image and Save Item</button>
 </form>
+<br/>
 <a class="btn btn-secondary" href="/admin/items">Back to List</a>
 {% endblock %}
