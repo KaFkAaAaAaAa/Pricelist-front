@@ -162,8 +162,8 @@ def edit_item(request, item_sku):
             "itemPrice":
                 [int(floor(float(request.POST.get(f"itemPrice-{i}"))*100)) for i in range(1, 5)],
         }
-        if request.POST.get('deleteItem'):
-            # print(request.POST.get('deleteItem'))
+        if request.POST.get('deleteImg'):
+            # print(request.POST.get('deleteImg'))
             payload["itemImgPath"] = ""
         response = requests.put(f"{API_BASE_URL}/items/admin/{item_sku}",
                                 headers=headers, json=payload)
@@ -175,7 +175,7 @@ def edit_item(request, item_sku):
     else:
         response = requests.get(f"{API_BASE_URL}/items/admin/{item_sku}",
                                 headers=headers)
-        item = response.json() if response.status_code == 200 else None
+        item = response.json() if response.status_code == 200 else 0
         if item:
             item["itemPrice"] = [f"{group_price / 100:.2f}"
                                  for group_price in item["itemPrice"]]
@@ -246,9 +246,13 @@ def admin_images(request, item_sku):
     if request.method == 'POST' and "image" in request.FILES.keys():
         image = request.FILES['image']
         fs.save(f"{item_sku}/{image.name}", image)
-    images = fs.listdir(item_sku)
-    images = [fs.url(f"{item_sku}/{image}") for image in images]
-    return render(request, 'upload_image.html',
+    if fs.exists(f"{item_sku}/"):
+        images = fs.listdir(item_sku)[1]
+        images = [fs.url(f"{item_sku}/{image}") for image in images]
+    else:
+        images = []
+    pdb.set_trace()
+    return render(request, 'admin_images.html',
                   {'images': images, "item_sku": item_sku})
 
 
@@ -270,7 +274,7 @@ def add_item(request):
             if price_group:
                 price_group = int(100*float(price_group))
             else:
-                price_group = none
+                price_group = 0
         print(prices)
         payload = {
             "itemSku": item_sku,
@@ -289,7 +293,7 @@ def add_item(request):
                 "FR": request.POST.get('FR-d'),
                 "PL": request.POST.get('PL-d'),
             },
-            "itemPrice": [ int(100*float(price)) if price else none for price in prices],
+            "itemPrice": [ int(100*float(price)) if price else None for price in prices],
         }
 
         response = requests.post(f"{API_BASE_URL}/items/admin/",
