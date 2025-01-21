@@ -14,15 +14,15 @@
   <tbody>
     {% for item in items %}
     <tr onclick="window.location.href='/{{ item.sku }}';" style="cursor: pointer;">
-      {% if item.image %}
-      <td> <img src="{{ item.image }}" alt="Item Image" class="img-fluid" /> </td>
+      {% if item.path %}
+      <td> <img src="{{ item.path }}" alt="Item Image" class="img-fluid w-25" /> </td>
       {% else %}
       <td></td>
       {% endif %}
       <td>{{ item.sku }}</td>
       <td>{{ item.group }}</td>
       <td>{{ item.name }}</td>
-      <td>{{ item.price }}</td>
+      <td>{{ item.price }} €</td>
 
     </tr>
     {% endfor %}

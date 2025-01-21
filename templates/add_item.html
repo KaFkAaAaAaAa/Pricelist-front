@@ -18,30 +18,18 @@
   </div>
   <div class="mb-3">
     <label for="itemGroup" class="form-label">Group</label>
-    <input
-      type="text"
-      class="form-control"
-      id="itemGroup"
-      name="itemGroup"
-      value=""
-    />
-  </div>
-  <div class="mb-3">
-    <label for="image" class="form-label">Choose an image to upload:</label>
-    <input
-      type="file"
-      class="form-control"
-      id="image"
-      name="image"
-      accept="image/*"
-    />
+    <select name="itemGroup" id="itemGroup" class="form-control">
+	{% for category in categories %}
+	<option value="{{ category }}">{{ category }}</option>
+	{% endfor %}
+    </select>
   </div>
   {% for index in range %}
   <div class="mb-3">
       <label for="itemPrice" class="form-label">Price {{ index }}</label>
     <input
       type="number"
-      pattern="\d*\.\d\d}"
+      step="0.01"
       class="form-control"
       id="itemPrice-{{ index }}"
       name="itemPrice-{{ index }}"
@@ -92,7 +80,8 @@
     <label for="PL-d" class="form-label">PL</label>
     <input type="text" class="form-control" id="PL-d" name="PL-d" value="" />
   </div>
-  <button class="btn btn-success">Save Item</button>
+  <button class="btn btn-success">Add Image and Save Item</button>
 </form>
+<br/>
 <a class="btn btn-secondary" href="/admin/items">Back to List</a>
 {% endblock %}

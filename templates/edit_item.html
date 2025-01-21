@@ -17,13 +17,11 @@
   </div>
   <div class="mb-3">
     <label for="itemGroup" class="form-label">Group</label>
-    <input
-      type="text"
-      class="form-control"
-      id="itemGroup"
-      name="itemGroup"
-      value="{{ item.itemGroup }}"
-    />
+    <select name="itemGroup" id="itemGroup" class="form-control">
+    {% for category in categories %}
+    <option value="{{ category }}">{{ category }}</option>
+    {% endfor %}
+    </select>
   </div>
   <div class="mb-3">
         <a class="btn btn-primary" href="/admin/items/{{ item.itemSku }}/upload-image/"
@@ -31,13 +29,19 @@
         >
   </div>
 
+  {% if item.itemImgPath %}
+  <div class="mb-3">
+	  <p class="form-label" >Image</p>
+	<img src="{{ item.itemImgPath }}" alt="Item Image" class="img-fluid w-25" />
+  </div>
+  {% endif %}
     {% if item.itemPrice %}
   {% for price in item.itemPrice %}
   <div class="mb-3">
       <label for="itemPrice" class="form-label">Price {{ forloop.counter }}</label>
     <input
       type="number"
-      pattern="\d*\.\d{2}"
+      step="0.01"
       class="form-control"
       id="itemPrice-{{ forloop.counter }}"
       name="itemPrice-{{ forloop.counter }}"
