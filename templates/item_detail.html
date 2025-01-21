@@ -5,7 +5,7 @@
 {% if item %}
     <dl class="row">
         <dt class="col-sm-3">Image</dt>
-        <dd class="col-sm-9">{{ item.image}}</dd>
+        <dd class="col-sm-9"><img src="{{ item.path }}" alt="Item Image" class="img-fluid w-25" /></dd>
         <dt class="col-sm-3">SKU</dt>
         <dd class="col-sm-9">{{ item.sku}}</dd>
         <dt class="col-sm-3">Name</dt>
@@ -15,7 +15,7 @@
         <dt class="col-sm-3">Description</dt>
         <dd class="col-sm-9">{{ item.description }}</dd>
         <dt class="col-sm-3">Price</dt>
-        <dd class="col-sm-9">{{ item.price}}</dd>
+        <dd class="col-sm-9">{{ item.price }} €</dd>
     </dl>
 {% elif error %}
     <div class="alert alert-danger">{{ error }}</div>

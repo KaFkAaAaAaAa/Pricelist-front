@@ -17,27 +17,25 @@
     <!-- <tr onclick="window.location.href='/{{ item.itemSku }}';" style="cursor: pointer;"> -->
     <tr>
 
-      <td>{{ item.itemImage }}</td>
+      {% if item.itemImgPath %}
+      <td> <img src="{{ item.itemImgPath }}" alt="Item Image" class="img-fluid w-25" /> </td>
+      {% else %}
+      <td></td>
+      {% endif %}
       <td>{{ item.itemSku }}</td>
       <td>{{ item.itemGroup }}</td>
       <td>{{ item.itemName.EN }}</td>
-      <td>{{ item.itemPrice }}</td>
+      <td>{{ item.itemPrice }} €</td>
       <td>
-        <a class="btn btn-primary" href="/admin/items/{{ item.itemSku }}/edit"
-          >Edit</a
-        >
+        <a class="btn btn-primary" href="/admin/items/{{ item.itemSku }}/edit">Edit</a>
         <!-- TODO: red delete button -->
-        <a class="btn btn-primary" href="/admin/items/{{ item.itemSku }}/delete"
-          >Delete</a
-        >
+        <a class="btn btn-primary" href="/admin/items/{{ item.itemSku }}/delete">Delete</a>
       </td>
 
     </tr>
     {% endfor %}
     <tr>
-        <a class="btn btn-primary" href="/admin/items/add"
-          >Add new</a
-        >
+        <a class="btn btn-primary" href="/admin/items/add">Add new</a>
     </tr>
   </tbody>
 </table>
