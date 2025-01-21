@@ -145,7 +145,6 @@ def edit_item(request, item_sku):
         payload = {
             "itemSku": request.POST.get('itemSku'),
             "itemGroup": request.POST.get('itemGroup'),
-            "itemImgPath": request.POST.get('itemImgPath'),
             "itemName": {
                 "DE": request.POST.get('DE-n'),
                 "EN": request.POST.get('EN-n'),
@@ -163,6 +162,9 @@ def edit_item(request, item_sku):
             "itemPrice":
                 [int(floor(float(request.POST.get(f"itemPrice-{i}"))*100)) for i in range(1, 5)],
         }
+        if request.POST.get('deleteItem'):
+            # print(request.POST.get('deleteItem'))
+            payload["itemImgPath"] = ""
         response = requests.put(f"{API_BASE_URL}/items/admin/{item_sku}",
                                 headers=headers, json=payload)
         if response.status_code == 200:
@@ -224,6 +226,16 @@ def upload_image(request, item_sku):
             redirect('edit_item', item_sku)
     return render(request, 'upload_image.html',
             {'uploaded_url': uploaded_url, "item_sku": item_sku})
+
+
+def delete_image(request, item_sku, item_path):
+    token = request.session.get('token')
+    if not token:
+        return redirect('login')
+    headers = {"Authorization": f"Bearer {token}"}
+    # unfinished bc it might not be needed
+    fs = FileSystemStorage()
+    fs.delete(item_path)
 
 
 def add_item(request):
