@@ -12,27 +12,9 @@
     <title>{% block title %}My App{% endblock %}</title>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">ALKU-GMBH</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/dashboard/">Admin Dashboard</a>
-                    </li>
-                {% if request.session.token %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/logout">Logout</a>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
-                    </li>
-                {% endif %}
-            </ul>
-        </div>
-    </div>
-</nav>
-<div class="container mt-4">{% block content %}{% endblock %}</div>
+    {% include 'navbar.html' %}
+    
+    <div class="container mt-4">{% block content %}{% endblock %}</div>
+
 </body>
 </html>
