@@ -238,6 +238,20 @@ def delete_image(request, item_sku, item_path):
     fs.delete(item_path)
 
 
+def admin_images(request, item_sku):
+    token = request.session.get('token')
+    if not token:
+        return redirect('login')
+    fs = FileSystemStorage()
+    if request.method == 'POST' and "image" in request.FILES.keys():
+        image = request.FILES['image']
+        fs.save(f"{item_sku}/{image.name}", image)
+    images = fs.listdir(item_sku)
+    images = [fs.url(f"{item_sku}/{image}") for image in images]
+    return render(request, 'upload_image.html',
+                  {'images': images, "item_sku": item_sku})
+
+
 def add_item(request):
     token = request.session.get('token')
     if not token:

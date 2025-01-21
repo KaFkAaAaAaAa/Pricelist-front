@@ -1,0 +1,31 @@
+{% extends 'base.html' %} {% block title %}Edit Item{% endblock %}
+<!---->
+{% block content %}
+<h2>Image Gallery</h2>
+<div class="container mt-5">
+  <div class="gallery">
+    {% for image in images %}
+    <div>
+      <img src="{{ image }}" alt="Image" class="img-fluid" />
+    </div>
+    {% endfor %}
+  </div>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="image" class="form-label">Choose an image to upload:</label>
+      <input
+        type="file"
+        class="form-control"
+        id="image"
+        name="image"
+        accept="image/*"
+      />
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+    <a class="btn btn-primary" href="/admin/items/{{ item_sku }}/edit"
+      >Back to Edit</a
+    >
+  </form>
+</div>
+{% endblock %}
