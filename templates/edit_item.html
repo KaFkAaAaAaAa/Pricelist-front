@@ -25,7 +25,12 @@
   </div>
   <div class="mb-3">
         <a class="btn btn-primary" href="/admin/items/{{ item.itemSku }}/upload-image/"
-          >Upload Image</a
+          >Upload Thumbnail</a
+        >
+  </div>
+  <div class="mb-3">
+        <a class="btn btn-primary" href="/admin/items/{{ item.itemSku }}/images/"
+          >Upload Images</a
         >
   </div>
   <div class="mb-3">
@@ -41,7 +46,7 @@
   {% if item.itemImgPath %}
   <div class="mb-3">
 	  <p class="form-label" >Image</p>
-	<img src="{{ item.itemImgPath }}" alt="Item Image" class="img-fluid w-25" />
+	<img src="{{ item.itemImgPath }}" alt="Item Image" class="img" style="width: 80px; height: auto" />
   </div>
   {% endif %}
     {% if item.itemPrice %}
