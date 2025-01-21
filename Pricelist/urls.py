@@ -36,7 +36,8 @@ urlpatterns = [
     path('admin/items/add', views.add_item, name='add_item'),
     path('admin/items/<str:item_sku>/upload-image/', views.upload_image,
          name='upload_image'),
-    path('admin/items/<str:item_sku>/delete-image/', views.delete_image, name='delete_image')
+    path('admin/items/<str:item_sku>/delete-image/', views.delete_image, name='delete_image'),
+    path('admin/items/<str:item_sku>/images/', views.admin_images, name='admin_images'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
