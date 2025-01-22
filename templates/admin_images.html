@@ -7,6 +7,7 @@
     {% for image in images %}
     <div class="container mt-3">
       <img src="{{ image }}" alt="Image" class="img-fluid" />
+      <a class="btn btn-danger" href="/admin/items/delete/{{ image }}">Delete image</a>
     </div>
     {% endfor %}
   </div>
