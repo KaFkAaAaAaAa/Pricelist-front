@@ -1,5 +1,4 @@
 import requests
-import pdb
 from django.shortcuts import render, redirect
 from .forms import LoginForm, RegisterForm
 from django.conf import settings
@@ -31,6 +30,22 @@ CATEGORIES = {
 
 
 # TODO: JSON errors -> if json error then redirect(login)
+
+def _list_items(item_sku, fs=FileSystemStorage()):
+    """Return list of images' urls that are associated with item of id `id_sku`
+    """
+    all_images = fs.listdir('.')[1]
+    all_images.sort()
+    images_sku = [];
+    pattern = re.compile(r"{}.*".format(item_sku))
+    # TODO: can be optimized with binary search - look for any occurance and then look for first one, 
+    # then while match append
+    # another optimization -> after finding match if not matching break still O{n} but with low probablility
+    for image in all_images:
+        if re.match(pattern, image):
+            images_sku.append(image)
+    return [fs.url(image) for image in images_sku]
+    
 
 
 # Login View
@@ -112,7 +127,8 @@ def item_detail(request, item_sku):
     if response.status_code == 200:
         item = response.json()
         item["price"] = f"{item['price'] / 100:.2f}"
-        return render(request, 'item_detail.html', {'item': item})
+        images = _list_items(item_sku, FileSystemStorage())
+        return render(request, 'item_detail.html', {'item': item, 'images': images})
     else:
         return render(request, 'item_detail.html', {'error': "Item not found."})
 
@@ -233,14 +249,14 @@ def upload_image(request, item_sku):
                   {'uploaded_url': uploaded_url, "item_sku": item_sku})
 
 
-def delete_image(request, item_sku, item_path):
+def delete_image(request, image_path):
     token = request.session.get('token')
     if not token:
         return redirect('login')
     headers = {"Authorization": f"Bearer {token}"}
     # unfinished bc it might not be needed
     fs = FileSystemStorage()
-    fs.delete(item_path)
+    fs.delete(image_path)
 
 
 def admin_images(request, item_sku):
@@ -248,30 +264,24 @@ def admin_images(request, item_sku):
     if not token:
         return redirect('login')
     fs = FileSystemStorage()
-    images = fs.listdir(item_sku)
-    images.sort()
-    images_sku = [];
-    pattern = re.compile(r".*{}.*".format(item_sku))
-    for image in images:
-        if re.match(pattern, image):
-            images_sku.append(image)
-    images = [fs.url(image) for image in images_sku]
 
     if request.method == 'POST' and "image" in request.FILES.keys():
-        index = len(images_sku) if len(images_sku) != 1 else None
-        images_uploaded = request.FILES.getlist('image')
-        images_uploaded.sort()
+        images_url = _list_items(item_sku, fs)
+        # this takes .M. into the count and shouldn't but it does not break anything
+        index = len(images_url) if len(images_url) != 1 else None
+        images_uploaded = request.FILES.getlist('image')[1]
         # TODO: optimize - binary search
         if not index:
-            fs.save( item_sku+images_uploaded.split('.')[-1] )
+            fs.save(item_sku+images_uploaded.name.split('.')[-1],
+                    images_uploaded[0])
             images_uploaded.pop(0)
             index = 1
         for image in images_uploaded:
             # sku + index + extension
-            image_name = item_sku + index + image.split('.')[-1]
+            image_name = item_sku + '.' + str(index) + '.' + image.split('.')[-1]
             fs.save(image_name, image)
     return render(request, 'admin_images.html',
-                  {'images': images, "item_sku": item_sku})
+                  {'images': images_url, "item_sku": item_sku})
 
 
 def add_item(request):
