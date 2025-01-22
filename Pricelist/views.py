@@ -16,13 +16,17 @@ GROUPS_ROMAN = ["I", "II", "III", "IV"]
 LANGS = ["PL", "EN", "DE", "FR", "IT"]
 
 CATEGORIES = {
-    "PL": ["Procesory", "Płytki", "Pamięci", "Elementy Komputera", "Całe urządzenia", "Kable i wtyczki", "Elementy z zawartością miedzi"],
-    "DE": ["Prozessoren", "Platinen", "Speicher", "Computerkomponenten", "Ganze Geräte", "Kabel und Stecker", "Kupferhaltige Elemente"],
-    "EN": ["Processors", "Boards", "Memory", "Computer Components", "Complete Devices", "Cables and Plugs", "Copper Components"],
-    "FR": ["Processeurs", "Carrelage", "En mémoire", "Composants informatiques", "Appareils entiers", "Câbles et prises", "Éléments contenant du cuivre"],
-    "IT": ["Processori", "Piastrelle", "In memoria", "Componenti del computer", "Dispositivi interi", "Cavi e spine", "Elementi contenenti rame"]
+    "PL": ["Procesory", "Płytki", "Pamięci", "Elementy Komputera", "Całe urządzenia", "Kable i wtyczki",
+           "Elementy z zawartością miedzi"],
+    "DE": ["Prozessoren", "Platinen", "Speicher", "Computerkomponenten", "Ganze Geräte", "Kabel und Stecker",
+           "Kupferhaltige Elemente"],
+    "EN": ["Processors", "Boards", "Memory", "Computer Components", "Complete Devices", "Cables and Plugs",
+           "Copper Components"],
+    "FR": ["Processeurs", "Carrelage", "En mémoire", "Composants informatiques", "Appareils entiers",
+           "Câbles et prises", "Éléments contenant du cuivre"],
+    "IT": ["Processori", "Piastrelle", "In memoria", "Componenti del computer", "Dispositivi interi", "Cavi e spine",
+           "Elementi contenenti rame"]
 }
-
 
 
 # TODO: JSON errors -> if json error then redirect(login)
@@ -160,7 +164,7 @@ def edit_item(request, item_sku):
                 "PL": request.POST.get('PL-d'),
             },
             "itemPrice":
-                [int(floor(float(request.POST.get(f"itemPrice-{i}"))*100)) for i in range(1, 5)],
+                [int(floor(float(request.POST.get(f"itemPrice-{i}")) * 100)) for i in range(1, 5)],
         }
         if request.POST.get('deleteImg'):
             # print(request.POST.get('deleteImg'))
@@ -225,7 +229,7 @@ def upload_image(request, item_sku):
         else:
             redirect('edit_item', item_sku)
     return render(request, 'upload_image.html',
-            {'uploaded_url': uploaded_url, "item_sku": item_sku})
+                  {'uploaded_url': uploaded_url, "item_sku": item_sku})
 
 
 def delete_image(request, item_sku, item_path):
@@ -272,7 +276,7 @@ def add_item(request):
         prices = [request.POST.get(f"itemPrice-{i}") for i in range(1, 5)]
         for price_group in prices:
             if price_group:
-                price_group = int(100*float(price_group))
+                price_group = int(100 * float(price_group))
             else:
                 price_group = 0
         print(prices)
@@ -293,7 +297,7 @@ def add_item(request):
                 "FR": request.POST.get('FR-d'),
                 "PL": request.POST.get('PL-d'),
             },
-            "itemPrice": [ int(100*float(price)) if price else None for price in prices],
+            "itemPrice": [int(100 * float(price)) if price else None for price in prices],
         }
 
         response = requests.post(f"{API_BASE_URL}/items/admin/",
