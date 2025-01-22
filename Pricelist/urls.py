@@ -38,7 +38,5 @@ urlpatterns = [
          name='upload_image'),
     path('admin/items/<str:item_sku>/delete-image/', views.delete_image, name='delete_image'),
     path('admin/items/<str:item_sku>/images/', views.admin_images, name='admin_images'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.BASE_DIR / 'static')
 
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.BASE_DIR / 'static')

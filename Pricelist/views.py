@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from .forms import LoginForm, RegisterForm
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+import re
 
 from math import floor
 
@@ -247,15 +248,28 @@ def admin_images(request, item_sku):
     if not token:
         return redirect('login')
     fs = FileSystemStorage()
+    images = fs.listdir(item_sku)
+    images.sort()
+    images_sku = [];
+    pattern = re.compile(r".*{}.*".format(item_sku))
+    for image in images:
+        if re.match(pattern, image):
+            images_sku.append(image)
+    images = [fs.url(image) for image in images_sku]
+
     if request.method == 'POST' and "image" in request.FILES.keys():
-        image = request.FILES['image']
-        fs.save(f"{item_sku}/{image.name}", image)
-    if fs.exists(f"{item_sku}/"):
-        images = fs.listdir(item_sku)[1]
-        images = [fs.url(f"{item_sku}/{image}") for image in images]
-    else:
-        images = []
-    pdb.set_trace()
+        index = len(images_sku) if len(images_sku) != 1 else None
+        images_uploaded = request.FILES.getlist('image')
+        images_uploaded.sort()
+        # TODO: optimize - binary search
+        if not index:
+            fs.save( item_sku+images_uploaded.split('.')[-1] )
+            images_uploaded.pop(0)
+            index = 1
+        for image in images_uploaded:
+            # sku + index + extension
+            image_name = item_sku + index + image.split('.')[-1]
+            fs.save(image_name, image)
     return render(request, 'admin_images.html',
                   {'images': images, "item_sku": item_sku})
 
