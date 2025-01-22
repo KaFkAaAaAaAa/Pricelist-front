@@ -259,7 +259,7 @@ def admin_images(request, item_sku):
 
     if request.method == 'POST' and "image" in request.FILES.keys():
         index = len(images_sku) if len(images_sku) != 1 else None
-        images_uploaded = request.FILES.getlist('image')
+        images_uploaded = request.FILES.getlist('image')[1]
         images_uploaded.sort()
         # TODO: optimize - binary search
         if not index:
