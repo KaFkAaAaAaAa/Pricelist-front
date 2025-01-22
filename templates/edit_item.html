@@ -1,14 +1,16 @@
-{% extends 'base.html' %} {% block title %}Edit Item{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Edit Item{% endblock %}
 {% block content %}
-    <h2>Edit Item</h2>
+<div class="d-flex justify-content-center align-items-center flex-column mb-5">
+    <h1>Edit Item</h1>
     {% if item %}
-        <form method="post">
+        <form method="post" class="w-50">
             {% csrf_token %}
             <div class="my-3">
                 <label for="itemSku" class="form-label h5">SKU</label>
                 <input
                         type="text"
-                        class="form-control w-25"
+                        class="form-control"
                         id="itemSku"
                         name="itemSku"
                         value="{{ item.itemSku }}"
@@ -16,19 +18,19 @@
             </div>
             <div class="mb-3">
                 <label for="itemGroup" class="form-label h5">Group</label>
-                <select name="itemGroup" id="itemGroup" class="form-select w-25">
+                <select name="itemGroup" id="itemGroup" class="form-select">
                     {% for category in categories %}
                         <option value="{{ category }}">{{ category }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="mb-3">
-                <a class="btn btn-outline-primary" href="/admin/items/{{ item.itemSku }}/upload-image/"
-                >Upload Thumbnail</a>
-            </div>
-            <div class="mb-3">
-                <a class="btn btn-outline-primary" href="/admin/items/{{ item.itemSku }}/images/"
-                >Upload Images</a>
+                <a class="btn btn-outline-primary me-4" href="/admin/items/{{ item.itemSku }}/upload-image/">
+                    Upload Thumbnail
+                </a>
+                <a class="btn btn-outline-primary" href="/admin/items/{{ item.itemSku }}/images/">
+                    Upload Images
+                </a>
             </div>
             <div class="mb-3">
                 <label for="deleteImg" class="form-label h5">Delete image:</label>
@@ -39,7 +41,6 @@
                         name="deleteImg"
                 />
             </div>
-
             {% if item.itemImgPath %}
                 <div class="mb-3">
                     <p class="form-label">Image</p>
@@ -53,12 +54,11 @@
                         <input
                                 type="number"
                                 step="0.01"
-                                class="form-control w-25"
+                                class="form-control"
                                 id="itemPrice-{{ forloop.counter }}"
                                 name="itemPrice-{{ forloop.counter }}"
                                 value="{{ price }}"
                         />
-                        <small class="form-text text-muted"></small>
                     </div>
                 {% endfor %}
             {% else %}
@@ -73,25 +73,10 @@
                                 name="itemPrice-{{ index }}"
                                 value="{{ item.itemPrice.index }}"
                         />
-                        <small class="form-text text-muted"></small>
                     </div>
                 {% endfor %}
             {% endif %}
-            <!--   {% for lang in langs %} -->
-                <!--     <div class="mb-3"> -->
-                <!--         <label for="{{ lang }}-n" class="form-label">{{ lang }}</label> -->
-                <!--       <input -->
-                <!--         type="text" -->
-                <!--         class="form-control" -->
-                <!--         id="{{lang}}-n" -->
-                <!--         name="{{lang}}-n" -->
-                <!--         value="{{ item.itemName.lang }}" -->
-                <!--       /> -->
-                <!--     </div> -->
-                <!---->
-                <!--   {% endfor %} -->
-
-            <div class="mb-3"><p>Name:</p></div>
+            <div class="mb-3"><h5>Name:</h5></div>
             <div class="mb-3">
                 <label for="EN-n" class="form-label">EN</label>
                 <input
@@ -142,7 +127,7 @@
                         value="{{ item.itemName.PL }}"
                 />
             </div>
-            <div class="mb-3"><p>Descripton:</p></div>
+            <div class="mb-3"><h5>Description:</h5></div>
             <div class="mb-3">
                 <label for="EN-d" class="form-label">EN</label>
                 <input
@@ -194,11 +179,12 @@
                 />
             </div>
             <div class="d-flex">
-                <button class="btn btn-success">Save Changes</button>
-                <a class="btn btn-secondary" href="/admin/items">Back to List</a>
+                <a class="btn btn-outline-secondary" href="/admin/items">Back to List</a>
+                <button class="btn btn-success ms-2">Save Changes</button>
             </div>
         </form>
     {% else %}
-        <div class="alert alert-danger mb-4">Item not found.</div>
+        <div class="alert alert-danger">Item not found.</div>
     {% endif %}
+</div>
 {% endblock %}
