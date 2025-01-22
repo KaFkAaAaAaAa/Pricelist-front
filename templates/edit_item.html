@@ -1,205 +1,204 @@
 {% extends 'base.html' %} {% block title %}Edit Item{% endblock %}
 {% block content %}
-<h2>Edit Item</h2>
-{% if item %}
-<form method="post">
-  {% csrf_token %}
-  <!-- TODO: think if some inputs could be smaller -->
-  <div class="mb-3">
-    <label for="itemSku" class="form-label">SKU</label>
-    <input
-      type="text"
-      class="form-control"
-      id="itemSku"
-      name="itemSku"
-      value="{{ item.itemSku }}"
-    />
-  </div>
-  <div class="mb-3">
-    <label for="itemGroup" class="form-label">Group</label>
-    <select name="itemGroup" id="itemGroup" class="form-control">
-    {% for category in categories %}
-    <option value="{{ category }}">{{ category }}</option>
-    {% endfor %}
-    </select>
-  </div>
-  <div class="mb-3">
-        <a class="btn btn-primary" href="/admin/items/{{ item.itemSku }}/upload-image/"
-          >Upload Thumbnail</a
-        >
-  </div>
-		<div class="mb-3">
-		<a class="btn btn-primary" href="/admin/items/{{ item.itemSku }}/images/"
-		>Upload Images</a
-		>
-		</div>
-  <div class="mb-3">
-      <label for="deleteImg" class="form-label">Delete image?</label>
-      <input
-              type="checkbox"
-              class="checkbox"
-              id="deleteImg"
-              name="deleteImg"
-      />
-  </div>
+    <h2>Edit Item</h2>
+    {% if item %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="my-3">
+                <label for="itemSku" class="form-label h5">SKU</label>
+                <input
+                        type="text"
+                        class="form-control w-25"
+                        id="itemSku"
+                        name="itemSku"
+                        value="{{ item.itemSku }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="itemGroup" class="form-label h5">Group</label>
+                <select name="itemGroup" id="itemGroup" class="form-select w-25">
+                    {% for category in categories %}
+                        <option value="{{ category }}">{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <a class="btn btn-outline-primary" href="/admin/items/{{ item.itemSku }}/upload-image/"
+                >Upload Thumbnail</a>
+            </div>
+            <div class="mb-3">
+                <a class="btn btn-outline-primary" href="/admin/items/{{ item.itemSku }}/images/"
+                >Upload Images</a>
+            </div>
+            <div class="mb-3">
+                <label for="deleteImg" class="form-label h5">Delete image:</label>
+                <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="deleteImg"
+                        name="deleteImg"
+                />
+            </div>
 
-  {% if item.itemImgPath %}
-  <div class="mb-3">
-	  <p class="form-label" >Image</p>
-	<img src="{{ item.itemImgPath }}" alt="Item Image" class="img" style="width: 80px; height: auto" />
-  </div>
-  {% endif %}
-    {% if item.itemPrice %}
-  {% for price in item.itemPrice %}
-  <div class="mb-3">
-      <label for="itemPrice" class="form-label">Price {{ forloop.counter }}</label>
-    <input
-      type="number"
-      step="0.01"
-      class="form-control"
-      id="itemPrice-{{ forloop.counter }}"
-      name="itemPrice-{{ forloop.counter }}"
-      value="{{ price }}"
-    />
-    <small class="form-text text-muted" ></small >
-  </div>
-    {% endfor %}
+            {% if item.itemImgPath %}
+                <div class="mb-3">
+                    <p class="form-label">Image</p>
+                    <img src="{{ item.itemImgPath }}" alt="Item Image" class="img" style="width: 80px; height: auto"/>
+                </div>
+            {% endif %}
+            {% if item.itemPrice %}
+                {% for price in item.itemPrice %}
+                    <div class="mb-3">
+                        <label for="itemPrice" class="form-label h5">Price {{ forloop.counter }}</label>
+                        <input
+                                type="number"
+                                step="0.01"
+                                class="form-control w-25"
+                                id="itemPrice-{{ forloop.counter }}"
+                                name="itemPrice-{{ forloop.counter }}"
+                                value="{{ price }}"
+                        />
+                        <small class="form-text text-muted"></small>
+                    </div>
+                {% endfor %}
+            {% else %}
+                {% for index in range %}
+                    <div class="mb-3">
+                        <label for="itemPrice" class="form-label h5">Price {{ index }}</label>
+                        <input
+                                type="number"
+                                pattern="\d*\.\d\d}"
+                                class="form-control"
+                                id="itemPrice-{{ index }}"
+                                name="itemPrice-{{ index }}"
+                                value="{{ item.itemPrice.index }}"
+                        />
+                        <small class="form-text text-muted"></small>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <!--   {% for lang in langs %} -->
+                <!--     <div class="mb-3"> -->
+                <!--         <label for="{{ lang }}-n" class="form-label">{{ lang }}</label> -->
+                <!--       <input -->
+                <!--         type="text" -->
+                <!--         class="form-control" -->
+                <!--         id="{{lang}}-n" -->
+                <!--         name="{{lang}}-n" -->
+                <!--         value="{{ item.itemName.lang }}" -->
+                <!--       /> -->
+                <!--     </div> -->
+                <!---->
+                <!--   {% endfor %} -->
+
+            <div class="mb-3"><p>Name:</p></div>
+            <div class="mb-3">
+                <label for="EN-n" class="form-label">EN</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="EN-n"
+                        name="EN-n"
+                        value="{{ item.itemName.EN }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="DE-n" class="form-label">DE</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="DE-n"
+                        name="DE-n"
+                        value="{{ item.itemName.DE }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="IT-n" class="form-label">IT</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="IT-n"
+                        name="IT-n"
+                        value="{{ item.itemName.IT }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="FR-n" class="form-label">FR</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="FR-n"
+                        name="FR-n"
+                        value="{{ item.itemName.FR }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="PL-n" class="form-label">PL</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="PL-n"
+                        name="PL-n"
+                        value="{{ item.itemName.PL }}"
+                />
+            </div>
+            <div class="mb-3"><p>Descripton:</p></div>
+            <div class="mb-3">
+                <label for="EN-d" class="form-label">EN</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="EN-d"
+                        name="EN-d"
+                        value="{{ item.itemDescription.EN }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="DE-d" class="form-label">DE</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="DE-d"
+                        name="DE-d"
+                        value="{{ item.itemDescription.DE }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="IT-d" class="form-label">IT</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="IT-d"
+                        name="IT-d"
+                        value="{{ item.itemDescription.IT }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="FR-d" class="form-label">FR</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="FR-d"
+                        name="FR-d"
+                        value="{{ item.itemDescription.FR }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="PL-d" class="form-label">PL</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="PL-d"
+                        name="PL-d"
+                        value="{{ item.itemDescription.PL }}"
+                />
+            </div>
+            <div class="d-flex">
+                <button class="btn btn-success">Save Changes</button>
+                <a class="btn btn-secondary" href="/admin/items">Back to List</a>
+            </div>
+        </form>
     {% else %}
-  {% for index in range %}
-  <div class="mb-3">
-      <label for="itemPrice" class="form-label">Price {{ index }}</label>
-    <input
-      type="number"
-      pattern="\d*\.\d\d}"
-      class="form-control"
-      id="itemPrice-{{ index }}"
-      name="itemPrice-{{ index }}"
-      value="{{ item.itemPrice.index }}"
-    />
-    <small class="form-text text-muted" ></small >
-  </div>
-    {% endfor %}
+        <div class="alert alert-danger mb-4">Item not found.</div>
     {% endif %}
-  <!--   {% for lang in langs %} -->
-  <!--     <div class="mb-3"> -->
-  <!--         <label for="{{ lang }}-n" class="form-label">{{ lang }}</label> -->
-  <!--       <input -->
-  <!--         type="text" -->
-  <!--         class="form-control" -->
-  <!--         id="{{lang}}-n" -->
-  <!--         name="{{lang}}-n" -->
-  <!--         value="{{ item.itemName.lang }}" -->
-  <!--       /> -->
-  <!--     </div> -->
-  <!---->
-  <!--   {% endfor %} -->
-
-  <div class="mb-3"><p>Name:</p></div>
-  <div class="mb-3">
-    <label for="EN-n" class="form-label">EN</label>
-    <input
-      type="text"
-      class="form-control"
-      id="EN-n"
-      name="EN-n"
-      value="{{ item.itemName.EN }}"
-    />
-  </div>
-  <div class="mb-3">
-    <label for="DE-n" class="form-label">DE</label>
-    <input
-      type="text"
-      class="form-control"
-      id="DE-n"
-      name="DE-n"
-      value="{{ item.itemName.DE }}"
-    />
-  </div>
-  <div class="mb-3">
-    <label for="IT-n" class="form-label">IT</label>
-    <input
-      type="text"
-      class="form-control"
-      id="IT-n"
-      name="IT-n"
-      value="{{ item.itemName.IT }}"
-    />
-  </div>
-  <div class="mb-3">
-    <label for="FR-n" class="form-label">FR</label>
-    <input
-      type="text"
-      class="form-control"
-      id="FR-n"
-      name="FR-n"
-      value="{{ item.itemName.FR }}"
-    />
-  </div>
-  <div class="mb-3">
-    <label for="PL-n" class="form-label">PL</label>
-    <input
-      type="text"
-      class="form-control"
-      id="PL-n"
-      name="PL-n"
-      value="{{ item.itemName.PL }}"
-    />
-  </div>
-  <div class="mb-3"><p>Descripton:</p></div>
-  <div class="mb-3">
-    <label for="EN-d" class="form-label">EN</label>
-    <input
-      type="text"
-      class="form-control"
-      id="EN-d"
-      name="EN-d"
-      value="{{ item.itemDescription.EN }}"
-    />
-  </div>
-  <div class="mb-3">
-    <label for="DE-d" class="form-label">DE</label>
-    <input
-      type="text"
-      class="form-control"
-      id="DE-d"
-      name="DE-d"
-      value="{{ item.itemDescription.DE }}"
-    />
-  </div>
-  <div class="mb-3">
-    <label for="IT-d" class="form-label">IT</label>
-    <input
-      type="text"
-      class="form-control"
-      id="IT-d"
-      name="IT-d"
-      value="{{ item.itemDescription.IT }}"
-    />
-  </div>
-  <div class="mb-3">
-    <label for="FR-d" class="form-label">FR</label>
-    <input
-      type="text"
-      class="form-control"
-      id="FR-d"
-      name="FR-d"
-      value="{{ item.itemDescription.FR }}"
-    />
-  </div>
-  <div class="mb-3">
-    <label for="PL-d" class="form-label">PL</label>
-    <input
-      type="text"
-      class="form-control"
-      id="PL-d"
-      name="PL-d"
-      value="{{ item.itemDescription.PL }}"
-    />
-  </div>
-  <button class="btn btn-success">Save Changes</button>
-</form>
-{% else %}
-<div class="alert alert-danger">Item not found.</div>
-{% endif %}
-<a class="btn btn-secondary" href="/admin/items">Back to List</a>
 {% endblock %}

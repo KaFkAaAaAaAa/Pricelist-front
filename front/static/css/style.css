@@ -14,3 +14,7 @@ body {
 .custom-table td:nth-child(1) {
   width: 80px;
 }
+
+.navbar{
+  border-bottom: 1px solid black;
+}
