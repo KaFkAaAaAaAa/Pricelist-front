@@ -248,7 +248,7 @@ def admin_images(request, item_sku):
     if not token:
         return redirect('login')
     fs = FileSystemStorage()
-    images = fs.listdir(item_sku)
+    images = fs.listdir('.')
     images.sort()
     images_sku = [];
     pattern = re.compile(r".*{}.*".format(item_sku))
