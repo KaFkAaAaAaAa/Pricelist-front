@@ -41,5 +41,6 @@ urlpatterns = [
     path('admin/items/delete/images/<str:image_path>', views.delete_image, name='delete_image'),
     path('admin/items/<str:item_sku>/images/', views.admin_images, name='admin_images'),
     path('admin/items/delete', views.null_delete, name='null_delete')
+    path('admin/new-admin', views.new_admin, name='new_admin')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.BASE_DIR / 'static')
 

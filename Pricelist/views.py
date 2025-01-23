@@ -1,9 +1,10 @@
 import requests
 from django.shortcuts import render, redirect
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, NewAdminForm
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 import re
+import pdb
 
 from math import floor
 
@@ -42,7 +43,7 @@ def _list_items(item_sku, fs=FileSystemStorage()):
     # then while match append
     # another optimization -> after finding match if not matching break still O{n} but with low probablility
     for image in all_images:
-        if re.match(pattern, image):
+        if re.match(pattern, image) and not re.match(r".*\.M\..*", image):
             images_sku.append(image)
     return [fs.url(image) for image in images_sku]
     
@@ -227,6 +228,7 @@ def delete_item(request, item_sku):
 
 
 def upload_image(request, item_sku):
+    
     token = request.session.get('token')
     if not token:
         return redirect('login')
@@ -235,8 +237,15 @@ def upload_image(request, item_sku):
     uploaded_url = None
     if request.method == 'POST' and "image" in request.FILES.keys():
         image = request.FILES['image']
-        fs = FileSystemStorage(allow_overwrite=True)
-        filename = fs.save(f"{item_sku}.M.{image.name.split('.')[-1]}", image)
+        # fs = FileSystemStorage(allow_overwrite=True)
+        # django needs an update to 5.1.5 so that can work
+        # for now we have a workaround
+        fs = FileSystemStorage()
+        filename = f"{item_sku}.M.{image.name.split('.')[-1]}"
+        if fs.exists(filename):
+            fs.delete(filename)
+        filename = fs.save(filename, image)
+        # end workaround
         uploaded_url = fs.url(filename)
         response = requests.post(f"{API_BASE_URL}/items/admin/{item_sku}/img-path",
                                  headers=headers, data={"path": uploaded_url})
@@ -256,6 +265,9 @@ def delete_image(request, image_path):
     headers = {"Authorization": f"Bearer {token}"}
     # unfinished bc it might not be needed
     fs = FileSystemStorage()
+    image_fs = image_path.split('/')[-1]
+    if fs.exists(image_fs):
+        fs.delete(image_fs)
     if re.match(r".*\.M\..*", image_path):
         sku = re.match(r"\w\w\d\d(?=.*)", image_path)
         requests.post(f"{API_BASE_URL}/items/admin/{sku.group()}/img-path",
@@ -288,8 +300,9 @@ def admin_images(request, item_sku):
         index = len(images_url) if len(images_url) != 1 else None
         images_uploaded = request.FILES.getlist('image')
         # TODO: optimize - binary search
-        if not index:
-            fs.save(item_sku+images_uploaded[0].name.split('.')[-1],
+        image_name = item_sku+'.'+images_uploaded[0].name.split('.')[-1]
+        if not index and not fs.exists(image_name):
+            fs.save(image_name,
                     images_uploaded[0])
             images_uploaded.pop(0)
             index = 1
@@ -299,6 +312,15 @@ def admin_images(request, item_sku):
             image_name = item_sku + '.' + str(index) + '.' + image.name.split('.')[-1]
             if not fs.exists(image_name):
                 fs.save(image_name, image)
+            else:
+                while fs.exists(image_name):
+                    index += 1
+                image_name = item_sku + '.' + str(index) + '.' + image.name.split('.')[-1]
+                fs.save(image_name, image)
+
+
+
+        return redirect('admin_images', item_sku)
     return render(request, 'admin_images.html',
                   {'images': images_url, "item_sku": item_sku})
 
@@ -355,3 +377,26 @@ def add_item(request):
                           "range": range(1, 5),
                           'categories': CATEGORIES["EN"],
                       })
+
+def new_admin(request):
+    token = request.session.get('token')
+    if not token:
+        return redirect('login')
+    headers = {"Authorization": f"Bearer {token}"}
+
+    if request.method == "POST":
+        form = NewAdminForm(request.POST)
+        if form.is_valid():
+            payload = {
+                "email": form.cleaned_data['userEmail'],
+            }
+            response = requests.post(f"{API_BASE_URL}/auth/admin/new-admin", headers=headers, json=payload)
+            if response.status_code == 200:
+                return render(request, 'new_admin.html',
+                              {'form': form, 'msg': "Admin successfully added!"})
+            else:
+                return render(request, 'new_admin.html',
+                              {'form': form, 'error': "Invalid email"})
+    else:
+        form = NewAdminForm()
+    return render(request, 'new_admin.html', {'form': form})
