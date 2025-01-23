@@ -1,6 +1,7 @@
+from typing import Iterable
 import requests
 from django.shortcuts import render, redirect
-from .forms import LoginForm, RegisterForm, NewAdminForm
+from .forms import LoginForm, RegisterForm, NewAdminForm, UserActivateForm
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 import re
@@ -378,7 +379,7 @@ def add_item(request):
                           'categories': CATEGORIES["EN"],
                       })
 
-def new_admin(request):
+def new_admin(request, msg=None):
     token = request.session.get('token')
     if not token:
         return redirect('login')
@@ -399,4 +400,41 @@ def new_admin(request):
                               {'form': form, 'error': "Invalid email"})
     else:
         form = NewAdminForm()
-    return render(request, 'new_admin.html', {'form': form})
+    return render(request, 'new_admin.html', {'form': form, 'msg': msg})
+
+def new_users(request, msg=None):
+    token = request.session.get('token')
+    if not token:
+        return redirect('login')
+    headers = {"Authorization": f"Bearer {token}"}
+    response = requests.get(f"{API_BASE_URL}/auth/admin/new-users/", headers=headers)
+    users = response.json()
+    if response.status_code == 200 and isinstance(users, Iterable):
+        return render(request, 'new_users.html',
+                      {'users': users, 'msg': msg})
+    else:
+        return render(request, 'new_users.html',
+                      {'error': "API error!", 'msg': msg})
+
+def activate_user(request, user_id):
+    token = request.session.get('token')
+    if not token:
+        return redirect('login')
+    __import__('pdb').set_trace()
+    headers = {"Authorization": f"Bearer {token}"}
+    response = requests.get(f"{API_BASE_URL}/users/admin/{user_id}", headers=headers)
+    userEmail = response.json()["userEmail"]
+
+    if request.method == "POST":
+        group = request.POST['group']
+        response = requests.get(f"{API_BASE_URL}/auth/admin/new-users/activate/{user_id}?group={group}", headers=headers)
+        if response.status_code == 200:
+            return redirect('new_users')
+        else:
+            return render(request, 'activate_user.html', 
+                          {'email': userEmail, 'error': "API error!" })
+    return render(request, 'activate_user.html', {'email': userEmail, 'groups': GROUPS })
+    
+        
+
+
