@@ -235,8 +235,8 @@ def upload_image(request, item_sku):
     uploaded_url = None
     if request.method == 'POST' and "image" in request.FILES.keys():
         image = request.FILES['image']
-        fs = FileSystemStorage()
-        filename = fs.save(f"{item_sku}_{image.name}", image)
+        fs = FileSystemStorage(allow_overwrite=True)
+        filename = fs.save(f"{item_sku}.M.{image.name.split('.')[-1]}", image)
         uploaded_url = fs.url(filename)
         response = requests.post(f"{API_BASE_URL}/items/admin/{item_sku}/img-path",
                                  headers=headers, data={"path": uploaded_url})
@@ -256,30 +256,49 @@ def delete_image(request, image_path):
     headers = {"Authorization": f"Bearer {token}"}
     # unfinished bc it might not be needed
     fs = FileSystemStorage()
+    if re.match(r".*\.M\..*", image_path):
+        sku = re.match(r"\w\w\d\d(?=.*)", image_path)
+        requests.post(f"{API_BASE_URL}/items/admin/{sku.group()}/img-path",
+                                 headers=headers, data={"path": ""})
     fs.delete(image_path)
+    redir_url = request.headers.get("referer")
+    if not redir_url:
+        # error improper request
+        redir_url = 'item_list'
+    return redirect(redir_url)
+
+def null_delete(request):
+    redir_url = request.headers.get("referer")
+    if not redir_url:
+        # error improper request
+        redir_url = 'item_list'
+    return redirect(redir_url)
 
 
 def admin_images(request, item_sku):
+    # TODO: Upload image restrictions!!!
     token = request.session.get('token')
     if not token:
         return redirect('login')
     fs = FileSystemStorage()
-
+    images_url = _list_items(item_sku)
     if request.method == 'POST' and "image" in request.FILES.keys():
         images_url = _list_items(item_sku, fs)
         # this takes .M. into the count and shouldn't but it does not break anything
         index = len(images_url) if len(images_url) != 1 else None
-        images_uploaded = request.FILES.getlist('image')[1]
+        images_uploaded = request.FILES.getlist('image')
         # TODO: optimize - binary search
         if not index:
-            fs.save(item_sku+images_uploaded.name.split('.')[-1],
+            fs.save(item_sku+images_uploaded[0].name.split('.')[-1],
                     images_uploaded[0])
             images_uploaded.pop(0)
             index = 1
         for image in images_uploaded:
+            index += 1
             # sku + index + extension
-            image_name = item_sku + '.' + str(index) + '.' + image.split('.')[-1]
-            fs.save(image_name, image)
+            image_name = item_sku + '.' + str(index) + '.' + image.name.split('.')[-1]
+            if not fs.exists(image_name):
+                fs.save(image_name, image)
     return render(request, 'admin_images.html',
                   {'images': images_url, "item_sku": item_sku})
 

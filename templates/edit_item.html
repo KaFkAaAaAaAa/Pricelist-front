@@ -28,15 +28,14 @@
                 <a class="btn btn-outline-primary" href="/admin/items/{{ item.itemSku }}/upload-image/"
                 >Upload Thumbnail</a>
             </div>
-            <div class="mb-3">
-                <a class="btn btn-danger" href="/admin/items/delete/{{ item.itemImgPath }}">Delete Thumbnail</a>
-
-            </div>
             {% if item.itemImgPath %}
-                <div class="mb-3">
-                    <p class="form-label">Thumbnail:</p>
-                    <img src="{{ item.itemImgPath }}" alt="Item Thumbnail" class="img" style="width: 80px; height: auto"/>
-                </div>
+            <div class="mb-3">
+                <a class="btn btn-danger" href="/admin/items/delete{{ item.itemImgPath }}">Delete Thumbnail</a>
+            </div>
+            <div class="mb-3">
+                <p class="form-label">Thumbnail:</p>
+                <img src="{{ item.itemImgPath }}" alt="Item Thumbnail" class="img" style="width: 80px; height: auto"/>
+            </div>
             {% endif %}
             <div class="mb-3">
                 <a class="btn btn-outline-primary" href="/admin/items/{{ item.itemSku }}/images/"
