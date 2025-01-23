@@ -1,0 +1,38 @@
+{% extends 'base.html' %} {% block title %}Activate user{% endblock %}
+<foo></foo>
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title text-center">Login</h2>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">{{ email }}</div>
+            <div class="form-group mb-3">
+                <label for="group">Group:</label>
+                <select name="group" id="group" class="form-select">
+                  {% for group in groups %}
+                  <option value="{{ group }}">{{ group }}</option>
+                  {% endfor %}
+                </select>
+                <div class="d-flex justify-content-center">
+                  <button type="submit" class="btn btn-outline-primary">Activate</button>
+                </div>
+              </form>
+            </div>
+          </form>
+          {% if error %}
+          <div class="alert alert-danger mt-3">{{ error }}</div>
+          {% endif %} {% if msg %}
+          <div class="alert alert-success mt-3">{{ msg }}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -31,7 +31,9 @@
             </div>
             {% if item.itemImgPath %}
             <div class="mb-3">
-                <a class="btn btn-danger" href="/admin/items/delete{{ item.itemImgPath }}">Delete Thumbnail</a>
+                <a class="btn btn-danger" href="/admin/items/delete{{ item.itemImgPath }}"
+                onclick="return confirm('Are you sure you want to delete this item?');">Delete Thumbnail</a>
+            
             </div>
             <div class="mb-3">
                 <p class="form-label">Thumbnail:</p>

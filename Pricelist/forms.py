@@ -88,4 +88,9 @@ class NewAdminForm(forms.Form):
             })
             )
     # TODO: validate
+
+class UserActivateForm(forms.Form):
+    group = forms.SelectMultiple(
+            choices = ['FIRST', 'SECOND', 'THIRD', 'FOURTH'],
+            )
     
