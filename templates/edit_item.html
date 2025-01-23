@@ -19,6 +19,7 @@
             <div class="mb-3">
                 <label for="itemGroup" class="form-label h5">Group</label>
                 <select name="itemGroup" id="itemGroup" class="form-select">
+			<option selected>{{ item.itemGroup }}</option>
                     {% for category in categories %}
                         <option value="{{ category }}">{{ category }}</option>
                     {% endfor %}
