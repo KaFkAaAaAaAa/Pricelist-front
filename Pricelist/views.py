@@ -618,9 +618,10 @@ def client_list(request):
             "<h1>You do not have access to that page<h1>".encode("utf-8")
         )
 
-    response = requests.get(f"{API_BASE_URL}/client/admin/admin-list/", headers=headers)
+    response = requests.get(
+        f"{API_BASE_URL}/clients/admin/admin-list/", headers=headers
+    )
     clients = response.json() if response.status_code == 200 else []
-    response = requests.get(f"{API_BASE_URL}/client/admin/admin-list/", headers=headers)
     return render(request, "client_list.html", {"clients": clients})
 
 
