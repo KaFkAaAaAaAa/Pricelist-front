@@ -621,7 +621,10 @@ def client_list(request):
     response = requests.get(
         f"{API_BASE_URL}/clients/admin/admin-list/", headers=headers
     )
-    clients = response.json() if response.status_code == 200 else []
+    try:
+        clients = response.json() if response.status_code == 200 else []
+    except:
+        clients = []
     return render(request, "client_list.html", {"clients": clients})
 
 
@@ -673,3 +676,75 @@ def client_delete(request, client_id):
         return redirect("client_list")
     else:
         return redirect("client_list")
+
+
+def client_add(request):
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+
+    if auth.get("group") not in ADMIN_GROUPS:
+        return HttpResponseForbidden(
+            "<h1>You do not have access to that page<h1>".encode("utf-8")
+        )
+
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            payload = {
+                "userEmail": form.cleaned_data["userEmail"],
+                "userTelephoneNumber": form.cleaned_data["userTelephoneNumber"],
+                "clientCompanyName": form.cleaned_data["clientCompanyName"],
+                "clientStreet": form.cleaned_data["clientStreet"],
+                "clientCode": form.cleaned_data["clientCode"],
+                "clientCity": form.cleaned_data["clientCity"],
+                "clientBankNumber": form.cleaned_data["clientBankNumber"],
+            }
+            response = requests.post(f"{API_BASE_URL}/auth/register", json=payload)
+            if response.status_code == 200:
+                return redirect("client_list")
+            else:
+                return render(
+                    request,
+                    "new_client.html",
+                    {"form": form, "error": "Adding new user failed."},
+                )
+    else:
+        form = RegisterForm()
+    return render(request, "new_client.html", {"form": form})
+
+
+def client_mod(request, client_id):
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+
+    if auth.get("group") not in ADMIN_GROUPS:
+        return HttpResponseForbidden(
+            "<h1>You do not have access to that page<h1>".encode("utf-8")
+        )
+
+    payload_user = {
+        "userEmail": request.POST.cleaned_data["userEmail"],
+        "userTelephoneNumber": request.POST.cleaned_data["userTelephoneNumber"],
+    }
+
+    payload_client = {
+        "clientCompanyName": request.POST.cleaned_data["clientCompanyName"],
+        "clientStreet": request.POST.cleaned_data["clientStreet"],
+        "clientCode": request.POST.cleaned_data["clientCode"],
+        "clientCity": request.POST.cleaned_data["clientCity"],
+        "clientBankNumber": request.POST.cleaned_data["clientBankNumber"],
+    }
+
+    response_user = requests.put(f"{API_BASE_URL}/user/admin/", json=payload_user)
+    response_client = requests.put(f"{API_BASE_URL}/client/admin/", json=payload_client)
+
+    if response_user.status_code == 200 and response_client.status_code == 200:
+        return redirect("client_list")
+    else:
+        render(request, "client_mod.html")
