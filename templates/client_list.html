@@ -1,0 +1,43 @@
+{% extends 'base.html' %} {% block title %}Item List{% endblock %}
+<!---->
+{% block content %}
+<h2>Client List</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>Telephone Number</th>
+      <th>Company Name</th>
+      <th>Admin Email</th>
+      <th>
+        <a class="btn btn-primary" href="/admin/clients/add">Add new</a>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr></tr>
+    {% for client in clients %}
+    <tr
+      onclick="window.location.href='/{{ item.sku }}';"
+      style="cursor: pointer"
+    >
+      <td>{{ client.user.userEmail }}</td>
+      <td>{{ client.user.userTelephoneNumber }}</td>
+      <td>{{ client.clientCompanyName }}</td>
+      <td>{{ client.clientAdmin.userEmail }}</td>
+      <td>
+        <a class="btn btn-primary" href="/admin/clients/{{ client.id }}/edit"
+          >Edit</a
+        >
+        <a
+          class="btn btn-danger"
+          href="/admin/clients/{{ client.id }}/delete"
+          onclick="return confirm('Are you sure you want to delete this client?');"
+          >Delete</a
+        >
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
