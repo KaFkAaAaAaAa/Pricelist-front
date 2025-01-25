@@ -61,14 +61,14 @@ urlpatterns = (
             "admin/new-users/<uuid:user_id>", views.activate_user, name="activate_user"
         ),
         path("admin/clients/", views.client_list, name="client_list"),
-        path("admin/clients/add/", views.client_add, name="client_list"),
+        path("admin/clients/add/", views.client_add, name="client_add"),
         path(
             "admin/clients/<uuid:client_id>", views.client_detail, name="client_detail"
         ),
         path(
             "admin/clients/<uuid:client_id>/edit",
-            views.client_mod,
-            name="client_mod",
+            views.edit_client,
+            name="edit_client",
         ),
         path(
             "admin/clients/<uuid:client_id>/delete",
