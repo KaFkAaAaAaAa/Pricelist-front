@@ -78,5 +78,19 @@ class RegisterForm(forms.Form):
         })
     )
 
+class NewAdminForm(forms.Form):
+    userEmail = forms.EmailField(
+            label="Email:",
+            max_length=100,
+            widget=forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your email'
+            })
+            )
     # TODO: validate
+
+class UserActivateForm(forms.Form):
+    group = forms.SelectMultiple(
+            choices = ['FIRST', 'SECOND', 'THIRD', 'FOURTH'],
+            )
     

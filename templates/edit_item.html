@@ -19,6 +19,7 @@
             <div class="mb-3">
                 <label for="itemGroup" class="form-label h5">Group</label>
                 <select name="itemGroup" id="itemGroup" class="form-select">
+			<option selected>{{ item.itemGroup }}</option>
                     {% for category in categories %}
                         <option value="{{ category }}">{{ category }}</option>
                     {% endfor %}
@@ -30,7 +31,9 @@
             </div>
             {% if item.itemImgPath %}
             <div class="mb-3">
-                <a class="btn btn-danger" href="/admin/items/delete{{ item.itemImgPath }}">Delete Thumbnail</a>
+                <a class="btn btn-danger" href="/admin/items/delete{{ item.itemImgPath }}"
+                onclick="return confirm('Are you sure you want to delete this item?');">Delete Thumbnail</a>
+            
             </div>
             <div class="mb-3">
                 <p class="form-label">Thumbnail:</p>

@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}Edit Client{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center flex-column mb-5">
+    <h1>Edit Client</h1>
+    {% if client %}
+        <form method="post" class="w-50">
+            {% csrf_token %}
+            {# <div class="my-3"> #}
+            {#     <label for="userEmail" class="form-label h5">Email</label> #}
+            {#     <input #}
+            {#             type="text" #}
+            {#             class="form-control" #}
+            {#             id="userEmail" #}
+            {#             name="userEmail" #}
+            {#             value="{{ client.user.userEmail }}" #}
+            {#     /> #}
+            {# </div> #}
+        <div class="mb-3">
+                <label for="userEmail" class="form-label h5">Email</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="userEmail"
+                        name="userEmail"
+                        value="{{ client.user.userEmail }}"
+                />
+        </div>
+            <div class="mb-3">
+                <label for="userTelephoneNumber" class="form-label h5">Telephone number</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="userTelephoneNumber"
+                        name="userTelephoneNumber"
+                        value="{{ client.user.userTelephoneNumber }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="clientCompanyName" class="form-label h5">Company Name</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="clientCompanyName"
+                        name="clientCompanyName"
+                        value="{{ client.clientCompanyName }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="clientStreet" class="form-label h5">Street</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="clientStreet"
+                        name="clientStreet"
+                        value="{{ client.clientStreet }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="clientCode" class="form-label h5">Code</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="clientCode"
+                        name="clientCode"
+                        value="{{ client.clientCode }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="clientCity" class="form-label h5">City</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="clientCity"
+                        name="clientCity"
+                        value="{{ client.clientCity }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="clientBankNumber" class="form-label h5">Bank Number</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="clientBankNumber"
+                        name="clientBankNumber"
+                        value="{{ client.clientBankNumber }}"
+                />
+            </div>
+        {# TODO: ok here we should have an option to throw the client away 
+            or choose an admin (as the owner) for that client#}
+            <div class="mb-3">
+            <label for="clientAdmin" class="form-label h5">Client Admin WIP</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="clientAdmin"
+                        name="clientAdmin"
+                        value="{{ client.clientAdmin }}"
+                />
+            </div>
+            <div class="d-flex">
+                <a class="btn btn-outline-secondary" href="/admin/clients/">Back to List</a>
+                <button class="btn btn-success ms-2">Save Changes</button>
+            </div>
+        </form>
+    {% else %}
+        <div class="alert alert-danger">Client not found.</div>
+    {% endif %}
+</div>
+{% endblock %}

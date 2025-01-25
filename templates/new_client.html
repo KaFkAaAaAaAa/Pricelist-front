@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
-{% block title %}Register{% endblock %}
+{% block title %}New Client{% endblock %}
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title text-center">Register</h2>
+                    <h2 class="card-title text-center">New Client</h2>
                 </div>
                 <div class="card-body">
                     <form method="post">
@@ -14,50 +14,50 @@
 
                         <!-- Email -->
                         <div class="form-group mb-3">
-                            <h5>{{ form.userEmail.label_tag }}</h5>
+                            {{ form.userEmail.label_tag }}
                             {{ form.userEmail }}
                         </div>
 
                         <!-- Telephone Number -->
                         <div class="form-group mb-3">
-                            <h5>{{ form.userTelephoneNumber.label_tag }}</h5>
+                            {{ form.userTelephoneNumber.label_tag }}
                             {{ form.userTelephoneNumber }}
                         </div>
 
                         <!-- Company Name -->
                         <div class="form-group mb-3">
-                            <h5>{{ form.clientCompanyName.label_tag }}</h5>
+                            {{ form.clientCompanyName.label_tag }}
                             {{ form.clientCompanyName }}
                         </div>
 
                         <!-- Street -->
                         <div class="form-group mb-3">
-                            <h5>{{ form.clientStreet.label_tag }}</h5>
+                            {{ form.clientStreet.label_tag }}
                             {{ form.clientStreet }}
                         </div>
 
                         <!-- Code -->
                         <div class="form-group mb-3">
-                            <h5>{{ form.clientCode.label_tag }}</h5>
+                            {{ form.clientCode.label_tag }}
                             {{ form.clientCode }}
                         </div>
 
                         <!-- City -->
                         <div class="form-group mb-3">
-                            <h5>{{ form.clientCity.label_tag }}</h5>
+                            {{ form.clientCity.label_tag }}
                             {{ form.clientCity }}
                         </div>
 
                         <!-- Bank Number -->
                         <div class="form-group mb-3">
-                            <h5>{{ form.clientBankNumber.label_tag }}</h5>
+                            {{ form.clientBankNumber.label_tag }}
                             {{ form.clientBankNumber }}
                         </div>
 
                         <!-- Buttons -->
                         <div class="text-center">
                             <a class="btn btn-secondary" href="{% url 'login' %}">Back</a>
-                            <button class="btn btn-primary">Register</button>
+                            <button class="btn btn-primary">New Client</button>
                         </div>
                     </form>
                     {% if error %}
