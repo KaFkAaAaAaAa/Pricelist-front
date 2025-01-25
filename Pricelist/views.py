@@ -1,4 +1,6 @@
 from typing import Iterable
+from uuid import UUID
+from django.forms.fields import uuid
 from django.http.response import Http404, HttpResponseForbidden
 from django.http.response import HttpResponseNotFound
 import requests
@@ -654,7 +656,7 @@ def client_detail(request, client_id):
 
 
 def client_delete(request, client_id):
-    if not re.match(r"^[\da-f\-]$", client_id):
+    if not isinstance(client_id, UUID):
         raise Http404
     token = request.session.get("token")
     auth = _get_auth(token)
@@ -684,6 +686,7 @@ def client_add(request):
     if not auth or auth["email"] == "anonymousUser":
         request.session.flush()
         return redirect("login")
+    headers = auth["headers"]
 
     if auth.get("group") not in ADMIN_GROUPS:
         return HttpResponseForbidden(
@@ -703,20 +706,26 @@ def client_add(request):
                 "clientBankNumber": form.cleaned_data["clientBankNumber"],
             }
             response = requests.post(f"{API_BASE_URL}/auth/register", json=payload)
+            # TODO: either api endpoint for adding users as admin or request get user by email
+            # group = request.POST["group"]
+            # if response.status_code == 200:
+            #     response = requests.get(
+            # f"{API_BASE_URL}/auth/admin/new-users/activate/{user_id}?group={group}",
+            # headers=headers,
+            # )
             if response.status_code == 200:
                 return redirect("client_list")
-            else:
-                return render(
-                    request,
-                    "new_client.html",
-                    {"form": form, "error": "Adding new user failed."},
-                )
+            return render(
+                request,
+                "new_client.html",
+                {"form": form, "error": "Adding new user failed."},
+            )
     else:
         form = RegisterForm()
     return render(request, "new_client.html", {"form": form})
 
 
-def client_mod(request, client_id):
+def edit_client(request, client_id):
     token = request.session.get("token")
     auth = _get_auth(token)
     if not auth or auth["email"] == "anonymousUser":
@@ -728,23 +737,33 @@ def client_mod(request, client_id):
             "<h1>You do not have access to that page<h1>".encode("utf-8")
         )
 
-    payload_user = {
-        "userEmail": request.POST.cleaned_data["userEmail"],
-        "userTelephoneNumber": request.POST.cleaned_data["userTelephoneNumber"],
-    }
+    if request.method == "POST":
+        payload_user = {
+            "userEmail": request.POST["userEmail"],
+            "userTelephoneNumber": request.POST["userTelephoneNumber"],
+        }
 
-    payload_client = {
-        "clientCompanyName": request.POST.cleaned_data["clientCompanyName"],
-        "clientStreet": request.POST.cleaned_data["clientStreet"],
-        "clientCode": request.POST.cleaned_data["clientCode"],
-        "clientCity": request.POST.cleaned_data["clientCity"],
-        "clientBankNumber": request.POST.cleaned_data["clientBankNumber"],
-    }
+        payload_client = {
+            "clientCompanyName": request.POST["clientCompanyName"],
+            "clientStreet": request.POST["clientStreet"],
+            "clientCode": request.POST["clientCode"],
+            "clientCity": request.POST["clientCity"],
+            "clientBankNumber": request.POST["clientBankNumber"],
+        }
 
-    response_user = requests.put(f"{API_BASE_URL}/user/admin/", json=payload_user)
-    response_client = requests.put(f"{API_BASE_URL}/client/admin/", json=payload_client)
+        response_user = requests.put(
+            f"{API_BASE_URL}/users/admin/{client_id}", json=payload_user
+        )
+        response_client = requests.put(
+            f"{API_BASE_URL}/clients/admin/{client_id}", json=payload_client
+        )
 
-    if response_user.status_code == 200 and response_client.status_code == 200:
-        return redirect("client_list")
-    else:
-        render(request, "client_mod.html")
+        if response_user.status_code == 200 and response_client.status_code == 200:
+            return redirect("client_list")
+        else:
+            # TODO: user might want to know what went wrong
+            error = "Something went wrong!"
+            render(request, "edit_client.html", {"error": error})
+
+    client = requests.get(f"{API_BASE_URL}/clients/admin/{client_id}").json()
+    return render(request, "edit_client.html", {"client": client})
