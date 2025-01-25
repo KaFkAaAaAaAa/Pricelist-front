@@ -38,7 +38,7 @@ def _list_items(item_sku, fs=FileSystemStorage()):
     all_images.sort()
     images_sku = [];
     pattern = re.compile(r"{}.*".format(item_sku))
-    # TODO: can be optimized with binary search - look for any occurance and then look for first one, 
+    # TODO: can be optimized with binary search - look for any occurrence and then look for first one,
     # then while match append
     # another optimization -> after finding match if not matching break still O{n} but with low probablility
     for image in all_images:
