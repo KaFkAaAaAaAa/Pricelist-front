@@ -58,7 +58,14 @@ urlpatterns = (
         path("admin/new-admin/", views.new_admin, name="new_admin"),
         path("admin/new-users/", views.new_users, name="new_users"),
         path(
-            "admin/new-users/<uuid:user_id>", views.activate_user, name="activate_user"
+            "admin/new-users/<uuid:user_id>/activate-user",
+            views.activate_user,
+            name="activate_user",
+        ),
+        path(
+            "admin/new-users/<uuid:user_id>/add-admin/",
+            views.assign_admin,
+            name="assign_admin",
         ),
         path("admin/clients/", views.client_list, name="client_list"),
         path("admin/clients/add/", views.client_add, name="client_add"),
@@ -75,6 +82,7 @@ urlpatterns = (
             views.client_delete,
             name="client_delete",
         ),
+        path("change-password/", views.change_password, name="change_password"),
         # path('admin/admins/', views.admins_list, name='admin_list'),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
