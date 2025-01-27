@@ -1,31 +1,31 @@
 {% extends 'base.html' %} {% block title %}Price List{% endblock %}
 {% block content %}
-<h2>Items</h2>
-<table class="table">
-  <thead>
-    <tr>
-      <th>Image</th>
-      <th>SKU</th>
-      <th>Group </th>
-      <th>Name</th>
-      <th>Price</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for item in items %}
-    <tr onclick="window.location.href='/{{ item.sku }}';" style="cursor: pointer;">
-      {% if item.path %}
-      <td> <img src="{{ item.path }}" alt="Item Image" class="img" style="width: 80px; height: auto" /> </td>
-      {% else %}
-      <td></td>
-      {% endif %}
-      <td>{{ item.sku }}</td>
-      <td>{{ item.group }}</td>
-      <td>{{ item.name }}</td>
-      <td>{{ item.price }} €</td>
+    <h2 class="mt-2">Items</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Image</th>
+            <th>SKU</th>
+            <th>Group</th>
+            <th>Name</th>
+            <th>Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+            <tr onclick="window.location.href='/{{ item.sku }}';" style="cursor: pointer;">
+                {% if item.path %}
+                    <td><img src="{{ item.path }}" alt="Item Image" class="img" style="width: 80px; height: auto"/></td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+                <td>{{ item.sku }}</td>
+                <td>{{ item.group }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.price }} €</td>
 
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
