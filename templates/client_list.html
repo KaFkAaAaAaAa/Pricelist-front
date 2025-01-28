@@ -18,7 +18,7 @@
     <tr></tr>
     {% for client in clients %}
     <tr
-      onclick="window.location.href='/{{ item.sku }}';"
+      onclick="window.location.href='/admin/clients/{{ client.id }}';"
       style="cursor: pointer"
     >
       <td>{{ client.user.userEmail }}</td>

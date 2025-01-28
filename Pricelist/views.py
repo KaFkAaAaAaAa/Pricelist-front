@@ -1,6 +1,5 @@
 from typing import Iterable
 from uuid import UUID
-from django.forms.fields import uuid
 from django.http.response import Http404, HttpResponseForbidden
 from django.http.response import HttpResponseNotFound
 import requests
@@ -8,11 +7,10 @@ from django.shortcuts import render, redirect
 from .forms import LoginForm, PasswordResetForm, RegisterForm, NewAdminForm
 from django.core.files.storage import FileSystemStorage
 import re
-import pdb
 
 from math import floor
 
-API_BASE_URL = "http://127.0.0.1:8888"  # Replace with your API base URL
+API_BASE_URL = "http://127.0.0.1:8888"
 
 ADMIN_GROUPS = ["ADMIN", "OWNER"]
 
@@ -31,6 +29,7 @@ CATEGORIES = {
         "Całe urządzenia",
         "Kable i wtyczki",
         "Elementy z zawartością miedzi",
+        "Metale",
     ],
     "DE": [
         "Prozessoren",
@@ -40,6 +39,7 @@ CATEGORIES = {
         "Ganze Geräte",
         "Kabel und Stecker",
         "Kupferhaltige Elemente",
+        "Metalle",
     ],
     "EN": [
         "Processors",
@@ -49,6 +49,7 @@ CATEGORIES = {
         "Complete Devices",
         "Cables and Plugs",
         "Copper Components",
+        "Metals",
     ],
     "FR": [
         "Processeurs",
@@ -58,6 +59,7 @@ CATEGORIES = {
         "Appareils entiers",
         "Câbles et prises",
         "Éléments contenant du cuivre",
+        "Metaux",
     ],
     "IT": [
         "Processori",
@@ -67,6 +69,7 @@ CATEGORIES = {
         "Dispositivi interi",
         "Cavi e spine",
         "Elementi contenenti rame",
+        "Metalli",
     ],
 }
 
@@ -122,7 +125,6 @@ def login_view(request):
             response = requests.post(f"{API_BASE_URL}/auth/login", json=payload)
             if response.status_code == 200:
                 request.session["token"] = response.json().get("token")
-                # pdb.set_trace()
                 request.session["logged_user"] = response.json().get("currentUser")
                 return redirect("price_list")
             else:
@@ -193,7 +195,7 @@ def price_list(request):
 
 
 def item_detail(request, item_sku):
-    if not re.match(r"^[\da-f\-]$", item_sku):
+    if not re.match(r"^\w\w\d\d$", item_sku):
         raise Http404
     token = request.session.get("token")
     auth = _get_auth(token)
@@ -590,7 +592,6 @@ def new_users(request, msg=None):
         return redirect("login")
     headers = auth["headers"]
 
-    __import__("pdb").set_trace()
     response = requests.get(f"{API_BASE_URL}/clients/admin/no-admin/", headers=headers)
     clients = response.json()
     if response.status_code == 200 and isinstance(clients, Iterable):
@@ -617,7 +618,6 @@ def assign_admin(request, user_id):
 
     admins = {}
     try:
-        pdb.set_trace()
         admins_response = admins_response.json()
         for admin in admins_response:
             admins[
@@ -706,7 +706,7 @@ def client_list(request):
 
 
 def client_detail(request, client_id):
-    if not re.match(r"^[\da-f\-]$", client_id):
+    if not isinstance(client_id, UUID):
         raise Http404
     token = request.session.get("token")
     auth = _get_auth(token)
@@ -845,7 +845,6 @@ def edit_client(request, client_id):
 
 
 def change_password(request):
-    pdb.set_trace()
     token = request.session.get("token")
     auth = _get_auth(token)
     if not auth or auth["email"] == "anonymousUser":
