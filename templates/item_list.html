@@ -8,10 +8,10 @@
             <th>SKU</th>
             <th>Group</th>
             <th>Name</th>
-            <th>I</th>
-            <th>II</th>
-            <th>III</th>
-            <th>IV</th>
+            <th class="price">I</th>
+            <th class="price">II</th>
+            <th class="price">III</th>
+            <th class="price">IV</th>
             <th></th>
         </tr>
         </thead>
@@ -30,7 +30,7 @@
                 <td>{{ item.itemGroup }}</td>
                 <td>{{ item.itemName.EN }}</td>
                 {% for price in item.itemPrice %}
-                <td>{{ price }} €</td>
+                <td class="price">{{ price }} €</td>
                 {% endfor %}
                 <td>
                     <a class="btn btn-primary" href="/admin/items/{{ item.itemSku }}/edit">Edit</a>
