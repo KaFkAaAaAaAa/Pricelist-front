@@ -14,19 +14,16 @@
         </div>
 
         <dl class="row mb-4">
-            <dt class="col-sm-3 fw-bold">Image</dt>
-            <dd class="col-sm-9">
-                <img src="{{ item.path }}" alt="Item Image" class="img-fluid" style="max-width: 200px; border-radius: 10px;" />
-            </dd>
             <dt class="col-sm-3 fw-bold">SKU</dt>
             <dd class="col-sm-9">{{ item.sku }}</dd>
-            <dt class="col-sm-3 fw-bold">Group</dt>
-            <dd class="col-sm-9">{{ item.group }}</dd>
-            <dt class="col-sm-3 fw-bold">Description</dt>
-            <dd class="col-sm-9">{{ item.description }}</dd>
             <dt class="col-sm-3 fw-bold">Price</dt>
             <dd class="col-sm-9">{{ item.price }} €</dd>
         </dl>
+
+        <div class="mb-4">
+            <h4>Group</h4>
+            <p>{{ item.group }}</p>
+        </div>
 
         <h3 class="mb-3 text-center">Gallery</h3>
         {% if item.images.count > 0 %}
@@ -77,6 +74,11 @@
             No images available in the gallery.
         </div>
         {% endif %}
+
+        <div class="mt-4">
+            <h4>Description</h4>
+            <p>{{ item.description }}</p>
+        </div>
 
         {% else %}
         <div class="alert alert-danger">Item not found.</div>
