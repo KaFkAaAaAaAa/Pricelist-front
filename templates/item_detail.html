@@ -1,25 +1,90 @@
 {% extends 'base.html' %}
 {% block title %}Item Details{% endblock %}
 {% block content %}
-<h2>Item Details</h2>
-{% if item %}
-    <dl class="row">
-        <dt class="col-sm-3">Image</dt>
-        <dd class="col-sm-9"><img src="{{ item.path }}" alt="Item Image" class="img" style="width: 80px; height: auto" /></dd>
-        <dt class="col-sm-3">SKU</dt>
-        <dd class="col-sm-9">{{ item.sku}}</dd>
-        <dt class="col-sm-3">Name</dt>
-        <dd class="col-sm-9">{{ item.name }}</dd>
-        <dt class="col-sm-3">Group</dt>
-        <dd class="col-sm-9">{{ item.group}}</dd>
-        <dt class="col-sm-3">Description</dt>
-        <dd class="col-sm-9">{{ item.description }}</dd>
-        <dt class="col-sm-3">Price</dt>
-        <dd class="col-sm-9">{{ item.price }} €</dd>
-        < !-- TODO: galeria zdjęć - dodałem listę images do tego template -->
-    </dl>
-{% elif error %}
-    <div class="alert alert-danger">{{ error }}</div>
-{% endif %}
-<a class="btn btn-secondary" href="/">Back to Price List</a>
+<div class="container my-5">
+    <div class="card shadow-lg p-4" style="max-width: 900px; margin: 0 auto;">
+        {% if item %}
+        <div class="d-flex align-items-center mb-4">
+            {% if item.thumbnail %}
+            <div class="me-3">
+                <img src="{{ item.thumbnail.url }}" alt="Item Thumbnail" class="img-thumbnail" style="width: 120px; height: auto; border-radius: 10px;" />
+            </div>
+            {% endif %}
+            <h2 class="mb-0">{{ item.name }}</h2>
+        </div>
+
+        <dl class="row mb-4">
+            <dt class="col-sm-3 fw-bold">Image</dt>
+            <dd class="col-sm-9">
+                <img src="{{ item.path }}" alt="Item Image" class="img-fluid" style="max-width: 200px; border-radius: 10px;" />
+            </dd>
+            <dt class="col-sm-3 fw-bold">SKU</dt>
+            <dd class="col-sm-9">{{ item.sku }}</dd>
+            <dt class="col-sm-3 fw-bold">Group</dt>
+            <dd class="col-sm-9">{{ item.group }}</dd>
+            <dt class="col-sm-3 fw-bold">Description</dt>
+            <dd class="col-sm-9">{{ item.description }}</dd>
+            <dt class="col-sm-3 fw-bold">Price</dt>
+            <dd class="col-sm-9">{{ item.price }} €</dd>
+        </dl>
+
+        <h3 class="mb-3 text-center">Gallery</h3>
+        {% if item.images.count > 0 %}
+        <div id="galleryCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for image in item.images.all %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <img src="{{ image.image.url }}" alt="Gallery Image" class="d-block w-100 img-thumbnail" style="height: 300px; object-fit: cover;" />
+                </div>
+                {% endfor %}
+            </div>
+            {% if item.images.count > 3 %}
+            <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+            {% endif %}
+        </div>
+
+        <div class="row g-3 mt-4 justify-content-center">
+            {% for image in item.images.all %}
+            <div class="col-md-3 col-sm-6 text-center">
+                <a href="{{ image.image.url }}" data-bs-toggle="modal" data-bs-target="#imageModal{{ forloop.counter }}">
+                    <img src="{{ image.image.url }}" alt="Gallery Image" class="img-thumbnail" style="height: 200px; object-fit: cover;" />
+                </a>
+            </div>
+
+            <div class="modal fade" id="imageModal{{ forloop.counter }}" tabindex="-1" aria-labelledby="imageModalLabel{{ forloop.counter }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center">
+                            <img src="{{ image.image.url }}" alt="Full Size Image" class="img-fluid" />
+                        </div>
+                        <div class="modal-footer justify-content-center">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info text-center mt-4" style="max-width: 400px; margin: 0 auto;">
+            No images available in the gallery.
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="alert alert-danger">Item not found.</div>
+        {% endif %}
+
+        <div class="mt-4 text-center">
+            <a class="btn btn-secondary" href="/">Back to Price List</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

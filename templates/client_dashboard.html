@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Your panel</title>
-</head>
-<body>
-    {% include 'navbar.html' %}
-    <h1>Hello <strong>{{ session.mail }}</strong>!</h1>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}Edit Client{% endblock %}
+{% block content %}
+    <h1>Hello <strong>{{ session.currentUser.user.userfirstName}}</strong>!</h1>
+    
+{% endblock %}

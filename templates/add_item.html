@@ -1,147 +1,181 @@
 {% extends 'base.html' %}
 {% block title %}Add Item{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-center align-items-center flex-column mb-5">
-    <h1>Add Item</h1>
-    <form method="post" class="w-50">
-        {% csrf_token %}
-        <div class="my-3">
-            <label for="itemSku" class="form-label h5">SKU</label>
-            <input
-                    type="text"
-                    class="form-control"
-                    id="itemSku"
-                    name="itemSku"
-                    value=""
-            />
-        </div>
-        <div class="mb-3">
-            <label for="itemGroup" class="form-label h5">Group</label>
-            <select name="itemGroup" id="itemGroup" class="form-select">
-                {% for category in categories %}
-                    <option value="{{ category }}">{{ category }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        {% for index in range %}
-            <div class="mb-3">
-                <label for="itemPrice" class="form-label h5">Price {{ index }}</label>
+    <div class="d-flex justify-content-center align-items-center flex-column mb-5">
+        <h1>Add Item</h1>
+        <form method="post" class="w-50">
+            {% csrf_token %}
+            <div class="my-3">
+                <label for="itemSku" class="form-label h5">SKU</label>
                 <input
-                        type="number"
-                        step="0.01"
+                        type="text"
                         class="form-control"
-                        id="itemPrice-{{ index }}"
-                        name="itemPrice-{{ index }}"
-                        value="{{ item.itemPrice.index }}"
+                        id="itemSku"
+                        name="itemSku"
+                        value=""
                 />
             </div>
-        {% endfor %}
-        <div class="mb-3"><h5>Name:</h5></div>
-        <div class="mb-3">
-            <label for="EN-n" class="form-label">EN</label>
-            <input
-                    type="text"
-                    class="form-control"
-                    id="EN-n"
-                    name="EN-n"
-                    value=""
-            />
-        </div>
-        <div class="mb-3">
-            <label for="DE-n" class="form-label">DE</label>
-            <input
-                    type="text"
-                    class="form-control"
-                    id="DE-n"
-                    name="DE-n"
-                    value=""
-            />
-        </div>
-        <div class="mb-3">
-            <label for="IT-n" class="form-label">IT</label>
-            <input
-                    type="text"
-                    class="form-control"
-                    id="IT-n"
-                    name="IT-n"
-                    value=""
-            />
-        </div>
-        <div class="mb-3">
-            <label for="FR-n" class="form-label">FR</label>
-            <input
-                    type="text"
-                    class="form-control"
-                    id="FR-n"
-                    name="FR-n"
-                    value=""
-            />
-        </div>
-        <div class="mb-3">
-            <label for="PL-n" class="form-label">PL</label>
-            <input
-                    type="text"
-                    class="form-control"
-                    id="PL-n"
-                    name="PL-n"
-                    value=""
-            />
-        </div>
-        <div class="mb-3"><h5>Description:</h5></div>
-        <div class="mb-3">
-            <label for="EN-d" class="form-label">EN</label>
-            <input
-                    type="text"
-                    class="form-control"
-                    id="EN-d"
-                    name="EN-d"
-                    value=""
-            />
-        </div>
-        <div class="mb-3">
-            <label for="DE-d" class="form-label">DE</label>
-            <input
-                    type="text"
-                    class="form-control"
-                    id="DE-d"
-                    name="DE-d"
-                    value=""
-            />
-        </div>
-        <div class="mb-3">
-            <label for="IT-d" class="form-label">IT</label>
-            <input
-                    type="text"
-                    class="form-control"
-                    id="IT-d"
-                    name="IT-d"
-                    value=""
-            />
-        </div>
-        <div class="mb-3">
-            <label for="FR-d" class="form-label">FR</label>
-            <input
-                    type="text"
-                    class="form-control"
-                    id="FR-d"
-                    name="FR-d"
-                    value=""
-            />
-        </div>
-        <div class="mb-3">
-            <label for="PL-d" class="form-label">PL</label>
-            <input
-                    type="text"
-                    class="form-control"
-                    id="PL-d"
-                    name="PL-d"
-                    value=""
-            />
-        </div>
-        <div class="d-flex mt-2">
-            <a class="btn btn-outline-secondary" href="/admin/items">Back to List</a>
-            <button class="btn btn-success ms-2">Add Image and Save Item</button>
-        </div>
-    </form>
-</div>
+            <div class="mb-3">
+                <label for="itemGroup" class="form-label h5">Group</label>
+                <select name="itemGroup" id="itemGroup" class="form-select">
+                    {% for category in categories %}
+                        <option value="{{ category }}">{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3"><h5>Prices:</h5></div>
+            <div class="row mb-3">
+                <div class="col">
+                    <label for="itemPrice-1" class="form-label">Price 1</label>
+                    <input
+                            type="number"
+                            step="0.01"
+                            class="form-control"
+                            id="itemPrice-1"
+                            name="itemPrice-1"
+                            value="{{ item.itemPrice.0 }}"
+                    />
+                </div>
+                <div class="col">
+                    <label for="itemPrice-2" class="form-label">Price 2</label>
+                    <input
+                            type="number"
+                            step="0.01"
+                            class="form-control"
+                            id="itemPrice-2"
+                            name="itemPrice-2"
+                            value="{{ item.itemPrice.1 }}"
+                    />
+                </div>
+                <div class="col">
+                    <label for="itemPrice-3" class="form-label">Price 3</label>
+                    <input
+                            type="number"
+                            step="0.01"
+                            class="form-control"
+                            id="itemPrice-3"
+                            name="itemPrice-3"
+                            value="{{ item.itemPrice.2 }}"
+                    />
+                </div>
+                <div class="col">
+                    <label for="itemPrice-4" class="form-label">Price 4</label>
+                    <input
+                            type="number"
+                            step="0.01"
+                            class="form-control"
+                            id="itemPrice-4"
+                            name="itemPrice-4"
+                            value="{{ item.itemPrice.3 }}"
+                    />
+                </div>
+            </div>
+            <div class="mb-3"><h5>Name:</h5></div>
+            <div class="mb-3">
+                <label for="EN-n" class="form-label">EN</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="EN-n"
+                        name="EN-n"
+                        value=""
+                />
+            </div>
+            <div class="mb-3">
+                <label for="DE-n" class="form-label">DE</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="DE-n"
+                        name="DE-n"
+                        value=""
+                />
+            </div>
+            <div class="mb-3">
+                <label for="IT-n" class="form-label">IT</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="IT-n"
+                        name="IT-n"
+                        value=""
+                />
+            </div>
+            <div class="mb-3">
+                <label for="FR-n" class="form-label">FR</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="FR-n"
+                        name="FR-n"
+                        value=""
+                />
+            </div>
+            <div class="mb-3">
+                <label for="PL-n" class="form-label">PL</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="PL-n"
+                        name="PL-n"
+                        value=""
+                />
+            </div>
+            <div class="mb-3"><h5>Description:</h5></div>
+            <div class="mb-3">
+                <label for="EN-d" class="form-label">EN</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="EN-d"
+                        name="EN-d"
+                        value=""
+                />
+            </div>
+            <div class="mb-3">
+                <label for="DE-d" class="form-label">DE</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="DE-d"
+                        name="DE-d"
+                        value=""
+                />
+            </div>
+            <div class="mb-3">
+                <label for="IT-d" class="form-label">IT</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="IT-d"
+                        name="IT-d"
+                        value=""
+                />
+            </div>
+            <div class="mb-3">
+                <label for="FR-d" class="form-label">FR</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="FR-d"
+                        name="FR-d"
+                        value=""
+                />
+            </div>
+            <div class="mb-3">
+                <label for="PL-d" class="form-label">PL</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="PL-d"
+                        name="PL-d"
+                        value=""
+                />
+            </div>
+            <div class="d-flex mt-2">
+                <a class="btn btn-outline-secondary" href="/admin/items">Back to List</a>
+                <button class="btn btn-success ms-2">Add Image and Save Item</button>
+            </div>
+        </form>
+    </div>
 {% endblock %}

@@ -29,9 +29,11 @@ urlpatterns = (
         path("logout/", views.logout_view, name="logout"),
         path("register/", views.register_view, name="register"),
         path("profile/change-password/", views.change_password, name="change_password"),
+        path("client_dashboard/", views.client_panel, name="client_dashboard"),
         path("", views.price_list, name="price_list"),
         path("<str:item_sku>/", views.item_detail, name="item_detail"),
         path("admin/dashboard/", views.admin_dashboard, name="admin_dashboard"),
+
         path("admin/items/", views.admin_items, name="item_list"),
         path("admin/items/<str:item_sku>/edit", views.edit_item, name="edit_item"),
         path(
