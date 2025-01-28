@@ -1,22 +1,23 @@
-{% extends 'base.html' %} {% block title %}New Clients{% endblock %}
+{% extends 'base.html' %} {% block title %}Clients{% endblock %}
 {% block content %}
-<h2>New User List</h2>
+<h2>Clients</h2>
 <table class="table">
   <thead>
     <tr>
-      <th>Email</th>
-      <th>User Telephone Number</th>
+      <th>Company name</th>
+      <th>First Name</th>
+      <th>Last Name</th>
       <th></th>
     </tr>
   </thead>
   <tbody>
     {% for client in clients %}
     <tr>
-      <td>{{ client.user.userEmail }}</td>
-      <td>{{ client.user.userTelephoneNumber }}</td>
-      <!-- we might need client information here -->
+      <td>{{ client.clientCompanyName }}</td>
+      <td>{{ client.user.userFirstName }}</td>
+      <td>{{ client.user.userLastName }}</td>
       <td>
-        <a class="btn btn-outline-primary" href="/admin/new-users/{{ client.id }}/assign-admin">Actions</a>
+                <a class="btn btn-outline-primary" href="/admin/clients/{{ client.id }}/{{ func }}">Actions</a>
       </td>
     </tr>
     {% endfor %}

@@ -66,23 +66,27 @@ def edit_admin(request, admin_id):
         )
 
     if request.method == "POST":
-        payload_user = {
+        payload_admin = {
             "userLastName": request.POST["userLastName"],
             "userFirstName": request.POST["userFirstName"],
             "userEmail": request.POST["userEmail"],
             "userTelephoneNumber": request.POST["userTelephoneNumber"],
         }
 
-        response_user = requests.put(
-            f"{API_BASE_URL}/users/admin/{admin_id}", json=payload_user
+        response = requests.put(
+            f"{API_BASE_URL}/users/admin/{admin_id}", json=payload_admin
         )
 
-        if response_user.status_code == 200:
+        if response.status_code == 200:
             return redirect("admin_list")
         else:
             # TODO: user might want to know what went wrong
             error = "Something went wrong!"
-            render(request, "edit_client.html", {"error": error})
+            return render(request, "edit_admin.html", {"err": error})
 
-    admin = requests.get(f"{API_BASE_URL}/users/admin/{admin_id}").json()
-    return render(request, "edit_client.html", {"admin": admin})
+    try:
+        admin = requests.get(f"{API_BASE_URL}/users/admin/{admin_id}").json()
+    except:
+        return render(request, "edit_admin.html", {"err": "API ERROR!"})
+
+    return render(request, "edit_admin.html", {"admin": admin})

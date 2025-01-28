@@ -9,6 +9,7 @@
       <th>Telephone Number</th>
       <th>Company Name</th>
       <th>Admin Email</th>
+        <th></th>
       <th>
         <a class="btn btn-primary" href="/admin/clients/add">Add new</a>
       </th>
@@ -25,6 +26,7 @@
       <td>{{ client.user.userTelephoneNumber }}</td>
       <td>{{ client.clientCompanyName }}</td>
       <td>{{ client.clientAdmin.userEmail }}</td>
+            <td></td>
       <td>
         <a class="btn btn-primary" href="/admin/clients/{{ client.id }}/edit"
           >Edit</a

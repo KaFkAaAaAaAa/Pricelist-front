@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 # from django.contrib import admin
 from django.urls import path, re_path
 from Pricelist import views
+from admin import admin_views
 
 
 urlpatterns = (
@@ -33,7 +34,6 @@ urlpatterns = (
         path("", views.price_list, name="price_list"),
         path("<str:item_sku>/", views.item_detail, name="item_detail"),
         path("admin/dashboard/", views.admin_dashboard, name="admin_dashboard"),
-
         path("admin/items/", views.admin_items, name="item_list"),
         path("admin/items/<str:item_sku>/edit", views.edit_item, name="edit_item"),
         path(
@@ -59,19 +59,19 @@ urlpatterns = (
         ),
         path("admin/items/delete", views.null_delete, name="null_delete"),
         path("admin/new-admin/", views.new_admin, name="new_admin"),
-        path("admin/new-users/", views.new_users, name="new_users"),
+        path("admin/new-clients/", views.new_users, name="new_users"),
         path(
-            "admin/new-users/<uuid:user_id>/assign-admin",
+            "admin/clients/<uuid:user_id>/assign-admin",
             views.assign_admin,
             name="assign_admin",
         ),
         path(
-            "admin/my-new-users/",
-            views.my_new_users,
-            name="my_new_users",
+            "admin/my-users/",
+            views.my_users,
+            name="my_users",
         ),
         path(
-            "admin/my-new-users/<uuid:user_id>/activate-user/",
+            "admin/clients/<uuid:user_id>/activate-user/",
             views.activate_user,
             name="activate_user",
         ),
@@ -92,6 +92,17 @@ urlpatterns = (
         ),
         path("change-password/", views.change_password, name="change_password"),
         # path('admin/admins/', views.admins_list, name='admin_list'),
+        path("admin/admins/", admin_views.admin_list, name="admin_list"),
+        path(
+            "admin/admins/<uuid:admin_id>/delete/",
+            admin_views.delete_admin,
+            name="delete_admin",
+        ),
+        path(
+            "admin/admins/<uuid:admin_id>/edit/",
+            admin_views.edit_admin,
+            name="edit_admin",
+        ),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + static(settings.STATIC_URL, document_root=settings.BASE_DIR / "static")

@@ -19,6 +19,8 @@ class LoginForm(forms.Form):
 
 
 class RegisterForm(forms.Form):
+    # TODO: remove your when used in add client
+
     userFirstName = forms.CharField(
         label="First Name:",
         max_length=15,
