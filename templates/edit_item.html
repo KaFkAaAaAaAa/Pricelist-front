@@ -2,10 +2,11 @@
 {% block title %}Edit Item{% endblock %}
 {% block content %}
 <div class="d-flex justify-content-center align-items-center flex-column mb-5">
-    <h1>Edit Item</h1>
+    <h2>{{item.itemSku}} {{item.name.EN}}</h2>
     {% if item %}
         <form method="post" class="w-50">
             {% csrf_token %}
+            <button class="btn btn-success">Save Changes</button>
             <div class="my-3">
                 <label for="itemSku" class="form-label h5">SKU</label>
                 <input
@@ -144,53 +145,43 @@
             <div class="mb-3"><h5>Description:</h5></div>
             <div class="mb-3">
                 <label for="EN-d" class="form-label">EN</label>
-                <input
-                        type="text"
+                <textarea
                         class="form-control"
                         id="EN-d"
                         name="EN-d"
-                        value="{{ item.itemDescription.EN }}"
-                />
+                        rows="3">{{ item.itemDescription.EN }}</textarea>
             </div>
             <div class="mb-3">
                 <label for="DE-d" class="form-label">DE</label>
-                <input
-                        type="text"
+                <textarea
                         class="form-control"
                         id="DE-d"
                         name="DE-d"
-                        value="{{ item.itemDescription.DE }}"
-                />
+                        rows="3">{{ item.itemDescription.DE }}</textarea>
             </div>
             <div class="mb-3">
                 <label for="IT-d" class="form-label">IT</label>
-                <input
-                        type="text"
+                <textarea
                         class="form-control"
                         id="IT-d"
                         name="IT-d"
-                        value="{{ item.itemDescription.IT }}"
-                />
+                        rows="3">{{ item.itemDescription.IT }}</textarea>
             </div>
             <div class="mb-3">
                 <label for="FR-d" class="form-label">FR</label>
-                <input
-                        type="text"
+                <textarea
                         class="form-control"
                         id="FR-d"
                         name="FR-d"
-                        value="{{ item.itemDescription.FR }}"
-                />
+                        rows="3">{{ item.itemDescription.FR }}</textarea>
             </div>
             <div class="mb-3">
                 <label for="PL-d" class="form-label">PL</label>
-                <input
-                        type="text"
+                <textarea
                         class="form-control"
                         id="PL-d"
                         name="PL-d"
-                        value="{{ item.itemDescription.PL }}"
-                />
+                        rows="3">{{ item.itemDescription.PL }}</textarea>
             </div>
             <div class="d-flex">
                 <a class="btn btn-outline-secondary" href="/admin/items">Back to List</a>
