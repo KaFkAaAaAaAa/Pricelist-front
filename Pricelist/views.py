@@ -150,6 +150,8 @@ def register_view(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             payload = {
+                "userFirstName": form.cleaned_data["userFirstName"],
+                "userLastName": form.cleaned_data["userLastName"],
                 "userEmail": form.cleaned_data["userEmail"],
                 "userTelephoneNumber": form.cleaned_data["userTelephoneNumber"],
                 "clientCompanyName": form.cleaned_data["clientCompanyName"],
@@ -548,6 +550,8 @@ def new_admin(request, msg=None):
         if form.is_valid():
             payload = {
                 "email": form.cleaned_data["userEmail"],
+                "firstName": form.cleaned_data["userFirstName"],
+                "lastName": form.cleaned_data["userLastName"],
             }
             response = requests.post(
                 f"{API_BASE_URL}/auth/admin/new-admin", headers=headers, json=payload
@@ -771,6 +775,8 @@ def client_add(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             payload = {
+                "userFirstName": form.cleaned_data["userFirstName"],
+                "userLastName": form.cleaned_data["userLastName"],
                 "userEmail": form.cleaned_data["userEmail"],
                 "userTelephoneNumber": form.cleaned_data["userTelephoneNumber"],
                 "clientCompanyName": form.cleaned_data["clientCompanyName"],
@@ -813,6 +819,8 @@ def edit_client(request, client_id):
 
     if request.method == "POST":
         payload_user = {
+            "userLastName": request.POST["userLastName"],
+            "userFirstName": request.POST["userFirstName"],
             "userEmail": request.POST["userEmail"],
             "userTelephoneNumber": request.POST["userTelephoneNumber"],
         }

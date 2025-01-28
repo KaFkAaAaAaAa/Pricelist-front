@@ -19,6 +19,26 @@ class LoginForm(forms.Form):
 
 
 class RegisterForm(forms.Form):
+    userFirstName = forms.CharField(
+        label="First Name:",
+        max_length=15,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter your first name",
+            }
+        ),
+    )
+    userLastName = forms.CharField(
+        label="Last Name:",
+        max_length=15,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter your last name",
+            }
+        ),
+    )
     userEmail = forms.EmailField(
         label="Email:",
         max_length=100,
@@ -77,6 +97,26 @@ class RegisterForm(forms.Form):
 
 
 class NewAdminForm(forms.Form):
+    userFirstName = forms.CharField(
+        label="First Name:",
+        max_length=15,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter your first name",
+            }
+        ),
+    )
+    userLastName = forms.CharField(
+        label="Last Name:",
+        max_length=15,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter your last name",
+            }
+        ),
+    )
     userEmail = forms.EmailField(
         label="Email:",
         max_length=100,

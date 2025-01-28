@@ -12,6 +12,18 @@
                     <form method="post">
                         {% csrf_token %}
 
+                        <!-- First Name -->
+                        <div class="form-group mb-3">
+                            <h5>{{ form.userFirstName.label_tag }}</h5>
+                            {{ form.userFirstName }}
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="form-group mb-3">
+                            <h5>{{ form.userLastName.label_tag }}</h5>
+                            {{ form.userLastName }}
+                        </div>
+
                         <!-- Email -->
                         <div class="form-group mb-3">
                             <h5>{{ form.userEmail.label_tag }}</h5>
