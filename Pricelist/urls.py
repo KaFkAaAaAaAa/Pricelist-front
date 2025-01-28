@@ -28,6 +28,7 @@ urlpatterns = (
         path("login/", views.login_view, name="login"),
         path("logout/", views.logout_view, name="logout"),
         path("register/", views.register_view, name="register"),
+        path("profile/change-password/", views.change_password, name="change_password"),
         path("", views.price_list, name="price_list"),
         path("<str:item_sku>/", views.item_detail, name="item_detail"),
         path("admin/dashboard/", views.admin_dashboard, name="admin_dashboard"),
@@ -58,14 +59,19 @@ urlpatterns = (
         path("admin/new-admin/", views.new_admin, name="new_admin"),
         path("admin/new-users/", views.new_users, name="new_users"),
         path(
-            "admin/new-users/<uuid:user_id>/activate-user",
-            views.activate_user,
-            name="activate_user",
-        ),
-        path(
-            "admin/new-users/<uuid:user_id>/add-admin/",
+            "admin/new-users/<uuid:user_id>/assign-admin",
             views.assign_admin,
             name="assign_admin",
+        ),
+        path(
+            "admin/my-new-users/",
+            views.my_new_users,
+            name="my_new_users",
+        ),
+        path(
+            "admin/my-new-users/<uuid:user_id>/activate-user/",
+            views.activate_user,
+            name="activate_user",
         ),
         path("admin/clients/", views.client_list, name="client_list"),
         path("admin/clients/add/", views.client_add, name="client_add"),

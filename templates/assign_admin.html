@@ -14,7 +14,7 @@
             <div class="form-admin mb-3">
                 <label for="admin">Admin:</label>
                 <select name="admin" id="admin" class="form-select">
-                  {% for admin in groups %}
+                  {% for admin in admins %}
                   <option value="{{ admin }}">{{ admin }}</option>
                   {% endfor %}
                 </select>
