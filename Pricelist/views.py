@@ -95,8 +95,8 @@ def _get_auth(token):
         auth["token"] = token
         auth["headers"] = headers
         # auth["group"] = auth["group"].rstrip("]").lstrip("[")
-        auth["group"] = 'ADMIN'
-        auth["email"] = 'aa@aa.com'
+        auth["group"] = "ADMIN"
+        auth["email"] = "aa@aa.com"
         return auth
     except:
         return
@@ -156,6 +156,8 @@ def register_view(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             payload = {
+                "userFirstName": form.cleaned_data["userFirstName"],
+                "userLastName": form.cleaned_data["userLastName"],
                 "userEmail": form.cleaned_data["userEmail"],
                 "userTelephoneNumber": form.cleaned_data["userTelephoneNumber"],
                 "clientCompanyName": form.cleaned_data["clientCompanyName"],
@@ -177,9 +179,11 @@ def register_view(request):
         form = RegisterForm()
     return render(request, "register.html", {"form": form})
 
+
 def client_panel(request):
     # TODO: add some logic
-    return render(request, 'client_dashboard.html')
+    return render(request, "client_dashboard.html")
+
 
 def price_list(request):
 
@@ -557,6 +561,8 @@ def new_admin(request, msg=None):
         if form.is_valid():
             payload = {
                 "email": form.cleaned_data["userEmail"],
+                "firstName": form.cleaned_data["userFirstName"],
+                "lastName": form.cleaned_data["userLastName"],
             }
             response = requests.post(
                 f"{API_BASE_URL}/auth/admin/new-admin", headers=headers, json=payload
@@ -576,7 +582,7 @@ def new_admin(request, msg=None):
     return render(request, "new_admin.html", {"form": form, "msg": msg})
 
 
-def my_new_users(request, msg=None):
+def my_users(request, msg="", func="activate-user"):
     token = request.session.get("token")
     auth = _get_auth(token)
     if not auth or auth["email"] == "anonymousUser":
@@ -584,15 +590,27 @@ def my_new_users(request, msg=None):
         return redirect("login")
     headers = auth["headers"]
 
-    response = requests.get(f"{API_BASE_URL}/auth/admin/new-users/", headers=headers)
-    users = response.json()
-    if response.status_code == 200 and isinstance(users, Iterable):
-        return render(request, "new_users.html", {"users": users, "msg": msg})
+    response = requests.get(
+        f"{API_BASE_URL}/clients/admin/admin-list/sorted?sort=unassigned",
+        headers=headers,
+    )
+    clients = response.json()
+    if response.status_code == 200 and isinstance(clients, Iterable):
+        msg += " No clients found"
+        return render(
+            request,
+            "new_users.html",
+            {"clients": clients, "msg": msg, "func": func},
+        )
     else:
-        return render(request, "new_users.html", {"error": "API error!", "msg": msg})
+        return render(
+            request,
+            "new_users.html",
+            {"error": "API error!", "msg": msg, "func": func},
+        )
 
 
-def new_users(request, msg=None):
+def new_users(request, msg="", func="assign-admin"):
     token = request.session.get("token")
     auth = _get_auth(token)
     if not auth or auth["email"] == "anonymousUser":
@@ -603,9 +621,17 @@ def new_users(request, msg=None):
     response = requests.get(f"{API_BASE_URL}/clients/admin/no-admin/", headers=headers)
     clients = response.json()
     if response.status_code == 200 and isinstance(clients, Iterable):
-        return render(request, "new_users.html", {"clients": clients, "msg": msg})
+        return render(
+            request,
+            "new_users.html",
+            {"clients": clients, "msg": msg, "func": func},
+        )
     else:
-        return render(request, "new_users.html", {"error": "API error!", "msg": msg})
+        return render(
+            request,
+            "new_users.html",
+            {"error": "API error!", "msg": msg, "func": func},
+        )
 
 
 def assign_admin(request, user_id):
@@ -672,13 +698,16 @@ def activate_user(request, user_id):
     userEmail = response.json()["userEmail"]
 
     if request.method == "POST":
+        __import__("pdb").set_trace()
         group = request.POST["group"]
+        index = GROUPS_ROMAN.index(group)
+        group = CLIENT_GROUPS[index]
         response = requests.get(
             f"{API_BASE_URL}/auth/admin/new-users/activate/{user_id}?group={group}",
             headers=headers,
         )
         if response.status_code == 200:
-            return redirect("new_users")
+            return redirect("my_users")
         else:
             return render(
                 request,
@@ -686,7 +715,7 @@ def activate_user(request, user_id):
                 {"email": userEmail, "error": "API error!"},
             )
     return render(
-        request, "activate_user.html", {"email": userEmail, "groups": CLIENT_GROUPS}
+        request, "activate_user.html", {"email": userEmail, "groups": GROUPS_ROMAN}
     )
 
 
@@ -777,9 +806,12 @@ def client_add(request):
         )
 
     if request.method == "POST":
+        pdb.set_trace()
         form = RegisterForm(request.POST)
         if form.is_valid():
             payload = {
+                "userFirstName": form.cleaned_data["userFirstName"],
+                "userLastName": form.cleaned_data["userLastName"],
                 "userEmail": form.cleaned_data["userEmail"],
                 "userTelephoneNumber": form.cleaned_data["userTelephoneNumber"],
                 "clientCompanyName": form.cleaned_data["clientCompanyName"],
@@ -822,6 +854,8 @@ def edit_client(request, client_id):
 
     if request.method == "POST":
         payload_user = {
+            "userLastName": request.POST["userLastName"],
+            "userFirstName": request.POST["userFirstName"],
             "userEmail": request.POST["userEmail"],
             "userTelephoneNumber": request.POST["userTelephoneNumber"],
         }

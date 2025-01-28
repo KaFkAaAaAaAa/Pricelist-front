@@ -1,0 +1,72 @@
+{% extends 'base.html' %} {% block title %}New Admin{% endblock %} {% block
+content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title text-center">New Admin</h2>
+        </div>
+        <div class="card-body">
+          {% if admin %}
+          <form method="post">
+            {% csrf_token %}
+            <div class="form-group mb-3">
+              <label for="userFirstName" class="form-label h5"
+                >First Name</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="userFirstName"
+                name="userFirstName"
+                value="{{ admin.userFirstName }}"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label for="userLastName" class="form-label h5">Last Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="userLastName"
+                name="userLastName"
+                value="{{ admin.userLastName }}"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label for="userEmail" class="form-label h5">Email</label>
+              <input
+                type="text"
+                class="form-control"
+                id="userEmail"
+                name="userEmail"
+                value="{{ admin.userEmail }}"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label for="userTelephoneNumber" class="form-label h5"
+                >Telephone number</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="userTelephoneNumber"
+                name="userTelephoneNumber"
+                value="{{ admin.userTelephoneNumber }}"
+              />
+            </div>
+            <div class="d-flex justify-content-center">
+              <button class="btn btn-outline-primary">Save Changes</button>
+            </div>
+          </form>
+          {% endif %} {% if error %}
+          <div class="alert alert-danger mt-3">{{ error }}</div>
+          {% endif %} {% if msg %}
+          <div class="alert alert-success mt-3">{{ msg }}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

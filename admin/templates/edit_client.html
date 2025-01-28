@@ -6,26 +6,36 @@
     {% if client %}
         <form method="post" class="w-50">
             {% csrf_token %}
-            {# <div class="my-3"> #}
-            {#     <label for="userEmail" class="form-label h5">Email</label> #}
-            {#     <input #}
-            {#             type="text" #}
-            {#             class="form-control" #}
-            {#             id="userEmail" #}
-            {#             name="userEmail" #}
-            {#             value="{{ client.user.userEmail }}" #}
-            {#     /> #}
-            {# </div> #}
-        <div class="mb-3">
-                <label for="userEmail" class="form-label h5">Email</label>
+            <div class="mb-3">
+                    <label for="userFirstName" class="form-label h5">First Name</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="userFirstName"
+                            name="userFirstName"
+                            value="{{ client.user.userFirstName }}"
+                    />
+            </div>
+            <div class="mb-3">
+                <label for="userLastName" class="form-label h5">Last Name</label>
                 <input
                         type="text"
                         class="form-control"
-                        id="userEmail"
-                        name="userEmail"
-                        value="{{ client.user.userEmail }}"
+                        id="userLastName"
+                        name="userLastName"
+                        value="{{ client.user.userLastName }}"
                 />
-        </div>
+            </div>
+            <div class="mb-3">
+                    <label for="userEmail" class="form-label h5">Email</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="userEmail"
+                            name="userEmail"
+                            value="{{ client.user.userEmail }}"
+                    />
+            </div>
             <div class="mb-3">
                 <label for="userTelephoneNumber" class="form-label h5">Telephone number</label>
                 <input

@@ -3,13 +3,13 @@
 {% block content %}
 <div class="container my-5">
     <div class="card shadow-lg p-4" style="max-width: 900px; margin: 0 auto;">
-        {% if item %}
+        {# {% if item %} #}
         <div class="d-flex align-items-center mb-4">
-            {% if item.thumbnail %}
+            {# {% if item.thumbnail %} #}
             <div class="me-3">
-                <img src="{{ item.thumbnail.url }}" alt="Item Thumbnail" class="img-thumbnail" style="width: 120px; height: auto; border-radius: 10px;" />
+                <img src="/images/{{ item.sku }}.M.jpg" alt="Item Thumbnail" class="img-thumbnail" style="width: 120px; height: auto; border-radius: 10px;" />
             </div>
-            {% endif %}
+            {# {% endif %} #}
             <h2 class="mb-0">{{ item.name }}</h2>
         </div>
 
@@ -26,16 +26,14 @@
         </div>
 
         <h3 class="mb-3 text-center">Gallery</h3>
-        {% if item.images.count > 0 %}
         <div id="galleryCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
-                {% for image in item.images.all %}
+                {% for image in images %}
                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                    <img src="{{ image.image.url }}" alt="Gallery Image" class="d-block w-100 img-thumbnail" style="height: 300px; object-fit: cover;" />
+                    <img src="{{ image }}" alt="Gallery Image" class="d-block w-100 img-thumbnail" style="height: 300px; object-fit: cover;" />
                 </div>
                 {% endfor %}
             </div>
-            {% if item.images.count > 3 %}
             <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Previous</span>
@@ -44,14 +42,13 @@
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Next</span>
             </button>
-            {% endif %}
         </div>
 
         <div class="row g-3 mt-4 justify-content-center">
-            {% for image in item.images.all %}
+            {% for image in images %}
             <div class="col-md-3 col-sm-6 text-center">
-                <a href="{{ image.image.url }}" data-bs-toggle="modal" data-bs-target="#imageModal{{ forloop.counter }}">
-                    <img src="{{ image.image.url }}" alt="Gallery Image" class="img-thumbnail" style="height: 200px; object-fit: cover;" />
+                <a href="{{ image }}" data-bs-toggle="modal" data-bs-target="#imageModal{{ forloop.counter }}">
+                    <img src="{{ image }}" alt="Gallery Image" class="img-thumbnail" style="height: 200px; object-fit: cover;" />
                 </a>
             </div>
 
@@ -59,7 +56,7 @@
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-body text-center">
-                            <img src="{{ image.image.url }}" alt="Full Size Image" class="img-fluid" />
+                            <img src="{{ image }}" alt="Full Size Image" class="img-fluid" />
                         </div>
                         <div class="modal-footer justify-content-center">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -69,20 +66,19 @@
             </div>
             {% endfor %}
         </div>
-        {% else %}
-        <div class="alert alert-info text-center mt-4" style="max-width: 400px; margin: 0 auto;">
-            No images available in the gallery.
-        </div>
-        {% endif %}
+        {# {% else %} #}
+        {# <div class="alert alert-info text-center mt-4" style="max-width: 400px; margin: 0 auto;"> #}
+        {#     No images available in the gallery. #}
+        {# </div> #}
 
         <div class="mt-4">
             <h4>Description</h4>
             <p>{{ item.description }}</p>
         </div>
 
-        {% else %}
-        <div class="alert alert-danger">Item not found.</div>
-        {% endif %}
+        {# {% else %} #}
+        {# <div class="alert alert-danger">Item not found.</div> #}
+        {# {% endif %} #}
 
         <div class="mt-4 text-center">
             <a class="btn btn-secondary" href="/">Back to Price List</a>

@@ -1,0 +1,39 @@
+{% extends 'base.html' %} {% block title %}New Clients{% endblock %} 
+{% block content %}
+<h2>New User List</h2>
+{% if err %}
+<div class="alert alert-danger mt-3">{{ err }}</div>
+{% endif %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Email</th>
+      <th>User Telephone Number</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for client in clients %}
+    <tr>
+      <td>{{ user.userFirstName }}</td>
+      <td>{{ user.userLastName }}</td>
+      <td>{{ user.userEmail }}</td>
+      <td>{{ userTelephoneNumber }}</td>
+      <td>
+        <a class="btn btn-primary" href="/admin/admins/{{ user.userId }}/edit"
+          >Edit</a
+        >
+        <a
+          class="btn btn-danger"
+          href="/admin/admins/{{ user.userId }}/delete"
+          onclick="return confirm('Are you sure you want to delete this admin?');"
+          >Delete</a
+        >
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
