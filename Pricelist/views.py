@@ -177,6 +177,9 @@ def register_view(request):
         form = RegisterForm()
     return render(request, "register.html", {"form": form})
 
+def client_panel(request):
+    # TODO: add some logic
+    return render(request, 'client_dashboard.html')
 
 def price_list(request):
 

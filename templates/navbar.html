@@ -9,7 +9,7 @@
             <ul class="navbar-nav ms-auto me-2">
                 {% if request.session.token %}
                     <li class="nav-item">
-                        <a class="nav-link" href="client_dashboard.html">Client dashboard</a>
+                        <a class="nav-link" href="{% url 'client_dashboard' %}">Client dashboard</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/admin/dashboard/">Admin Dashboard</a>
