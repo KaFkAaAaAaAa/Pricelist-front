@@ -8,7 +8,10 @@
             <th>SKU</th>
             <th>Group</th>
             <th>Name</th>
-            <th>Price</th>
+            <th class="price">I</th>
+            <th class="price">II</th>
+            <th class="price">III</th>
+            <th class="price">IV</th>
             <th></th>
         </tr>
         </thead>
@@ -26,7 +29,9 @@
                 <td>{{ item.itemSku }}</td>
                 <td>{{ item.itemGroup }}</td>
                 <td>{{ item.itemName.EN }}</td>
-                <td>{{ item.itemPrice }} €</td>
+                {% for price in item.itemPrice %}
+                <td class="price">{{ price }} €</td>
+                {% endfor %}
                 <td>
                     <a class="btn btn-primary" href="/admin/items/{{ item.itemSku }}/edit">Edit</a>
                     <a class="btn btn-danger" href="/admin/items/{{ item.itemSku }}/delete"

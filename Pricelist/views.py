@@ -1,18 +1,17 @@
 import pdb
 from typing import Iterable
 from uuid import UUID
-from django.forms.fields import uuid
 from django.http.response import Http404, HttpResponseForbidden
 from django.http.response import HttpResponseNotFound
 import requests
 from django.shortcuts import render, redirect
-from .forms import LoginForm, RegisterForm, NewAdminForm
+from .forms import LoginForm, PasswordResetForm, RegisterForm, NewAdminForm
 from django.core.files.storage import FileSystemStorage
 import re
 
 from math import floor
 
-API_BASE_URL = "http://127.0.0.1:8888"  # Replace with your API base URL
+API_BASE_URL = "http://127.0.0.1:8888"
 
 ADMIN_GROUPS = ["ADMIN", "OWNER"]
 
@@ -31,6 +30,7 @@ CATEGORIES = {
         "Całe urządzenia",
         "Kable i wtyczki",
         "Elementy z zawartością miedzi",
+        "Metale",
     ],
     "DE": [
         "Prozessoren",
@@ -40,6 +40,7 @@ CATEGORIES = {
         "Ganze Geräte",
         "Kabel und Stecker",
         "Kupferhaltige Elemente",
+        "Metalle",
     ],
     "EN": [
         "Processors",
@@ -49,6 +50,7 @@ CATEGORIES = {
         "Complete Devices",
         "Cables and Plugs",
         "Copper Components",
+        "Metals",
     ],
     "FR": [
         "Processeurs",
@@ -58,6 +60,7 @@ CATEGORIES = {
         "Appareils entiers",
         "Câbles et prises",
         "Éléments contenant du cuivre",
+        "Metaux",
     ],
     "IT": [
         "Processori",
@@ -67,6 +70,7 @@ CATEGORIES = {
         "Dispositivi interi",
         "Cavi e spine",
         "Elementi contenenti rame",
+        "Metalli",
     ],
 }
 
@@ -127,6 +131,7 @@ def login_view(request):
             response = requests.post(f"{API_BASE_URL}/auth/login", json=payload)
             if response.status_code == 200:
                 request.session["token"] = response.json().get("token")
+                request.session["logged_user"] = response.json().get("currentUser")
                 return redirect("price_list")
             else:
                 return render(
@@ -174,6 +179,7 @@ def register_view(request):
 
 
 def price_list(request):
+
     token = request.session.get("token")
     auth = _get_auth(token)
     if not auth or auth["email"] == "anonymousUser":
@@ -195,7 +201,7 @@ def price_list(request):
 
 
 def item_detail(request, item_sku):
-    if not re.match(r"^[\da-f\-]$", item_sku):
+    if not re.match(r"^\w\w\d\d$", item_sku):
         raise Http404
     token = request.session.get("token")
     auth = _get_auth(token)
@@ -253,7 +259,6 @@ def admin_items(request):
         item["itemPrice"] = [
             f"{group_price / 100:.2f}" for group_price in item["itemPrice"]
         ]
-        item["itemPrice"] = "/".join(item["itemPrice"])
     return render(request, "item_list.html", {"items": items})
 
 
@@ -446,7 +451,7 @@ def admin_images(request, item_sku):
     if request.method == "POST" and "image" in request.FILES.keys():
         images_url = _list_items(item_sku, fs)
         # this takes .M. into the count and shouldn't but it does not break anything
-        index = len(images_url) if len(images_url) != 1 else None
+        index = len(images_url) if len(images_url) != 1 else 0
         images_uploaded = request.FILES.getlist("image")
         # TODO: optimize - binary search
         image_name = item_sku + "." + images_uploaded[0].name.split(".")[-1]
@@ -568,7 +573,7 @@ def new_admin(request, msg=None):
     return render(request, "new_admin.html", {"form": form, "msg": msg})
 
 
-def new_users(request, msg=None):
+def my_new_users(request, msg=None):
     token = request.session.get("token")
     auth = _get_auth(token)
     if not auth or auth["email"] == "anonymousUser":
@@ -582,6 +587,74 @@ def new_users(request, msg=None):
         return render(request, "new_users.html", {"users": users, "msg": msg})
     else:
         return render(request, "new_users.html", {"error": "API error!", "msg": msg})
+
+
+def new_users(request, msg=None):
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+    headers = auth["headers"]
+
+    response = requests.get(f"{API_BASE_URL}/clients/admin/no-admin/", headers=headers)
+    clients = response.json()
+    if response.status_code == 200 and isinstance(clients, Iterable):
+        return render(request, "new_users.html", {"clients": clients, "msg": msg})
+    else:
+        return render(request, "new_users.html", {"error": "API error!", "msg": msg})
+
+
+def assign_admin(request, user_id):
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+    headers = auth["headers"]
+
+    user_response = requests.get(
+        f"{API_BASE_URL}/users/admin/{user_id}", headers=headers
+    )
+    admins_response = requests.get(
+        f"{API_BASE_URL}/users/admin/admins/", headers=headers
+    )
+    userEmail = user_response.json()["userEmail"]
+
+    admins = {}
+    try:
+        admins_response = admins_response.json()
+        for admin in admins_response:
+            admins[
+                admin["userLastName"] if admin["userLastName"] else admin["userEmail"]
+            ] = admin["userId"]
+    except:
+        print("exception during fetching admins list from DB")
+
+    payload = False
+    if request.method == "POST":
+        for name in admins.keys():
+            if request.POST["admin"] == name:
+                payload = {"clientAdminId": admins[name]}
+                break
+        if not payload:
+            pass
+        response = requests.put(
+            f"{API_BASE_URL}/clients/admin/{user_id}",
+            json=payload,
+            headers=headers,
+        )
+        if response.status_code == 200:
+            return redirect("new_users")
+        else:
+            return render(
+                request,
+                "assign_admin.html",
+                {"email": userEmail, "error": "API error!"},
+            )
+    return render(
+        request, "assign_admin.html", {"email": userEmail, "admins": admins.keys()}
+    )
 
 
 def activate_user(request, user_id):
@@ -638,7 +711,7 @@ def client_list(request):
 
 
 def client_detail(request, client_id):
-    if not re.match(r"^[\da-f\-]$", client_id):
+    if not isinstance(client_id, UUID):
         raise Http404
     token = request.session.get("token")
     auth = _get_auth(token)
@@ -774,3 +847,31 @@ def edit_client(request, client_id):
 
     client = requests.get(f"{API_BASE_URL}/clients/admin/{client_id}").json()
     return render(request, "edit_client.html", {"client": client})
+
+
+def change_password(request):
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+    headers = auth["headers"]
+    form = PasswordResetForm()
+    if request.method == "POST":
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            payload = {
+                "password": form.cleaned_data["password"],
+                "confirmPassword": form.cleaned_data["confirmPassword"],
+            }
+            response = requests.post(
+                f"{API_BASE_URL}/auth/change-password", headers=headers, json=payload
+            )
+            if response.status_code == 200:
+                return redirect("/", {"msg": "Password changed successfully!"})
+        return render(
+            request,
+            "change_password.html",
+            {"form": form, "err": "Passwords doesn't match!"},
+        )
+    return render(request, "change_password.html", {"form": form})
