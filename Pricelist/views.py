@@ -253,7 +253,6 @@ def admin_items(request):
         item["itemPrice"] = [
             f"{group_price / 100:.2f}" for group_price in item["itemPrice"]
         ]
-        item["itemPrice"] = "/".join(item["itemPrice"])
     return render(request, "item_list.html", {"items": items})
 
 
