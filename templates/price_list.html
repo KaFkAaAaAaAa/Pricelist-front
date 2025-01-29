@@ -2,27 +2,23 @@
 {% block title %}Price List{% endblock %}
 
 {% block content %}
-    <table class="table table-bordered mt-2">
+    <table class="table table-bordered mt-2" style="font-family: Calibri, sans-serif">
     <tbody>
         {% for category, item_list in items.items %}
         {% if item_list %}
-        <!-- TODO: font-size nazwa grupy 16, cena 14, nazwa 10 -->
         <tr>
-            <!-- TODO: zrobić padding tak aby było na wysokości sku, allcaps, font: calibri (cały cennik)-->
-            <th colspan="5" class="text-left fs-5 py-2 text-light fw-medium" style="background-color: #9E0F06">{{ category }}</th>
+            <th colspan="5" class="text-left fs-4 py-2 ps-5 text-light fw-semibold text-uppercase" style="background-color: #9E0F06">{{ category }}</th>
         </tr>
             {% for item in item_list %}
-                <tr onclick="window.location.href='/{{ item.sku }}';" style="cursor: pointer; font-size: 17px">
+                <tr class="colored-row" onclick="window.location.href='/{{ item.sku }}';" class="align-middle" style="cursor: pointer; font-size: 19px">
                     {% if item.path %}
                         <td class="text-center px-0"><img src="{{ item.path }}" alt="Item Image" class="img" style="width: 80px; height: auto"/></td>
                     {% else %}
                         <td></td>
                     {% endif %}
-                    <td class="text-center">{{ item.sku }}</td>
-                    <td>{{ item.name }}</td>
-            <!-- TODO: zmniejszyć padding z lewej dla stron-->
-            <!-- TODO: kolumny na przemian kolorami -->
-                    <td class="price">{{ item.price }} €</td>
+                    <td class="text-center" style="font-size: 17px">{{ item.sku }}</td>
+                    <td style="font-size: 17px">{{ item.name }}</td>
+                    <td class="text-end fw-semibold" style="max-width: 32px; font-size: 20px">{{ item.price }} €</td>
                 </tr>
             {% endfor %}
         {% endif %}
