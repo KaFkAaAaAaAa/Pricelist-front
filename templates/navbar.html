@@ -14,6 +14,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/admin/dashboard/">Admin Dashboard</a>
                     </li>
+                    <li>
+                        <a class="nav-link" href="/profile/">{{ request.session.logged_user.userEmail }}</a>
+                    </li>
                     <li class="nav-item ms-3">
                         <a class="btn btn-outline-secondary" href="/logout">Logout</a>
                     </li>

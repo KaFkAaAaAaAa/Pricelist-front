@@ -45,11 +45,18 @@ def delete_admin(request, admin_id):
     )
 
     if response.status_code == 200:
-        redirect("admin_list", "Admin deleted successfully")
+        try:
+            return redirect("admin_list", msg="Admin deleted successfully")
+        except:
+            return redirect("admin_list")
+
     elif response.status_code == 404:
         raise Http404
     else:
-        redirect("admin_list", "API ERROR!")
+        try:
+            return redirect("admin_list", "API ERROR!")
+        except:
+            return redirect("admin_list")
 
 
 def edit_admin(request, admin_id):

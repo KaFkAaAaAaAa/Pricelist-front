@@ -91,7 +91,6 @@ urlpatterns = (
             name="client_delete",
         ),
         path("change-password/", views.change_password, name="change_password"),
-        # path('admin/admins/', views.admins_list, name='admin_list'),
         path("admin/admins/", admin_views.admin_list, name="admin_list"),
         path(
             "admin/admins/<uuid:admin_id>/delete/",
