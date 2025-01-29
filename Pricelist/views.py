@@ -206,7 +206,7 @@ def price_list(request):
     response = requests.get(f"{API_BASE_URL}/items/price-list?lang=EN", headers=headers)
     items = {}
     items = response.json() if response.status_code == 200 else []
-    for category in items:
+    for category in items.keys():
         for item in items[category]:
             item["price"] = f"{item['price'] / 100:.2f}"
     return render(request, "price_list.html", {"items": items})
