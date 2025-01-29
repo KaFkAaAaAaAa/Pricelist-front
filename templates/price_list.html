@@ -14,8 +14,9 @@
     </thead>
     <tbody>
         {% for category, item_list in items.items %}
+        {% if item_list %}
         <tr>
-            <th colspan="5" class="text-center fs-5 py-2 text-light fw-medium" style="background-color: #9E0F06">Kategoria kategoria kategoria</th>
+            <th colspan="5" class="text-center fs-5 py-2 text-light fw-medium" style="background-color: #9E0F06">{{ category }}</th>
         </tr>
             {% for item in item_list %}
                 <tr onclick="window.location.href='/{{ item.sku }}';" style="cursor: pointer; font-size: 17px">
@@ -29,6 +30,8 @@
                     <td>{{ item.name }}</td>
                     <td class="price">{{ item.price }} €</td>
                 </tr>
+            {% endfor %}
+        {% endif %}
         {% endfor %}
     </tbody>
 </table>
