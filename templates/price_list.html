@@ -1,8 +1,11 @@
 {% extends 'base.html' %} {% block title %}Price List{% endblock %}
 {% block content %}
     <h2 class="mt-2">Items</h2>
-    <table class="table">
-        <thead>
+    <table class="table table-bordered mt-2">
+    <thead>
+        <tr class="bg-danger">
+            <th colspan="5" class="text-center">Kategoria</th>
+        </tr>
         <tr>
             <th>Image</th>
             <th>SKU</th>
@@ -10,8 +13,8 @@
             <th>Name</th>
             <th class="price">Price</th>
         </tr>
-        </thead>
-        <tbody>
+    </thead>
+    <tbody>
         {% for item in items %}
             <tr onclick="window.location.href='/{{ item.sku }}';" style="cursor: pointer;">
                 {% if item.path %}
@@ -23,9 +26,8 @@
                 <td>{{ item.group }}</td>
                 <td>{{ item.name }}</td>
                 <td class="price">{{ item.price }} €</td>
-
             </tr>
         {% endfor %}
-        </tbody>
-    </table>
+    </tbody>
+</table>
 {% endblock %}
