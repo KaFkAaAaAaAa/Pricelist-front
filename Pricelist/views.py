@@ -1,4 +1,3 @@
-import pdb
 from typing import Iterable
 from uuid import UUID
 from django.http.response import Http404, HttpResponseForbidden
@@ -131,7 +130,11 @@ def login_view(request):
             response = requests.post(f"{API_BASE_URL}/auth/login", json=payload)
             if response.status_code == 200:
                 request.session["token"] = response.json().get("token")
-                request.session["logged_user"] = response.json().get("currentUser")
+                response_auth = requests.get(
+                    f"{API_BASE_URL}/auth/whoami/",
+                    headers={"Authorization": f'Bearer {request.session["token"]}'},
+                )
+                request.session["logged_user"] = response_auth.json().get("currentUser")
                 return redirect("price_list")
             else:
                 return render(
@@ -698,7 +701,6 @@ def activate_user(request, user_id):
     userEmail = response.json()["userEmail"]
 
     if request.method == "POST":
-        __import__("pdb").set_trace()
         group = request.POST["group"]
         index = GROUPS_ROMAN.index(group)
         group = CLIENT_GROUPS[index]
@@ -806,7 +808,6 @@ def client_add(request):
         )
 
     if request.method == "POST":
-        pdb.set_trace()
         form = RegisterForm(request.POST)
         if form.is_valid():
             payload = {
@@ -905,7 +906,10 @@ def change_password(request):
                 f"{API_BASE_URL}/auth/change-password", headers=headers, json=payload
             )
             if response.status_code == 200:
-                return redirect("/", {"msg": "Password changed successfully!"})
+                try:
+                    return redirect("/", {"msg": "Password changed successfully!"})
+                except:
+                    return redirect("/")
         return render(
             request,
             "change_password.html",
