@@ -12,14 +12,14 @@
             <th class="price">Price</th>
         </tr>
         <tr>
-            <th colspan="5" class="text-center fs-5 py-2 text-light fw-medium"" style="background-color: #9E0F06">Kategoria kategoria kategoria</th>
+            <th colspan="5" class="text-center fs-5 py-2 text-light fw-medium" style="background-color: #9E0F06">Kategoria kategoria kategoria</th>
         </tr>
     </thead>
     <tbody>
         {% for item in items %}
             <tr onclick="window.location.href='/{{ item.sku }}';" style="cursor: pointer; font-size: 17px">
                 {% if item.path %}
-                    <td><img src="{{ item.path }}" alt="Item Image" class="img" style="width: 80px; height: auto"/></td>
+                    <td class="text-center px-0"><img src="{{ item.path }}" alt="Item Image" class="img" style="width: 80px; height: auto"/></td>
                 {% else %}
                     <td></td>
                 {% endif %}
