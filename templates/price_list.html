@@ -15,18 +15,21 @@
         </tr>
     </thead>
     <tbody>
-        {% for item in items %}
-            <tr onclick="window.location.href='/{{ item.sku }}';" style="cursor: pointer;">
-                {% if item.path %}
-                    <td><img src="{{ item.path }}" alt="Item Image" class="img" style="width: 80px; height: auto"/></td>
-                {% else %}
-                    <td></td>
-                {% endif %}
-                <td>{{ item.sku }}</td>
-                <td>{{ item.group }}</td>
-                <td>{{ item.name }}</td>
-                <td class="price">{{ item.price }} €</td>
-            </tr>
+        {% for category, item_list in items.items %}
+        <!-- div z kategorią {{ category }} --> 
+            {% for item in item_list %}
+                <tr onclick="window.location.href='/{{ item.sku }}';" style="cursor: pointer;">
+                    {% if item.path %}
+                        <td><img src="{{ item.path }}" alt="Item Image" class="img" style="width: 80px; height: auto"/></td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    <td>{{ item.sku }}</td>
+                    <td>{{ item.group }}</td>
+                    <td>{{ item.name }}</td>
+                    <td class="price">{{ item.price }} €</td>
+                </tr>
+            {% endfor %}
         {% endfor %}
     </tbody>
 </table>

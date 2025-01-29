@@ -102,6 +102,8 @@ urlpatterns = (
             admin_views.edit_admin,
             name="edit_admin",
         ),
+        path("profile/", views.profile, name="profile"),
+        path("profile/edit", views.edit_profile, name="edit_profile"),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + static(settings.STATIC_URL, document_root=settings.BASE_DIR / "static")

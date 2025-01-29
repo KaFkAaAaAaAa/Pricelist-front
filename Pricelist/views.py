@@ -204,9 +204,11 @@ def price_list(request):
 
     # TODO: lang and sort params
     response = requests.get(f"{API_BASE_URL}/items/price-list?lang=EN", headers=headers)
+    items = {}
     items = response.json() if response.status_code == 200 else []
-    for item in items:
-        item["price"] = f"{item['price'] / 100:.2f}"
+    for category in items:
+        for item in items[category]:
+            item["price"] = f"{item['price'] / 100:.2f}"
     return render(request, "price_list.html", {"items": items})
 
 
@@ -228,6 +230,32 @@ def item_detail(request, item_sku):
         return render(request, "item_detail.html", {"item": item, "images": images})
     else:
         return render(request, "item_detail.html", {"error": "Item not found."})
+
+
+def profile(request, item_sku):
+    if not re.match(r"^\w\w\d\d$", item_sku):
+        raise Http404
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+    headers = auth["headers"]
+
+    return render(request, "profile.html")
+
+
+def edit_profile(request, item_sku):
+    if not re.match(r"^\w\w\d\d$", item_sku):
+        raise Http404
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+    headers = auth["headers"]
+
+    return render(request, "edit_profile.html")
 
 
 # admin views
