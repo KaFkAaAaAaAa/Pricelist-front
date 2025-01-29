@@ -18,13 +18,3 @@ body {
 .navbar {
   border-bottom: 1px solid black;
 }
-
-td.price {
-  text-align: right;
-  font-weight: bold;
-}
-
-th.price {
-  text-align: right;
-}
-
