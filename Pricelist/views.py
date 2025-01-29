@@ -556,9 +556,7 @@ def add_item(request):
                 "FR": request.POST.get("FR-d"),
                 "PL": request.POST.get("PL-d"),
             },
-            "itemPrice": [
-                int(100 * float(price)) if price else None for price in prices
-            ],
+            "itemPrice": [int(100 * float(price)) if price else 0 for price in prices],
         }
 
         response = requests.post(
