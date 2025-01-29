@@ -3,19 +3,13 @@
 
 {% block content %}
     <table class="table table-bordered mt-2">
-    <thead>
-        <tr style="font-size: 19px">
-            <th></th>
-            <th class="text-center">SKU</th>
-            <th>Name</th>
-            <th class="price">Price</th>
-        </tr>
-    </thead>
     <tbody>
         {% for category, item_list in items.items %}
         {% if item_list %}
+        <!-- TODO: font-size nazwa grupy 16, cena 14, nazwa 10 -->
         <tr>
-            <th colspan="5" class="text-center fs-5 py-2 text-light fw-medium" style="background-color: #9E0F06">{{ category }}</th>
+            <!-- TODO: zrobić padding tak aby było na wysokości sku, allcaps, font: calibri (cały cennik)-->
+            <th colspan="5" class="text-left fs-5 py-2 text-light fw-medium" style="background-color: #9E0F06">{{ category }}</th>
         </tr>
             {% for item in item_list %}
                 <tr onclick="window.location.href='/{{ item.sku }}';" style="cursor: pointer; font-size: 17px">
@@ -26,6 +20,8 @@
                     {% endif %}
                     <td class="text-center">{{ item.sku }}</td>
                     <td>{{ item.name }}</td>
+            <!-- TODO: zmniejszyć padding z lewej dla stron-->
+            <!-- TODO: kolumny na przemian kolorami -->
                     <td class="price">{{ item.price }} €</td>
                 </tr>
             {% endfor %}
