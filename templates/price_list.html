@@ -3,7 +3,8 @@
 
 {% block content %}
 <!-- TODO: cleanup align-middles ;< -->
-    <table class="table table-bordered table-striped mt-2 align-middle" style="font-family: Calibri, sans-serif">
+    {# <table class="table table-bordered table-striped mt-2 align-middle" style="font-family: Calibri, sans-serif"> #}
+    <table class="table table-bordered mt-2 align-middle" style="font-family: Calibri, sans-serif">
     <tbody>
         {% for category, item_list in items.items %}
         {% if item_list %}
@@ -17,9 +18,15 @@
                     {% else %}
                         <td class="flex-shrink-0 align-items-middle" style="width: 100px;"></td>
                     {% endif %}
+                    {% if forloop.counter|divisibleby:2 %}
+                    <td class="text-center flex-shrink-0 align-items-middle bg-light" style="font-size: 17px">{{ item.sku }}</td>
+                    <td class="flex-fill align-items-middle bg-light" style="font-size: 17px">{{ item.name }}</td>
+                    <td class="text-end fw-semibold flex-shrink-0 align-items-middle bg-light" style="font-size: 20px; width: 120px">{{ item.price }} €</td>
+                    {% else %}
                     <td class="text-center flex-shrink-0 align-items-middle" style="font-size: 17px">{{ item.sku }}</td>
                     <td class="flex-fill align-items-middle" style="font-size: 17px">{{ item.name }}</td>
                     <td class="text-end fw-semibold flex-shrink-0 align-items-middle" style="font-size: 20px; width: 120px">{{ item.price }} €</td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         {% endif %}
