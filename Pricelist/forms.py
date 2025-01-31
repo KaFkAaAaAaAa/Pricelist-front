@@ -23,7 +23,7 @@ class RegisterForm(forms.Form):
 
     userFirstName = forms.CharField(
         label="First Name:",
-        max_length=15,
+        max_length=30,
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
@@ -33,7 +33,7 @@ class RegisterForm(forms.Form):
     )
     userLastName = forms.CharField(
         label="Last Name:",
-        max_length=15,
+        max_length=30,
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
@@ -101,7 +101,7 @@ class RegisterForm(forms.Form):
 class NewAdminForm(forms.Form):
     userFirstName = forms.CharField(
         label="First Name:",
-        max_length=15,
+        max_length=30,
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
@@ -111,7 +111,7 @@ class NewAdminForm(forms.Form):
     )
     userLastName = forms.CharField(
         label="Last Name:",
-        max_length=15,
+        max_length=30,
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
@@ -152,5 +152,46 @@ class PasswordResetForm(forms.Form):
         max_length=100,
         widget=forms.PasswordInput(
             attrs={"class": "form-control", "placeholder": "Confirm Password"}
+        ),
+    )
+
+
+class EditProfileForm(
+    forms.Form,
+):
+    userFirstName = forms.CharField(
+        label="First Name:",
+        max_length=30,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+            }
+        ),
+    )
+    userLastName = forms.CharField(
+        label="Last Name:",
+        max_length=30,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+            }
+        ),
+    )
+    userEmail = forms.EmailField(
+        label="Email:",
+        max_length=100,
+        widget=forms.EmailInput(
+            attrs={
+                "class": "form-control",
+            }
+        ),
+    )
+    userTelephoneNumber = forms.CharField(
+        label="Telephone number:",
+        max_length=15,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+            }
         ),
     )
