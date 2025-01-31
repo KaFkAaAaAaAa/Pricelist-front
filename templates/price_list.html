@@ -12,7 +12,7 @@
             <th colspan="5" class="text-left fs-4 py-2 ps-5 text-light fw-semibold text-uppercase align-middle" style="background-color: #9E0F06">{{ category }}</th>
         </tr>
             {% for item in item_list %}
-                <tr class="colored-row d-flex align-middle" onclick="window.location.href='/{{ item.sku }}';" style="cursor: pointer; font-size: 19px">
+                <tr class="colored-row d-flex align-middle" onclick="window.location.href='/item/{{ item.sku }}';" style="cursor: pointer; font-size: 19px">
                     {% if item.path %}
                         <td class="text-center px-0 flex-shrink-0 align-items-middle" style="width: 100px;"><img src="{{ item.path }}" alt="Item Image" class="img" style="width: 80px; height: auto"/></td>
                     {% else %}

@@ -205,7 +205,9 @@ def price_list(request):
     # TODO: lang and sort params
     response = requests.get(f"{API_BASE_URL}/items/price-list?lang=EN", headers=headers)
     items = {}
-    items = response.json() if response.status_code == 200 else []
+    items = (
+        response.json() if response.status_code == 200 else []
+    )  # items = {<String>:<List<PricelistItemModel>>}
     for category in items.keys():
         for item in items[category]:
             item["price"] = f"{item['price'] / 100:.2f}"
@@ -232,9 +234,7 @@ def item_detail(request, item_sku):
         return render(request, "item_detail.html", {"error": "Item not found."})
 
 
-def profile(request, item_sku):
-    if not re.match(r"^\w\w\d\d$", item_sku):
-        raise Http404
+def profile(request):
     token = request.session.get("token")
     auth = _get_auth(token)
     if not auth or auth["email"] == "anonymousUser":
@@ -242,27 +242,78 @@ def profile(request, item_sku):
         return redirect("login")
     headers = auth["headers"]
 
-    return render(request, "profile.html")
+    user_admin = True
 
+    if auth["group"] not in ADMIN_GROUPS:
+        user_admin = False
 
-def edit_profile(request, item_sku):
-    if not re.match(r"^\w\w\d\d$", item_sku):
-        raise Http404
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        err = ""
+        if form.is_valid():
+            payload = {
+                "userFirstName": form.cleaned_data["userFirstName"],
+                "userLastName": form.cleaned_data["userLastName"],
+                "userEmail": form.cleaned_data["userEmail"],
+                "userTelephoneNumber": form.cleaned_data["userTelephoneNumber"],
+            }
+            if not user_admin:
+                client_payload = {
+                    "clientCompanyName": form.cleaned_data["clientCompanyName"],
+                    "clientStreet": form.cleaned_data["clientStreet"],
+                    "clientCode": form.cleaned_data["clientCode"],
+                    "clientCity": form.cleaned_data["clientCity"],
+                    "clientBankNumber": form.cleaned_data["clientBankNumber"],
+                }
+                client_response = requests.post(
+                    f"{API_BASE_URL}/client/self/", json=client_payload, headers=headers
+                )
+                if client_response.status_code != 200:
+                    err = "500 Internal Server Error"
+            response = requests.post(
+                f"{API_BASE_URL}/user/self", json=payload, headers=headers
+            )
+            if response.status_code != 200 and not err:
+                err = "500 Internal Server Error"
+            elif not err:
+                msg = "User data changed successfully"
+            # TODO: figure out how to redirect there correctly
+            request.session["token"] = response.json().get("token")
+            response_auth = requests.get(
+                f"{API_BASE_URL}/auth/whoami/",
+                headers={"Authorization": f'Bearer {request.session["token"]}'},
+            )
+            request.session["logged_user"] = response_auth.json().get("currentUser")
 
-    return render(request, "edit_profile.html")
+    # auth here might be problematic only in race condition situation - highly unlikely
+    # although current implementation is not the most optimal and might need some clean ups
+    logged = request.session["logged_user"]
+    if not user_admin:
+        initial = {
+            "userFirstName": logged.get("user").get("userFirstName"),
+            "userLastName": logged.get("user").get("userLastName"),
+            "userEmail": logged.get("user").get("userEmail"),
+            "userTelephoneNumber": logged.get("user").get("userTelephoneNumber"),
+            "clientCompanyName": logged.get("clientCompanyName"),
+            "clientStreet": logged.get("clientStreet"),
+            "clientCode": logged.get("clientCode"),
+            "clientCity": logged.get("clientCity"),
+            "clientBankNumber": logged.get("clientBankNumber"),
+        }
+    else:
+        initial = {
+            "userFirstName": logged.get("userFirstName"),
+            "userLastName": logged.get("userLastName"),
+            "userEmail": logged.get("userEmail"),
+            "userTelephoneNumber": logged.get("userTelephoneNumber"),
+        }
+    form = RegisterForm(initial=initial)
+    return render(request, "profile.html", {"form": form, "user_admin": user_admin})
 
 
 # admin views
 
 
-# TODO: add is-admin endpoint to API bc @login_required doesn't work,
-#   and too many work-arounds are needed to make it work
 def admin_dashboard(request):
     token = request.session.get("token")
     auth = _get_auth(token)
@@ -848,13 +899,6 @@ def client_add(request):
                 "clientBankNumber": form.cleaned_data["clientBankNumber"],
             }
             response = requests.post(f"{API_BASE_URL}/auth/register", json=payload)
-            # TODO: either api endpoint for adding users as admin or request get user by email
-            # group = request.POST["group"]
-            # if response.status_code == 200:
-            #     response = requests.get(
-            # f"{API_BASE_URL}/auth/admin/new-users/activate/{user_id}?group={group}",
-            # headers=headers,
-            # )
             if response.status_code == 200:
                 return redirect("client_list")
             return render(

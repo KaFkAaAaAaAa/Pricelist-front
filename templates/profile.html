@@ -1,0 +1,84 @@
+{% extends 'base.html' %} {% block title %}Profile{% endblock %}
+<!---->
+{% block content %}
+
+<div class="container">
+  <div>
+    <h2>Temporary Profile Page</h2>
+  </div>
+  <div>
+    <div class="alert">
+      WIP
+    </div>
+      <div>
+        <form method="POST">
+          {% csrf_token %}
+          <div class="form-group mb-3">
+            <h5>{{ form.userFirstName.label_tag }}</h5>
+            {{ form.userFirstName }}
+          </div>
+
+          <!-- Last Name -->
+          <div class="form-group mb-3">
+            <h5>{{ form.userLastName.label_tag }}</h5>
+            {{ form.userLastName }}
+          </div>
+
+          <!-- Email -->
+          <div class="form-group mb-3">
+            <h5>{{ form.userEmail.label_tag }}</h5>
+            {{ form.userEmail }}
+          </div>
+
+          <!-- Telephone Number -->
+          <div class="form-group mb-3">
+            <h5>{{ form.userTelephoneNumber.label_tag }}</h5>
+            {{ form.userTelephoneNumber }}
+          </div>
+          {% if group == "CLIENT" %}
+          <!-- Company Name -->
+          <div class="form-group mb-3">
+            <h5>{{ form.clientCompanyName.label_tag }}</h5>
+            {{ form.clientCompanyName }}
+          </div>
+
+          <!-- Street -->
+          <div class="form-group mb-3">
+            <h5>{{ form.clientStreet.label_tag }}</h5>
+            {{ form.clientStreet }}
+          </div>
+
+          <!-- Code -->
+          <div class="form-group mb-3">
+            <h5>{{ form.clientCode.label_tag }}</h5>
+            {{ form.clientCode }}
+          </div>
+
+          <!-- City -->
+          <div class="form-group mb-3">
+            <h5>{{ form.clientCity.label_tag }}</h5>
+            {{ form.clientCity }}
+          </div>
+
+          <!-- Bank Number -->
+          <div class="form-group mb-3">
+            <h5>{{ form.clientBankNumber.label_tag }}</h5>
+            {{ form.clientBankNumber }}
+          </div>
+
+          {% endif %}
+          <div class="d-flex justify-content-center">
+            <button class="btn btn-outline-primary">Save changes?</button>
+          </div>
+
+          <div class="text-center">
+            <a class="btn btn-secondary" href="{% url 'change_password' %}"
+              >Change password?</a
+            >
+          </div>
+        </form>
+      </div>
+    </div>
+    {% endblock %}
+  </div>
+</div>
