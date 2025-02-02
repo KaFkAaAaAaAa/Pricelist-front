@@ -167,6 +167,7 @@ def register_view(request):
                 "clientStreet": form.cleaned_data["clientStreet"],
                 "clientCode": form.cleaned_data["clientCode"],
                 "clientCity": form.cleaned_data["clientCity"],
+                "clientCountry": form.cleaned_data["clientCountry"],
                 "clientBankNumber": form.cleaned_data["clientBankNumber"],
             }
             response = requests.post(f"{API_BASE_URL}/auth/register", json=payload)
@@ -211,7 +212,9 @@ def price_list(request):
     for category in items.keys():
         for item in items[category]:
             item["price"] = f"{item['price'] / 100:.2f}"
-    return render(request, "price_list.html", {"items": items})
+    return render(
+        request, "price_list.html", {"items": items, "categories": CATEGORIES["EN"]}
+    )
 
 
 def item_detail(request, item_sku):
@@ -227,7 +230,6 @@ def item_detail(request, item_sku):
     response = requests.get(f"{API_BASE_URL}/items/{item_sku}", headers=headers)
     if response.status_code == 200:
         item = response.json()
-        item["price"] = f"{item['price'] / 100:.2f}"
         images = _list_items(item_sku, FileSystemStorage())
         return render(request, "item_detail.html", {"item": item, "images": images})
     else:
@@ -248,42 +250,40 @@ def profile(request):
         user_admin = False
 
     if request.method == "POST":
-        form = RegisterForm(request.POST)
         err = ""
-        if form.is_valid():
-            payload = {
-                "userFirstName": form.cleaned_data["userFirstName"],
-                "userLastName": form.cleaned_data["userLastName"],
-                "userEmail": form.cleaned_data["userEmail"],
-                "userTelephoneNumber": form.cleaned_data["userTelephoneNumber"],
+        payload = {
+            "userEmail": request.POST["userEmail"],
+            "userFirstName": request.POST["userFirstName"],
+            "userLastName": request.POST["userLastName"],
+            "userTelephoneNumber": request.POST["userTelephoneNumber"],
+        }
+        if not user_admin:
+            client_payload = {
+                "clientCompanyName": request.POST["clientCompanyName"],
+                "clientStreet": request.POST["clientStreet"],
+                "clientCode": request.POST["clientCode"],
+                "clientCity": request.POST["clientCity"],
+                "clientCountry": request.POST["clientCountry"],
+                "clientBankNumber": request.POST["clientBankNumber"],
             }
-            if not user_admin:
-                client_payload = {
-                    "clientCompanyName": form.cleaned_data["clientCompanyName"],
-                    "clientStreet": form.cleaned_data["clientStreet"],
-                    "clientCode": form.cleaned_data["clientCode"],
-                    "clientCity": form.cleaned_data["clientCity"],
-                    "clientBankNumber": form.cleaned_data["clientBankNumber"],
-                }
-                client_response = requests.post(
-                    f"{API_BASE_URL}/client/self/", json=client_payload, headers=headers
-                )
-                if client_response.status_code != 200:
-                    err = "500 Internal Server Error"
-            response = requests.post(
-                f"{API_BASE_URL}/user/self", json=payload, headers=headers
+            client_response = requests.post(
+                f"{API_BASE_URL}/clients/self/", json=client_payload, headers=headers
             )
-            if response.status_code != 200 and not err:
+            if client_response.status_code != 200:
                 err = "500 Internal Server Error"
-            elif not err:
-                msg = "User data changed successfully"
-            # TODO: figure out how to redirect there correctly
-            request.session["token"] = response.json().get("token")
-            response_auth = requests.get(
-                f"{API_BASE_URL}/auth/whoami/",
-                headers={"Authorization": f'Bearer {request.session["token"]}'},
-            )
-            request.session["logged_user"] = response_auth.json().get("currentUser")
+        response = requests.post(
+            f"{API_BASE_URL}/users/self/", json=payload, headers=headers
+        )
+        if response.status_code != 200 and not err:
+            err = "500 Internal Server Error"
+        elif not err:
+            msg = "User data changed successfully"
+        # TODO: figure out how to redirect there correctly
+        response_auth = requests.get(
+            f"{API_BASE_URL}/auth/whoami/",
+            headers={"Authorization": f'Bearer {request.session["token"]}'},
+        )
+        request.session["logged_user"] = response_auth.json().get("currentUser")
 
     # auth here might be problematic only in race condition situation - highly unlikely
     # although current implementation is not the most optimal and might need some clean ups
@@ -298,6 +298,7 @@ def profile(request):
             "clientStreet": logged.get("clientStreet"),
             "clientCode": logged.get("clientCode"),
             "clientCity": logged.get("clientCity"),
+            "clientCountry": logged.get("clientCountry"),
             "clientBankNumber": logged.get("clientBankNumber"),
         }
     else:
@@ -307,8 +308,9 @@ def profile(request):
             "userEmail": logged.get("userEmail"),
             "userTelephoneNumber": logged.get("userTelephoneNumber"),
         }
-    form = RegisterForm(initial=initial)
-    return render(request, "profile.html", {"form": form, "user_admin": user_admin})
+    return render(
+        request, "profile.html", {"initial": initial, "user_admin": user_admin}
+    )
 
 
 # admin views
@@ -344,11 +346,15 @@ def admin_items(request):
 
     response = requests.get(f"{API_BASE_URL}/items/admin/", headers=headers)
     items = response.json() if response.status_code == 200 else []
+    items_dict = {}
+    for category in CATEGORIES.get("EN"):
+        items_dict[category] = []
     for item in items:
         item["itemPrice"] = [
             f"{group_price / 100:.2f}" for group_price in item["itemPrice"]
         ]
-    return render(request, "item_list.html", {"items": items})
+        items_dict[item.get("itemGroup")].append(item)
+    return render(request, "item_list.html", {"items": items_dict})
 
 
 def edit_item(request, item_sku):
@@ -896,6 +902,7 @@ def client_add(request):
                 "clientStreet": form.cleaned_data["clientStreet"],
                 "clientCode": form.cleaned_data["clientCode"],
                 "clientCity": form.cleaned_data["clientCity"],
+                "clientCountry": form.cleaned_data["clientCountry"],
                 "clientBankNumber": form.cleaned_data["clientBankNumber"],
             }
             response = requests.post(f"{API_BASE_URL}/auth/register", json=payload)
@@ -914,6 +921,7 @@ def client_add(request):
 def edit_client(request, client_id):
     token = request.session.get("token")
     auth = _get_auth(token)
+    error = ""
     if not auth or auth["email"] == "anonymousUser":
         request.session.flush()
         return redirect("login")
@@ -936,6 +944,7 @@ def edit_client(request, client_id):
             "clientStreet": request.POST["clientStreet"],
             "clientCode": request.POST["clientCode"],
             "clientCity": request.POST["clientCity"],
+            "clientCountry": request.POST["clientCountry"],
             "clientBankNumber": request.POST["clientBankNumber"],
         }
 
@@ -945,12 +954,7 @@ def edit_client(request, client_id):
         response_client = requests.put(
             f"{API_BASE_URL}/clients/admin/{client_id}", json=payload_client
         )
-
         if response_user.status_code == 200 and response_client.status_code == 200:
-            return redirect("client_list")
-        else:
-            # TODO: user might want to know what went wrong
-            error = "Something went wrong!"
             render(request, "edit_client.html", {"error": error})
 
     client = requests.get(f"{API_BASE_URL}/clients/admin/{client_id}").json()

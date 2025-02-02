@@ -6,8 +6,8 @@
         <tr>
             <th>Image</th>
             <th>SKU</th>
-            <th>Group</th>
             <th>Name</th>
+            <th>Category</th>
             <th class="price">I</th>
             <th class="price">II</th>
             <th class="price">III</th>
@@ -16,7 +16,10 @@
         </tr>
         </thead>
         <tbody>
-        {% for item in items %}
+        {% for category, items_list in items.items %}
+        {% if items_list %}
+        {# <tr><th></th><th colspan="7" class="fw-bold">{{ category }}</th></tr> #}
+        {% for item in items_list %}
             <!-- <tr onclick="window.location.href='/item/{{ item.itemSku }}';" style="cursor: pointer;"> -->
             <tr>
 
@@ -27,17 +30,19 @@
                     <td></td>
                 {% endif %}
                 <td>{{ item.itemSku }}</td>
-                <td>{{ item.itemGroup }}</td>
                 <td>{{ item.itemName.EN }}</td>
+                <td>{{ item.itemGroup }}</td>
                 {% for price in item.itemPrice %}
                 <td class="price">{{ price }} €</td>
                 {% endfor %}
-                <td>
+                <td >
                     <a class="btn btn-primary" href="/admin/items/{{ item.itemSku }}/edit">Edit</a>
                     <a class="btn btn-danger" href="/admin/items/{{ item.itemSku }}/delete"
                 onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
                 </td>
             </tr>
+        {% endfor %}
+        {% endif %}
         {% endfor %}
         <tr>
             <a class="btn btn-primary" href="/admin/items/add">Add new</a>

@@ -62,28 +62,50 @@ class RegisterForm(forms.Form):
         label="Company name:",
         max_length=100,
         widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": "Enter your company name"}
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter your company name",
+            }
         ),
     )
     clientStreet = forms.CharField(
         label="Street:",
         max_length=100,
         widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": "Enter your street"}
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter your street",
+            }
         ),
     )
     clientCode = forms.CharField(
         label="Code:",
         max_length=100,
         widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": "Enter your code"}
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter your code",
+            }
         ),
     )
     clientCity = forms.CharField(
         label="City:",
         max_length=100,
         widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": "Enter your city"}
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter your city",
+            }
+        ),
+    )
+    clientCountry = forms.CharField(
+        label="Country:",
+        max_length=100,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter your country",
+            }
         ),
     )
     clientBankNumber = forms.CharField(

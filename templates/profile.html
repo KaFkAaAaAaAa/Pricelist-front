@@ -11,60 +11,110 @@
       WIP
     </div>
       <div>
-        <form method="POST">
-          {% csrf_token %}
-          <div class="form-group mb-3">
-            <h5>{{ form.userFirstName.label_tag }}</h5>
-            {{ form.userFirstName }}
-          </div>
-
-          <!-- Last Name -->
-          <div class="form-group mb-3">
-            <h5>{{ form.userLastName.label_tag }}</h5>
-            {{ form.userLastName }}
-          </div>
-
-          <!-- Email -->
-          <div class="form-group mb-3">
-            <h5>{{ form.userEmail.label_tag }}</h5>
-            {{ form.userEmail }}
-          </div>
-
-          <!-- Telephone Number -->
-          <div class="form-group mb-3">
-            <h5>{{ form.userTelephoneNumber.label_tag }}</h5>
-            {{ form.userTelephoneNumber }}
-          </div>
+        <form method="post" class="w-50">
+            {% csrf_token %}
+            <div class="mb-3">
+                    <label for="userFirstName" class="form-label h5">First Name</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="userFirstName"
+                            name="userFirstName"
+                            value="{{ initial.userFirstName }}"
+                    />
+            </div>
+            <div class="mb-3">
+                <label for="userLastName" class="form-label h5">Last Name</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="userLastName"
+                        name="userLastName"
+                        value="{{ initial.userLastName }}"
+                />
+            </div>
+            <div class="mb-3">
+                    <label for="userEmail" class="form-label h5">Email</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="userEmail"
+                            name="userEmail"
+                            value="{{ initial.userEmail }}"
+                    />
+            </div>
+            <div class="mb-3">
+                <label for="userTelephoneNumber" class="form-label h5">Telephone number</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="userTelephoneNumber"
+                        name="userTelephoneNumber"
+                        value="{{ initial.userTelephoneNumber }}"
+                />
+            </div>
           {% if group == "CLIENT" %}
-          <!-- Company Name -->
-          <div class="form-group mb-3">
-            <h5>{{ form.clientCompanyName.label_tag }}</h5>
-            {{ form.clientCompanyName }}
-          </div>
-
-          <!-- Street -->
-          <div class="form-group mb-3">
-            <h5>{{ form.clientStreet.label_tag }}</h5>
-            {{ form.clientStreet }}
-          </div>
-
-          <!-- Code -->
-          <div class="form-group mb-3">
-            <h5>{{ form.clientCode.label_tag }}</h5>
-            {{ form.clientCode }}
-          </div>
-
-          <!-- City -->
-          <div class="form-group mb-3">
-            <h5>{{ form.clientCity.label_tag }}</h5>
-            {{ form.clientCity }}
-          </div>
-
-          <!-- Bank Number -->
-          <div class="form-group mb-3">
-            <h5>{{ form.clientBankNumber.label_tag }}</h5>
-            {{ form.clientBankNumber }}
-          </div>
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="clientCompanyName" class="form-label h5">Company Name</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="clientCompanyName"
+                        name="clientCompanyName"
+                        value="{{ initial.clientCompanyName }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="clientStreet" class="form-label h5">Street</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="clientStreet"
+                        name="clientStreet"
+                        value="{{ initial.clientStreet }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="clientCode" class="form-label h5">Code</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="clientCode"
+                        name="clientCode"
+                        value="{{ initial.clientCode }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="clientCity" class="form-label h5">City</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="clientCity"
+                        name="clientCity"
+                        value="{{ initial.clientCity }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="clientCountry" class="form-label h5">Country</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="clientCountry"
+                        name="clientCountry"
+                        value="{{ initial.clientCountry }}"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="clientBankNumber" class="form-label h5">Bank Number</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="clientBankNumber"
+                        name="clientBankNumber"
+                        value="{{ initial.clientBankNumber }}"
+                />
+            </div>
 
           {% endif %}
           <div class="d-flex justify-content-center">

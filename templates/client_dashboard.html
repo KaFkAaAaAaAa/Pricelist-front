@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}Edit Client{% endblock %}
 {% block content %}
-    <h1>Hello <strong>{{ session.currentUser.user.userfirstName}}</strong>!</h1>
+    <h1>Hello <strong>{{ session.logged_user.user.userFirstName}}</strong>!</h1>
     
 {% endblock %}
