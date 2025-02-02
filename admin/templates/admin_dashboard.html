@@ -1,6 +1,6 @@
 {% extends 'base.html' %} {% block title %}Admin Dashboard{% endblock %}
 {% block content %}
-    <h2>Admin Dashboard</h2>
+    <h1>Hello <strong>{{ session.logged_user.userFirstName}}</strong>!</h1>
     <nav class="nav nav-tabs">
         <a class="nav-link" href="/admin/items">Items</a>
         <a class="nav-link" href="/admin/admins">Admins</a>
