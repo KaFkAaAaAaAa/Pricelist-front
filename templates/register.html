@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
-{% block title %}Register{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Register" %}{% endblock %}
 {% block content %}
 <div class="container mt-4 mb-4">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title text-center">Register</h2>
+                    <h2 class="card-title text-center">{% trans "Register" %}</h2>
                 </div>
                 <div class="card-body">
                     <form method="post">
@@ -14,68 +15,68 @@
 
                         <!-- First Name -->
                         <div class="form-group mb-3">
-                            <h5>{{ form.userFirstName.label_tag }}</h5>
+                            <h5>{% trans form.userFirstName.label_tag %}</h5>
                             {{ form.userFirstName }}
                         </div>
 
                         <!-- Last Name -->
                         <div class="form-group mb-3">
-                            <h5>{{ form.userLastName.label_tag }}</h5>
+                            <h5>{% trans form.userLastName.label_tag %}</h5>
                             {{ form.userLastName }}
                         </div>
 
                         <!-- Email -->
                         <div class="form-group mb-3">
-                            <h5>{{ form.userEmail.label_tag }}</h5>
+                            <h5>{% trans form.userEmail.label_tag %}</h5>
                             {{ form.userEmail }}
                         </div>
 
                         <!-- Telephone Number -->
                         <div class="form-group mb-3">
-                            <h5>{{ form.userTelephoneNumber.label_tag }}</h5>
+                            <h5>{% trans form.userTelephoneNumber.label_tag %}</h5>
                             {{ form.userTelephoneNumber }}
                         </div>
 
                         <!-- Company Name -->
                         <div class="form-group mb-3">
-                            <h5>{{ form.clientCompanyName.label_tag }}</h5>
+                            <h5>{% trans form.clientCompanyName.label_tag %}</h5>
                             {{ form.clientCompanyName }}
                         </div>
 
                         <!-- Street -->
                         <div class="form-group mb-3">
-                            <h5>{{ form.clientStreet.label_tag }}</h5>
+                            <h5>{% trans form.clientStreet.label_tag %}</h5>
                             {{ form.clientStreet }}
                         </div>
 
                         <!-- Code -->
                         <div class="form-group mb-3">
-                            <h5>{{ form.clientCode.label_tag }}</h5>
+                            <h5>{% trans form.clientCode.label_tag %}</h5>
                             {{ form.clientCode }}
                         </div>
 
                         <!-- City -->
                         <div class="form-group mb-3">
-                            <h5>{{ form.clientCity.label_tag }}</h5>
+                            <h5>{% trans form.clientCity.label_tag %}</h5>
                             {{ form.clientCity }}
                         </div>
 
                         <!-- Country -->
                         <div class="form-group mb-3">
-                            <h5>{{ form.clientCountry.label_tag }}</h5>
+                            <h5>{% trans form.clientCountry.label_tag %}</h5>
                             {{ form.clientCountry }}
                         </div>
 
                         <!-- Bank Number -->
                         <div class="form-group mb-3">
-                            <h5>{{ form.clientBankNumber.label_tag }}</h5>
+                            <h5>{% trans form.clientBankNumber.label_tag %}</h5>
                             {{ form.clientBankNumber }}
                         </div>
 
                         <!-- Buttons -->
                         <div class="text-center">
-                            <a class="btn btn-secondary" href="{% url 'login' %}">Back</a>
-                            <button class="btn btn-primary">Register</button>
+                            <a class="btn btn-secondary" href="{% url 'login' %}">{% trans "Back" %}</a>
+                            <button class="btn btn-primary">{% trans "Register" %}</button>
                         </div>
                     </form>
                     {% if error %}

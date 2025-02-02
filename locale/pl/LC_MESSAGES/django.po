@@ -1,0 +1,182 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-02-02 23:47+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && "
+"(n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && "
+"n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: .\Pricelist\forms.py:24
+msgid "First Name:"
+msgstr "Imię:"
+
+#: .\Pricelist\forms.py:29
+msgid "Enter your first name"
+msgstr "Wprowadź swoje imię"
+
+#: .\Pricelist\forms.py:34
+msgid "Last Name:"
+msgstr "Nazwisko:"
+
+#: .\Pricelist\forms.py:39
+msgid "Enter your last name"
+msgstr "Wprowadź swoje nazwisko"
+
+#: .\Pricelist\forms.py:44
+msgid "Email:"
+msgstr "Email:"
+
+#: .\Pricelist\forms.py:47
+msgid "Enter your email"
+msgstr "Wprowadź swój email"
+
+#: .\Pricelist\forms.py:51
+msgid "Telephone number:"
+msgstr "Numer telefonu:"
+
+#: .\Pricelist\forms.py:56
+msgid "Enter your telephone number"
+msgstr "wprowadź swój numer telefonu"
+
+#: .\Pricelist\forms.py:61
+msgid "Company name:"
+msgstr "Nazwa firmy:"
+
+#: .\Pricelist\forms.py:66
+msgid "Enter your company name"
+msgstr "Wprowadź nazwę swojej firmy"
+
+#: .\Pricelist\forms.py:71
+msgid "Street:"
+msgstr "Ulica:"
+
+#: .\Pricelist\forms.py:76
+msgid "Enter your street"
+msgstr "Wprowadź swoją ulicę"
+
+#: .\Pricelist\forms.py:81
+msgid "Code:"
+msgstr "Kod:"
+
+#: .\Pricelist\forms.py:86
+msgid "Enter your code"
+msgstr "Wprowadź swój kod"
+
+#: .\Pricelist\forms.py:91
+msgid "City:"
+msgstr "Miasto:"
+
+#: .\Pricelist\forms.py:96
+msgid "Enter your city"
+msgstr "Wprowadź swoje miasto"
+
+#: .\Pricelist\forms.py:101
+msgid "Country:"
+msgstr "Kraj:"
+
+#: .\Pricelist\forms.py:106
+msgid "Enter your country"
+msgstr "Wprowadź swój kraj"
+
+#: .\Pricelist\forms.py:111
+msgid "Bank account number:"
+msgstr "Numer konta bankowego:"
+
+#: .\Pricelist\forms.py:116
+msgid "Enter your bank account number"
+msgstr "Wprowadź numer swojego konta bankowego"
+
+#: .\Pricelist\settings.py:134
+msgid "English"
+msgstr "Angielski"
+
+#: .\Pricelist\settings.py:135
+msgid "Polski"
+msgstr "Polski"
+
+#: .\templates\login.html:3 .\templates\login.html:10 .\templates\login.html:26
+msgid "Login"
+msgstr "Zaloguj się"
+
+#: .\templates\login.html:16
+msgid "Email"
+msgstr "Email"
+
+#: .\templates\login.html:21
+msgid "Password"
+msgstr "Hasło"
+
+#: .\templates\login.html:30
+msgid "No account? Register"
+msgstr "Nie masz konta? Zarejestruj się"
+
+#: .\templates\register.html:3 .\templates\register.html:10
+#: .\templates\register.html:79
+msgid "Register"
+msgstr "Zarejestruj się"
+
+#: .\templates\register.html:78
+msgid "Back"
+msgstr "Wstecz"
+
+msgid "Price List"
+msgstr "Cennik"
+
+msgid "Hello"
+msgstr "Witaj"
+
+msgid "Item Image"
+msgstr "Obrazek przedmiotu"
+
+msgid "You do not have access to that page"
+msgstr "Nie masz dostępu do tej strony"
+
+msgid "Logout"
+msgstr "Wyloguj się"
+
+msgid "Item Details"
+msgstr "Szczegóły przedmiotu"
+
+msgid "Item Thumbnail"
+msgstr "Miniatura przedmiotu"
+
+msgid "SKU"
+msgstr "SKU"
+
+msgid "Price"
+msgstr "Cena"
+
+msgid "Gallery"
+msgstr "Galeria"
+
+msgid "Previous"
+msgstr "Poprzedni"
+
+msgid "Next"
+msgstr "Następny"
+
+msgid "Full Size Image"
+msgstr "Obraz w pełnym rozmiarze"
+
+msgid "Close"
+msgstr "Zamknij"
+
+msgid "Description"
+msgstr "Opis"
+
+msgid "Back to Price List"
+msgstr "Powrót do cennika"

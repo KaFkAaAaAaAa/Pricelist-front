@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
-{% block title %}Price List{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Price List" %}{% endblock %}
 
 {% block content %}
 <!-- TODO: cleanup align-middles ;< -->
     {# <table class="table table-bordered table-striped mt-2 align-middle" style="font-family: Calibri, sans-serif"> #}
-    <h1>Hello <strong>{{ session.logged_user.user.userFirstName}}</strong>!</h1>
+    <h1>{% trans "Hello" %} <strong>{{ session.logged_user.user.userFirstName}}</strong>!</h1>
     <table class="table table-bordered mt-3 align-middle" style="font-family: Calibri, sans-serif">
     <tbody>
         {% for sorting_category in categories %}
@@ -18,7 +19,7 @@
                         {% for item in item_list %}
                             <tr class="colored-row d-flex align-middle" onclick="window.location.href='/item/{{ item.sku }}/';" style="cursor: pointer; font-size: 19px">
                                 {% if item.path %}
-                                    <td class="text-center px-0 flex-shrink-0 align-items-middle" style="width: 100px;"><img src="{{ item.path }}" alt="Item Image" class="img" style="width: 80px; height: auto"/></td>
+                                    <td class="text-center px-0 flex-shrink-0 align-items-middle" style="width: 100px;"><img src="{{ item.path }}" alt="{% trans "Item Image" %}" class="img" style="width: 80px; height: auto"/></td>
                                 {% else %}
                                     <td class="flex-shrink-0 align-items-middle" style="width: 100px;"></td>
                                 {% endif %}
