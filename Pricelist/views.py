@@ -388,6 +388,9 @@ def edit_item(request, item_sku):
                 for i in range(1, 5)
             ],
         }
+        if not re.match(r"^\w\w\d\d$", item_sku):
+            return render(request, "edit_item.html", {"error": "Wrong sku format"})
+
         # not used??
         if request.POST.get("deleteImg"):
             # print(request.POST.get('deleteImg'))
@@ -587,6 +590,17 @@ def add_item(request):
         # image = request.FILES['image']
         # fs = FileSystemStorage()
         item_sku = request.POST.get("itemSku")
+        if not re.match(r"^\w\w\d\d$", item_sku):
+            return render(
+                request,
+                "add_item.html",
+                {
+                    "range": range(1, 5),
+                    "categories": CATEGORIES["EN"],
+                    "err": "Wrong sku format",
+                },
+            )
+
         # filename = fs.save(f"{item_sku}_{image.name}", image)
         # uploaded_url = fs.url(filename)
         prices = [request.POST.get(f"itemPrice-{i}") for i in range(1, 5)]

@@ -3,6 +3,9 @@
 {% block content %}
 <div class="d-flex justify-content-center align-items-center flex-column mb-5">
     <h2>{{item.itemSku}} {{item.name.EN}}</h2>
+      {% if error %}
+      <div class="alert alert-danger mt-3">{{ error }}</div>
+      {% endif %} {% if msg %}
     {% if item %}
         <form method="post" class="w-50">
             {% csrf_token %}
