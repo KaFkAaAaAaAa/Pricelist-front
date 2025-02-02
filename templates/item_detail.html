@@ -18,7 +18,7 @@
         </dl>
 
         <h3 class="mb-3 text-center">Gallery</h3>
-        <div id="galleryCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div id="galleryCarousel" class="carousel slide">
             <div class="carousel-inner">
                 {% for image in images %}
                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
@@ -44,7 +44,7 @@
                 </a>
             </div>
 
-            <div class="modal fade" id="imageModal{{ forloop.counter }}" tabindex="-1" aria-labelledby="imageModalLabel{{ forloop.counter }}" aria-hidden="true">
+            <div class="modal fade" id="imageModal">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-body text-center">

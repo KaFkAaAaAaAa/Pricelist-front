@@ -1,6 +1,6 @@
 {% load static %}
 {% block navbar %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: white">
     <div class="container-fluid">
         <a class="navbar-brand ms-2" href="/">
             <img src="/images/alku-logo-2013-10-17.jpg" alt="ALKU-GMBH" class="img" />
@@ -11,9 +11,11 @@
 {#                    <li class="nav-item">#}
 {#                        <a class="nav-link" href="{% url 'client_dashboard' %}">Client dashboard</a>#}
 {#                    </li>#}
+                    {% if not session.logged_user.user %}
                     <li class="nav-item">
                         <a class="nav-link" href="/admin/dashboard/">Admin Dashboard</a>
                     </li>
+                        {% endif %}
                     <li>
                         <a class="nav-link" href="/profile/">{{ request.session.logged_user.userEmail }}</a>
                     </li>
