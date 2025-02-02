@@ -597,7 +597,7 @@ def add_item(request):
                 {
                     "range": range(1, 5),
                     "categories": CATEGORIES["EN"],
-                    "err": "Wrong sku format",
+                    "error": "Wrong sku format",
                 },
             )
 
@@ -636,7 +636,15 @@ def add_item(request):
         if response.status_code == 200:
             return redirect("upload_image", item_sku)
         else:
-            return redirect("item_list")
+            return render(
+                request,
+                "add_item.html",
+                {
+                    "range": range(1, 5),
+                    "categories": CATEGORIES["EN"],
+                    "error": "API error",
+                },
+            )
     else:
         return render(
             request,
