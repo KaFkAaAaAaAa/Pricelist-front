@@ -7,7 +7,8 @@ from django.shortcuts import render, redirect
 from .forms import LoginForm, PasswordResetForm, RegisterForm, NewAdminForm
 from django.core.files.storage import FileSystemStorage
 import re
-
+from django.utils.translation import gettext as _
+from django.utils.translation import get_language
 from math import floor
 
 API_BASE_URL = "http://127.0.0.1:8888"

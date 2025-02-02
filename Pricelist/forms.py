@@ -1,120 +1,120 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 
 class LoginForm(forms.Form):
     email = forms.EmailField(
-        label="Email",
+        label=_("Email"),
         max_length=100,
         widget=forms.EmailInput(
-            attrs={"class": "form-control", "placeholder": "Email"}
+            attrs={"class": "form-control", "placeholder": _("Email")}
         ),
     )
     password = forms.CharField(
-        label="Password",
+        label=_("Password"),
         max_length=100,
         widget=forms.PasswordInput(
-            attrs={"class": "form-control", "placeholder": "Password"}
+            attrs={"class": "form-control", "placeholder": _("Password")}
         ),
     )
 
 
 class RegisterForm(forms.Form):
     # TODO: remove your when used in add client
-
     userFirstName = forms.CharField(
-        label="First Name:",
+        label=_("First Name:"),
         max_length=30,
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Enter your first name",
+                "placeholder": _("Enter your first name"),
             }
         ),
     )
     userLastName = forms.CharField(
-        label="Last Name:",
+        label=_("Last Name:"),
         max_length=30,
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Enter your last name",
+                "placeholder": _("Enter your last name"),
             }
         ),
     )
     userEmail = forms.EmailField(
-        label="Email:",
+        label=_("Email:"),
         max_length=100,
         widget=forms.EmailInput(
-            attrs={"class": "form-control", "placeholder": "Enter your email"}
+            attrs={"class": "form-control", "placeholder": _("Enter your email")}
         ),
     )
     userTelephoneNumber = forms.CharField(
-        label="Telephone number:",
+        label=_("Telephone number:"),
         max_length=15,
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Enter your telephone number",
+                "placeholder": _("Enter your telephone number"),
             }
         ),
     )
     clientCompanyName = forms.CharField(
-        label="Company name:",
+        label=_("Company name:"),
         max_length=100,
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Enter your company name",
+                "placeholder": _("Enter your company name"),
             }
         ),
     )
     clientStreet = forms.CharField(
-        label="Street:",
+        label=_("Street:"),
         max_length=100,
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Enter your street",
+                "placeholder": _("Enter your street"),
             }
         ),
     )
     clientCode = forms.CharField(
-        label="Code:",
+        label=_("Code:"),
         max_length=100,
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Enter your code",
+                "placeholder": _("Enter your code"),
             }
         ),
     )
     clientCity = forms.CharField(
-        label="City:",
+        label=_("City:"),
         max_length=100,
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Enter your city",
+                "placeholder": _("Enter your city"),
             }
         ),
     )
     clientCountry = forms.CharField(
-        label="Country:",
+        label=_("Country:"),
         max_length=100,
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Enter your country",
+                "placeholder": _("Enter your country"),
             }
         ),
     )
     clientBankNumber = forms.CharField(
-        label="Bank account number:",
+        label=_("Bank account number:"),
         max_length=50,
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Enter your bank account number",
+                "placeholder": _("Enter your bank account number"),
             }
         ),
     )

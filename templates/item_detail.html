@@ -1,72 +1,80 @@
 {% extends 'base.html' %}
-{% block title %}Item Details{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Item Details" %}{% endblock %}
 {% block content %}
-<div class="container my-5">
-    <div class="card shadow-lg p-4" style="max-width: 900px; margin: 0 auto;">
-        <div class="d-flex align-items-center mb-4">
-            <div class="me-3">
-                <img src="/images/{{ item.sku }}.M.jpg" alt="Item Thumbnail" class="img-thumbnail" style="width: 120px; height: auto; border-radius: 10px;" />
-            </div>
-            <h2 class="mb-0">{{ item.name }}</h2>
-        </div>
-
-        <dl class="row mb-4">
-            <dt class="col-sm-3 fw-bold">SKU</dt>
-            <dd class="col-sm-9">{{ item.sku }}</dd>
-            <dt class="col-sm-3 fw-bold">Price</dt>
-            <dd class="col-sm-9">{{ item.price }} €</dd>
-        </dl>
-
-        <h3 class="mb-3 text-center">Gallery</h3>
-        <div id="galleryCarousel" class="carousel slide">
-            <div class="carousel-inner">
-                {% for image in images %}
-                <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                    <img src="{{ image }}" alt="Gallery Image" class="d-block w-100 img-thumbnail" style="height: 300px; object-fit: cover;" />
+    <div class="container my-5">
+        <div class="card shadow-lg p-4" style="max-width: 900px; margin: 0 auto;">
+            <div class="d-flex align-items-center mb-4">
+                <div class="me-3">
+                    <img src="/images/{{ item.sku }}.M.jpg" alt="{% trans "Item Thumbnail" %}" class="img-thumbnail"
+                         style="width: 120px; height: auto; border-radius: 10px;"/>
                 </div>
-                {% endfor %}
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-        </div>
-
-        <div class="row g-3 mt-4 justify-content-center">
-            {% for image in images %}
-            <div class="col-md-3 col-sm-6 text-center">
-                <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal{{ forloop.counter }}">
-                    <img src="{{ image }}" alt="Gallery Image" class="img-thumbnail" style="height: 200px; object-fit: cover;" />
-                </a>
+                <h2 class="mb-0">{{ item.name }}</h2>
             </div>
 
-            <div class="modal fade" id="imageModal">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-body text-center">
-                            <img src="{{ image }}" alt="Full Size Image" class="img-fluid" />
+            <dl class="row mb-4">
+                <dt class="col-sm-3 fw-bold">{% trans "SKU" %}</dt>
+                <dd class="col-sm-9">{{ item.sku }}</dd>
+                <dt class="col-sm-3 fw-bold">{% trans "Price" %}</dt>
+                <dd class="col-sm-9">{{ item.price }} €</dd>
+            </dl>
+
+            <h3 class="mb-3 text-center">{% trans "Gallery" %}</h3>
+            <div id="galleryCarousel" class="carousel slide">
+                <div class="carousel-inner">
+                    {% for image in images %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ image }}" alt="{% trans "Gallery Image" %}" class="d-block w-100 img-thumbnail"
+                                 style="height: 300px; object-fit: cover;"/>
                         </div>
-                        <div class="modal-footer justify-content-center">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel"
+                        data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">{% trans "Previous" %}</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel"
+                        data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">{% trans "Next" %}</span>
+                </button>
+            </div>
+
+            <div class="row g-3 mt-4 justify-content-center">
+                {% for image in images %}
+                    <div class="col-md-3 col-sm-6 text-center">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal{{ forloop.counter }}">
+                            <img src="{{ image }}" alt="{% trans "Gallery Image" %}" class="img-thumbnail"
+                                 style="height: 200px; object-fit: cover;"/>
+                        </a>
+                    </div>
+
+                    <div class="modal fade" id="imageModal{{ forloop.counter }}">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-body text-center">
+                                    <img src="{{ image }}" alt="{% trans "Full Size Image" %}" class="img-thumbnail"
+                                         style="width: 100%; height: auto;"/>
+                                </div>
+                                <div class="modal-footer justify-content-center">
+                                    <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">{% trans "Close" %}</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
 
-        <div class="mt-4">
-            <h4>Description</h4>
-            <p>{{ item.description }}</p>
-        </div>
+            <div class="mt-4">
+                <h4>{% trans "Description" %}</h4>
+                <p>{{ item.description }}</p>
+            </div>
 
-        <div class="mt-4 text-center">
-            <a class="btn btn-secondary" href="/">Back to Price List</a>
+            <div class="mt-4 text-center">
+                <a class="btn btn-secondary" href="/">{% trans "Back to Price List" %}</a>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

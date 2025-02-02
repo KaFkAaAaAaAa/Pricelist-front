@@ -22,6 +22,7 @@ from django.conf.urls.static import static
 from django.urls import path, re_path
 from Pricelist import views
 from admin import admin_views
+from django.conf.urls.i18n import set_language
 
 
 urlpatterns = (
@@ -103,6 +104,7 @@ urlpatterns = (
             admin_views.edit_admin,
             name="edit_admin",
         ),
+        path('set_language/', set_language, name='set_language'),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + static(settings.STATIC_URL, document_root=settings.BASE_DIR / "static")

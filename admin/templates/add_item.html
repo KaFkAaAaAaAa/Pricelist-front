@@ -3,9 +3,9 @@
 {% block content %}
     <div class="d-flex justify-content-center align-items-center flex-column mb-5">
         <h1>Add Item</h1>
-          {% if error %}
-          <div class="alert alert-danger mt-3">{{ error }}</div>
-          {% endif %}
+        {% if error %}
+            <div class="alert alert-danger mt-3">{{ error }}</div>
+        {% endif %}
         <form method="post" class="w-50">
             {% csrf_token %}
             <div class="my-3">
@@ -127,53 +127,43 @@
             <div class="mb-3"><h5>Description:</h5></div>
             <div class="mb-3">
                 <label for="EN-d" class="form-label">EN</label>
-                <input
-                        type="text"
+                <textarea
                         class="form-control"
                         id="EN-d"
                         name="EN-d"
-                        value=""
-                />
+                        rows="3">{{ item.itemDescription.EN }}</textarea>
             </div>
             <div class="mb-3">
                 <label for="DE-d" class="form-label">DE</label>
-                <input
-                        type="text"
+                <textarea
                         class="form-control"
                         id="DE-d"
                         name="DE-d"
-                        value=""
-                />
+                        rows="3">{{ item.itemDescription.DE }}</textarea>
             </div>
             <div class="mb-3">
                 <label for="IT-d" class="form-label">IT</label>
-                <input
-                        type="text"
+                <textarea
                         class="form-control"
                         id="IT-d"
                         name="IT-d"
-                        value=""
-                />
+                        rows="3">{{ item.itemDescription.IT }}</textarea>
             </div>
             <div class="mb-3">
                 <label for="FR-d" class="form-label">FR</label>
-                <input
-                        type="text"
+                <textarea
                         class="form-control"
                         id="FR-d"
                         name="FR-d"
-                        value=""
-                />
+                        rows="3">{{ item.itemDescription.FR }}</textarea>
             </div>
             <div class="mb-3">
                 <label for="PL-d" class="form-label">PL</label>
-                <input
-                        type="text"
+                <textarea
                         class="form-control"
                         id="PL-d"
                         name="PL-d"
-                        value=""
-                />
+                        rows="3">{{ item.itemDescription.PL }}</textarea>
             </div>
             <div class="d-flex mt-2">
                 <a class="btn btn-outline-secondary" href="/admin/items">Back to List</a>
@@ -181,4 +171,19 @@
             </div>
         </form>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const price1 = document.getElementById('itemPrice-1');
+            const price2 = document.getElementById('itemPrice-2');
+            const price3 = document.getElementById('itemPrice-3');
+            const price4 = document.getElementById('itemPrice-4');
+
+            price1.addEventListener('input', function () {
+                price2.value = price1.value;
+                price3.value = price1.value;
+                price4.value = price1.value;
+            });
+        });
+    </script>
 {% endblock %}
+
