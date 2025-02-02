@@ -4,14 +4,15 @@
 {% block content %}
 <!-- TODO: cleanup align-middles ;< -->
     {# <table class="table table-bordered table-striped mt-2 align-middle" style="font-family: Calibri, sans-serif"> #}
-    <table class="table table-bordered mt-2 align-middle" style="font-family: Calibri, sans-serif">
+    <h1>Hello <strong>{{ session.logged_user.user.userFirstName}}</strong>!</h1>
+    <table class="table table-bordered mt-3 align-middle" style="font-family: Calibri, sans-serif">
     <tbody>
         {% for sorting_category in categories %}
             {% for category, item_list in items.items %}
                 {% if category == sorting_category %}
                     {% if item_list %}
                     <tr class="d-flex">
-                        <th class="flex-shrink-0" style="background-color: #9E0F06; width: 100px; border-right: 0px solid;"></th>
+                        <th class="flex-shrink-0" style="background-color: #9E0F06; width: 100px; border-right: 0 solid;"></th>
                         <th colspan="4" class="text-left fs-4 py-2 text-light fw-semibold text-uppercase align-middle flex-fill" style="background-color: #9E0F06; border-left: 0px solid;">{{ category }}</th>
                     </tr>
                         {% for item in item_list %}
@@ -22,11 +23,11 @@
                                     <td class="flex-shrink-0 align-items-middle" style="width: 100px;"></td>
                                 {% endif %}
                                 {% if forloop.counter|divisibleby:2 %}
-                                <td class="text-center flex-shrink-0 align-items-middle bg-light" style="font-size: 17px">{{ item.sku }}</td>
+                                <td class="text-center flex-shrink-0 align-items-middle bg-light" style="font-size: 17px; width: 80px">{{ item.sku }}</td>
                                 <td class="flex-fill align-items-middle bg-light" style="font-size: 17px">{{ item.name }}</td>
                                 <td class="text-end fw-semibold flex-shrink-0 align-items-middle bg-light" style="font-size: 20px; width: 120px">{{ item.price }} €</td>
                                 {% else %}
-                                <td class="text-center flex-shrink-0 align-items-middle" style="font-size: 17px">{{ item.sku }}</td>
+                                <td class="text-center flex-shrink-0 align-items-middle" style="font-size: 17px; width: 80px">{{ item.sku }}</td>
                                 <td class="flex-fill align-items-middle" style="font-size: 17px">{{ item.name }}</td>
                                 <td class="text-end fw-semibold flex-shrink-0 align-items-middle" style="font-size: 20px; width: 120px">{{ item.price }} €</td>
                                 {% endif %}
