@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-02 23:47+0100\n"
+"POT-Creation-Date: 2025-02-03 15:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,83 +20,92 @@ msgstr ""
 "(n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && "
 "n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
-#: .\Pricelist\forms.py:24
+#: .\Pricelist\forms.py:7 .\Pricelist\forms.py:10 .\templates\login.html:16
+#: .\templates\profile.html:35
+msgid "Email"
+msgstr "Email"
+
+#: .\Pricelist\forms.py:14 .\Pricelist\forms.py:17 .\templates\login.html:21
+msgid "Password"
+msgstr "Hasło"
+
+#: .\Pricelist\forms.py:25
 msgid "First Name:"
 msgstr "Imię:"
 
-#: .\Pricelist\forms.py:29
+#: .\Pricelist\forms.py:30
 msgid "Enter your first name"
 msgstr "Wprowadź swoje imię"
 
-#: .\Pricelist\forms.py:34
+#: .\Pricelist\forms.py:35
 msgid "Last Name:"
 msgstr "Nazwisko:"
 
-#: .\Pricelist\forms.py:39
+#: .\Pricelist\forms.py:40
 msgid "Enter your last name"
 msgstr "Wprowadź swoje nazwisko"
 
-#: .\Pricelist\forms.py:44
+#: .\Pricelist\forms.py:45
 msgid "Email:"
 msgstr "Email:"
 
-#: .\Pricelist\forms.py:47
+#: .\Pricelist\forms.py:48
 msgid "Enter your email"
 msgstr "Wprowadź swój email"
 
-#: .\Pricelist\forms.py:51
+#: .\Pricelist\forms.py:52
 msgid "Telephone number:"
 msgstr "Numer telefonu:"
 
-#: .\Pricelist\forms.py:56
+#: .\Pricelist\forms.py:57
 msgid "Enter your telephone number"
 msgstr "wprowadź swój numer telefonu"
 
-#: .\Pricelist\forms.py:61
+#: .\Pricelist\forms.py:62
 msgid "Company name:"
 msgstr "Nazwa firmy:"
 
-#: .\Pricelist\forms.py:66
+#: .\Pricelist\forms.py:67
 msgid "Enter your company name"
 msgstr "Wprowadź nazwę swojej firmy"
 
-#: .\Pricelist\forms.py:71
+#: .\Pricelist\forms.py:72
 msgid "Street:"
 msgstr "Ulica:"
 
-#: .\Pricelist\forms.py:76
+#: .\Pricelist\forms.py:77
 msgid "Enter your street"
 msgstr "Wprowadź swoją ulicę"
 
-#: .\Pricelist\forms.py:81
+#: .\Pricelist\forms.py:82
 msgid "Code:"
 msgstr "Kod:"
 
-#: .\Pricelist\forms.py:86
+#: .\Pricelist\forms.py:87
 msgid "Enter your code"
 msgstr "Wprowadź swój kod"
 
-#: .\Pricelist\forms.py:91
+#: .\Pricelist\forms.py:92
 msgid "City:"
 msgstr "Miasto:"
 
-#: .\Pricelist\forms.py:96
+#: .\Pricelist\forms.py:97
 msgid "Enter your city"
 msgstr "Wprowadź swoje miasto"
 
-#: .\Pricelist\forms.py:101
+#: .\Pricelist\forms.py:102
 msgid "Country:"
 msgstr "Kraj:"
 
-#: .\Pricelist\forms.py:106
+#: .\Pricelist\forms.py:107
 msgid "Enter your country"
 msgstr "Wprowadź swój kraj"
 
-#: .\Pricelist\forms.py:111
+#: .\Pricelist\forms.py:112
 msgid "Bank account number:"
 msgstr "Numer konta bankowego:"
 
-#: .\Pricelist\forms.py:116
+#: .\Pricelist\forms.py:117
 msgid "Enter your bank account number"
 msgstr "Wprowadź numer swojego konta bankowego"
 
@@ -108,21 +117,131 @@ msgstr "Angielski"
 msgid "Polski"
 msgstr "Polski"
 
+#: .\templates\item_detail.html:3
+msgid "Item Details"
+msgstr "Szczegóły przedmiotu"
+
+#: .\templates\item_detail.html:9
+msgid "Item Thumbnail"
+msgstr "Miniatura przedmiotu"
+
+#: .\templates\item_detail.html:16
+msgid "SKU"
+msgstr "SKU"
+
+#: .\templates\item_detail.html:18
+msgid "Price"
+msgstr "Cena"
+
+#: .\templates\item_detail.html:22
+msgid "Gallery"
+msgstr "Galeria"
+
+#: .\templates\item_detail.html:27 .\templates\item_detail.html:48
+#, fuzzy
+#| msgid "Gallery"
+msgid "Gallery Image"
+msgstr "Galeria"
+
+#: .\templates\item_detail.html:35
+msgid "Previous"
+msgstr "Poprzedni"
+
+#: .\templates\item_detail.html:40
+msgid "Next"
+msgstr "Następny"
+
+#: .\templates\item_detail.html:57
+msgid "Full Size Image"
+msgstr "Obraz w pełnym rozmiarze"
+
+#: .\templates\item_detail.html:62
+msgid "Close"
+msgstr "Zamknij"
+
+#: .\templates\item_detail.html:71
+msgid "Description"
+msgstr "Opis"
+
+#: .\templates\item_detail.html:76
+msgid "Back to Price List"
+msgstr "Powrót do cennika"
+
 #: .\templates\login.html:3 .\templates\login.html:10 .\templates\login.html:26
 msgid "Login"
 msgstr "Zaloguj się"
 
-#: .\templates\login.html:16
-msgid "Email"
-msgstr "Email"
-
-#: .\templates\login.html:21
-msgid "Password"
-msgstr "Hasło"
-
 #: .\templates\login.html:30
 msgid "No account? Register"
 msgstr "Nie masz konta? Zarejestruj się"
+
+#: .\templates\navbar.html:33
+msgid "Logout"
+msgstr "Wyloguj się"
+
+#: .\templates\price_list.html:3
+msgid "Price List"
+msgstr "Cennik"
+
+#: .\templates\price_list.html:8
+msgid "Hello"
+msgstr "Witaj"
+
+#: .\templates\price_list.html:22
+msgid "Item Image"
+msgstr "Obrazek przedmiotu"
+
+#: .\templates\profile.html:3
+msgid "Profile"
+msgstr "Profil"
+
+#: .\templates\profile.html:8
+msgid "Temporary Profile Page"
+msgstr "Tymczasowa strona profilu"
+
+#: .\templates\profile.html:15
+msgid "First Name"
+msgstr "Imię"
+
+#: .\templates\profile.html:25
+msgid "Last Name"
+msgstr "Nazwisko"
+
+#: .\templates\profile.html:45
+msgid "Telephone number"
+msgstr "Numer telefonu"
+
+#: .\templates\profile.html:57
+msgid "Company Name"
+msgstr "Nazwa firmy"
+
+#: .\templates\profile.html:67
+msgid "Street"
+msgstr "Ulica"
+
+#: .\templates\profile.html:77
+msgid "Code"
+msgstr "Kod"
+
+#: .\templates\profile.html:87
+msgid "City"
+msgstr "Miasto"
+
+#: .\templates\profile.html:97
+msgid "Country"
+msgstr "Kraj"
+
+#: .\templates\profile.html:107
+msgid "Bank Number"
+msgstr "Numer konta bankowego"
+
+#: .\templates\profile.html:119
+msgid "Save changes"
+msgstr "Zapisz zmiany"
+
+#: .\templates\profile.html:124
+msgid "Change password"
+msgstr "Zmień hasło"
 
 #: .\templates\register.html:3 .\templates\register.html:10
 #: .\templates\register.html:79
@@ -133,53 +252,8 @@ msgstr "Zarejestruj się"
 msgid "Back"
 msgstr "Wstecz"
 
-msgid "Price List"
-msgstr "Cennik"
-
-msgid "Hello"
-msgstr "Witaj"
-
-msgid "Item Image"
-msgstr "Obrazek przedmiotu"
-
-msgid "You do not have access to that page"
-msgstr "Nie masz dostępu do tej strony"
-
-msgid "Logout"
-msgstr "Wyloguj się"
-
-msgid "Item Details"
-msgstr "Szczegóły przedmiotu"
-
-msgid "Item Thumbnail"
-msgstr "Miniatura przedmiotu"
-
-msgid "SKU"
-msgstr "SKU"
-
-msgid "Price"
-msgstr "Cena"
-
-msgid "Gallery"
-msgstr "Galeria"
-
-msgid "Previous"
-msgstr "Poprzedni"
-
-msgid "Next"
-msgstr "Następny"
-
-msgid "Full Size Image"
-msgstr "Obraz w pełnym rozmiarze"
-
-msgid "Close"
-msgstr "Zamknij"
-
-msgid "Description"
-msgstr "Opis"
-
-msgid "Back to Price List"
-msgstr "Powrót do cennika"
+#~ msgid "You do not have access to that page"
+#~ msgstr "Nie masz dostępu do tej strony"
 
 #: ./templates/profile.html
 
@@ -218,3 +292,4 @@ msgstr "Zapisz zmiany"
 
 msgid "Change password"
 msgstr "Zmień hasło"
+
