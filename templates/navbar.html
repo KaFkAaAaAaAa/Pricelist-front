@@ -20,7 +20,7 @@
                         {#                    <li class="nav-item">#}
                         {#                        <a class="nav-link" href="{% url 'client_dashboard' %}">Client dashboard</a>#}
                         {#                    </li>#}
-                        {% if not session.logged_user.user %}
+                        {% if not request.session.logged_user.user %}
                             <li class="nav-item">
                                 <a class="nav-link" href="/admin/dashboard/">Admin Dashboard</a>
                             </li>
