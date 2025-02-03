@@ -5,7 +5,7 @@
 
     <div class="container d-flex justify-content-center">
         <div class="w-50">
-            <h2 class="text-center">{% trans "Temporary Profile Page" %}</h2>
+            <h2 class="text-center">{% trans "Profile" %}</h2>
             <form method="post">
                 {% csrf_token %}
                 <div class="mb-3">
@@ -49,14 +49,6 @@
                     />
                 </div>
                 {% if request.session.logged_user.user %}
-    <div class="container">
-        <div>
-            <h2>Profile</h2>
-        </div>
-        <div>
-            <div>
-                <form method="post" class="w-50">
-                    {% csrf_token %}
                     <div class="mb-3">
                         <label for="clientCompanyName" class="form-label h5">{% trans "Company Name" %}</label>
                         <input

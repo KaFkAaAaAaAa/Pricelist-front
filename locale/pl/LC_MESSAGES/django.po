@@ -196,8 +196,8 @@ msgid "Profile"
 msgstr "Profil"
 
 #: .\templates\profile.html:8
-msgid "Temporary Profile Page"
-msgstr "Tymczasowa strona profilu"
+msgid "Profile"
+msgstr "Profil"
 
 #: .\templates\profile.html:15
 msgid "First Name"
