@@ -88,15 +88,12 @@ def _get_auth(token):
     headers = {"Authorization": f"Bearer {token}"}
     response = requests.get(f"{API_BASE_URL}/auth/whoami/", headers=headers)
     try:
-        # if response.status_code != 200:
-        #     return
-        # auth = response.json()
-        auth = {}
+        if response.status_code != 200:
+            return
+        auth = response.json()
         auth["token"] = token
         auth["headers"] = headers
-        # auth["group"] = auth["group"].rstrip("]").lstrip("[")
-        auth["group"] = "ADMIN"
-        auth["email"] = "aa@aa.com"
+        auth["group"] = auth["group"].rstrip("]").lstrip("[")
         return auth
     except:
         return
@@ -204,7 +201,6 @@ def price_list(request):
             "<h1>You do not have access to that page<h1>".encode("utf-8")
         )
 
-    # TODO: lang and sort params
     lang = request.LANGUAGE_CODE.upper()
     response = requests.get(
         f"{API_BASE_URL}/items/price-list?lang={lang}", headers=headers
