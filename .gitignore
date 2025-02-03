@@ -8,3 +8,4 @@ status
 ips
 images/*
 admin/__pycache__
+.venv
