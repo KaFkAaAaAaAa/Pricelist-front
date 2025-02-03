@@ -254,3 +254,42 @@ msgstr "Wstecz"
 
 #~ msgid "You do not have access to that page"
 #~ msgstr "Nie masz dostępu do tej strony"
+
+#: ./templates/profile.html
+
+msgid "Profile"
+msgstr "Profil"
+
+msgid "First Name"
+msgstr "Imię"
+
+msgid "Last Name"
+msgstr "Nazwisko"
+
+msgid "Telephone number"
+msgstr "Numer telefonu"
+
+msgid "Company Name"
+msgstr "Nazwa firmy"
+
+msgid "Street"
+msgstr "Ulica"
+
+msgid "Code"
+msgstr "Kod pocztowy"
+
+msgid "City"
+msgstr "Miasto"
+
+msgid "Country"
+msgstr "Państwo"
+
+msgid "Bank Number"
+msgstr "Numer Konta Bankowego"
+
+msgid "Save changes"
+msgstr "Zapisz zmiany"
+
+msgid "Change password"
+msgstr "Zmień hasło"
+

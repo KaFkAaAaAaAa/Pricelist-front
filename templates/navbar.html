@@ -24,11 +24,15 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="/admin/dashboard/">Admin Dashboard</a>
                             </li>
-                        {% endif %}
+                            <li>
+                                <a class="nav-link" href="/profile/">{{ request.session.logged_user.userEmail }}</a>
+                            </li>
+                        {% else %}
                         <li>
-                            <a class="nav-link" href="/profile/">{{ request.session.logged_user.userEmail }}</a>
+                            <a class="nav-link" href="/profile/">{{ request.session.logged_user.clientCompanyName }}</a>
+                            <a class="nav-link" href="/profile/">{{ request.session.logged_user.user.userEmail }}</a>
                         </li>
-
+                        {% endif %}
                         <li class="nav-item ms-3">
                             <a class="btn btn-outline-secondary" href="/logout">{% trans "Logout" %}</a>
                         </li>
