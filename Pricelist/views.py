@@ -205,7 +205,10 @@ def price_list(request):
         )
 
     # TODO: lang and sort params
-    response = requests.get(f"{API_BASE_URL}/items/price-list?lang=EN", headers=headers)
+    lang = request.LANGUAGE_CODE.upper()
+    response = requests.get(
+        f"{API_BASE_URL}/items/price-list?lang={lang}", headers=headers
+    )
     items = {}
     items = (
         response.json() if response.status_code == 200 else []
@@ -214,7 +217,7 @@ def price_list(request):
         for item in items[category]:
             item["price"] = f"{item['price'] / 100:.2f}"
     return render(
-        request, "price_list.html", {"items": items, "categories": CATEGORIES["EN"]}
+        request, "price_list.html", {"items": items, "categories": CATEGORIES[lang]}
     )
 
 
@@ -228,7 +231,10 @@ def item_detail(request, item_sku):
         return redirect("login")
     headers = auth["headers"]
 
-    response = requests.get(f"{API_BASE_URL}/items/{item_sku}", headers=headers)
+    response = requests.get(
+        f"{API_BASE_URL}/items/{item_sku}?lang={request.LANGUAGE_CODE.upper()}",
+        headers=headers,
+    )
     if response.status_code == 200:
         item = response.json()
         images = _list_items(item_sku, FileSystemStorage())
