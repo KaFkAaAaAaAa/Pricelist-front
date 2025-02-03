@@ -48,7 +48,7 @@
                             value="{{ initial.userTelephoneNumber }}"
                     />
                 </div>
-                {% if not user_admin %}
+                {% if request.session.logged_user.user %}
     <div class="container">
         <div>
             <h2>Profile</h2>
