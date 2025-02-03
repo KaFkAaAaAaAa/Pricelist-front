@@ -238,6 +238,7 @@ def item_detail(request, item_sku):
     if response.status_code == 200:
         item = response.json()
         images = _list_items(item_sku, FileSystemStorage())
+        item["price"] = f"{item['price'] / 100:.2f}"
         return render(request, "item_detail.html", {"item": item, "images": images})
     else:
         return render(request, "item_detail.html", {"error": "Item not found."})
