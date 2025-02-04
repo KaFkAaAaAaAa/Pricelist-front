@@ -4,8 +4,6 @@
 
 {% block content %}
 <!-- TODO: cleanup align-middles ;< -->
-    {# <table class="table table-bordered table-striped mt-2 align-middle" style="font-family: Calibri, sans-serif"> #}
-    <h1>{% trans "Hello" %} <strong>{{ request.session.logged_user.user.userFirstName}}</strong>!</h1>
     <table class="table table-bordered mt-3 align-middle" style="font-family: Calibri, sans-serif">
     <tbody>
         {% for sorting_category in categories %}
