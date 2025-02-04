@@ -194,6 +194,9 @@ def client_panel(request):
     # TODO: add some logic
     return render(request, "client_dashboard.html")
 
+def offer(request):
+    # TODO: add some logic
+    return render(request, "offer.html")
 
 def price_list(request):
 
