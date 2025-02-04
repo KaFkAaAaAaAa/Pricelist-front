@@ -844,7 +844,7 @@ def client_list(request):
         )
 
     response = requests.get(
-        f"{API_BASE_URL}/clients/admin/admin-list/", headers=headers
+        f"{API_BASE_URL}/clients/admin/", headers=headers
     )
     try:
         clients = response.json() if response.status_code == 200 else []
