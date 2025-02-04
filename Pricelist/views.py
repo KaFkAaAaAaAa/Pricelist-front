@@ -90,7 +90,6 @@ def _get_PLN_exr():
 
     # with open(f'courses/pln/{latest}.xml', 'wb') as f:
     #     f.write(current_nbp.content)
-    __import__("pdb").set_trace()
     root = ET.fromstring(current_nbp.content)
     for element in root.findall("pozycja"):
         code = element.find("kod_waluty").text
