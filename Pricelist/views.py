@@ -115,6 +115,14 @@ def _list_items(item_sku, fs=FileSystemStorage()):
     return [fs.url(image) for image in images_sku]
 
 
+def _group_to_roman(group_to_translate):
+    """Return (str) roman group name, by full group name, if group name invalid return null"""
+    for i, group_full in enumerate(CLIENT_GROUPS):
+        if group_to_translate == group_full:
+            return GROUPS_ROMAN[i]
+    return
+
+
 # Login View
 def login_view(request):
 
@@ -826,7 +834,13 @@ def activate_user(request, user_id):
                 {"email": userEmail, "error": "API error!"},
             )
     return render(
-        request, "activate_user.html", {"email": userEmail, "groups": GROUPS_ROMAN}
+        request,
+        "activate_user.html",
+        {
+            "email": userEmail,
+            "groups": GROUPS_ROMAN,
+            "user_group": _group_to_roman(auth["group"]),
+        },
     )
 
 
@@ -843,9 +857,7 @@ def client_list(request):
             "<h1>You do not have access to that page<h1>".encode("utf-8")
         )
 
-    response = requests.get(
-        f"{API_BASE_URL}/clients/admin/admin-list/", headers=headers
-    )
+    response = requests.get(f"{API_BASE_URL}/clients/admin/", headers=headers)
     try:
         clients = response.json() if response.status_code == 200 else []
     except:

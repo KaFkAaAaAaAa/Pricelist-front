@@ -14,6 +14,9 @@
             <div class="form-group mb-3">
                 <label for="group">Group:</label>
                 <select name="group" id="group" class="form-select">
+                {% if user_group %}
+                    <option selected>{{ user_group }}</option>
+                {% endif %}
                   {% for group in groups %}
                   <option value="{{ group }}">{{ group }}</option>
                   {% endfor %}
