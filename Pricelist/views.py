@@ -814,8 +814,13 @@ def activate_user(request, user_id):
         return redirect("login")
     headers = auth["headers"]
 
+    __import__("pdb").set_trace()
     response = requests.get(f"{API_BASE_URL}/users/admin/{user_id}", headers=headers)
     userEmail = response.json()["userEmail"]
+    response_group = requests.get(
+        f"{API_BASE_URL}/auth/admin/{user_id}/group", headers=headers
+    )
+    user_group = response_group.json()["group"]
 
     if request.method == "POST":
         group = request.POST["group"]
@@ -839,7 +844,7 @@ def activate_user(request, user_id):
         {
             "email": userEmail,
             "groups": GROUPS_ROMAN,
-            "user_group": _group_to_roman(auth["group"]),
+            "user_group": _group_to_roman(user_group),
         },
     )
 
