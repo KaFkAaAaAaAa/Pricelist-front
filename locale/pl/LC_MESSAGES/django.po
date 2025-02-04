@@ -262,3 +262,18 @@ msgstr "Wstecz"
 
 #~ msgid "You do not have access to that page"
 #~ msgstr "Nie masz dostępu do tej strony"
+
+msgid "New offer"
+msgstr "Nowa oferta"
+
+msgid "Count"
+msgstr "Ilość"
+
+msgid "Price/Kg"
+msgstr "Cena/Kg"
+
+msgid "Total"
+msgstr "Suma"
+
+msgid "Make offer"
+msgstr "Złóż ofertę"
