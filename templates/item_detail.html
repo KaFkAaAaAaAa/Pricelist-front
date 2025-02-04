@@ -17,6 +17,10 @@
                 <dd class="col-sm-9">{{ item.sku }}</dd>
                 <dt class="col-sm-3 fw-bold">{% trans "Price" %}</dt>
                 <dd class="col-sm-9">{{ item.price }} €</dd>
+                {% if item.price_pln %}
+                    <dt class="col-sm-3 fw-bold">Cena PLN</dt>
+                    <dd class="col-sm-9">{{ item.price_pln }} PLN</dd>
+                {% endif %} 
             </dl>
 
             <h3 class="mb-3 text-center">{% trans "Gallery" %}</h3>

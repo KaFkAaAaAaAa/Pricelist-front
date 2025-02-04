@@ -266,6 +266,11 @@ def item_detail(request, item_sku):
     if response.status_code == 200:
         item = response.json()
         images = _list_items(item_sku, FileSystemStorage())
+        if request.LANGUAGE_CODE.upper() == "PL":
+            pln_exr = _get_PLN_exr()
+            if pln_exr:
+                item["price_pln"] = floor(item["price"] * pln_exr)
+                item["price_pln"] = f"{item['price_pln'] / 100:.2f}"
         item["price"] = f"{item['price'] / 100:.2f}"
         return render(request, "item_detail.html", {"item": item, "images": images})
     else:
