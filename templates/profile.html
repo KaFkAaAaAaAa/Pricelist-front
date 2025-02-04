@@ -89,74 +89,32 @@
                                 value="{{ initial.clientCity }}"
                         />
                     </div>
-                    {% if session.logged_user.user %}
-                        <div class="mb-3">
-                            <label for="clientCompanyName" class="form-label h5">Company Name</label>
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    id="clientCompanyName"
-                                    name="clientCompanyName"
-                                    value="{{ initial.clientCompanyName }}"
-                            />
-                        </div>
-                        <div class="mb-3">
-                            <label for="clientStreet" class="form-label h5">Street</label>
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    id="clientStreet"
-                                    name="clientStreet"
-                                    value="{{ initial.clientStreet }}"
-                            />
-                        </div>
-                        <div class="mb-3">
-                            <label for="clientCode" class="form-label h5">Code</label>
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    id="clientCode"
-                                    name="clientCode"
-                                    value="{{ initial.clientCode }}"
-                            />
-                        </div>
-                        <div class="mb-3">
-                            <label for="clientCity" class="form-label h5">City</label>
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    id="clientCity"
-                                    name="clientCity"
-                                    value="{{ initial.clientCity }}"
-                            />
-                        </div>
-                        <div class="mb-3">
-                            <label for="clientCountry" class="form-label h5">Country</label>
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    id="clientCountry"
-                                    name="clientCountry"
-                                    value="{{ initial.clientCountry }}"
-                            />
-                        </div>
-                        <div class="mb-3">
-                            <label for="clientBankNumber" class="form-label h5">Bank Number</label>
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    id="clientBankNumber"
-                                    name="clientBankNumber"
-                                    value="{{ initial.clientBankNumber }}"
-                            />
-                        </div>
+                    <div class="mb-3">
+                        <label for="clientCountry" class="form-label h5">Country</label>
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="clientCountry"
+                                name="clientCountry"
+                                value="{{ initial.clientCountry }}"
+                        />
+                    </div>
+                    <div class="mb-3">
+                        <label for="clientBankNumber" class="form-label h5">Bank Number</label>
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="clientBankNumber"
+                                name="clientBankNumber"
+                                value="{{ initial.clientBankNumber }}"
+                        />
+                    </div>
                     {% endif %}
                 <div class="d-flex justify-content-center">
                     <a class="btn btn-secondary mx-2" href="{% url 'change_password' %}">{% trans "Change password" %}</a>
                     <button class="btn btn-outline-primary mx-2">{% trans "Save changes" %}</button>
                 </div>
             </form>
-        {% endif %}
         </div>
     </div>
 {% endblock %}
