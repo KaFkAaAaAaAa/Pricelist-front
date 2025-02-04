@@ -10,6 +10,7 @@ import re
 from django.utils.translation import gettext as _
 from django.utils.translation import get_language
 from math import floor
+import xml.etree.ElementTree as ET
 
 API_BASE_URL = "http://127.0.0.1:8888"
 
@@ -80,6 +81,22 @@ CATEGORIES = {
 
 def favicon(request):
     return HttpResponseNotFound()
+
+
+def _get_PLN_exr():
+    response = requests.get("https://static.nbp.pl/dane/kursy/xml/dir.txt")
+    latest = response.text.rsplit("\n", 1)[-1]
+    current_nbp = requests.get(f"https://static.nbp.pl/dane/kursy/xml/{latest}.xml")
+
+    # with open(f'courses/pln/{latest}.xml', 'wb') as f:
+    #     f.write(current_nbp.content)
+    __import__("pdb").set_trace()
+    root = ET.fromstring(current_nbp.content)
+    for element in root.findall("pozycja"):
+        code = element.find("kod_waluty").text
+        if code == "EUR":
+            return float(element.find("kurs_sredni").text.replace(",", "."))
+    return
 
 
 def _get_auth(token):
@@ -210,6 +227,9 @@ def price_list(request):
         )
 
     lang = request.LANGUAGE_CODE.upper()
+    pln_exr = False
+    if lang == "PL":
+        pln_exr = _get_PLN_exr()
     response = requests.get(
         f"{API_BASE_URL}/items/price-list?lang={lang}", headers=headers
     )
@@ -219,7 +239,12 @@ def price_list(request):
     )  # items = {<String>:<List<PricelistItemModel>>}
     for category in items.keys():
         for item in items[category]:
+            # if PL add PLN
+            if pln_exr:
+                item["price_pln"] = floor(item["price"] * pln_exr)
+                item["price_pln"] = f"{item['price_pln'] / 100:.2f}"
             item["price"] = f"{item['price'] / 100:.2f}"
+
     return render(
         request, "price_list.html", {"items": items, "categories": CATEGORIES[lang]}
     )
@@ -814,7 +839,6 @@ def activate_user(request, user_id):
         return redirect("login")
     headers = auth["headers"]
 
-    __import__("pdb").set_trace()
     response = requests.get(f"{API_BASE_URL}/users/admin/{user_id}", headers=headers)
     userEmail = response.json()["userEmail"]
     response_group = requests.get(
