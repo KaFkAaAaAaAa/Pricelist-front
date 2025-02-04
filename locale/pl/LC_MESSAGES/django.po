@@ -191,6 +191,10 @@ msgstr "Witaj"
 msgid "Item Image"
 msgstr "Obrazek przedmiotu"
 
+#: .\templates\price_list.html:42
+msgid "The price list is for information purposes only. Prices are subject to change. Prices are not binding. Typographical errors excepted. Please contact us for prices for larger quantities or special materials."
+msgstr "Cennik ma charakter informacyjny.  Zastrzega się możliwość zmian cen. Ceny nie są wiążące. Zastrzegamy możliwość wystąpienia błędów typograficznych. Prosimy o kontakt w celu uzyskania cen za większe ilości lub specjalnych materiałów."
+
 #: .\templates\profile.html:3
 msgid "Profile"
 msgstr "Profil"
