@@ -9,19 +9,17 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-04 11:23+0100\n"
-"PO-Revision-Date: 2025-02-04 11:17+0100\n"
+"PO-Revision-Date: 2025-02-05 00:32+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 "
-"|| n%100>14) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 "X-Generator: Poedit 3.5\n"
 
-#: Pricelist/forms.py:7 Pricelist/forms.py:10 templates/login.html:16
-#: templates/profile.html:32
+#: Pricelist/forms.py:7 Pricelist/forms.py:10 templates/login.html:16 templates/profile.html:32
 msgid "Email"
 msgstr "Email"
 
@@ -192,15 +190,10 @@ msgid "Item Image"
 msgstr "Obrazek przedmiotu"
 
 #: templates/price_list.html:42
-msgid ""
-"The price list is for information purposes only. Prices are subject to "
-"change. Prices are not binding. Typographical errors excepted. Please "
-"contact us for prices for larger quantities or special materials."
+msgid "Prices per 1 kg. The price list is for information purposes only. Prices are subject to change. Prices are not binding. Typographical errors excepted. Please contact us for prices for larger quantities or special materials."
 msgstr ""
-"Cennik ma charakter informacyjny. Zastrzega się możliwość zmian cen. Ceny "
-"nie są wiążące. Zastrzegamy możliwość wystąpienia błędów typograficznych. "
-"Prosimy o kontakt w celu uzyskania cen za większe ilości lub specjalnych "
-"materiałów."
+"Ceny za 1 kg. Cennik ma charakter informacyjny. Zastrzega się możliwość zmian cen. Ceny nie są wiążące. Zastrzegamy możliwość wystąpienia błędów typograficznych. Ceny w PLN to ceny informacyjne - przeliczone po wczorajszym "
+"średnim kursie NBP. Ceny transakcyjne obowiązują tylko w Euro. Prosimy o kontakt w celu uzyskania cen za większe ilości lub specjalnych materiałów."
 
 #: templates/profile.html:3 templates/profile.html:8
 msgid "Profile"
@@ -242,8 +235,7 @@ msgstr "Zmień hasło"
 msgid "Save changes"
 msgstr "Zapisz zmiany"
 
-#: templates/register.html:3 templates/register.html:10
-#: templates/register.html:79
+#: templates/register.html:3 templates/register.html:10 templates/register.html:79
 msgid "Register"
 msgstr "Zarejestruj się"
 
