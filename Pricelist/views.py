@@ -84,18 +84,21 @@ def favicon(request):
 
 
 def _get_PLN_exr():
-    response = requests.get("https://static.nbp.pl/dane/kursy/xml/dir.txt")
-    latest = response.text.rsplit("\n", 1)[-1]
-    current_nbp = requests.get(f"https://static.nbp.pl/dane/kursy/xml/{latest}.xml")
-
-    # with open(f'courses/pln/{latest}.xml', 'wb') as f:
-    #     f.write(current_nbp.content)
-    root = ET.fromstring(current_nbp.content)
-    for element in root.findall("pozycja"):
-        code = element.find("kod_waluty").text
-        if code == "EUR":
-            return float(element.find("kurs_sredni").text.replace(",", "."))
-    return
+    # response = requests.get("https://static.nbp.pl/dane/kursy/xml/dir.txt")
+    # latest = response.text.rsplit("\n", 1)
+    # while latest[-1][0] != 'a':
+    #     latest = latest[0].rsplit("\n", 1)
+    # latest = latest[-1]
+    # current_nbp = requests.get(f"https://static.nbp.pl/dane/kursy/xml/{latest}.xml")
+    #
+    # # with open(f'courses/pln/{latest}.xml', 'wb') as f:
+    # #     f.write(current_nbp.content)
+    # root = ET.fromstring(current_nbp.content)
+    # for element in root.findall("pozycja"):
+    #     code = element.find("kod_waluty").text
+    #     if code == "EUR":
+    #         return float(element.find("kurs_sredni").text.replace(",", "."))
+    return 4.2059
 
 
 def _get_auth(token):
@@ -177,6 +180,7 @@ def logout_view(request):
 
 # Register View
 def register_view(request):
+    __import__("pdb").set_trace()
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -194,7 +198,7 @@ def register_view(request):
             }
             response = requests.post(f"{API_BASE_URL}/auth/register", json=payload)
             if response.status_code == 200:
-                return redirect("login")
+                return render(request, "register_success.html")
             else:
                 return render(
                     request,
