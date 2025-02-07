@@ -84,21 +84,8 @@ def favicon(request):
 
 
 def _get_PLN_exr():
-    # response = requests.get("https://static.nbp.pl/dane/kursy/xml/dir.txt")
-    # latest = response.text.rsplit("\n", 1)
-    # while latest[-1][0] != 'a':
-    #     latest = latest[0].rsplit("\n", 1)
-    # latest = latest[-1]
-    # current_nbp = requests.get(f"https://static.nbp.pl/dane/kursy/xml/{latest}.xml")
-    #
-    # # with open(f'courses/pln/{latest}.xml', 'wb') as f:
-    # #     f.write(current_nbp.content)
-    # root = ET.fromstring(current_nbp.content)
-    # for element in root.findall("pozycja"):
-    #     code = element.find("kod_waluty").text
-    #     if code == "EUR":
-    #         return float(element.find("kurs_sredni").text.replace(",", "."))
-    return 4.2059
+    with open("pln_exr.txt", "r", encoding="utf-8") as f:
+        return float(f.read().rstrip().split("\t")[-1])
 
 
 def _get_auth(token):
@@ -180,7 +167,6 @@ def logout_view(request):
 
 # Register View
 def register_view(request):
-    __import__("pdb").set_trace()
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -231,14 +217,22 @@ def price_list(request):
 
     lang = request.LANGUAGE_CODE.upper()
     pln_exr = False
+
     if lang == "PL":
         pln_exr = _get_PLN_exr()
-    response = requests.get(
-        f"{API_BASE_URL}/items/price-list?lang={lang}", headers=headers
-    )
+
+    if "search" in request.GET.keys():
+        response = requests.get(
+            f"{API_BASE_URL}/items/search?lang={lang}&query={request.GET['search']}",
+            headers=headers,
+        )
+    else:
+        response = requests.get(
+            f"{API_BASE_URL}/items/price-list?lang={lang}", headers=headers
+        )
     items = {}
     items = (
-        response.json() if response.status_code == 200 else []
+        response.json() if response.status_code == 200 else {}
     )  # items = {<String>:<List<PricelistItemModel>>}
     for category in items.keys():
         for item in items[category]:
@@ -388,8 +382,15 @@ def admin_items(request):
         return HttpResponseForbidden(
             "<h1>You do not have access to that page<h1>".encode("utf-8")
         )
+    lang = request.LANGUAGE_CODE.upper()
 
-    response = requests.get(f"{API_BASE_URL}/items/admin/", headers=headers)
+    if "search" in request.GET.keys():
+        response = requests.get(
+            f"{API_BASE_URL}/items/admin/search?lang={lang}&query={request.GET['search']}",
+            headers=headers,
+        )
+    else:
+        response = requests.get(f"{API_BASE_URL}/items/admin/", headers=headers)
     items = response.json() if response.status_code == 200 else []
     items_dict = {}
     for category in CATEGORIES.get("EN"):

@@ -1,5 +1,25 @@
 {% extends 'base.html' %} {% block title %}Item List{% endblock %}
 {% block content %}
+    <form method="GET" class="container p-0">
+        <div class="row w-50 align-items-center">
+            <div class="col-12 col-sm-5 mb-2">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="search"
+                    name="search"
+                    {# placeholder="{% trans "Search" %}..." #}
+                    placeholder="Search..."
+                />
+            </div>
+            <div class="col-12 col-sm-5 d-flex justify-content-gap-2 mb-2">
+                {# <button class="btn btn-outline-secondary">{% trans "Search" %}</button> #}
+                {# <a class="btn btn-outline-secondary" href="{% url "item_list" %}">{% trans "Clear" %}</a> #}
+                <button class="btn btn-outline-secondary">Search</button>
+                <a class="btn btn-outline-secondary" href="{% url "item_list" %}">Clear</a>
+            </div>
+        </div>
+    </form>
     <table class="table">
         <thead>
         <tr>
