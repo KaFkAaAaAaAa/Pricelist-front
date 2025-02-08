@@ -201,7 +201,23 @@ def client_panel(request):
     return render(request, "client_dashboard.html")
 
 def offer(request):
-    # TODO: add some logic
+
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+    headers = auth["headers"]
+
+    # items = request.session["shopping_cart"] # formatted properly for the offer object
+
+    if request.method == 'POST':
+        payload = {
+                "orderDescription": request.POST["order_description"],
+                "orderItemsOrdered": request.POST["items_ordered"],
+        }
+        requests.post(f"{API_BASE_URL}/order/", headers=headers, json=payload)
+
     return render(request, "offer.html")
 
 def price_list(request):
