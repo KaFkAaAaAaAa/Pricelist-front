@@ -18,6 +18,9 @@
       <td>{{ client.user.userLastName }}</td>
       <td>
                 <a class="btn btn-outline-primary" href="/admin/clients/{{ client.id }}/{{ func }}">Actions</a>
+                <a class="btn btn-primary" href="/admin/clients/{{ client.id }}/edit"
+                  >Edit</a
+                >
       </td>
     </tr>
     {% endfor %}

@@ -4,8 +4,25 @@
 
 {% block content %}
 <!-- TODO: cleanup align-middles ;< -->
-    <table class="table table-bordered mt-3 align-middle" style="font-family: Calibri, sans-serif">
+        <form method="GET" class="container">
+            <div class="row w-50 align-items-center">
+                <div class="col-12 col-sm-5 mb-2">
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="search"
+                        name="search"
+                        placeholder="{% trans "Search" %}..."
+                    />
+                </div>
+                <div class="col-12 col-sm-5 d-flex justify-content-gap-2 mb-2">
+                    <button class="btn btn-outline-secondary">{% trans "Search" %}</button>
+                    <a class="btn btn-outline-secondary" href="/">{% trans "Clear" %}</a>
+                </div>
+            </div>
+        </form>
     <div class="font-weight-light text-end">{% trans "February" %} 2025</div>
+    <table class="table table-bordered mt-3 align-middle" style="font-family: Calibri, sans-serif">
     <tbody>
         {% for sorting_category in categories %}
             {% for category, item_list in items.items %}
@@ -26,10 +43,16 @@
                                 <td class="text-center flex-shrink-0 align-items-middle bg-light" style="font-size: 17px; width: 80px">{{ item.sku }}</td>
                                 <td class="flex-fill align-items-middle bg-light" style="font-size: 17px">{{ item.name }}</td>
                                 <td class="text-end fw-semibold flex-shrink-0 align-items-middle bg-light" style="font-size: 20px; width: 120px">{{ item.price }} €</td>
+                                {% if item.price_pln %}
+                                    <td class="text-end fw-semibold flex-shrink-0 align-items-middle bg-light" style="font-size: 20px; width: 130px">{{ item.price_pln }} zł</td>
+                                {% endif %}
                                 {% else %}
                                 <td class="text-center flex-shrink-0 align-items-middle" style="font-size: 17px; width: 80px">{{ item.sku }}</td>
                                 <td class="flex-fill align-items-middle" style="font-size: 17px">{{ item.name }}</td>
                                 <td class="text-end fw-semibold flex-shrink-0 align-items-middle" style="font-size: 20px; width: 120px">{{ item.price }} €</td>
+                                {% if item.price_pln %}
+                                    <td class="text-end fw-semibold flex-shrink-0 align-items-middle bg-light" style="font-size: 20px; width: 130px">{{ item.price_pln }} zł</td>
+                                {% endif %}
                                 {% endif %}
                             </tr>
                         {% endfor %}
@@ -39,5 +62,5 @@
         {% endfor %}
     </tbody>
 </table>
-<div class="font-weight-light text-center text muted">{% trans "The price list is for information purposes only. Prices are subject to change. Prices are not binding. Typographical errors excepted. Please contact us for prices for larger quantities or special materials." %}</div>
+<div class="font-weight-light text-center text muted">{% trans "Prices per 1 kg. The price list is for information purposes only. Prices are subject to change. Prices are not binding. Typographical errors excepted. Please contact us for prices for larger quantities or special materials." %}</div>
 {% endblock %}

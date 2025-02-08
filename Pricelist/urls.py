@@ -105,7 +105,7 @@ urlpatterns = (
             admin_views.edit_admin,
             name="edit_admin",
         ),
-        path('set_language/', set_language, name='set_language'),
+        path("set_language/", set_language, name="set_language"),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + static(settings.STATIC_URL, document_root=settings.BASE_DIR / "static")

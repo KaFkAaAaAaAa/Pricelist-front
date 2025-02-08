@@ -10,6 +10,7 @@ import re
 from django.utils.translation import gettext as _
 from django.utils.translation import get_language
 from math import floor
+import xml.etree.ElementTree as ET
 
 API_BASE_URL = "http://127.0.0.1:8888"
 
@@ -80,6 +81,11 @@ CATEGORIES = {
 
 def favicon(request):
     return HttpResponseNotFound()
+
+
+def _get_PLN_exr():
+    with open("pln_exr.txt", "r", encoding="utf-8") as f:
+        return float(f.read().rstrip().split("\t")[-1])
 
 
 def _get_auth(token):
@@ -178,7 +184,7 @@ def register_view(request):
             }
             response = requests.post(f"{API_BASE_URL}/auth/register", json=payload)
             if response.status_code == 200:
-                return redirect("login")
+                return render(request, "register_success.html")
             else:
                 return render(
                     request,
@@ -213,16 +219,32 @@ def price_list(request):
         )
 
     lang = request.LANGUAGE_CODE.upper()
-    response = requests.get(
-        f"{API_BASE_URL}/items/price-list?lang={lang}", headers=headers
-    )
+    pln_exr = False
+
+    if lang == "PL":
+        pln_exr = _get_PLN_exr()
+
+    if "search" in request.GET.keys():
+        response = requests.get(
+            f"{API_BASE_URL}/items/search?lang={lang}&query={request.GET['search']}",
+            headers=headers,
+        )
+    else:
+        response = requests.get(
+            f"{API_BASE_URL}/items/price-list?lang={lang}", headers=headers
+        )
     items = {}
     items = (
-        response.json() if response.status_code == 200 else []
+        response.json() if response.status_code == 200 else {}
     )  # items = {<String>:<List<PricelistItemModel>>}
     for category in items.keys():
         for item in items[category]:
+            # if PL add PLN
+            if pln_exr:
+                item["price_pln"] = floor(item["price"] * pln_exr)
+                item["price_pln"] = f"{item['price_pln'] / 100:.2f}"
             item["price"] = f"{item['price'] / 100:.2f}"
+
     return render(
         request, "price_list.html", {"items": items, "categories": CATEGORIES[lang]}
     )
@@ -245,6 +267,11 @@ def item_detail(request, item_sku):
     if response.status_code == 200:
         item = response.json()
         images = _list_items(item_sku, FileSystemStorage())
+        if request.LANGUAGE_CODE.upper() == "PL":
+            pln_exr = _get_PLN_exr()
+            if pln_exr:
+                item["price_pln"] = floor(item["price"] * pln_exr)
+                item["price_pln"] = f"{item['price_pln'] / 100:.2f}"
         item["price"] = f"{item['price'] / 100:.2f}"
         return render(request, "item_detail.html", {"item": item, "images": images})
     else:
@@ -358,8 +385,15 @@ def admin_items(request):
         return HttpResponseForbidden(
             "<h1>You do not have access to that page<h1>".encode("utf-8")
         )
+    lang = request.LANGUAGE_CODE.upper()
 
-    response = requests.get(f"{API_BASE_URL}/items/admin/", headers=headers)
+    if "search" in request.GET.keys():
+        response = requests.get(
+            f"{API_BASE_URL}/items/admin/search?lang={lang}&query={request.GET['search']}",
+            headers=headers,
+        )
+    else:
+        response = requests.get(f"{API_BASE_URL}/items/admin/", headers=headers)
     items = response.json() if response.status_code == 200 else []
     items_dict = {}
     for category in CATEGORIES.get("EN"):
@@ -817,7 +851,6 @@ def activate_user(request, user_id):
         return redirect("login")
     headers = auth["headers"]
 
-    __import__("pdb").set_trace()
     response = requests.get(f"{API_BASE_URL}/users/admin/{user_id}", headers=headers)
     userEmail = response.json()["userEmail"]
     response_group = requests.get(
