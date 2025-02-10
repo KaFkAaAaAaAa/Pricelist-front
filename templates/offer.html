@@ -16,19 +16,25 @@
             </tr>
             </thead>
             <tbody>
-            {% for item in request.session.current_offer%}
-            <tr>
-                <td>{{ item.sku }}</td>
-                <td>{{ item.name }}</td>
-                <td>{{ item.amount }}</td>
-                <td>{{ item.price }}</td>
-                <td>Price * Amount</td>
-                <td>
-                    <a class="btn btn-outline-secondary" href="/offer/{{item.sku}}/edit/">Edit</a>
-                    <a class="btn btn-outline-danger" href="/offer/{{item.sku}}/delete/">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
+            {% if request.session.current_offer %}
+                {% for item in request.session.current_offer%}
+                <tr>
+                    <td>{{ item.sku }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}</td>
+                    <td>{{ item.price }}</td>
+                    <td>Price * Amount</td>
+                    <td>
+                        <a class="btn btn-outline-secondary" href="/offer/{{item.sku}}/edit/">Edit</a>
+                        <a class="btn btn-outline-danger" href="/offer/{{item.sku}}/delete/">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                    <div class="alert alert-secondary">
+                        {% trans "No items added to the offer, add some items from the price list" %}
+                    </div>
+            {% endif %}
             </tbody>
         </table>
         {# TODO: add button logic #}

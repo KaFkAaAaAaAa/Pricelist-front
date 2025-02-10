@@ -1,8 +1,8 @@
-from django.shortcuts import render
-from Pricelist.views import *
 import requests
-from django.shortcuts import render, redirect
-from Pricelist.views import _get_auth, API_BASE_URL
+from django.shortcuts import redirect, render
+
+from Pricelist.views import *
+from Pricelist.views import API_BASE_URL, _get_auth
 
 
 def admin_list(request, msg=None):
@@ -97,3 +97,31 @@ def edit_admin(request, admin_id):
         return render(request, "edit_admin.html", {"err": "API ERROR!"})
 
     return render(request, "edit_admin.html", {"admin": admin})
+
+
+def client_orders(request, user_id):
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+    headers = auth["headers"]
+
+    if auth.get("group") not in ADMIN_GROUPS:
+        return HttpResponseForbidden(
+            "<h1>You do not have access to that page<h1>".encode("utf-8")
+        )
+
+    response = requests.get(
+        f"{API_BASE_URL}/orders/admin/client/{user_id}/", headers=headers
+    )
+    orders = response.json()
+    for order in orders:
+        __import__("pdb").set_trace()
+        if order["orderStatusHistory"]:
+            order["status"] = order["orderStatusHistory"][-1]["status"]
+            order["status_time"] = order["orderStatusHistory"][-1]["time"]
+        else:
+            order["status"] = "none"
+            order["status_time"] = "none"
+    return render(request, "order_list.html", {"orders": orders})

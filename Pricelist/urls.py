@@ -16,14 +16,14 @@ Including another URLconf
 """
 
 from django.conf import settings
+from django.conf.urls.i18n import set_language
 from django.conf.urls.static import static
 
 # from django.contrib import admin
 from django.urls import path, re_path
-from Pricelist import views
-from admin import admin_views
-from django.conf.urls.i18n import set_language
 
+from admin import admin_views
+from Pricelist import views
 
 urlpatterns = (
     [
@@ -40,7 +40,7 @@ urlpatterns = (
             name="delete_from_offer",
         ),
         path(
-            "offer/<str:item_sku>/edit/",
+            "offeadmin_r/<str:item_sku>/edit/",
             views.edit_item_offer,
             name="edit_item_offer",
         ),
@@ -77,6 +77,11 @@ urlpatterns = (
             "admin/clients/<uuid:user_id>/assign-admin",
             views.assign_admin,
             name="assign_admin",
+        ),
+        path(
+            "admin/clients/<uuid:user_id>/orders",
+            admin_views.client_orders,
+            name="client_orders",
         ),
         path(
             "admin/my-users/",
