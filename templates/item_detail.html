@@ -12,16 +12,36 @@
                 <h2 class="mb-0">{{ item.name }}</h2>
             </div>
 
-            <dl class="row mb-4">
-                <dt class="col-sm-3 fw-bold">{% trans "SKU" %}</dt>
-                <dd class="col-sm-9">{{ item.sku }}</dd>
-                <dt class="col-sm-3 fw-bold">{% trans "Price" %}</dt>
-                <dd class="col-sm-9">{{ item.price }} €</dd>
-                {% if item.price_pln %}
-                    <dt class="col-sm-3 fw-bold">Cena PLN</dt>
-                    <dd class="col-sm-9">{{ item.price_pln }} zł</dd>
-                {% endif %} 
-            </dl>
+            <div class="container">
+                <div class="row">
+                <div class="col">
+                    <dl class="row mb-4">
+                        <dt class="col-sm-3 fw-bold">{% trans "SKU" %}</dt>
+                        <dd class="col-sm-9">{{ item.sku }}</dd>
+                        <dt class="col-sm-3 fw-bold">{% trans "Price" %}</dt>
+                        <dd class="col-sm-9">{{ item.price }} €</dd>
+                        {% if item.price_pln %}
+                            <dt class="col-sm-3 fw-bold">Cena PLN</dt>
+                            <dd class="col-sm-9">{{ item.price_pln }} zł</dd>
+                        {% endif %} 
+                    </dl>
+                </div>
+                <div class="col">
+                    <form method="post">
+                        <label for="amount">{% trans "Amount" %}</label>
+                        <input id="amount" name="amount" type="number" value="1" min="1" step="1" />
+                        <label for="unit">{% trans "Unit" %}</label>
+                        <select name="unit" id="unit">
+                            <option value="t">t</option>
+                            <option selected value="kg">kg</option>
+                            <option value="g">g</option>
+                        </select>
+                        <submit class="btn btn-outline-primary">{% trans "Add to your offer" %}</submit>
+                    </form>
+                    <p>{% trans "Total:" %}{% comment %} suma ile kosztuje (ceny w kg!) {% endcomment %}</p>
+                </div>
+                </div>
+            </div>
 
             <h3 class="mb-3 text-center">{% trans "Gallery" %}</h3>
             <div id="galleryCarousel" class="carousel slide">
