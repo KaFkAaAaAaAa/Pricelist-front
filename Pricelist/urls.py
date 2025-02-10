@@ -34,6 +34,16 @@ urlpatterns = (
         path("profile/change-password/", views.change_password, name="change_password"),
         path("client_dashboard/", views.client_panel, name="client_dashboard"),
         path("offer/", views.offer, name="offer"),
+        path(
+            "offer/<str:item_sku>/delete/",
+            views.delete_from_offer,
+            name="delete_from_offer",
+        ),
+        path(
+            "offer/<str:item_sku>/edit/",
+            views.edit_item_offer,
+            name="edit_item_offer",
+        ),
         path("", views.price_list, name="price_list"),
         path("item/<str:item_sku>/", views.item_detail, name="item_detail"),
         path("admin/dashboard/", views.admin_dashboard, name="admin_dashboard"),

@@ -1,0 +1,46 @@
+{% extends 'base.html' %} {% load i18n %} {% block title %}Offer{% endblock %}
+{% block content %}
+<div class="container">
+  <form method="POST">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col fw-bold">SKU</div>
+      <div class="col">{{ item.sku }}</div>
+    </div>
+    <div class="row">
+      <div class="col fw-bold">{% trans "Name" %}</div>
+      <div class="col">{{ item.name }}</div>
+    </div>
+    <div class="row">
+      <div class="col fw-bold">{% trans "Amount" %}</div>
+      <div class="col">
+        <input
+          type="number"
+          step="0.1"
+          name="amount"
+          value="{{ item.amount }}"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col fw-bold">{% trans "Price" %}</div>
+      <div class="col">{{ item.price }}</div>
+    </div>
+    <div class="row">
+      <div class="col fw-bold">{% trans "Total" %}</div>
+      <div class="col">--total--</div>
+    </div>
+    <div class="row">
+      <div class="col fw-bold">{% trans "Additional informations" %}</div>
+      <div class="col">
+        <textarea name="additionalInfo" cols="40" rows="3">
+{{ item.additionalInfo }}</textarea
+        >
+      </div>
+    </div>
+    <div class="row">
+      <input type="submit" class="btn btn-outline-success" />
+    </div>
+  </form>
+</div>
+{% endblock %}

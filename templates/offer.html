@@ -9,24 +9,33 @@
             <tr>
                 <th scope="col">{% trans "SKU" %}</th>
                 <th scope="col">{% trans "Name" %}</th>
-                <th scope="col">{% trans "Count" %}</th>
+                <th scope="col">{% trans "Amount" %}</th>
                 <th scope="col">{% trans "Price/Kg" %}</th>
                 <th scope="col">{% trans "Total" %}</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
             {% for item in request.session.current_offer%}
             <tr>
-                <td>{{ item.itemOrderedSku }}</td>
-                <td>{{ item.itemOrderedName }}</td>
-                <td>{{ item.itemOrderedAmount }}</td>
-                <td>{{ item.itemOrderedPrice }}</td>
+                <td>{{ item.sku }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.amount }}</td>
+                <td>{{ item.price }}</td>
                 <td>Price * Amount</td>
+                <td>
+                    <a class="btn btn-outline-secondary" href="/offer/{{item.sku}}/edit/">Edit</a>
+                    <a class="btn btn-outline-danger" href="/offer/{{item.sku}}/delete/">Delete</a>
+                </td>
             </tr>
             {% endfor %}
             </tbody>
         </table>
         {# TODO: add button logic #}
-        <a class="btn btn-outline-success" href="">{% trans "Make offer" %}</a>
+    <form method="POST">
+        {% csrf_token %}
+        <textarea name="order_description" cols="40" rows="3"></textarea><br/>
+        <input type="submit" class="btn btn-outline-success" value="{% trans "Make offer" %}" />
+    </form>
     </div>
 {% endblock %}
