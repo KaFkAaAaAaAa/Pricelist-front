@@ -15,13 +15,15 @@
             </tr>
             </thead>
             <tbody>
+            {% for item in request.session.current_offer%}
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>{{ item.itemOrderedSku }}</td>
+                <td>{{ item.itemOrderedName }}</td>
+                <td>{{ item.itemOrderedAmount }}</td>
+                <td>{{ item.itemOrderedPrice }}</td>
+                <td>Price * Amount</td>
             </tr>
+            {% endfor %}
             </tbody>
         </table>
         {# TODO: add button logic #}

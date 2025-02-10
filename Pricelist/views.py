@@ -200,6 +200,7 @@ def client_panel(request):
     # TODO: add some logic
     return render(request, "client_dashboard.html")
 
+
 def offer(request):
 
     token = request.session.get("token")
@@ -211,14 +212,15 @@ def offer(request):
 
     # items = request.session["shopping_cart"] # formatted properly for the offer object
 
-    if request.method == 'POST':
+    if request.method == "POST":
         payload = {
-                "orderDescription": request.POST["order_description"],
-                "orderItemsOrdered": request.POST["items_ordered"],
+            "orderDescription": request.POST["order_description"],
+            "orderItemsOrdered": request.POST["items_ordered"],
         }
         requests.post(f"{API_BASE_URL}/order/", headers=headers, json=payload)
 
     return render(request, "offer.html")
+
 
 def price_list(request):
 
@@ -289,6 +291,28 @@ def item_detail(request, item_sku):
                 item["price_pln"] = floor(item["price"] * pln_exr)
                 item["price_pln"] = f"{item['price_pln'] / 100:.2f}"
         item["price"] = f"{item['price'] / 100:.2f}"
+        if request.method == "POST":
+            units = {
+                "kg": 1,
+                "g": 0.001,
+                "t": 1000,
+            }
+            unit_multi = units.get(request.POST["unit"])
+            amount = request.POST["amount"] * unit_multi
+            item_ordered = {
+                "itemOrderedSku": item.get("sku"),
+                "itemOrderedName": item.get("name"),
+                "itemOrderedPrice": item.get("price"),
+                "itemOrderedAmount": amount,
+                "itemOrderedAdditionalInfo": "",
+            }
+            if "current_offer" in request.session.keys() and isinstance(
+                request.session["current_offer"], list
+            ):
+                request.session["current_offer"].append(item_ordered)
+            else:
+                request.session["current_offer"] = [item_ordered]
+            redirect("price_list")
         return render(request, "item_detail.html", {"item": item, "images": images})
     else:
         return render(request, "item_detail.html", {"error": "Item not found."})

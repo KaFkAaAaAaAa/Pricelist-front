@@ -28,6 +28,7 @@
                 </div>
                 <div class="col">
                     <form method="post">
+                        {% csrf_token %}
                         <label for="amount">{% trans "Amount" %}</label>
                         <input id="amount" name="amount" type="number" value="1" min="1" step="1" />
                         <label for="unit">{% trans "Unit" %}</label>
@@ -36,8 +37,9 @@
                             <option selected value="kg">kg</option>
                             <option value="g">g</option>
                         </select>
-                        <submit class="btn btn-outline-primary">{% trans "Add to your offer" %}</submit>
+                        <button type="submit" class="btn btn-outline-primary">{% trans "Add to your offer" %}</button>
                     </form>
+                        <br/>
                     <p>{% trans "Total:" %}{% comment %} suma ile kosztuje (ceny w kg!) {% endcomment %}</p>
                 </div>
                 </div>
