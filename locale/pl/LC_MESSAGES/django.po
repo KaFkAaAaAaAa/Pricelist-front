@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-10 13:52+0100\n"
+"POT-Creation-Date: 2025-02-11 12:54+0100\n"
 "PO-Revision-Date: 2025-02-05 00:32+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -117,6 +117,32 @@ msgstr "Angielski"
 msgid "Polski"
 msgstr "Polski"
 
+#: .\templates\edit_item_offer.html:11 .\templates\offer.html:11
+#, fuzzy
+#| msgid "Last Name"
+msgid "Name"
+msgstr "Nazwisko"
+
+#: .\templates\edit_item_offer.html:15 .\templates\item_detail.html:32
+#: .\templates\offer.html:12
+#, fuzzy
+#| msgid "Count"
+msgid "Amount"
+msgstr "Ilość"
+
+#: .\templates\edit_item_offer.html:26 .\templates\item_detail.html:21
+msgid "Price"
+msgstr "Cena"
+
+#: .\templates\edit_item_offer.html:30 .\templates\offer.html:14
+#: .\templates\order_list.html:13
+msgid "Total"
+msgstr "Suma"
+
+#: .\templates\edit_item_offer.html:34
+msgid "Additional informations"
+msgstr ""
+
 #: .\templates\item_detail.html:3
 msgid "Item Details"
 msgstr "Szczegóły przedmiotu"
@@ -129,59 +155,49 @@ msgstr "Miniatura przedmiotu"
 msgid "SKU"
 msgstr "SKU"
 
-#: .\templates\item_detail.html:21
-msgid "Price"
-msgstr "Cena"
-
-#: .\templates\item_detail.html:31
-#, fuzzy
-#| msgid "Count"
-msgid "Amount"
-msgstr "Ilość"
-
-#: .\templates\item_detail.html:33
+#: .\templates\item_detail.html:34
 msgid "Unit"
 msgstr ""
 
-#: .\templates\item_detail.html:39
+#: .\templates\item_detail.html:40
 msgid "Add to your offer"
 msgstr ""
 
-#: .\templates\item_detail.html:41
+#: .\templates\item_detail.html:43
 #, fuzzy
 #| msgid "Total"
 msgid "Total:"
 msgstr "Suma"
 
-#: .\templates\item_detail.html:47
+#: .\templates\item_detail.html:49
 msgid "Gallery"
 msgstr "Galeria"
 
-#: .\templates\item_detail.html:52 .\templates\item_detail.html:73
+#: .\templates\item_detail.html:54 .\templates\item_detail.html:75
 msgid "Gallery Image"
 msgstr "Galeria"
 
-#: .\templates\item_detail.html:60
+#: .\templates\item_detail.html:62
 msgid "Previous"
 msgstr "Poprzedni"
 
-#: .\templates\item_detail.html:65
+#: .\templates\item_detail.html:67
 msgid "Next"
 msgstr "Następny"
 
-#: .\templates\item_detail.html:82
+#: .\templates\item_detail.html:84
 msgid "Full Size Image"
 msgstr "Obraz w pełnym rozmiarze"
 
-#: .\templates\item_detail.html:87
+#: .\templates\item_detail.html:89
 msgid "Close"
 msgstr "Zamknij"
 
-#: .\templates\item_detail.html:96
+#: .\templates\item_detail.html:98
 msgid "Description"
 msgstr "Opis"
 
-#: .\templates\item_detail.html:101
+#: .\templates\item_detail.html:103
 msgid "Back to Price List"
 msgstr "Powrót do cennika"
 
@@ -197,11 +213,16 @@ msgstr "Nie masz konta? Zarejestruj się"
 msgid "Choose language"
 msgstr "Wybierz język"
 
-#: .\templates\navbar.html:49
+#: .\templates\navbar.html:27
 msgid "Offer"
 msgstr ""
 
-#: .\templates\navbar.html:52
+#: .\templates\navbar.html:40 .\templates\profile.html:3
+#: .\templates\profile.html:7
+msgid "Profile"
+msgstr "Profil"
+
+#: .\templates\navbar.html:44
 msgid "Logout"
 msgstr "Wyloguj się"
 
@@ -209,27 +230,37 @@ msgstr "Wyloguj się"
 msgid "New offer"
 msgstr "Nowa oferta"
 
-#: .\templates\offer.html:11
-#, fuzzy
-#| msgid "Last Name"
-msgid "Name"
-msgstr "Nazwisko"
-
-#: .\templates\offer.html:12
-msgid "Count"
-msgstr "Ilość"
-
 #: .\templates\offer.html:13
 msgid "Price/Kg"
 msgstr "Cena/Kg"
 
-#: .\templates\offer.html:14
-msgid "Total"
-msgstr "Suma"
+#: .\templates\offer.html:35
+msgid "No items added to the offer, add some items from the price list"
+msgstr ""
 
-#: .\templates\offer.html:28
+#: .\templates\offer.html:44
 msgid "Make offer"
 msgstr "Złóż ofertę"
+
+#: .\templates\order_list.html:6
+msgid "Offer list"
+msgstr ""
+
+#: .\templates\order_list.html:10
+msgid "Order status"
+msgstr ""
+
+#: .\templates\order_list.html:11
+#, fuzzy
+#| msgid "Save changes"
+msgid "Order change"
+msgstr "Zapisz zmiany"
+
+#: .\templates\order_list.html:12
+#, fuzzy
+#| msgid "Company Name"
+msgid "CompanyName"
+msgstr "Nazwa firmy"
 
 #: .\templates\price_list.html:3
 msgid "Price List"
@@ -266,10 +297,6 @@ msgstr ""
 "Ceny za 1 kg. Cennik ma charakter informacyjny. Ceny mogą ulec zmianie. Ceny "
 "nie są wiążące. Zastrzegamy sobie prawo do błędów typograficznych. Prosimy o "
 "kontakt w sprawie cen dla większych ilości lub specjalnych materiałów."
-
-#: .\templates\profile.html:3 .\templates\profile.html:7
-msgid "Profile"
-msgstr "Profil"
 
 #: .\templates\profile.html:11
 msgid "First Name"
@@ -326,3 +353,18 @@ msgid ""
 "credentials soon."
 msgstr ""
 "Dziękujemy za rejestrację. Wkrótce orzymasz e-mail z danymi do logowania"
+
+#~ msgid "Count"
+#~ msgstr "Ilość"
+
+msgid "Edit"
+msgstr "Edytuj"
+
+msgid "My orders"
+msgstr "Moje zamówienia"
+
+msgid "Country"
+msgstr "Kraj"
+
+msgid "Bank Number"
+msgstr "Numer konta bankowego"

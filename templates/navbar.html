@@ -8,6 +8,7 @@
         </a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto me-2">
+                <!-- Wybór języka -->
                 <form action="{% url 'set_language' %}" method="post" class="text-center me-4">
                     {% csrf_token %}
                     <div class="nav-item dropdown">
@@ -19,16 +20,31 @@
                     </div>
                     <input name="next" type="hidden" value="{{ request.path }}">
                 </form>
+
                 {% if request.session.token %}
-                    {% if not request.session.logged_user.user %}
-                        <li class="nav-item"><a class="nav-link" href="/admin/dashboard/">Admin Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/profile/">{{ request.session.logged_user.userEmail }}</a></li>
-                    {% else %}
-                        <li class="nav-item"><a class="nav-link" href="/profile/">{{ request.session.logged_user.clientCompanyName }}</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/profile/">{{ request.session.logged_user.user.userEmail }}</a></li>
-                    {% endif %}
-                    <li class="nav-item"><a class="btn btn-success" href="{% url 'offer' %}">{% trans "Offer" %}</a></li>
-                    <li class="nav-item ms-3"><a class="btn btn-outline-secondary" href="/logout">{% trans "Logout" %}</a></li>
+                    <!-- Przycisk "Offer" -->
+                    <li class="nav-item my-1 mx-2">
+                        <a class="btn btn-success" href="{% url 'offer' %}">{% trans "Offer" %}</a>
+                    </li>
+
+                    <!-- Menu Profilowe -->
+                    <li class="nav-item dropdown ms-3">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown">
+                            <img src="{% static 'media/user-icon.png' %}" alt="User" class="rounded-circle" width="30" height="30">
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            {% if not request.session.logged_user.user %}
+                                <li><a class="dropdown-item" href="/admin/dashboard/">Admin Dashboard</a></li>
+                                <li><a class="dropdown-item" href="/profile/">{{ request.session.logged_user.userEmail }}</a></li>
+                            {% else %}
+                                <li><a class="dropdown-item" href="/">{% trans "My orders" %}</a></li>
+                                <li><a class="dropdown-item" href="/profile/">{% trans "Profile" %}</a></li>
+                                <li><a class="dropdown-item" href="/templates/change_password.html">{% trans "Edit" %}</a></li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="/logout">{% trans "Logout" %}</a></li>
+                        </ul>
+                    </li>
                 {% endif %}
             </ul>
         </div>
