@@ -1,47 +1,37 @@
 {% load static %}
 {% load i18n %}
 {% block navbar %}
-    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: white">
-        <div class="container-fluid">
-            <a class="navbar-brand ms-2" href="/">
-                <img src="/images/alku-logo-2013-10-17.jpg" alt="ALKU-GMBH" class="img"/>
-            </a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto me-2">
-                    {% load i18n %}
-                    <form action="{% url 'set_language' %}" method="post" class="text-center me-4">
-                        {% csrf_token %}
-                        <input name="next" type="hidden" value="{{ request.path }}">
-                        <button type="submit" name="language" value="en" class="btn btn-outline-primary">English
-                        </button>
-                        <button type="submit" name="language" value="pl" class="btn btn-outline-primary">Polski</button>
-                    </form>
-                    {% if request.session.token %}
-                        {#                    <li class="nav-item">#}
-                        {#                        <a class="nav-link" href="{% url 'client_dashboard' %}">Client dashboard</a>#}
-                        {#                    </li>#}
-                        {% if not request.session.logged_user.user %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="/admin/dashboard/">Admin Dashboard</a>
-                            </li>
-                            <li>
-                                <a class="nav-link" href="/profile/">{{ request.session.logged_user.userEmail }}</a>
-                            </li>
-                        {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="/profile/">{{ request.session.logged_user.clientCompanyName }}</a>
-                            <a class="nav-link" href="/profile/">{{ request.session.logged_user.user.userEmail }}</a>
-                        </li>
-                        {% endif %}
-                        <li class="nav-item">
-                            <a class="btn btn-success" href="{% url 'offer' %}">{% trans "Offer" %}</a>
-                        </li>
-                        <li class="nav-item ms-3">
-                            <a class="btn btn-outline-secondary" href="/logout">{% trans "Logout" %}</a>
-                        </li>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand ms-2" href="/">
+            <img src="{% static 'images/alku-logo-2013-10-17.jpg' %}" alt="ALKU-GMBH" class="img"/>
+        </a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto me-2">
+                <form action="{% url 'set_language' %}" method="post" class="text-center me-4">
+                    {% csrf_token %}
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{% trans "Choose language" %}</a>
+                        <ul class="dropdown-menu">
+                            <li><button type="submit" name="language" value="en" class="dropdown-item">English</button></li>
+                            <li><button type="submit" name="language" value="pl" class="dropdown-item">Polski</button></li>
+                        </ul>
+                    </div>
+                    <input name="next" type="hidden" value="{{ request.path }}">
+                </form>
+                {% if request.session.token %}
+                    {% if not request.session.logged_user.user %}
+                        <li class="nav-item"><a class="nav-link" href="/admin/dashboard/">Admin Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/profile/">{{ request.session.logged_user.userEmail }}</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="/profile/">{{ request.session.logged_user.clientCompanyName }}</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/profile/">{{ request.session.logged_user.user.userEmail }}</a></li>
                     {% endif %}
-                </ul>
-            </div>
+                    <li class="nav-item"><a class="btn btn-success" href="{% url 'offer' %}">{% trans "Offer" %}</a></li>
+                    <li class="nav-item ms-3"><a class="btn btn-outline-secondary" href="/logout">{% trans "Logout" %}</a></li>
+                {% endif %}
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 {% endblock %}
