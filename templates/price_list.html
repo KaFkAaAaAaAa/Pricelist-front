@@ -3,59 +3,58 @@
 {% block title %}{% trans "Price List" %}{% endblock %}
 
 {% block content %}
-<!-- TODO: cleanup align-middles ;< -->
-        <form method="GET" class="container">
-            <div class="row w-50 align-items-center">
-                <div class="col-12 col-sm-5 mb-2">
-                    <input
-                        type="text"
-                        class="form-control"
-                        id="search"
-                        name="search"
-                        placeholder="{% trans "Search" %}..."
-                    />
-                </div>
-                <div class="col-12 col-sm-5 d-flex justify-content-gap-2 mb-2">
-                    <button class="btn btn-outline-secondary">{% trans "Search" %}</button>
-                    <a class="btn btn-outline-secondary" href="/">{% trans "Clear" %}</a>
-                </div>
-            </div>
-        </form>
-    <div class="font-weight-light text-end">{% trans "February" %} 2025</div>
-    <table class="table table-bordered mt-3 align-middle" style="font-family: Calibri, sans-serif">
+<form method="GET" class="container">
+    <div class="row w-50">
+        <div class="col-12 col-sm-5">
+            <input
+                type="text"
+                class="form-control"
+                id="search"
+                name="search"
+                placeholder="{% trans "Search" %}..."
+            />
+        </div>
+        <div class="col-12 col-sm-5">
+            <a class="btn btn-outline-secondary mx-1" href="/">{% trans "Clear" %}</a>
+            <button class="btn btn-outline-secondary me-1">{% trans "Search" %}</button>    
+        </div>
+    </div>
+</form>
+<div class="font-weight-light text-end">{% trans "February" %} 2025</div>
+<table class="table table-bordered mt-1 align-middle" style="font-family: Calibri, sans-serif">
     <tbody>
         {% for sorting_category in categories %}
             {% for category, item_list in items.items %}
                 {% if category == sorting_category %}
                     {% if item_list %}
-                    <tr class="d-flex">
-                        <th class="flex-shrink-0" style="background-color: #9E0F06; width: 100px; border-right: 0 solid;"></th>
-                        <th colspan="4" class="text-left fs-4 py-2 text-light fw-semibold text-uppercase align-middle flex-fill" style="background-color: #9E0F06; border-left: 0px solid;">{{ category }}</th>
+                    <tr class="d-flex align-middle">
+                        <th class="flex-shrink-0 align-middle" style="background-color: #9E0F06; width: 100px; border-right: 0 solid; vertical-align: middle;"></th>
+                        <th colspan="4" class="text-left fs-4 py-2 text-light fw-semibold text-uppercase align-middle flex-fill" style="background-color: #9E0F06; border-left: 0px solid; vertical-align: middle;">{{ category }}</th>
                     </tr>
                         {% for item in item_list %}
-                            <tr class="colored-row d-flex align-middle" onclick="window.location.href='/item/{{ item.sku }}/';" style="cursor: pointer; font-size: 19px">
+                            <tr class="colored-row d-flex align-middle" onclick="window.location.href='/item/{{ item.sku }}/';" style="cursor: pointer; font-size: 19px; vertical-align: middle;">
                                 {% if item.path %}
-                                    <td class="text-center px-0 flex-shrink-0 align-items-middle" style="width: 100px;"><img src="{{ item.path }}" alt="{% trans "Item Image" %}" class="img" style="width: 80px; height: auto"/></td>
+                                    <td class="text-center px-0 flex-shrink-0 align-middle" style="width: 100px; vertical-align: middle;"><img src="{{ item.path }}" alt="{% trans "Item Image" %}" class="img" style="width: 80px; height: auto; vertical-align: middle;"/></td>
                                 {% else %}
-                                    <td class="flex-shrink-0 align-items-middle" style="width: 100px;"></td>
+                                    <td class="flex-shrink-0 align-middle" style="width: 100px; vertical-align: middle;"></td>
                                 {% endif %}
                                 {% if forloop.counter|divisibleby:2 %}
-                                <td class="text-center flex-shrink-0 align-items-middle bg-light" style="font-size: 17px; width: 80px">{{ item.sku }}</td>
-                                <td class="flex-fill align-items-middle bg-light" style="font-size: 17px">{{ item.name }}</td>
-                                <td class="text-end fw-semibold flex-shrink-0 align-items-middle bg-light" style="font-size: 20px; width: 120px">{{ item.price }} €</td>
+                                <td class="text-center flex-shrink-0 align-middle bg-light" style="font-size: 17px; width: 80px; vertical-align: middle;">{{ item.sku }}</td>
+                                <td class="flex-fill align-middle bg-light" style="font-size: 17px; vertical-align: middle;">{{ item.name }}</td>
+                                <td class="text-end fw-semibold flex-shrink-0 align-middle bg-light" style="font-size: 20px; width: 120px; vertical-align: middle;">{{ item.price }} €</td>
                                     {% if item.price_pln %}
-                                        <td class="text-end fw-semibold flex-shrink-0 align-items-middle bg-light" style="font-size: 20px; width: 130px">{{ item.price_pln }} zł</td>
+                                        <td class="text-end fw-semibold flex-shrink-0 align-middle bg-light" style="font-size: 20px; width: 130px; vertical-align: middle;">{{ item.price_pln }} zł</td>
                                     {% endif %}
-                                <td class="bg-light"><a class="btn btn-outline-primary" href="/item/{{ item.sku }}/offer/">{% trans "To offer" %}</a></td>
+                                <td class="bg-light align-middle" style="vertical-align: middle;"><a class="btn btn-outline-primary" href="/item/{{ item.sku }}/offer/">{% trans "To offer" %}</a></td>
                                 {% else %}
-                                <td class="text-center flex-shrink-0 align-items-middle" style="font-size: 17px; width: 80px">{{ item.sku }}</td>
-                                <td class="flex-fill align-items-middle" style="font-size: 17px">{{ item.name }}</td>
-                                <td class="text-end fw-semibold flex-shrink-0 align-items-middle" style="font-size: 20px; width: 120px">{{ item.price }} €</td>
+                                <td class="text-center flex-shrink-0 align-middle" style="font-size: 17px; width: 80px; vertical-align: middle;">{{ item.sku }}</td>
+                                <td class="flex-fill align-middle" style="font-size: 17px; vertical-align: middle;">{{ item.name }}</td>
+                                <td class="text-end fw-semibold flex-shrink-0 align-middle" style="font-size: 20px; width: 120px; vertical-align: middle;">{{ item.price }} €</td>
                                     {% if item.price_pln %}
-                                        <td class="text-end fw-semibold flex-shrink-0 align-items-middle bg-light" style="font-size: 20px; width: 130px">{{ item.price_pln }} zł</td>
+                                        <td class="text-end fw-semibold flex-shrink-0 align-middle bg-light" style="font-size: 20px; width: 130px; vertical-align: middle;">{{ item.price_pln }} zł</td>
                                     {% endif %}
+                                    <td class="align-middle" style="vertical-align: middle;"><a class="btn btn-outline-primary" href="/item/{{ item.sku }}/offer/">{% trans "To offer" %}</a></td>
                                 {% endif %}
-                                <td class=""><a class="btn btn-outline-primary" href="/item/{{ item.sku }}/offer/">{% trans "To offer" %}</a></td>
                             </tr>
                         {% endfor %}
                     {% endif %}
@@ -64,5 +63,5 @@
         {% endfor %}
     </tbody>
 </table>
-<div class="font-weight-light text-center text muted">{% trans "Prices per 1 kg. The price list is for information purposes only. Prices are subject to change. Prices are not binding. Typographical errors excepted. Please contact us for prices for larger quantities or special materials." %}</div>
+<div class="font-weight-light text-center text-muted">{% trans "Prices per 1 kg. The price list is for information purposes only. Prices are subject to change. Prices are not binding. Typographical errors excepted. Please contact us for prices for larger quantities or special materials." %}</div>
 {% endblock %}

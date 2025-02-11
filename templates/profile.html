@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block title %}{% trans "Profile" %}{% endblock %}
 {% block content %}
-    <div class="container d-flex justify-content-center">
+    <div class="container d-flex justify-content-center mb-4">
         <div class="w-50">
             <h2 class="text-center">{% trans "Profile" %}</h2>
             <form method="post">
@@ -89,7 +89,7 @@
                         />
                     </div>
                     <div class="mb-3">
-                        <label for="clientCountry" class="form-label h5">Country</label>
+                        <label for="clientCountry" class="form-label h5">{% trans "Country" %}</label>
                         <input
                                 type="text"
                                 class="form-control"
@@ -99,7 +99,7 @@
                         />
                     </div>
                     <div class="mb-3">
-                        <label for="clientBankNumber" class="form-label h5">Bank Number</label>
+                        <label for="clientBankNumber" class="form-label h5">{%  trans "Bank Number" %}</label>
                         <input
                                 type="text"
                                 class="form-control"
