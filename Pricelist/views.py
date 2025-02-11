@@ -1,16 +1,17 @@
+import re
+import xml.etree.ElementTree as ET
+from math import floor
 from typing import Iterable
 from uuid import UUID
-from django.http.response import Http404, HttpResponseForbidden
-from django.http.response import HttpResponseNotFound
+
 import requests
-from django.shortcuts import render, redirect
-from .forms import LoginForm, PasswordResetForm, RegisterForm, NewAdminForm
 from django.core.files.storage import FileSystemStorage
-import re
-from django.utils.translation import gettext as _
+from django.http.response import Http404, HttpResponseForbidden, HttpResponseNotFound
+from django.shortcuts import redirect, render
 from django.utils.translation import get_language
-from math import floor
-import xml.etree.ElementTree as ET
+from django.utils.translation import gettext as _
+
+from .forms import LoginForm, NewAdminForm, PasswordResetForm, RegisterForm
 
 API_BASE_URL = "http://127.0.0.1:8888"
 
@@ -200,6 +201,7 @@ def client_panel(request):
     # TODO: add some logic
     return render(request, "client_dashboard.html")
 
+
 def offer(request):
 
     token = request.session.get("token")
@@ -209,16 +211,24 @@ def offer(request):
         return redirect("login")
     headers = auth["headers"]
 
-    # items = request.session["shopping_cart"] # formatted properly for the offer object
-
-    if request.method == 'POST':
+    if request.method == "POST":
         payload = {
-                "orderDescription": request.POST["order_description"],
-                "orderItemsOrdered": request.POST["items_ordered"],
+            "description": request.POST["order_description"],
+            "itemsOrdered": request.session["current_offer"],
         }
-        requests.post(f"{API_BASE_URL}/order/", headers=headers, json=payload)
+        for item in payload["itemsOrdered"]:
+            item["price"] = int(floor(100 * float(item.get("price"))))
+        __import__("pdb").set_trace()
+        response = requests.post(
+            f"{API_BASE_URL}/orders/", headers=headers, json=payload
+        )
+        if response.status_code == 200:
+            # request.session["current_offer"] = []
+            request.session.modified = True
+            return redirect("price_list")
 
     return render(request, "offer.html")
+
 
 def price_list(request):
 
@@ -266,6 +276,32 @@ def price_list(request):
     )
 
 
+def delete_from_offer(request, item_sku):
+    item_skus = [item.get("sku") for item in request.session["current_offer"]]
+    index = item_skus.index(item_sku)
+    if index is not None:
+        request.session["current_offer"].pop(index)
+        request.session.modified = True
+    return redirect("offer")
+
+
+def edit_item_offer(request, item_sku):
+    item_skus = [item.get("sku") for item in request.session["current_offer"]]
+    index = item_skus.index(item_sku)
+    if index is None:
+        return redirect("offer")
+    if request.method == "POST":
+        request.session["current_offer"][index]["amount"] = request.POST["amount"]
+        request.session["current_offer"][index]["additionalInfo"] = request.POST[
+            "additionalInfo"
+        ]
+    item = request.session.get("current_offer")[index]
+    request.session.modified = True
+    if request.method == "POST":
+        return redirect("offer")
+    return render(request, "edit_item_offer.html", {"item": item})
+
+
 def item_detail(request, item_sku):
     if not re.match(r"^\w\w\d\d$", item_sku):
         raise Http404
@@ -289,6 +325,37 @@ def item_detail(request, item_sku):
                 item["price_pln"] = floor(item["price"] * pln_exr)
                 item["price_pln"] = f"{item['price_pln'] / 100:.2f}"
         item["price"] = f"{item['price'] / 100:.2f}"
+        if request.method == "POST":
+            units = {
+                "kg": 1,
+                "g": 0.001,
+                "t": 1000,
+            }
+            unit_multi = units.get(request.POST["unit"])
+            amount = request.POST["amount"] * unit_multi
+            item_ordered = {
+                "sku": item.get("sku"),
+                "name": item.get("name"),
+                "price": item.get("price"),
+                "amount": amount,
+                "additionalInfo": "",
+            }
+            if (
+                "current_offer" in request.session.keys()
+                and isinstance(request.session["current_offer"], list)
+                and request.session["current_offer"]
+            ):
+                if item_ordered.get("sku") not in [
+                    item["sku"] for item in request.session["current_offer"]
+                ]:
+                    request.session["current_offer"].append(item_ordered)
+                else:
+                    # TODO: figure out some way to handle "item is already in the order" situation
+                    pass
+            else:
+                request.session["current_offer"] = [item_ordered]
+            request.session.modified = True
+            return redirect("price_list")
         return render(request, "item_detail.html", {"item": item, "images": images})
     else:
         return render(request, "item_detail.html", {"error": "Item not found."})
