@@ -117,7 +117,6 @@ def client_orders(request, user_id):
     )
     orders = response.json()
     for order in orders:
-        __import__("pdb").set_trace()
         if order["orderStatusHistory"]:
             order["status"] = order["orderStatusHistory"][-1]["status"]
             order["status_time"] = order["orderStatusHistory"][-1]["time"]

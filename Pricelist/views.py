@@ -218,7 +218,6 @@ def offer(request):
         }
         for item in payload["itemsOrdered"]:
             item["price"] = int(floor(100 * float(item.get("price"))))
-        __import__("pdb").set_trace()
         response = requests.post(
             f"{API_BASE_URL}/orders/", headers=headers, json=payload
         )
@@ -228,6 +227,44 @@ def offer(request):
             return redirect("price_list")
 
     return render(request, "offer.html")
+
+
+def _parse_sku_into_offer(request, headers):
+    items = request.POST
+    for sku in items:
+        if not re.match(r"^\w\w\d\d$", sku):
+            continue
+
+        response = requests.get(
+            f"{API_BASE_URL}/items/{sku}?lang={request.LANGUAGE_CODE.upper()}",
+            headers=headers,
+        )
+        amount = items[sku]
+        item = response.json()
+
+        item_ordered = {
+            "sku": item.get("sku"),
+            "name": item.get("name"),
+            "price": item.get("price"),
+            "amount": amount,
+            "additionalInfo": "",
+        }
+        if (
+            "current_offer" in request.session.keys()
+            and isinstance(request.session["current_offer"], list)
+            and request.session["current_offer"]
+        ):
+            if item_ordered.get("sku") not in [
+                item["sku"] for item in request.session["current_offer"]
+            ]:
+                request.session["current_offer"].append(item_ordered)
+            else:
+                # TODO: figure out some way to handle "item is already in the order" situation
+                pass
+        else:
+            request.session["current_offer"] = [item_ordered]
+        request.session.modified = True
+    return redirect("offer")
 
 
 def price_list(request):
@@ -243,6 +280,9 @@ def price_list(request):
         return HttpResponseForbidden(
             "<h1>You do not have access to that page<h1>".encode("utf-8")
         )
+
+    if request.method == "POST":
+        return _parse_sku_into_offer(request, headers)
 
     lang = request.LANGUAGE_CODE.upper()
     pln_exr = False
@@ -357,8 +397,7 @@ def item_detail(request, item_sku):
             request.session.modified = True
             return redirect("price_list")
         return render(request, "item_detail.html", {"item": item, "images": images})
-    else:
-        return render(request, "item_detail.html", {"error": "Item not found."})
+    return render(request, "item_detail.html", {"error": "Item not found."})
 
 
 def profile(request):

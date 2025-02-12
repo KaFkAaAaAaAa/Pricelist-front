@@ -40,7 +40,7 @@ urlpatterns = (
             name="delete_from_offer",
         ),
         path(
-            "offeadmin_r/<str:item_sku>/edit/",
+            "offer/<str:item_sku>/edit/",
             views.edit_item_offer,
             name="edit_item_offer",
         ),
@@ -128,3 +128,4 @@ urlpatterns = (
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
