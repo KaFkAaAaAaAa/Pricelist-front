@@ -59,7 +59,7 @@
                                         onclick="window.location.href='/item/{{ item.sku }}/';"
                                         >{{ item.price_pln }} zł</td>
                                     {% endif %}
-                                <td class="align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}" style="vertical-align: middle;"><input type="number" placeholder="0.0" step="0.1" name="{{ item.sku }}"/> kg</td>
+                                <td class="align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}" style="vertical-align: middle;"><input type="number" style="width: 80px" placeholder="0.0" step="0.1" name="{{ item.sku }}"/> kg</td>
                             </tr>
                         {% endfor %}
                     {% endif %}
