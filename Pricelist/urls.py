@@ -20,30 +20,20 @@ from django.conf.urls.i18n import set_language
 from django.conf.urls.static import static
 
 # from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import include, path, re_path
 
 from admin import admin_views
 from Pricelist import views
 
 urlpatterns = (
     [
+        path("transactions/", include("transactions.urls")),
         path("profile/", views.profile, name="profile"),
         path("login/", views.login_view, name="login"),
         path("logout/", views.logout_view, name="logout"),
         path("register/", views.register_view, name="register"),
         path("profile/change-password/", views.change_password, name="change_password"),
         path("client_dashboard/", views.client_panel, name="client_dashboard"),
-        path("offer/", views.offer, name="offer"),
-        path(
-            "offer/<str:item_sku>/delete/",
-            views.delete_from_offer,
-            name="delete_from_offer",
-        ),
-        path(
-            "offer/<str:item_sku>/edit/",
-            views.edit_item_offer,
-            name="edit_item_offer",
-        ),
         path("", views.price_list, name="price_list"),
         path("item/<str:item_sku>/", views.item_detail, name="item_detail"),
         path("admin/dashboard/", views.admin_dashboard, name="admin_dashboard"),
@@ -77,11 +67,6 @@ urlpatterns = (
             "admin/clients/<uuid:user_id>/assign-admin",
             views.assign_admin,
             name="assign_admin",
-        ),
-        path(
-            "admin/clients/<uuid:user_id>/orders",
-            admin_views.client_orders,
-            name="client_orders",
         ),
         path(
             "admin/my-users/",
@@ -128,4 +113,3 @@ urlpatterns = (
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
