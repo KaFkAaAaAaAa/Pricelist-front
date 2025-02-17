@@ -9,3 +9,6 @@ ips
 images/*
 admin/__pycache__
 .venv
+transactions/migrations/__init__.py
+transactions/__pycache__
+.env

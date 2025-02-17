@@ -8,9 +8,9 @@
             <thead>
             <tr>
                 <th scope="col">{% trans "SKU" %}</th>
-                <th scope="col">{% trans "Name" %}</th>
+                <th scope="col">{% trans "Product" %}</th>
                 <th scope="col">{% trans "Amount" %}</th>
-                <th scope="col">{% trans "Price/Kg" %}</th>
+                <th scope="col">{% trans "Price" %}</th>
                 <th scope="col">{% trans "Total" %}</th>
                 <th></th>
             </tr>
@@ -25,8 +25,8 @@
                     <td>{{ item.price }}</td>
                     <td>Price * Amount</td>
                     <td>
-                        <a class="btn btn-outline-secondary" href="/offer/{{item.sku}}/edit/">Edit</a>
-                        <a class="btn btn-outline-danger" href="/offer/{{item.sku}}/delete/">Delete</a>
+                        <a class="btn btn-outline-secondary" href="/transactions/offer/{{item.sku}}/edit/">Edit</a>
+                        <a class="btn btn-outline-danger" href="/transactions/offer/{{item.sku}}/delete/">Delete</a>
                     </td>
                 </tr>
                 {% endfor %}

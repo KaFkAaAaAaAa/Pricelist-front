@@ -86,10 +86,9 @@ def edit_admin(request, admin_id):
 
         if response.status_code == 200:
             return redirect("admin_list")
-        else:
-            # TODO: user might want to know what went wrong
-            error = "Something went wrong!"
-            return render(request, "edit_admin.html", {"err": error})
+        # TODO: user might want to know what went wrong
+        error = "Something went wrong!"
+        return render(request, "edit_admin.html", {"err": error})
 
     try:
         admin = requests.get(f"{API_BASE_URL}/users/admin/{admin_id}").json()
@@ -97,31 +96,3 @@ def edit_admin(request, admin_id):
         return render(request, "edit_admin.html", {"err": "API ERROR!"})
 
     return render(request, "edit_admin.html", {"admin": admin})
-
-
-def client_orders(request, user_id):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
-    if auth.get("group") not in ADMIN_GROUPS:
-        return HttpResponseForbidden(
-            "<h1>You do not have access to that page<h1>".encode("utf-8")
-        )
-
-    response = requests.get(
-        f"{API_BASE_URL}/orders/admin/client/{user_id}/", headers=headers
-    )
-    orders = response.json()
-    for order in orders:
-        __import__("pdb").set_trace()
-        if order["orderStatusHistory"]:
-            order["status"] = order["orderStatusHistory"][-1]["status"]
-            order["status_time"] = order["orderStatusHistory"][-1]["time"]
-        else:
-            order["status"] = "none"
-            order["status_time"] = "none"
-    return render(request, "order_list.html", {"orders": orders})

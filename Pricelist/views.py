@@ -12,84 +12,69 @@ from django.utils.translation import get_language
 from django.utils.translation import gettext as _
 
 from .forms import LoginForm, NewAdminForm, PasswordResetForm, RegisterForm
-
-API_BASE_URL = "http://127.0.0.1:8888"
-
-ADMIN_GROUPS = ["ADMIN", "OWNER"]
-
-CLIENT_GROUPS = ["FIRST", "SECOND", "THIRD", "FOURTH"]
-
-GROUPS_ROMAN = ["I", "II", "III", "IV"]
-
-LANGS = ["PL", "EN", "DE", "FR", "IT"]
-
-CATEGORIES = {
-    "PL": [
-        "Procesory",
-        "Płytki",
-        "Pamięci",
-        "Elementy Komputera",
-        "Całe urządzenia",
-        "Kable i wtyczki",
-        "Elementy z zawartością miedzi",
-        "Metale",
-    ],
-    "DE": [
-        "Prozessoren",
-        "Platinen",
-        "Speicher",
-        "Computerkomponenten",
-        "Ganze Geräte",
-        "Kabel und Stecker",
-        "Kupferhaltige Elemente",
-        "Metalle",
-    ],
-    "EN": [
-        "Processors",
-        "Boards",
-        "Memory",
-        "Computer Components",
-        "Complete Devices",
-        "Cables and Plugs",
-        "Copper Components",
-        "Metals",
-    ],
-    "FR": [
-        "Processeurs",
-        "Carrelage",
-        "En mémoire",
-        "Composants informatiques",
-        "Appareils entiers",
-        "Câbles et prises",
-        "Éléments contenant du cuivre",
-        "Metaux",
-    ],
-    "IT": [
-        "Processori",
-        "Piastrelle",
-        "In memoria",
-        "Componenti del computer",
-        "Dispositivi interi",
-        "Cavi e spine",
-        "Elementi contenenti rame",
-        "Metalli",
-    ],
-}
-
+from .settings import (
+    ADMIN_GROUPS,
+    API_BASE_URL,
+    CATEGORIES,
+    CLIENT_GROUPS,
+    GROUPS_ROMAN,
+)
 
 # TODO: JSON errors -> if json error then redirect(login)
 
 
-def favicon(request):
+def favicon():
+    """render 404 for favicon request"""
     return HttpResponseNotFound()
 
 
+def _parse_sku_into_offer(request, headers):
+    """add info needed for offer form api to session, uses request post param, helper for price_list func"""
+    items = request.POST
+    for sku in items:
+        if not re.match(r"^\w\w\d\d$", sku):
+            continue
+
+        response = requests.get(
+            f"{API_BASE_URL}/items/{sku}?lang={request.LANGUAGE_CODE.upper()}",
+            headers=headers,
+        )
+        amount = items[sku]
+        item = response.json()
+
+        item_ordered = {
+            "sku": item.get("sku"),
+            "name": item.get("name"),
+            "price": f"{item.get("price") / 100:.2f}",
+            "amount": amount,
+            "additionalInfo": "",
+        }
+        if (
+            "current_offer" in request.session.keys()
+            and isinstance(request.session["current_offer"], list)
+            and request.session["current_offer"]
+        ):
+            if item_ordered.get("sku") not in [
+                item["sku"] for item in request.session["current_offer"]
+            ]:
+                request.session["current_offer"].append(item_ordered)
+            else:
+                # TODO: figure out some way to handle "item is already in the order" situation
+                pass
+        else:
+            request.session["current_offer"] = [item_ordered]
+        request.session.modified = True
+    return redirect("offer")
+
+
 def _get_PLN_exr():
+    """return PLN exchange rate from euro, from file"""
     with open("pln_exr.txt", "r", encoding="utf-8") as f:
         return float(f.read().rstrip().split("\t")[-1])
 
 
 def _get_auth(token):
+    """helper func in authorization process, returns null when user is not authenticated, and a dictiornary with user's data"""
     if not token:
         return
     headers = {"Authorization": f"Bearer {token}"}
@@ -132,7 +117,6 @@ def _group_to_roman(group_to_translate):
 
 # Login View
 def login_view(request):
-
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -162,6 +146,7 @@ def login_view(request):
 
 # Logout View
 def logout_view(request):
+    """logout"""
     request.session.flush()
     return redirect("login")
 
@@ -202,34 +187,6 @@ def client_panel(request):
     return render(request, "client_dashboard.html")
 
 
-def offer(request):
-
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
-    if request.method == "POST":
-        payload = {
-            "description": request.POST["order_description"],
-            "itemsOrdered": request.session["current_offer"],
-        }
-        for item in payload["itemsOrdered"]:
-            item["price"] = int(floor(100 * float(item.get("price"))))
-        __import__("pdb").set_trace()
-        response = requests.post(
-            f"{API_BASE_URL}/orders/", headers=headers, json=payload
-        )
-        if response.status_code == 200:
-            # request.session["current_offer"] = []
-            request.session.modified = True
-            return redirect("price_list")
-
-    return render(request, "offer.html")
-
-
 def price_list(request):
 
     token = request.session.get("token")
@@ -243,6 +200,9 @@ def price_list(request):
         return HttpResponseForbidden(
             "<h1>You do not have access to that page<h1>".encode("utf-8")
         )
+
+    if request.method == "POST":
+        return _parse_sku_into_offer(request, headers)
 
     lang = request.LANGUAGE_CODE.upper()
     pln_exr = False
@@ -274,32 +234,6 @@ def price_list(request):
     return render(
         request, "price_list.html", {"items": items, "categories": CATEGORIES[lang]}
     )
-
-
-def delete_from_offer(request, item_sku):
-    item_skus = [item.get("sku") for item in request.session["current_offer"]]
-    index = item_skus.index(item_sku)
-    if index is not None:
-        request.session["current_offer"].pop(index)
-        request.session.modified = True
-    return redirect("offer")
-
-
-def edit_item_offer(request, item_sku):
-    item_skus = [item.get("sku") for item in request.session["current_offer"]]
-    index = item_skus.index(item_sku)
-    if index is None:
-        return redirect("offer")
-    if request.method == "POST":
-        request.session["current_offer"][index]["amount"] = request.POST["amount"]
-        request.session["current_offer"][index]["additionalInfo"] = request.POST[
-            "additionalInfo"
-        ]
-    item = request.session.get("current_offer")[index]
-    request.session.modified = True
-    if request.method == "POST":
-        return redirect("offer")
-    return render(request, "edit_item_offer.html", {"item": item})
 
 
 def item_detail(request, item_sku):
@@ -357,8 +291,7 @@ def item_detail(request, item_sku):
             request.session.modified = True
             return redirect("price_list")
         return render(request, "item_detail.html", {"item": item, "images": images})
-    else:
-        return render(request, "item_detail.html", {"error": "Item not found."})
+    return render(request, "item_detail.html", {"error": "Item not found."})
 
 
 def profile(request):
@@ -636,19 +569,21 @@ def delete_image(request, image_path):
             "<h1>You do not have access to that page<h1>".encode("utf-8")
         )
 
+    redir_url = request.headers.get("referer")
     fs = FileSystemStorage()
     image_fs = image_path.split("/")[-1]
     if fs.exists(image_fs):
         fs.delete(image_fs)
     if re.match(r".*\.M\..*", image_path):
         sku = re.match(r"\w\w\d\d(?=.*)", image_path)
+        if not sku:
+            return redirect(redir_url)
         requests.post(
             f"{API_BASE_URL}/items/admin/{sku.group()}/img-path",
             headers=headers,
             data={"path": ""},
         )
     fs.delete(image_path)
-    redir_url = request.headers.get("referer")
     if not redir_url:
         # error improper request
         redir_url = "item_list"
@@ -1077,6 +1012,11 @@ def client_add(request):
             )
     else:
         form = RegisterForm()
+        for field in form.visible_fields():
+            if "placeholder" in field.widget.attrs:
+                field.widget.attrs["placeholder"] = field.widget.attrs[
+                    "placeholder"
+                ].replace(_("your "), "")
     return render(request, "new_client.html", {"form": form})
 
 

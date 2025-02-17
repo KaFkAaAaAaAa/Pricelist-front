@@ -1,29 +1,28 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}Offer List{% endblock %}
+{% block title %}Transaction List{% endblock %}
 {% block content %}
     <div class="container text-center">
-        <h2 class="text-center">{% trans "Offer list" %}</h2>
-        <table class="table">
+        <button class="btn btn-sm btn-outline-danger float-start mb-4" onclick="history.back()">Go back</button>
+        <table class="table table-hover table-striped">
             <thead>
             <tr>
-                <th scope="col">{% trans "Order status" %}</th>
-                <th scope="col">{% trans "Order change" %}</th>
-                <th scope="col">{% trans "CompanyName" %}</th>
+                <th scope="col">{% trans "Transaction status" %}</th>
+                <th scope="col">{% trans "Transaction last change" %}</th>
+                <th scope="col">{% trans "Company name" %}</th>
                 <th scope="col">{% trans "Total" %}</th>
             </tr>
             </thead>
             <tbody>
             {% for order in orders %}
-            <tr>
+            <tr onclick="window.location.href='/admin/orders/{{ order.uuid }}';">
                 <td>{{ order.status }}</td>
                 <td>{{ order.status_time}}</td>
                 <td>{{ order.orderClient.clientCompanyName }}</td>
-                <td>total price</td>
+                <td>&lttotal price&gt</td>
             </tr>
             {% endfor %}
             </tbody>
         </table>
-    </form>
     </div>
 {% endblock %}
