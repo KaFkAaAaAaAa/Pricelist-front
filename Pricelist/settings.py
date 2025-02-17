@@ -32,8 +32,8 @@ STATICFILES_DIRS = [
 ]
 
 # CONST
-# warnings about str | none - the app should not start when val is null, and it is
-# hard to create default values
+# warnings about str | none - the app should not start when the values are null,
+# and it is hard to create default values for them
 ADMIN_GROUPS = json.loads(os.getenv("ADMIN_GROUPS", "ADMIN"))
 CLIENT_GROUPS = json.loads(os.getenv("CLIENT_GROUPS"))
 GROUPS_ROMAN = json.loads(os.getenv("GROUPS_ROMAN"))
