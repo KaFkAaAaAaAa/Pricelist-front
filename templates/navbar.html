@@ -23,19 +23,19 @@
 
                 {% if request.session.token %}
                     <!-- Przycisk "Offer" -->
-                    <li class="nav-item my-1 mx-2">
+                    <li class="nav-item my-1 mx-3">
                         <a class="btn btn-success" href="{% url 'offer' %}">{% trans "Offer" %}</a>
                     </li>
 
                     <!-- Menu Profilowe -->
-                    <li class="nav-item dropdown ms-3">
+                    <li class="nav-item dropdown ms-4">
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown">
                             <img src="{% static 'media/user-icon.png' %}" alt="User" class="rounded-circle" width="30" height="30">
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             {% if not request.session.logged_user.user %}
-                                <li><a class="dropdown-item" href="/admin/dashboard/">Admin Dashboard</a></li>
-                                <li><a class="dropdown-item" href="/profile/">{{ request.session.logged_user.userEmail }}</a></li>
+                                <li><a class="dropdown-item" href="/admin/dashboard/">{% trans "Admin Dashboard" %}</a></li>
+                                <li><a class="dropdown-item" href="/profile/">{% trans "Profile" %}</a></li>
                             {% else %}
                                 <li><a class="dropdown-item" href="/">{% trans "My orders" %}</a></li>
                                 <li><a class="dropdown-item" href="/profile/">{% trans "Profile" %}</a></li>
