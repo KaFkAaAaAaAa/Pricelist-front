@@ -32,10 +32,13 @@
             {% for category, item_list in items.items %}
                 {% if category == sorting_category %}
                     {% if item_list %}
-                    <tr class="d-flex align-middle">
-                        <th class="flex-shrink-0 align-middle" style="background-color: #9E0F06; width: 100px; border-right: 0 solid; vertical-align: middle;"></th>
-                        <th colspan="4" class="text-left fs-4 py-2 text-light fw-semibold text-uppercase align-middle flex-fill" style="background-color: #9E0F06; border-left: 0px solid; vertical-align: middle;">{{ category }}</th>
-                    </tr>
+                        <tr class="d-flex align-middle">
+                            <th class="flex-shrink-0 align-middle"
+                                style="background-color: #9E0F06; width: 100px; border-right: 0 solid; vertical-align: middle;"></th>
+                            <th colspan="4"
+                                class="text-left fs-4 py-2 text-light fw-semibold text-uppercase align-middle flex-fill"
+                                style="background-color: #9E0F06; border-left: 0px solid; vertical-align: middle;">{{ category }}</th>
+                        </tr>
                         {% for item in item_list %}
                             <tr class="colored-row d-flex align-middle" style="cursor: pointer; font-size: 19px; vertical-align: middle;">
                                 {% if item.path %}

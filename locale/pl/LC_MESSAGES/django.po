@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-11 12:54+0100\n"
+"POT-Creation-Date: 2025-02-12 12:39+0100\n"
 "PO-Revision-Date: 2025-02-05 00:32+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -217,12 +217,24 @@ msgstr "Wybierz język"
 msgid "Offer"
 msgstr ""
 
-#: .\templates\navbar.html:40 .\templates\profile.html:3
-#: .\templates\profile.html:7
+#: .\templates\navbar.html:37
+msgid "Admin Dashboard"
+msgstr "Panel Administracyjny"
+
+#: .\templates\navbar.html:38 .\templates\navbar.html:41
+#: .\templates\profile.html:3 .\templates\profile.html:7
 msgid "Profile"
 msgstr "Profil"
 
-#: .\templates\navbar.html:44
+#: .\templates\navbar.html:40
+msgid "My orders"
+msgstr "Moje zamówienia"
+
+#: .\templates\navbar.html:42
+msgid "Edit"
+msgstr "Edytuj"
+
+#: .\templates\navbar.html:45
 msgid "Logout"
 msgstr "Wyloguj się"
 
@@ -326,6 +338,14 @@ msgstr "Kod"
 msgid "City"
 msgstr "Miasto"
 
+#: .\templates\profile.html:92
+msgid "Country"
+msgstr "Kraj"
+
+#: .\templates\profile.html:102
+msgid "Bank Number"
+msgstr "Numer konta bankowego"
+
 #: .\templates\profile.html:113
 msgid "Change password"
 msgstr "Zmień hasło"
@@ -356,15 +376,3 @@ msgstr ""
 
 #~ msgid "Count"
 #~ msgstr "Ilość"
-
-msgid "Edit"
-msgstr "Edytuj"
-
-msgid "My orders"
-msgstr "Moje zamówienia"
-
-msgid "Country"
-msgstr "Kraj"
-
-msgid "Bank Number"
-msgstr "Numer konta bankowego"
