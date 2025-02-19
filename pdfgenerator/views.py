@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 # Create your views here.
 
 
-def example_offer(request, format):
+def example_offer(request):
     items = [
         {
             "sku": "TE01",
@@ -35,7 +35,7 @@ def example_offer(request, format):
     date = "19-02-2025"
     data = {"items": items, "u": client, "total": total, "date": date}
 
-    if format == "pdf":
+    if request.GET["format"] == "pdf":
         return generate_pdf("pdf_offer.html", data)
     return render(request, "pdf_offer.html", data)
 
