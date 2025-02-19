@@ -28,6 +28,7 @@ from Pricelist import views
 urlpatterns = (
     [
         path("transactions/", include("transactions.urls")),
+        path("pdf/", include("pdfgenerator.urls")),
         path("profile/", views.profile, name="profile"),
         path("login/", views.login_view, name="login"),
         path("logout/", views.logout_view, name="logout"),
