@@ -73,6 +73,7 @@ TEMPLATES = [
             BASE_DIR / "templates",
             BASE_DIR / "admin/templates",
             BASE_DIR / "transactions/templates",
+            BASE_DIR / "pdfgenerator/templates",
         ],
         "APP_DIRS": True,
         "OPTIONS": {
