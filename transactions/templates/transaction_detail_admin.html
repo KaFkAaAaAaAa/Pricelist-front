@@ -2,19 +2,22 @@
 {% load i18n %}
 {% block title %}Transaction List{% endblock %}
 {% block content %}
-  <button
-    class="btn btn-sm btn-outline-danger float-start mb-4"
-    onclick="history.back()"
-  >
-    Go back
-  </button>
 <div class="container text-center">
     <div class="container">
-        <div class="row text-left">{{order.client.clientCompanyName}}</div>
-        <div class="row text-left">{{order.client.clientStreet}}</div>
-        <div class="row text-left">{{order.client.clientCode}} {{ order.client.clientCity }}</div>
-        <div class="row text-left">{{order.client.clientCountry}}</div>
-        <div class="row text-right">{% if order.status %}{{ order.status_time }}{% else %}data{% endif %}</div>
+        {# TODO: this button should be on the left side #}
+        <div class="row d-inline-flex justify-content-left">
+          <button
+            class="btn btn-sm btn-outline-danger mb-4"
+            onclick="history.back()"
+          >
+            Go back
+          </button>
+        </div>
+        <div class="row text-left">{{transaction.orderClient.clientCompanyName}}</div>
+        <div class="row text-left">{{transaction.orderClient.clientStreet}}</div>
+        <div class="row text-left">{{transaction.orderClient.clientCode}} {{ transaction.orderClient.clientCity }}</div>
+        <div class="row text-left">{{transaction.orderClient.clientCountry}}</div>
+        <div class="row text-right">{% if transaction.status %}{{ transaction.status }}{{ transaction.status_time }}{% else %}{% trans "no status" %}{% now "d-m-Y" %}{% endif %}</div>
     </div>
     <table class="table">
         <thead>
@@ -29,8 +32,8 @@
         </tr>
         </thead>
         <tbody>
-        {% if order %}
-            {% for item in order.orderItemsOrdered %}
+        {% if transaction.orderItemsOrdered %}
+            {% for item in transaction.orderItemsOrdered %}
             <tr>
                 <td>{{ item.itemOrderedSku }}</td>
                 <td>{{ item.itemOrderedName }}</td>
@@ -43,14 +46,14 @@
                     <td></td>
                 {% endif %}
                 <td>
-                    <a class="btn btn-outline-secondary" href="/order/admin/{{item.sku}}/edit/">Edit</a>
-                    <a class="btn btn-outline-danger" href="/order/admin/{{item.sku}}/delete/">Delete</a>
+                    <a class="btn btn-outline-secondary" href="/transaction/admin/{{item.sku}}/edit/">Edit</a>
+                    <a class="btn btn-outline-danger" href="/transaction/admin/{{item.sku}}/delete/">Delete</a>
                 </td>
             </tr>
             {% endfor %}
         {% else %}
                 <div class="alert alert-danger">
-                    {% trans "Error" %}
+                    {% trans "No items in the transaction" %}
                 </div>
         {% endif %}
         </tbody>

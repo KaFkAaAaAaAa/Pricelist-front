@@ -8,6 +8,26 @@ from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL
 from Pricelist.views import _get_auth
 
 
+def _calculate_total_mass(item_list) -> float:
+    """calculates total mass of item_list by item.amount"""
+
+    mass = 0
+    for item in item_list:
+        mass += item.get("amount")
+    return mass
+
+
+def _calculate_totals(item_list) -> float:
+    """calculates total for each item in item_list based on item.price and item.amount,
+    saves it in item["total"] and returns total of totals"""
+
+    price = 0
+    for item in item_list:
+        item["total"] = item.get("price") * item.get("amount")
+        price += item.get("total")
+    return price
+
+
 def offer(request):
     token = request.session.get("token")
     auth = _get_auth(token)
@@ -78,18 +98,19 @@ def client_orders(request, user_id):
     response = requests.get(
         f"{API_BASE_URL}/orders/admin/client/{user_id}/", headers=headers
     )
+    __import__("pdb").set_trace()
     orders = response.json()
-    for order in orders:
-        if order["orderStatusHistory"]:
-            order["status"] = order["orderStatusHistory"][-1]["status"]
-            order["status_time"] = order["orderStatusHistory"][-1]["time"]
+    for transaction in orders:
+        if transaction["orderStatusHistory"]:
+            transaction["status"] = transaction["orderStatusHistory"][-1]["status"]
+            transaction["status_time"] = transaction["orderStatusHistory"][-1]["time"]
         else:
-            order["status"] = "none"
-            order["status_time"] = "none"
-    return render(request, "order_list.html", {"orders": orders})
+            transaction["status"] = "none"
+            transaction["status_time"] = "none"
+    return render(request, "transaction_list.html", {"orders": orders})
 
 
-def admin_order_detail(request, order_id):
+def admin_transaction_detail(request, transaction_uuid):
     token = request.session.get("token")
     auth = _get_auth(token)
     if not auth or auth["email"] == "anonymousUser":
@@ -102,13 +123,14 @@ def admin_order_detail(request, order_id):
             "<h1>You do not have access to that page<h1>".encode("utf-8")
         )
 
+    __import__("pdb").set_trace()
     msg = {}
 
     if request.method == "POST":
         # TODO: Payload
         payload = {}
         response = requests.post(
-            f"{API_BASE_URL}/orders/admin/{order_id}/",
+            f"{API_BASE_URL}/orders/admin/{transaction_uuid}/",
             headers=headers,
             json=payload,
         )
@@ -117,7 +139,13 @@ def admin_order_detail(request, order_id):
         else:
             msg["suc"] = "transaction data changed successfully"
 
-    response = requests.get(f"{API_BASE_URL}/orders/admin/{order_id}/", headers=headers)
-    order = response.json()
+    response = requests.get(
+        f"{API_BASE_URL}/orders/admin/{transaction_uuid}/", headers=headers
+    )
+    transaction = response.json()
 
-    return render(request, "order_detail_admin.html", {"order": order, "msg": msg})
+    return render(
+        request,
+        "transaction_detail_admin.html",
+        {"transaction": transaction, "msg": msg},
+    )

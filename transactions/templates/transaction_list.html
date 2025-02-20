@@ -15,7 +15,8 @@
             </thead>
             <tbody>
             {% for order in orders %}
-            <tr onclick="window.location.href='/admin/orders/{{ order.uuid }}';">
+{# user transaction detail if !admin else admin_transaction detail #}
+<tr onclick="window.location.href='{% if session.logged_user.user %}{% url "client_transaction_detail" order.uuid %}{% else %}{% url "admin_transaction_detail" order.uuid %}{% endif %}';">
                 <td>{{ order.status }}</td>
                 <td>{{ order.status_time}}</td>
                 <td>{{ order.orderClient.clientCompanyName }}</td>

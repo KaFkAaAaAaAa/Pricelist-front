@@ -21,4 +21,9 @@ urlpatterns = [
         views.client_orders,
         name="client_orders",
     ),
+    path(
+        "admin/<uuid:transaction_uuid>/",
+        views.admin_transaction_detail,
+        name="admin_transaction_detail",
+    ),
 ]
