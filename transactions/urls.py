@@ -18,12 +18,17 @@ urlpatterns = [
     ),
     path(
         "admin/client/<uuid:user_id>/",
-        views.client_orders,
-        name="client_orders",
+        views.admin_client_transactions,
+        name="client_transactions",
     ),
     path(
         "admin/<uuid:transaction_uuid>/",
         views.admin_transaction_detail,
         name="admin_transaction_detail",
+    ),
+    path(
+        "<uuid:transaction_uuid>/",
+        views.admin_transaction_detail,
+        name="client_transaction_detail",
     ),
 ]

@@ -23,13 +23,15 @@
                     <td>{{ item.name }}</td>
                     <td>{{ item.amount }}</td>
                     <td>{{ item.price }}</td>
-                    <td>Price * Amount</td>
+                    <td>{{ item.total }}</td>
                     <td>
                         <a class="btn btn-outline-secondary" href="/transactions/offer/{{item.sku}}/edit/">Edit</a>
                         <a class="btn btn-outline-danger" href="/transactions/offer/{{item.sku}}/delete/">Delete</a>
                     </td>
                 </tr>
                 {% endfor %}
+            <div>{% trans "Total price" %}: {{ totals.price }} €</div>
+            <div>{% trans "Total quantity" %}: {{ totals.mass }} kg</div>
             {% else %}
                     <div class="alert alert-secondary">
                         {% trans "No items added to the offer, add some items from the price list" %}

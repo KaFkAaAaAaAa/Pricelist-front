@@ -11,16 +11,17 @@
                 <th scope="col">{% trans "Transaction last change" %}</th>
                 <th scope="col">{% trans "Company name" %}</th>
                 <th scope="col">{% trans "Total" %}</th>
+                <th scope="col"><div class="btn btn-outline-danger">{% trans "Delete" %}</div></th>
             </tr>
             </thead>
             <tbody>
-            {% for order in orders %}
-{# user transaction detail if !admin else admin_transaction detail #}
-<tr onclick="window.location.href='{% if session.logged_user.user %}{% url "client_transaction_detail" order.uuid %}{% else %}{% url "admin_transaction_detail" order.uuid %}{% endif %}';">
-                <td>{{ order.status }}</td>
-                <td>{{ order.status_time}}</td>
-                <td>{{ order.orderClient.clientCompanyName }}</td>
-                <td>&lttotal price&gt</td>
+            {% for transaction in transactions %}
+                {# user transaction detail if !admin else admin_transaction detail #}
+            <tr onclick="window.location.href='{% if session.logged_user.user %}/transactions/{% else %}/transactions/admin/{% endif %}{{ transaction.uuid }}';">
+                <td>{{ transaction.status }}</td>
+                <td>{{ transaction.status_time}}</td>
+                <td>{{ transaction.orderClient.clientCompanyName }}</td>
+                <td>{{ transaction.totals.price }}</td>
             </tr>
             {% endfor %}
             </tbody>
