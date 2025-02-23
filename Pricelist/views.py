@@ -23,29 +23,55 @@ from .settings import (
 # TODO: JSON errors -> if json error then redirect(login)
 
 
+def _price_to_float(price: int) -> float:
+    return price / 100
+
+
+def _amount_to_float(amount: int) -> float:
+    return amount / 10
+
+
+def _price_to_display(price: float) -> str:
+    return f"{price/100:.2f}"
+
+
+def _amount_to_display(amount: float) -> str:
+    return f"{amount/10:.1f}"
+
+
+def _amount_to_store(amount: str) -> int:
+    return int(floor(float(amount) * 10))
+
+
+def _price_to_store(price: str) -> int:
+    return int(floor(float(price) * 100))
+
+
 def favicon():
     """render 404 for favicon request"""
     return HttpResponseNotFound()
 
 
-def _parse_sku_into_offer(request, headers):
+def _add_items_to_offer(request, headers):
     """add info needed for offer form api to session, uses request post param, helper for price_list func"""
     items = request.POST
     for sku in items:
         if not re.match(r"^\w\w\d\d$", sku):
+            # csrf and wrong requests
             continue
 
         response = requests.get(
             f"{API_BASE_URL}/items/{sku}?lang={request.LANGUAGE_CODE.upper()}",
             headers=headers,
         )
-        amount = items[sku]
+        # amount in POST param is a str, price is an int
+        amount = _amount_to_store(items[sku])
         item = response.json()
 
         item_ordered = {
             "sku": item.get("sku"),
             "name": item.get("name"),
-            "price": f"{item.get("price") / 100:.2f}",
+            "price": item.get("price"),
             "amount": amount,
             "additionalInfo": "",
         }
@@ -64,10 +90,15 @@ def _parse_sku_into_offer(request, headers):
         else:
             request.session["current_offer"] = [item_ordered]
         request.session.modified = True
+    if (
+        not request.session.get("current_offer")
+        or len(request.session.get("current_offer")) == 0
+    ):
+        return redirect("price_list")
     return redirect("offer")
 
 
-def _get_PLN_exr():
+def _get_pln_exr():
     """return PLN exchange rate from euro, from file"""
     with open("pln_exr.txt", "r", encoding="utf-8") as f:
         return float(f.read().rstrip().split("\t")[-1])
@@ -202,13 +233,13 @@ def price_list(request):
         )
 
     if request.method == "POST":
-        return _parse_sku_into_offer(request, headers)
+        return _add_items_to_offer(request, headers)
 
     lang = request.LANGUAGE_CODE.upper()
     pln_exr = False
 
     if lang == "PL":
-        pln_exr = _get_PLN_exr()
+        pln_exr = _get_pln_exr()
 
     if "search" in request.GET.keys():
         response = requests.get(
@@ -228,7 +259,7 @@ def price_list(request):
             # if PL add PLN
             if pln_exr:
                 item["price_pln"] = floor(item["price"] * pln_exr)
-                item["price_pln"] = f"{item['price_pln'] / 100:.2f}"
+                item["price_pln"] = _price_to_display(item["price_pln"])
             item["price"] = f"{item['price'] / 100:.2f}"
 
     return render(
@@ -254,16 +285,14 @@ def item_detail(request, item_sku):
         item = response.json()
         images = _list_items(item_sku, FileSystemStorage())
         if request.LANGUAGE_CODE.upper() == "PL":
-            pln_exr = _get_PLN_exr()
+            pln_exr = _get_pln_exr()
             if pln_exr:
                 item["price_pln"] = floor(item["price"] * pln_exr)
-                item["price_pln"] = f"{item['price_pln'] / 100:.2f}"
-        item["price"] = f"{item['price'] / 100:.2f}"
+                item["price_pln"] = _price_to_display(item["price_pln"])
+        item["price"] = _price_to_display(item["price"])
         if request.method == "POST":
             units = {
                 "kg": 1,
-                "g": 0.001,
-                "t": 1000,
             }
             unit_multi = units.get(request.POST["unit"])
             amount = request.POST["amount"] * unit_multi
@@ -416,7 +445,7 @@ def admin_items(request):
         items_dict[category] = []
     for item in items:
         item["itemPrice"] = [
-            f"{group_price / 100:.2f}" for group_price in item["itemPrice"]
+            _price_to_display(group_price) for group_price in item["itemPrice"]
         ]
         items_dict[item.get("itemGroup")].append(item)
     return render(request, "item_list.html", {"items": items_dict})
@@ -449,8 +478,7 @@ def edit_item(request, item_sku):
                 "PL": request.POST.get("PL-d"),
             },
             "itemPrice": [
-                int(floor(float(request.POST.get(f"itemPrice-{i}")) * 100))
-                for i in range(1, 5)
+                _price_to_store(request.POST.get(f"itemPrice-{i}")) for i in range(1, 5)
             ],
         }
         if not re.match(r"^\w\w\d\d$", item_sku):
@@ -460,14 +488,14 @@ def edit_item(request, item_sku):
         if request.POST.get("deleteImg"):
             # print(request.POST.get('deleteImg'))
             payload["itemImgPath"] = ""
+            # TODO: delete the image XD
         response = requests.put(
             f"{API_BASE_URL}/items/admin/{item_sku}", headers=headers, json=payload
         )
         if response.status_code == 200:
             return redirect("item_list")
-        else:
-            # error = payload.error
-            return redirect("item_list")
+        # error = payload.error
+        return redirect("item_list")
     else:
         response = requests.get(
             f"{API_BASE_URL}/items/admin/{item_sku}", headers=headers
@@ -475,7 +503,7 @@ def edit_item(request, item_sku):
         item = response.json() if response.status_code == 200 else 0
         if item:
             item["itemPrice"] = [
-                f"{group_price / 100:.2f}" for group_price in item["itemPrice"]
+                _price_to_display(group_price) for group_price in item["itemPrice"]
             ]
             return render(
                 request,
@@ -486,8 +514,7 @@ def edit_item(request, item_sku):
                     "categories": CATEGORIES["EN"],
                 },
             )
-        else:
-            return render(request, "edit_item.html", {"error": "Item not found!"})
+        return render(request, "edit_item.html", {"error": "Item not found!"})
 
 
 def delete_item(request, item_sku):
@@ -671,12 +698,6 @@ def add_item(request):
         # filename = fs.save(f"{item_sku}_{image.name}", image)
         # uploaded_url = fs.url(filename)
         prices = [request.POST.get(f"itemPrice-{i}") for i in range(1, 5)]
-        for price_group in prices:
-            if price_group:
-                price_group = int(100 * float(price_group))
-            else:
-                price_group = 0
-        print(prices)
         payload = {
             "itemSku": item_sku,
             "itemGroup": request.POST.get("itemGroup"),
@@ -694,7 +715,7 @@ def add_item(request):
                 "FR": request.POST.get("FR-d"),
                 "PL": request.POST.get("PL-d"),
             },
-            "itemPrice": [int(100 * float(price)) if price else 0 for price in prices],
+            "itemPrice": [_price_to_store(price) if price else 0 for price in prices],
         }
 
         response = requests.post(
@@ -702,16 +723,15 @@ def add_item(request):
         )
         if response.status_code == 200:
             return redirect("upload_image", item_sku)
-        else:
-            return render(
-                request,
-                "add_item.html",
-                {
-                    "range": range(1, 5),
-                    "categories": CATEGORIES["EN"],
-                    "error": "API error",
-                },
-            )
+        return render(
+            request,
+            "add_item.html",
+            {
+                "range": range(1, 5),
+                "categories": CATEGORIES["EN"],
+                "error": "API error",
+            },
+        )
     else:
         return render(
             request,
@@ -823,7 +843,7 @@ def assign_admin(request, user_id):
     admins_response = requests.get(
         f"{API_BASE_URL}/users/admin/admins/", headers=headers
     )
-    userEmail = user_response.json()["userEmail"]
+    user_email = user_response.json()["userEmail"]
 
     admins = {}
     try:
@@ -837,7 +857,7 @@ def assign_admin(request, user_id):
 
     payload = False
     if request.method == "POST":
-        for name in admins.keys():
+        for name in admins:
             if request.POST["admin"] == name:
                 payload = {"clientAdminId": admins[name]}
                 break
@@ -850,14 +870,13 @@ def assign_admin(request, user_id):
         )
         if response.status_code == 200:
             return redirect("new_users")
-        else:
-            return render(
-                request,
-                "assign_admin.html",
-                {"email": userEmail, "error": "API error!"},
-            )
+        return render(
+            request,
+            "assign_admin.html",
+            {"email": user_email, "error": "API error!"},
+        )
     return render(
-        request, "assign_admin.html", {"email": userEmail, "admins": admins.keys()}
+        request, "assign_admin.html", {"email": user_email, "admins": admins.keys()}
     )
 
 
@@ -870,7 +889,7 @@ def activate_user(request, user_id):
     headers = auth["headers"]
 
     response = requests.get(f"{API_BASE_URL}/users/admin/{user_id}", headers=headers)
-    userEmail = response.json()["userEmail"]
+    user_email = response.json()["userEmail"]
     response_group = requests.get(
         f"{API_BASE_URL}/auth/admin/{user_id}/group", headers=headers
     )
@@ -886,17 +905,16 @@ def activate_user(request, user_id):
         )
         if response.status_code == 200:
             return redirect("my_users")
-        else:
-            return render(
-                request,
-                "activate_user.html",
-                {"email": userEmail, "error": "API error!"},
-            )
+        return render(
+            request,
+            "activate_user.html",
+            {"email": user_email, "error": "API error!"},
+        )
     return render(
         request,
         "activate_user.html",
         {
-            "email": userEmail,
+            "email": user_email,
             "groups": GROUPS_ROMAN,
             "user_group": _group_to_roman(user_group),
         },
@@ -968,10 +986,9 @@ def client_delete(request, client_id):
         f"{API_BASE_URL}/clients/admin/{client_id}", headers=headers
     )
     # TODO: Errors and success messages
-    if response.status_code == 200:
-        return redirect("client_list")
-    else:
-        return redirect("client_list")
+    # if response.status_code == 200:
+    #     return redirect("client_list")
+    return redirect("client_list")
 
 
 def client_add(request):

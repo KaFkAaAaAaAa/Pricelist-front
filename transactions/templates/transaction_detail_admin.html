@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}Transaction List{% endblock %}
+{% block content %}
+<div class="container text-center">
+    <div class="container">
+        {# TODO: this button should be on the left side #}
+        <div class="row d-inline-flex justify-content-left">
+          <button
+            class="btn btn-sm btn-outline-danger mb-4"
+            onclick="history.back()"
+          >
+            Go back
+          </button>
+        </div>
+        <div class="row text-left">{{ transaction.orderClient.clientCompanyName }}</div>
+        <div class="row text-left">{{ transaction.orderClient.clientStreet }}</div>
+        <div class="row text-left">{{ transaction.orderClient.clientCode }} {{ transaction.orderClient.clientCity }}</div>
+        <div class="row text-left">{{ transaction.orderClient.clientCountry }}</div>
+        <div class="row text-right">{% if transaction.status %}{{ transaction.status }}{{ transaction.status_time }}{% else %}{% trans "no status" %}{% now "d-m-Y" %}{% endif %}</div>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">{% trans "SKU" %}</th>
+            <th scope="col">{% trans "Product" %}</th>
+            <th scope="col">{% trans "Amount" %}</th>
+            <th scope="col">{% trans "Price" %}</th>
+            <th scope="col">{% trans "Total" %}</th>
+            <th scope="col">{% trans "Comment" %}</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if transaction.orderItemsOrdered %}
+            {% for item in transaction.orderItemsOrdered %}
+            <tr>
+                <td>{{ item.itemOrderedSku }}</td>
+                <td>{{ item.itemOrderedName }}</td>
+                <td>{{ item.itemOrderedAmount }}</td>
+                <td>{{ item.itemOrderedPrice }}</td>
+                <td>{{ item.total }}</td>
+                {% if item.itemOrderedAdditionalInfo %}
+                    <td>{{ item.itemOrderedAdditionalInfo }}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+                <td>
+                    <a class="btn btn-outline-secondary" href="/transaction/admin/{{item.sku}}/edit/">Edit</a>
+                    <a class="btn btn-outline-danger" href="/transaction/admin/{{item.sku}}/delete/">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+                <div class="alert alert-danger">
+                    {% trans "No items in the transaction" %}
+                </div>
+        {% endif %}
+            <tr>
+                <td span="2"></td>
+                <td class=fw-b>{{ transaction.totals.mass }}</td>
+                <td class=fw-b>{{ transaction.totals.price }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    
+
+</div>
+{% endblock %}
