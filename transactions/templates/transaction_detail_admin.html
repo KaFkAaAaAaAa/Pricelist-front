@@ -13,10 +13,10 @@
             Go back
           </button>
         </div>
-        <div class="row text-left">{{transaction.orderClient.clientCompanyName}}</div>
-        <div class="row text-left">{{transaction.orderClient.clientStreet}}</div>
-        <div class="row text-left">{{transaction.orderClient.clientCode}} {{ transaction.orderClient.clientCity }}</div>
-        <div class="row text-left">{{transaction.orderClient.clientCountry}}</div>
+        <div class="row text-left">{{ transaction.orderClient.clientCompanyName }}</div>
+        <div class="row text-left">{{ transaction.orderClient.clientStreet }}</div>
+        <div class="row text-left">{{ transaction.orderClient.clientCode }} {{ transaction.orderClient.clientCity }}</div>
+        <div class="row text-left">{{ transaction.orderClient.clientCountry }}</div>
         <div class="row text-right">{% if transaction.status %}{{ transaction.status }}{{ transaction.status_time }}{% else %}{% trans "no status" %}{% now "d-m-Y" %}{% endif %}</div>
     </div>
     <table class="table">
@@ -39,7 +39,7 @@
                 <td>{{ item.itemOrderedName }}</td>
                 <td>{{ item.itemOrderedAmount }}</td>
                 <td>{{ item.itemOrderedPrice }}</td>
-                <td>Price * Amount</td>
+                <td>{{ item.total }}</td>
                 {% if item.itemOrderedAdditionalInfo %}
                     <td>{{ item.itemOrderedAdditionalInfo }}</td>
                 {% else %}
@@ -56,6 +56,11 @@
                     {% trans "No items in the transaction" %}
                 </div>
         {% endif %}
+            <tr>
+                <td span="2"></td>
+                <td class=fw-b>{{ transaction.totals.mass }}</td>
+                <td class=fw-b>{{ transaction.totals.price }}</td>
+            </tr>
         </tbody>
     </table>
 

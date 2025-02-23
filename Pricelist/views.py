@@ -6,15 +6,19 @@ from uuid import UUID
 
 import requests
 from django.core.files.storage import FileSystemStorage
-from django.http.response import (Http404, HttpResponseForbidden,
-                                  HttpResponseNotFound)
+from django.http.response import Http404, HttpResponseForbidden, HttpResponseNotFound
 from django.shortcuts import redirect, render
 from django.utils.translation import get_language
 from django.utils.translation import gettext as _
 
 from .forms import LoginForm, NewAdminForm, PasswordResetForm, RegisterForm
-from .settings import (ADMIN_GROUPS, API_BASE_URL, CATEGORIES, CLIENT_GROUPS,
-                       GROUPS_ROMAN)
+from .settings import (
+    ADMIN_GROUPS,
+    API_BASE_URL,
+    CATEGORIES,
+    CLIENT_GROUPS,
+    GROUPS_ROMAN,
+)
 
 # TODO: JSON errors -> if json error then redirect(login)
 
@@ -86,6 +90,11 @@ def _add_items_to_offer(request, headers):
         else:
             request.session["current_offer"] = [item_ordered]
         request.session.modified = True
+    if (
+        not request.session.get("current_offer")
+        or len(request.session.get("current_offer")) == 0
+    ):
+        return redirect("price_list")
     return redirect("offer")
 
 

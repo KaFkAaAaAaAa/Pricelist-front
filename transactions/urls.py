@@ -31,4 +31,9 @@ urlpatterns = [
         views.admin_transaction_detail,
         name="client_transaction_detail",
     ),
+    path(
+        "delete/<uuid:transaction_uuid>/",
+        views.delete_transaction,
+        name="delete_transaction",
+    ),
 ]

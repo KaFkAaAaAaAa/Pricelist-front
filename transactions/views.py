@@ -1,3 +1,4 @@
+import copy
 from math import floor
 
 import requests
@@ -79,6 +80,8 @@ def offer(request):
     if not "current_offer" in request.session.keys():
         return redirect("price_list")
 
+    __import__("pdb").set_trace()
+
     if request.method == "POST":
         payload = {
             "description": request.POST["order_description"],
@@ -104,6 +107,13 @@ def offer(request):
 
 
 def delete_from_offer(request, item_sku):
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+    headers = auth["headers"]
+
     item_skus = [item.get("sku") for item in request.session["current_offer"]]
     index = item_skus.index(item_sku)
     if index is not None:
@@ -113,10 +123,18 @@ def delete_from_offer(request, item_sku):
 
 
 def edit_item_offer(request, item_sku):
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+    headers = auth["headers"]
+
     item_skus = [item.get("sku") for item in request.session["current_offer"]]
     index = item_skus.index(item_sku)
     if index is None:
         return redirect("offer")
+    __import__("pdb").set_trace()
     if request.method == "POST":
         request.session["current_offer"][index]["price"] = _price_to_store(
             request.POST["amount"]
@@ -127,7 +145,7 @@ def edit_item_offer(request, item_sku):
         request.session["current_offer"][index]["additionalInfo"] = request.POST[
             "additionalInfo"
         ]
-    item = request.session.get("current_offer")[index]
+    item = copy.deepcopy(request.session.get("current_offer")[index])
     item["amount"] = _amount_to_display(item["amount"])
     item["price"] = _price_to_display(item["price"])
     request.session.modified = True
@@ -174,7 +192,6 @@ def admin_client_transactions(request, user_id):
     response = requests.get(
         f"{API_BASE_URL}/orders/admin/client/{user_id}/", headers=headers
     )
-    __import__("pdb").set_trace()
     transactions = response.json()
     for transaction in transactions:
         _set_status(transaction)
@@ -228,3 +245,26 @@ def admin_transaction_detail(request, transaction_uuid):
         "transaction_detail_admin.html",
         {"transaction": transaction, "msg": msg},
     )
+
+
+def delete_transaction(request, transaction_uuid):
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+    headers = auth["headers"]
+
+    if auth.get("group") not in ADMIN_GROUPS:
+        response = requests.delete(
+            f"{API_BASE_URL}/orders/{transaction_uuid}/", headers=headers
+        )
+    else:
+        response = requests.delete(
+            f"{API_BASE_URL}/orders/admin/{transaction_uuid}/", headers=headers
+        )
+    redir_url = request.headers.get("referer")
+    err = ""
+    if response.status_code != 200:
+        err = "Error!"
+    return redirect(redir_url)
