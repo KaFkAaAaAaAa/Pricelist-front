@@ -35,8 +35,13 @@ def example_offer(request):
     date = "19-02-2025"
     data = {"items": items, "u": client, "total": total, "date": date}
 
-    if request.GET["format"] == "pdf":
-        return generate_pdf("pdf_offer.html", data)
+    for product in items:
+        product["sum"] = product["amount"] * product["price"]
+
+    total_sum = sum(product["amount"] * product["price"] for product in items)
+    data["total_sum"] = total_sum
+    # if request.GET["format"] == "pdf":
+    #     return generate_pdf("pdf_offer.html", data)
     return render(request, "pdf_offer.html", data)
 
 
@@ -61,7 +66,8 @@ def _calculate_totals(item_list) -> float:
 def generate_pdf(template, data, filename="document"):
     """generate pdf response"""
     html_string = render_to_string(template, data)
-    pdf = pdfkit.from_string(html_string, False)
+    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+    pdf = pdfkit.from_string(html_string, False, configuration=config)
 
     response = HttpResponse(pdf, content_type="application/pdf")
     response["Content-Disposition"] = f'inline; filename="{filename}"'

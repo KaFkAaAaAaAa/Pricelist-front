@@ -1,0 +1,17 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "roboto", sans-serif;
+}
+
+h3{
+    color: #9D1006;
+    font-weight: 650;
+}
+
+p{
+    color: #9D1006;
+}
