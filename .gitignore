@@ -9,3 +9,6 @@ ips
 images/*
 admin/__pycache__
 .venv
+pdfgenerator/__pycache__
+transactions/__pycache__
+.env
