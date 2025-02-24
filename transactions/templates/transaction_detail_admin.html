@@ -5,7 +5,7 @@
 <div class="container text-center">
     <div class="container">
         {# TODO: this button should be on the left side #}
-        <div class="row d-inline-flex justify-content-left">
+        <div class="row d-inline-flex justify-content-left text-start">
           <button
             class="btn btn-sm btn-outline-danger mb-4"
             onclick="history.back()"
@@ -17,11 +17,12 @@
         <div class="row text-left">{{ transaction.orderClient.clientStreet }}</div>
         <div class="row text-left">{{ transaction.orderClient.clientCode }} {{ transaction.orderClient.clientCity }}</div>
         <div class="row text-left">{{ transaction.orderClient.clientCountry }}</div>
-        <div class="row text-right">{% if transaction.status %}{{ transaction.status }}{{ transaction.status_time }}{% else %}{% trans "no status" %}{% now "d-m-Y" %}{% endif %}</div>
+        <div class="row text-right">{% trans "Status" %}: {% if transaction.status %}{{ transaction.status }} {{ transaction.status_time|date:"d-m-Y H:i" }}{% else %}{% trans "no status" %}{% now "d-m-Y H:i" %}{% endif %}</div>
     </div>
     <table class="table">
         <thead>
         <tr>
+            <th></th>
             <th scope="col">{% trans "SKU" %}</th>
             <th scope="col">{% trans "Product" %}</th>
             <th scope="col">{% trans "Amount" %}</th>
@@ -35,6 +36,7 @@
         {% if transaction.orderItemsOrdered %}
             {% for item in transaction.orderItemsOrdered %}
             <tr>
+                <td><img src="/images/{{ item.itemOrderedSku }}.M.jpg"></td>
                 <td>{{ item.itemOrderedSku }}</td>
                 <td>{{ item.itemOrderedName }}</td>
                 <td>{{ item.itemOrderedAmount }}</td>
@@ -57,9 +59,14 @@
                 </div>
         {% endif %}
             <tr>
-                <td span="2"></td>
-                <td class=fw-b>{{ transaction.totals.mass }}</td>
-                <td class=fw-b>{{ transaction.totals.price }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="fw-bold">{{ transaction.totals.mass }}</td>
+                <td class="fw-bold">{{ transaction.totals.price }}</td>
+                <td></td>
+                <td></td>
             </tr>
         </tbody>
     </table>

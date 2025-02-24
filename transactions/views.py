@@ -1,4 +1,5 @@
 import copy
+from datetime import datetime
 from math import floor
 
 import requests
@@ -15,19 +16,19 @@ from Pricelist.views import (
 )
 
 
-def _calculate_total_mass(item_list) -> float:
+def _calculate_total_mass(item_list, key="amount") -> float:
     """calculates total mass of item_list by item.amount"""
 
     mass = 0
     if len(item_list) == 0:
         return 0
     for item in item_list:
-        if item.get("amount"):
-            mass += item.get("amount")
+        if item.get(key):
+            mass += item.get(key)
     return mass
 
 
-def _calculate_total_price(item_list) -> float:
+def _calculate_total_price(item_list, key_p="price", key_a="amount") -> float:
     """calculates total for each item in item_list based on item.price and item.amount,
     saves it in item["total"] and returns total of totals"""
 
@@ -35,34 +36,40 @@ def _calculate_total_price(item_list) -> float:
     if len(item_list) == 0:
         return 0
     for item in item_list:
-        if not item.get("price") or not item.get("amount"):
+        if not item.get(key_p) or not item.get(key_a):
             item["total"] = 0
             continue
-        item["total"] = item.get("price") * item.get("amount")
+        item["total"] = item.get(key_p) * item.get(key_a)
         price += item.get("total")
     return price
 
 
-def _get_stored_item_list_to_display(item_list) -> dict:
+def _get_stored_item_list_to_display(item_list, key_p="price", key_a="amount") -> dict:
     price = 0
     mass = 0
     for item in item_list:
-        item["total"] = floor(item.get("price") * item.get("amount") / 10)
+        item["total"] = floor(item.get(key_p) * item.get(key_a) / 10)
         price += item.get("total")
-        mass += item.get("amount")
+        mass += item.get(key_a)
         item["total"] = _price_to_display(item.get("total"))
-        item["price"] = _price_to_display(item.get("price"))
-        item["amount"] = _amount_to_display(item.get("amount"))
+        item[key_p] = _price_to_display(item.get(key_p))
+        item[key_a] = _amount_to_display(item.get(key_a))
     return {
         "mass": _amount_to_display(mass),
         "price": _price_to_display(price),
     }
 
 
-def _set_status(transaction):
+def _parse_date(date: str) -> datetime:
+    return datetime.fromisoformat(date)
+
+
+def _set_status(transaction) -> dict:
     if transaction["orderStatusHistory"]:
         transaction["status"] = transaction["orderStatusHistory"][-1]["status"]
-        transaction["status_time"] = transaction["orderStatusHistory"][-1]["time"]
+        transaction["status_time"] = _parse_date(
+            transaction["orderStatusHistory"][-1]["time"]
+        )
     else:
         transaction["status"] = "none"
         transaction["status_time"] = "none"
@@ -80,17 +87,13 @@ def offer(request):
     if not "current_offer" in request.session.keys():
         return redirect("price_list")
 
-    __import__("pdb").set_trace()
-
     if request.method == "POST":
+        __import__("pdb").set_trace()
         payload = {
             "description": request.POST["order_description"],
             "itemsOrdered": request.session["current_offer"],
         }
-        # payload["totals"] = _get_stored_item_list_to_display(payload["itemsOrdered"])
-        for item in payload["itemsOrdered"]:
-            item["price"] = _price_to_store(item.get("price"))
-            item["amount"] = _amount_to_store(item.get("amount"))
+        # items already converted to "store" values
         response = requests.post(
             f"{API_BASE_URL}/orders/", headers=headers, json=payload
         )
@@ -134,7 +137,6 @@ def edit_item_offer(request, item_sku):
     index = item_skus.index(item_sku)
     if index is None:
         return redirect("offer")
-    __import__("pdb").set_trace()
     if request.method == "POST":
         request.session["current_offer"][index]["price"] = _price_to_store(
             request.POST["amount"]
@@ -195,10 +197,13 @@ def admin_client_transactions(request, user_id):
     transactions = response.json()
     for transaction in transactions:
         _set_status(transaction)
-        transaction["totals"] = {
-            "price": _calculate_total_price(transaction["orderItemsOrdered"]),
-            "mass": _calculate_total_mass(transaction["orderItemsOrdered"]),
-        }
+        __import__("pdb").set_trace()
+        transaction["totals"] = _get_stored_item_list_to_display(
+            transaction["orderItemsOrdered"],
+            key_p="itemOrderedPrice",
+            key_a="itemOrderedAmount",
+        )
+
     return render(request, "transaction_list.html", {"transactions": transactions})
 
 
@@ -235,10 +240,11 @@ def admin_transaction_detail(request, transaction_uuid):
     )
     transaction = response.json()
     transaction = _set_status(transaction)
-    transaction["totals"] = {
-        "price": _calculate_total_price(transaction["orderItemsOrdered"]),
-        "mass": _calculate_total_mass(transaction["orderItemsOrdered"]),
-    }
+    transaction["totals"] = _get_stored_item_list_to_display(
+        transaction["orderItemsOrdered"],
+        key_p="itemOrderedPrice",
+        key_a="itemOrderedAmount",
+    )
 
     return render(
         request,
