@@ -44,8 +44,8 @@ def example_offer(request):
 
     total_sum = sum(product["amount"] * product["price"] for product in items)
     data["total_sum"] = total_sum
-    # if request.GET["format"] == "pdf":
-    #     return generate_pdf("pdf_offer.html", data)
+    if request.GET["format"] == "pdf":
+        return generate_pdf("pdf_offer.html", data)
     return render(request, "pdf_offer.html", data)
 
 

@@ -43,6 +43,13 @@
     <form method="POST">
         {% csrf_token %}
         <textarea name="order_description" cols="40" rows="3"></textarea><br/>
+        {% if not request.session.logged_user.user %}
+        <select name="client" class="form-select"> 
+          {% for client in clients %}
+            <option value="{{ client }}">{{ client }}</option>
+          {% endfor %}
+        </select>
+        {% endif %}
         <input type="submit" class="btn btn-outline-success" value="{% trans "Make offer" %}" />
     </form>
     </div>

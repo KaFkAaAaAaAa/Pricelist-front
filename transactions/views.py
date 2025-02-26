@@ -6,7 +6,7 @@ import requests
 from django.http.response import HttpResponseForbidden
 from django.shortcuts import redirect, render
 
-from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL
+from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS
 from Pricelist.views import (
     _amount_to_display,
     _amount_to_store,
@@ -87,8 +87,7 @@ def offer(request):
     if not "current_offer" in request.session.keys():
         return redirect("price_list")
 
-    if request.method == "POST":
-        __import__("pdb").set_trace()
+    if request.method == "POST" and auth["group"] not in ADMIN_GROUPS:
         payload = {
             "description": request.POST["order_description"],
             "itemsOrdered": request.session["current_offer"],
@@ -105,8 +104,23 @@ def offer(request):
 
     offer = request.session.get("current_offer")
     totals = _get_stored_item_list_to_display(offer)
+    client_emails = []
+    if auth["group"] in ADMIN_GROUPS:
+        response = requests.get(
+            f"{API_BASE_URL}/clients/admin/admin-list/groups/",
+            headers=headers,
+        )
+        __import__('pdb').set_trace()
+        clients_auths = response.json()
 
-    return render(request, "offer.html", {"offer": offer, "totals": totals})
+        for (client, client_auth) in zip(clients_auths["clients"], clients_auths["auths"]):
+            if client_auth["authGroup"] in CLIENT_GROUPS:
+                client_emails.append(client["clientCompanyName"])
+        if request.method == "POST":
+            # TEST and finish admins offer creation
+            pass
+
+    return render(request, "offer.html", {"offer": offer, "totals": totals, "clients": client_emails})
 
 
 def delete_from_offer(request, item_sku):
@@ -197,7 +211,6 @@ def admin_client_transactions(request, user_id):
     transactions = response.json()
     for transaction in transactions:
         _set_status(transaction)
-        __import__("pdb").set_trace()
         transaction["totals"] = _get_stored_item_list_to_display(
             transaction["orderItemsOrdered"],
             key_p="itemOrderedPrice",

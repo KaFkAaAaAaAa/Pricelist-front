@@ -34,13 +34,16 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             {% if not request.session.logged_user.user %}
+                            {# admin #}
                                 <li><a class="dropdown-item" href="/admin/dashboard/">{% trans "Admin Dashboard" %}</a></li>
                                 <li><a class="dropdown-item" href="/profile/">{% trans "Profile" %}</a></li>
                             {% else %}
-                                <li><a class="dropdown-item" href="/">{% trans "My orders" %}</a></li>
-                                <li><a class="dropdown-item" href="/profile/">{% trans "Profile" %}</a></li>
-                                <li><a class="dropdown-item" href="/templates/change_password.html">{% trans "Edit" %}</a></li>
+                            {# client #}
+                                <li><a class="dropdown-item" href="/transactions/">{% trans "My Transactions" %}</a></li>
                             {% endif %}
+                            <li><a class="dropdown-item" href="/">{% trans "Price List" %}</a></li>
+                            <li><a class="dropdown-item" href="/profile/">{% trans "Profile" %}</a></li>
+                            <li><a class="dropdown-item" href="/templates/change_password.html">{% trans "Change Password" %}</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item text-danger" href="/logout">{% trans "Logout" %}</a></li>
                         </ul>

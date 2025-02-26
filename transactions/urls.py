@@ -36,4 +36,5 @@ urlpatterns = [
         views.delete_transaction,
         name="delete_transaction",
     ),
+    path("", views.client_transactions, name="client_transactions")
 ]
