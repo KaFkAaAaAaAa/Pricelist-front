@@ -42,7 +42,7 @@
         {# TODO: add button logic #}
     <form method="POST">
         {% csrf_token %}
-        <textarea name="order_description" cols="40" rows="3"></textarea><br/>
+        <textarea name="transaction_description" cols="40" rows="3"></textarea><br/>
         {% if not request.session.logged_user.user %}
         <select name="client" class="form-select"> 
           {% for client in clients %}

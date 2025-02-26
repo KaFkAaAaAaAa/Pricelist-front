@@ -85,7 +85,7 @@ def _add_items_to_offer(request, headers):
             ]:
                 request.session["current_offer"].append(item_ordered)
             else:
-                # TODO: figure out some way to handle "item is already in the order" situation
+                # TODO: figure out some way to handle "item is already in the transaction" situation
                 pass
         else:
             request.session["current_offer"] = [item_ordered]

@@ -65,10 +65,10 @@ def _parse_date(date: str) -> datetime:
 
 
 def _set_status(transaction) -> dict:
-    if transaction["orderStatusHistory"]:
-        transaction["status"] = transaction["orderStatusHistory"][-1]["status"]
+    if transaction["transactionStatusHistory"]:
+        transaction["status"] = transaction["transactionStatusHistory"][-1]["status"]
         transaction["status_time"] = _parse_date(
-            transaction["orderStatusHistory"][-1]["time"]
+            transaction["transactionStatusHistory"][-1]["time"]
         )
     else:
         transaction["status"] = "none"
@@ -89,12 +89,12 @@ def offer(request):
 
     if request.method == "POST" and auth["group"] not in ADMIN_GROUPS:
         payload = {
-            "description": request.POST["order_description"],
+            "description": request.POST["transaction_description"],
             "itemsOrdered": request.session["current_offer"],
         }
         # items already converted to "store" values
         response = requests.post(
-            f"{API_BASE_URL}/orders/", headers=headers, json=payload
+            f"{API_BASE_URL}/transactions/", headers=headers, json=payload
         )
         if response.status_code == 200:
             request.session["current_offer"] = []
@@ -180,14 +180,14 @@ def client_transactions(request):
         return redirect("login")
     headers = auth["headers"]
 
-    response = requests.get(f"{API_BASE_URL}/orders/", headers=headers)
+    response = requests.get(f"{API_BASE_URL}/transactions/", headers=headers)
 
     transactions = response.json()
     for transaction in transactions:
         _set_status(transaction)
         transaction["totals"] = (
-            _calculate_total_price(transaction["orderItemsOrdered"]),
-            _calculate_total_mass(transaction["orderItemsOrdered "]),
+            _calculate_total_price(transaction["transactionItemsOrdered"]),
+            _calculate_total_mass(transaction["transactionItemsOrdered "]),
         )
     return render(request, "transaction_list.html", {"transactions": transactions})
 
@@ -206,13 +206,13 @@ def admin_client_transactions(request, user_id):
         )
 
     response = requests.get(
-        f"{API_BASE_URL}/orders/admin/client/{user_id}/", headers=headers
+        f"{API_BASE_URL}/transactions/admin/client/{user_id}/", headers=headers
     )
     transactions = response.json()
     for transaction in transactions:
         _set_status(transaction)
         transaction["totals"] = _get_stored_item_list_to_display(
-            transaction["orderItemsOrdered"],
+            transaction["transactionItemsOrdered"],
             key_p="itemOrderedPrice",
             key_a="itemOrderedAmount",
         )
@@ -239,7 +239,7 @@ def admin_transaction_detail(request, transaction_uuid):
         # TODO: Payload
         payload = {}
         response = requests.post(
-            f"{API_BASE_URL}/orders/admin/{transaction_uuid}/",
+            f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/",
             headers=headers,
             json=payload,
         )
@@ -249,12 +249,12 @@ def admin_transaction_detail(request, transaction_uuid):
             msg["suc"] = "transaction data changed successfully"
 
     response = requests.get(
-        f"{API_BASE_URL}/orders/admin/{transaction_uuid}/", headers=headers
+        f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/", headers=headers
     )
     transaction = response.json()
     transaction = _set_status(transaction)
     transaction["totals"] = _get_stored_item_list_to_display(
-        transaction["orderItemsOrdered"],
+        transaction["transactionItemsOrdered"],
         key_p="itemOrderedPrice",
         key_a="itemOrderedAmount",
     )
@@ -276,11 +276,11 @@ def delete_transaction(request, transaction_uuid):
 
     if auth.get("group") not in ADMIN_GROUPS:
         response = requests.delete(
-            f"{API_BASE_URL}/orders/{transaction_uuid}/", headers=headers
+            f"{API_BASE_URL}/transactions/{transaction_uuid}/", headers=headers
         )
     else:
         response = requests.delete(
-            f"{API_BASE_URL}/orders/admin/{transaction_uuid}/", headers=headers
+            f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/", headers=headers
         )
     redir_url = request.headers.get("referer")
     err = ""

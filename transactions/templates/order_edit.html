@@ -8,14 +8,14 @@ endblock %} {% block content %}
 </button>
 <div class="container text-center">
   <div class="container">
-    <div class="row text-left">{{order.client.clientCompanyName}}</div>
-    <div class="row text-left">{{order.client.clientStreet}}</div>
+    <div class="row text-left">{{transaction.client.clientCompanyName}}</div>
+    <div class="row text-left">{{transaction.client.clientStreet}}</div>
     <div class="row text-left">
-      {{order.client.clientCode}} {{ order.client.clientCity }}
+      {{transaction.client.clientCode}} {{ transaction.client.clientCity }}
     </div>
-    <div class="row text-left">{{order.client.clientCountry}}</div>
+    <div class="row text-left">{{transaction.client.clientCountry}}</div>
     <div class="row text-right">
-      {% if order.status %}{{ order.status_time }}{% else %}data{% endif %}
+      {% if transaction.status %}{{ transaction.status_time }}{% else %}data{% endif %}
     </div>
   </div>
   <table class="table">
@@ -31,7 +31,7 @@ endblock %} {% block content %}
       </tr>
     </thead>
     <tbody>
-      {% if order %} {% for item in order.orderItemsOrdered %}
+      {% if transaction %} {% for item in transaction.transactionItemsOrdered %}
       <tr>
         <form>
           <td>{{ item.itemOrderedSku }}</td>
@@ -53,7 +53,7 @@ endblock %} {% block content %}
               value="{{ item.itemOrderedPrice }}"
             />
           </td>
-          <td>Price * Amount</td>
+          <td>Price * Amount (JS!)</td>
           <td>
             <input
               name="{{ item.itemOrderedSku }}-itemOrderedAdditionalInfo"
@@ -63,12 +63,12 @@ endblock %} {% block content %}
           <td>
             <a
               class="btn btn-outline-secondary"
-              href="/order/admin/{{item.sku}}/edit/"
+              href="/transaction/admin/{{item.sku}}/edit/"
               >Edit</a
             >
             <a
               class="btn btn-outline-danger"
-              href="/order/admin/{{item.sku}}/delete/"
+              href="/transaction/admin/{{item.sku}}/delete/"
               >Delete</a
             >
           </td>
