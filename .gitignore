@@ -13,3 +13,4 @@ transactions/migrations/__init__.py
 transactions/__pycache__
 .env
 pdfgenerator/__pycache__
+.idea
