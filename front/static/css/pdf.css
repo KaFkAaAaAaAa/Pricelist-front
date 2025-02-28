@@ -7,11 +7,20 @@ body {
   font-family: "roboto", sans-serif;
 }
 
-h3{
+h1{
+    color: #9D1006;
+    font-weight: 700;
+}
+
+.recycle{
     color: #9D1006;
     font-weight: 650;
 }
 
-p{
+.paragraph{
+    color: #9D1006;
+}
+
+.head strong{
     color: #9D1006;
 }

@@ -1,0 +1,131 @@
+{# u.clientCompanyName u.clientStreet u.clientCode u.clientCity u.clientCountry #}
+{# date item in items item.itemSku item.itemName item.itemPrice item.itemAmount #}
+{# item.itemTotal (or js?) total.amount (js?) total weight (js?) grafiki: logo #}
+{# "images/logo.png" mini "images/{item.itemSku}.M.jpg" #}
+<!doctype html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/pdf.css' %}">
+    <title>{% block title %}document{% endblock %}</title>
+    {% load i18n %}
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row my-2">
+        <div class="col-9">
+            <img src="{% static 'images/alku-logo-2013-10-17.jpg' %}" alt="ALKU-GMBH" class="img"/>
+        </div>
+        <div class="col-3 pe-2">
+            <h1>Prognosis</h1>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-6">
+            <h4>{{ u.clientCompanyName }}</h4>
+            <h4>{{ u.clientStreet }}</h4>
+            <h4>{{ u.clientCode }}</h4>
+            <h4>{{ u.clientCity }}</h4>
+            <h4>{{ u.clientCountry }}</h4>
+        </div>
+        <div class="col-6 text-end">
+            {# TODO: add delivery date render #}
+            <h3 class="fw-semibold">Delivery date:</h3>
+            {# TODO: add collaboration render #}
+            <h3 class="fw-semibold">Together with:</h3>
+            <div class="row text-center">
+                <div class="col-6">
+
+                </div>
+                <div class="col-6 text-center">
+                    <h5>Plates</h5>
+                    <p>🇵🇱 DW 2345</p>
+                    <p>🇵🇱 DX 3343</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-6">
+            <h5 class="head"><strong>Shipping costs:</strong> <b>€1,200</b></h5>
+            <h5 class="head"><strong>Transport cost per kg:</strong> <b>€0.114</b></h5>
+            <h5 class="head"><strong>Transport costs as a percentage of delivery value:</strong> <b>0.354%</b></h5>
+        </div>
+    </div>
+
+    <div class="text-end mt-4">
+        <h4 class="fw-semibold">Offer from {% now "d-m-Y" %}</h4>
+    </div>
+
+    <table class="table table-bordered mt-2 table-striped">
+        <thead>
+        <tr>
+            <th scope="col">{# TODO: add rendering photos here #}</th>
+            <th scope="col">{% trans "SKU" %}</th>
+            <th scope="col">{% trans "Product" %}</th>
+            <th scope="col">{% trans "Amount" %}</th>
+            <th scope="col">{% trans "Price" %}</th>
+            <th scope="col text-wrap">Price with Transport</th>
+            <th scope="col">{% trans "Sum" %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+            <tr>
+                <td></td>
+                <td>{{ item.sku }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.amount }}</td>
+                <td>{{ item.price }}</td>
+                <td>{# TODO: add counting price with transport function #}</td>
+                <td>{{ item.sum|floatformat:2 }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <p class="paragraph">Shipping costs are covered by the buyer</p>
+    <p class="paragraph">Payment deadline - 7 business days from delivery</p>
+    <hr>
+    <div class="row">
+        {# TODO: add all the counting functions to the headers below #}
+        <div class="col-6">
+            <h5><b>Declared weight:</b></h5>
+            <h5><b>Final weight:</b></h5>
+        </div>
+        <div class="col-6">
+            <h5><b>Delivery value:</b></h5>
+            <h5><b>Delivery value incl. transport costs:</b></h5>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-12">
+            <p class="text-center">ALKU GmbH Hans-Böckler-Straße 6 93142 Maxhütte-Haidhof Deutschland</p>
+        </div>
+    </div>
+    <div class="row text-center">
+        <div class="col-4">
+            <p><strong>E-mail:</strong> pawel.zubrzycki@alku-gmbh.de</p>
+        </div>
+        <div class="col-4">
+            <p><strong>Tel:</strong> +49 151 21402684</p>
+        </div>
+        <div class="col-4">
+            <p><strong>Fax:</strong> +49 9471 60194 20</p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+</html>
