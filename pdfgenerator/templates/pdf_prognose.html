@@ -44,10 +44,10 @@
                 <div class="col-6">
 
                 </div>
-                <div class="col-6 text-center">
-                    <h5>Plates</h5>
-                    <p>🇵🇱 DW 2345</p>
-                    <p>🇵🇱 DX 3343</p>
+                <div class="col-6 text-center mt-4">
+                    <h4>Plates</h4>
+                    <p style="border: 1px solid black">🇵🇱 DW 2345</p>
+                    <p style="border: 1px solid black">🇵🇱 DX 3343</p>
                 </div>
             </div>
         </div>
@@ -65,7 +65,7 @@
         <h4 class="fw-semibold">Offer from {% now "d-m-Y" %}</h4>
     </div>
 
-    <table class="table table-bordered mt-2 table-striped">
+    <table class="table table-bordered mt-2 mb-3 table-striped">
         <thead>
         <tr>
             <th scope="col">{# TODO: add rendering photos here #}</th>
@@ -73,7 +73,7 @@
             <th scope="col">{% trans "Product" %}</th>
             <th scope="col">{% trans "Amount" %}</th>
             <th scope="col">{% trans "Price" %}</th>
-            <th scope="col text-wrap">Price with Transport</th>
+            <th scope="col">Price with Transport</th>
             <th scope="col">{% trans "Sum" %}</th>
         </tr>
         </thead>
@@ -91,10 +91,14 @@
         {% endfor %}
         </tbody>
     </table>
-    <p class="paragraph">Shipping costs are covered by the buyer</p>
-    <p class="paragraph">Payment deadline - 7 business days from delivery</p>
+
+    <div>
+        <p class="paragraph">Shipping costs are covered by the buyer</p>
+        <p class="paragraph">Payment deadline - 7 business days from delivery</p>
+    </div>
+
     <hr>
-    <div class="row">
+    <div class="row my-2">
         {# TODO: add all the counting functions to the headers below #}
         <div class="col-6">
             <h5><b>Declared weight:</b></h5>
