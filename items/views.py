@@ -86,12 +86,12 @@ def _add_items_to_offer(request, headers):
                 pass
         else:
             request.session["current_offer"] = [item_ordered]
-        request.session.modified = True
     if (
         not request.session.get("current_offer")
         or len(request.session.get("current_offer")) == 0
     ):
         return redirect("price_list")
+    request.session.modified = True
     return redirect("offer")
 
 

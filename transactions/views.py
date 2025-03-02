@@ -80,6 +80,19 @@ def _set_status(transaction) -> dict:
     return transaction
 
 
+def _current_offer_to_payload(current_offer):
+    payload = []
+    for item in current_offer:
+        payload.append({
+            "sku": item["sku"],
+            "name": item["name"],
+            "price": _price_to_store(item["price"]),
+            "amount": _amount_to_store(item["amount"]),
+            "additionalInfo": item["additionalInfo"],
+        })
+    return payload
+
+
 def offer(request):
     token = request.session.get("token")
     auth = _get_auth(token)
@@ -94,7 +107,8 @@ def offer(request):
     if request.method == "POST" and auth["group"] not in ADMIN_GROUPS:
         payload = {
             "description": request.POST["transaction_description"],
-            "itemsOrdered": request.session["current_offer"],
+            "itemsOrdered": _current_offer_to_payload(
+                request.session["current_offer"]),
         }
         # items already converted to "store" values
         response = requests.post(
@@ -115,16 +129,36 @@ def offer(request):
             f"{API_BASE_URL}/clients/admin/admin-list/groups/",
             headers=headers,
         )
-        __import__('pdb').set_trace()
         clients_auths = response.json()
 
         for (client, client_auth) in zip(clients_auths["clients"],
                                          clients_auths["auths"]):
             if client_auth["authGroup"] in CLIENT_GROUPS:
+                # TODO: two clients same company
                 client_emails.append(client["clientCompanyName"])
         if request.method == "POST":
-            # TEST and finish admins offer creation
-            pass
+            client_uuid = ""
+            for client in clients_auths["clients"]:
+                if client["clientCompanyName"] == request.POST["client"]:
+                    client_uuid = client["id"]
+            if not client_uuid:
+                return HttpResponseServerError(b"Internal Server Error")
+
+            payload = {
+                "description": request.POST["transaction_description"],
+                "itemsOrdered": _current_offer_to_payload(
+                    request.session["current_offer"]),
+                "clientUUID": client_uuid,
+            }
+            # items already converted to "store" values
+            response = requests.post(
+                f"{API_BASE_URL}/transactions/admin/",
+                headers=headers, json=payload
+            )
+            if response.status_code == 200:
+                request.session["current_offer"] = []
+                request.session.modified = True
+                return redirect("price_list")
 
     return render(request, "offer.html",
                   {"offer": offer, "totals": totals, "clients": client_emails})
