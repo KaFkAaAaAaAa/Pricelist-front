@@ -1,4 +1,4 @@
-{# u.clientCompanyName u.clientStreet u.clientCode u.clientCity u.clientCountry #}
+{# user.clientCompanyName user.clientStreet user.clientCode user.clientCity user.clientCountry #}
 {# date item in items item.itemSku item.itemName item.itemPrice item.itemAmount #}
 {# item.itemTotal (or js?) total.amount (js?) total weight (js?) grafiki: logo #}
 {# "images/logo.png" mini "images/{item.itemSku}.M.jpg" #}
@@ -30,11 +30,11 @@
 <div class="container mt-3">
     <div class="row">
         <div class="col-6">
-            <h4>{{ u.clientCompanyName }}</h4>
-            <h4>{{ u.clientStreet }}</h4>
-            <h4>{{ u.clientCode }}</h4>
-            <h4>{{ u.clientCity }}</h4>
-            <h4>{{ u.clientCountry }}</h4>
+            <h4>{{ user.clientCompanyName }}</h4>
+            <h4>{{ user.clientStreet }}</h4>
+            <h4>{{ user.clientCode }}</h4>
+            <h4>{{ user.clientCity }}</h4>
+            <h4>{{ user.clientCountry }}</h4>
         </div>
     </div>
     <div class="text-end">
@@ -56,11 +56,11 @@
         {% for item in items %}
             <tr>
                 <td></td>
-                <td>{{ item.sku }}</td>
-                <td>{{ item.name }}</td>
-                <td>{{ item.amount }}</td>
-                <td>{{ item.price }}</td>
-                <td>{{ item.sum|floatformat:2 }}</td>
+                <td>{{ item.itemOrderedSku }}</td>
+                <td>{{ item.itemOrderedName }}</td>
+                <td>{{ item.itemOrderedAmount }}</td>
+                <td>{{ item.itemOrderedPrice }}</td>
+                <td>{{ item.total|floatformat:2 }}</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -69,7 +69,8 @@
     <p class="paragraph">Payment deadline - 7 business days from delivery</p>
     <hr>
     <div class="d-flex justify-content-end">
-        <h4><strong>Total amount:</strong> {{ total_sum|floatformat:2 }}</h4>
+
+        <h4><strong>Total price:</strong> {{ total.price|floatformat:2 }} €</h4>
     </div>
     <hr>
     <div class="row">

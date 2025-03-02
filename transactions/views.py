@@ -151,6 +151,7 @@ def offer(request):
                 "clientUUID": client_uuid,
             }
             # items already converted to "store" values
+            __import__('pdb').set_trace()
             response = requests.post(
                 f"{API_BASE_URL}/transactions/admin/",
                 headers=headers, json=payload
@@ -330,11 +331,13 @@ def print_transaciton(request, transaction_uuid):
     if response.status_code != 200:
         return HttpResponseServerError()
     transaction = response.json()
+    __import__('pdb').set_trace()
     totals = _get_stored_item_list_to_display(
-            transaction["transactionItemsOrdered"])
+            transaction["transactionItemsOrdered"],
+            key_a="itemOrderedAmount", key_p="itemOrderedPrice")
     data = {
             "items": transaction["transactionItemsOrdered"],
-            "client": transaction["transacitonClient"],
+            "client": transaction["transactionClient"],
             "total": totals,
             "date": transaction["transactionStatusHistory"][-1]["time"],
         }
