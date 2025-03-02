@@ -6,6 +6,8 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from weasyprint import HTML
 
+from Pricelist.settings import BASE_DIR
+
 # Create your views here.
 
 
@@ -44,7 +46,7 @@ def example_offer(request):
     total_sum = sum(product["amount"] * product["price"] for product in items)
     data["total_sum"] = total_sum
     if request.GET["format"] == "pdf":
-        return generate_pdf("pdf_offer.html", data)
+        return generate_pdf(request, "pdf_offer.html", data)
     return render(request, "pdf_offer.html", data)
 
 
@@ -83,7 +85,7 @@ def prognose_offer(request):
     total_sum = sum(product["amount"] * product["price"] for product in items)
     data["total_sum"] = total_sum
     if request.GET["format"] == "pdf":
-        return generate_pdf("pdf_prognose.html", data)
+        return generate_pdf(request, "pdf_prognose.html", data)
     return render(request, "pdf_prognose.html", data)
 
 
@@ -122,18 +124,22 @@ def final_offer(request):
     total_sum = sum(product["amount"] * product["price"] for product in items)
     data["total_sum"] = total_sum
     if request.GET["format"] == "pdf":
-        return generate_pdf("pdf_final.html", data)
+        return generate_pdf(request, "pdf_final.html", data)
     return render(request, "pdf_final.html", data)
 
 
-def generate_pdf(template, data, filename="document"):
+def generate_pdf(request, template, data, filename="document"):
     """generate pdf response"""
 
+    __import__("pdb").set_trace()
+    base_url = os.path.dirname(BASE_DIR)
+    data["base_url"] = request.build_absolute_uri("/")[:-1]
     html_string = render_to_string(template, data)
-    base_url = os.path.dirname(os.path.realpath(__file__))
 
     pdf_file_path = tempfile.mktemp(suffix=".pdf")
-    HTML(string=html_string, base_url=base_url).write_pdf(pdf_file_path)
+    HTML(string=html_string, base_url=request.build_absolute_uri("/")).write_pdf(
+        pdf_file_path
+    )
 
     with open(pdf_file_path, "rb") as pdf_file:
         response = HttpResponse(pdf_file.read(), content_type="application/pdf")

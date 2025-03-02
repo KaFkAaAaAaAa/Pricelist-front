@@ -346,15 +346,15 @@ def print_transaciton(request, transaction_uuid):
     status = transaction["status"]
 
     if status == "OFFER":
-        return print_offer(data)
+        return print_offer(request, data)
     if status == "PROGNOSE":
         return print_prognose(data)
     if status == "FINAL":
         return print_final(data)
 
 
-def print_offer(data):
-    return generate_pdf("pdf_offer.html", data)
+def print_offer(request, data):
+    return generate_pdf(request, "pdf_offer.html", data)
 
 
 def print_prognose(data):

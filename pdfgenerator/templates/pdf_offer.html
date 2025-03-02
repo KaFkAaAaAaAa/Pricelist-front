@@ -12,11 +12,11 @@
 </head>
 <body>
 <div class="container-fluid">
-    <div class="row my-2">
-        <div class="col-9">
-            <img src="/images/alku-logo-2013-10-17.jpg" alt="ALKU-GMBH" class="img"/>
+    <div class="row my-2 d-flex">
+        <div class="col-6 align-items-start">
+            <img src="{{ images_root }}/images/alku-logo-2013-10-17.jpg" alt="ALKU-GMBH" class="img"/>
         </div>
-        <div class="col-3 pe-2">
+        <div class="col-6 align-items-end">
             <h3 class="recycle">Recycling and reclamation as the basic principle of the company</h3>
         </div>
     </div>
@@ -37,7 +37,7 @@
         <h4>{% trans "Offer from " %}{{ date|date:"d-m-Y H:i" }}</h4>
     </div>
 
-    <table class="table table-bordered mt-2 table-striped">
+    <table class="table table-bordered mt-2 table-striped text-center">
         <thead>
         <tr>
             <th scope="col"></th>
@@ -52,8 +52,10 @@
         {% for item in items %}
             <tr>
                 <td>
-                    <img src="/images/{{ item.sku }}.M.jpg" alt="" class="img-thumbnail"
-                         style="width: 120px; height: auto; border-radius: 10px;"/>
+                 {#    <img src="{{ base_url }}/images/{{ item.itemOrderedSku }}.M.jpg" alt="" class="img-thumbnail" #}
+                 {# style="width: 120px; height: auto; border-radius: 10px;"/> #}
+                    <img src="{{ base_url }}/images/{{ item.itemOrderedSku }}.M.jpg" alt="" class="img"
+                        style="width: 60px; height: auto; vertical-align: middle;"/>
                 </td>
                 <td>{{ item.itemOrderedSku }}</td>
                 <td>{{ item.itemOrderedName }}</td>

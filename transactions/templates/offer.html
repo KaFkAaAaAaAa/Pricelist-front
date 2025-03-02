@@ -7,6 +7,7 @@
         <table class="table mt-3">
             <thead>
             <tr>
+                <th></th>
                 <th scope="col">{% trans "SKU" %}</th>
                 <th scope="col">{% trans "Product" %}</th>
                 <th scope="col">{% trans "Amount" %}</th>
@@ -19,6 +20,7 @@
             {% if request.session.current_offer %}
                 {% for item in request.session.current_offer%}
                 <tr>
+                    <td></td>
                     <td>{{ item.sku }}</td>
                     <td>{{ item.name }}</td>
                     <td>{{ item.amount }}</td>
