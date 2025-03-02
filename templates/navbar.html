@@ -8,7 +8,6 @@
         </a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto me-2">
-                <!-- Wybór języka -->
                 <form action="{% url 'set_language' %}" method="post" class="text-center me-4">
                     {% csrf_token %}
                     <div class="nav-item dropdown">
@@ -22,12 +21,10 @@
                 </form>
 
                 {% if request.session.token %}
-                    <!-- Przycisk "Offer" -->
                     <li class="nav-item my-1 mx-3">
-                        <a class="btn btn-success" href="{% url 'offer' %}">{% trans "Offer" %}</a>
+                        <a class="btn btn-danger" href="{% url 'offer' %}">{% trans "Offer" %}</a>
                     </li>
 
-                    <!-- Menu Profilowe -->
                     <li class="nav-item dropdown ms-4">
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown">
                             <img src="{% static 'media/user-icon.png' %}" alt="User" class="rounded-circle" width="30" height="30">
@@ -43,7 +40,7 @@
                             {% endif %}
                             <li><a class="dropdown-item" href="/">{% trans "Price List" %}</a></li>
                             <li><a class="dropdown-item" href="/profile/">{% trans "Profile" %}</a></li>
-                            <li><a class="dropdown-item" href="/templates/change_password.html">{% trans "Change Password" %}</a></li>
+                            <li><a class="dropdown-item" href="/change_password/">{% trans "Change Password" %}</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item text-danger" href="/logout">{% trans "Logout" %}</a></li>
                         </ul>
