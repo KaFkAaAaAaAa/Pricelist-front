@@ -32,7 +32,7 @@
                             {% csrf_token %}
                             <div class="mb-3">
                                 <label for="amount" class="form-label">{% trans "Amount (kg)" %}</label>
-                                <input id="amount" name="amount" type="number" value="1" min="1" step="1" class="form-control w-50" onchange="calculateTotal()" />
+                                <input id="amount" name="amount" type="number" value="0" min="0" step="0.1" class="form-control w-50" onchange="calculateTotal()" />
                             </div>
                             <button type="submit" class="btn btn-outline-primary">{% trans "Add to your offer" %}</button>
                         </form>

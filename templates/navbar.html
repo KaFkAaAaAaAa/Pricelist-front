@@ -33,7 +33,6 @@
                             {% if not request.session.logged_user.user %}
                             {# admin #}
                                 <li><a class="dropdown-item" href="/admin/dashboard/">{% trans "Admin Dashboard" %}</a></li>
-                                <li><a class="dropdown-item" href="/profile/">{% trans "Profile" %}</a></li>
                             {% else %}
                             {# client #}
                                 <li><a class="dropdown-item" href="/transactions/">{% trans "My Transactions" %}</a></li>

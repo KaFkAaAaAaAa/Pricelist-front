@@ -4,6 +4,18 @@
 {% block content %}
     <div class="container text-center">
         <h1 class="text-center">{% trans "New offer" %}</h1>
+
+        <form method="POST" class="mt-2">
+        {% csrf_token %}
+        {% if not request.session.logged_user.user %}
+        <label for="client" class="form-label h5">{% trans "Client" %}:</label>
+        <select name="client" class="form-select w-50 mx-auto"> 
+          {% for client in clients %}
+            <option value="{{ client }}">{{ client }}</option>
+          {% endfor %}
+        </select>
+        {% endif %}
+
         <table class="table mt-3">
             <thead>
             <tr>
@@ -18,22 +30,24 @@
             </thead>
             <tbody>
             {% if request.session.current_offer %}
-                {% for item in request.session.current_offer%}
+                {% for item in request.session.current_offer %}
                 <tr>
                     <td></td>
-                    <td>{{ item.sku }}</td>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.amount }}</td>
-                    <td>{{ item.price }}</td>
-                    <td>{{ item.total }}</td>
+                    <td class="text-center">{{ item.sku }}</td>
+                    <td class="text-start">{{ item.name }}</td>
+                    <td class="text-center">
+                        <input id="amount-{{ item.sku }}" name="amount" type="number" value="{{ item.amount }}" min="0.1" step="0.1" class="form-control w-100 w-md-75 mx-auto" onchange="calculateTotal('{{ item.sku }}')" />
+                    </td>
+                    <td class="text-center">
+                        <input id="price-{{ item.sku }}" name="price" type="number" value="{{ item.price }}" min="0.1" step="0.01" class="form-control w-100 w-md-75 mx-auto" onchange="calculateTotal('{{ item.sku }}')" />
+                    </td>
+                    <td class="text-center"><span id="totalPrice-{{ item.sku }}">{{ item.total }}</span> €</td>
                     <td>
                         <a class="btn btn-outline-secondary" href="/transactions/offer/{{item.sku}}/edit/">Edit</a>
                         <a class="btn btn-outline-danger" href="/transactions/offer/{{item.sku}}/delete/">Delete</a>
                     </td>
                 </tr>
                 {% endfor %}
-            <div>{% trans "Total price" %}: {{ totals.price }} €</div>
-            <div>{% trans "Total quantity" %}: {{ totals.mass }} kg</div>
             {% else %}
                     <div class="alert alert-secondary">
                         {% trans "No items added to the offer, add some items from the price list" %}
@@ -41,19 +55,37 @@
             {% endif %}
             </tbody>
         </table>
+            <div><b>{% trans "Total price" %}:</b> <span id="totalPrice">{{ totals.price }}</span> €</div>
+            <div><b>{% trans "Total quantity" %}:</b> <span id="totalAmount">{{ totals.mass }}</span> kg</div>
         {# TODO: add button logic #}
-    <form method="POST" class="mt-2">
-        {% csrf_token %}
         <h3>{% trans "Comment" %}</h3>
-        <textarea name="transaction_description" cols="40" rows="3"></textarea><br/>
-        {% if not request.session.logged_user.user %}
-        <select name="client" class="form-select"> 
-          {% for client in clients %}
-            <option value="{{ client }}">{{ client }}</option>
-          {% endfor %}
-        </select>
-        {% endif %}
+        <textarea name="transaction_description" cols="40" rows="3" class="form-control"></textarea><br/>
         <input type="submit" class="btn btn-outline-success mt-2" value="{% trans "Make offer" %}" />
     </form>
     </div>
+    <script>
+        function calculateTotal(skuChanged) {
+            let allTotalPrice = 0.0;
+            let allTotalAmount = 0.0;
+
+            let amount = parseFloat(document.getElementById(`amount-${skuChanged}`).value) || 0;
+            let pricePerKg = parseFloat(document.getElementById(`price-${skuChanged}`).value || 0); 
+            let totalPrice = amount * pricePerKg;
+            document.getElementById(`totalPrice-${skuChanged}`).textContent = totalPrice.toFixed(2);
+
+            // global totals
+            skus.forEach((sku) => {
+                let amount = parseFloat(document.getElementById(`amount-${sku}`).value || 0);
+                let pricePerKg = parseFloat(document.getElementById(`price-${sku}`).value || 0); 
+                let totalPrice = amount * pricePerKg;
+                allTotalPrice += totalPrice;
+                allTotalAmount += amount;
+            });
+            document.getElementById(`totalPrice`).textContent = allTotalPrice.toFixed(2);
+            document.getElementById(`totalAmount`).textContent = allTotalAmount.toFixed(1);
+        }
+        
+        const skus = [{% for item in request.session.current_offer %}"{{ item.sku }}"{% if not loop.last %},{% endif %}{% endfor %}];
+        window.onload = () => skus.forEach(sku => calculateTotal(sku));
+    </script>
 {% endblock %}
