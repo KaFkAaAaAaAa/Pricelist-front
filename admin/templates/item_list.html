@@ -12,15 +12,15 @@
                     placeholder="Search..."
                 />
             </div>
-            <div class="col-12 col-sm-5 d-flex justify-content-gap-2 mb-2">
+            <div class="col-12 col-sm-5 mb-2">
                 {# <button class="btn btn-outline-secondary">{% trans "Search" %}</button> #}
                 {# <a class="btn btn-outline-secondary" href="{% url "item_list" %}">{% trans "Clear" %}</a> #}
+                <a class="btn btn-outline-secondary me-1" href="{% url "item_list" %}">Clear</a>
                 <button class="btn btn-outline-secondary">Search</button>
-                <a class="btn btn-outline-secondary" href="{% url "item_list" %}">Clear</a>
             </div>
         </div>
     </form>
-    <table class="table">
+    <table class="table mt-4">
         <thead>
         <tr>
             <th>Image</th>
@@ -64,7 +64,7 @@
         {% endif %}
         {% endfor %}
         <tr>
-            <a class="btn btn-primary" href="/admin/items/add">Add new</a>
+            <a class="btn btn-primary mt-2" href="/admin/items/add">Add new</a>
         </tr>
         </tbody>
     </table>

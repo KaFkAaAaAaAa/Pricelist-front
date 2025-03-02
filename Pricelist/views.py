@@ -4,9 +4,9 @@ from uuid import UUID
 
 import requests
 from django.http.response import (
-        Http404,
-        HttpResponseForbidden,
-        HttpResponseNotFound,
+    Http404,
+    HttpResponseForbidden,
+    HttpResponseNotFound,
 )
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
@@ -18,6 +18,7 @@ from .settings import (
     CLIENT_GROUPS,
     GROUPS_ROMAN,
 )
+
 
 # TODO: JSON errors -> if json error then redirect(login)
 
@@ -31,11 +32,11 @@ def _amount_to_float(amount: int) -> float:
 
 
 def _price_to_display(price: float) -> str:
-    return f"{price/100:.2f}"
+    return f"{price / 100:.2f}"
 
 
 def _amount_to_display(amount: float) -> str:
-    return f"{amount/10:.1f}"
+    return f"{amount / 10:.1f}"
 
 
 def _amount_to_store(amount: str) -> int:
@@ -96,7 +97,7 @@ def login_view(request):
                     f"{API_BASE_URL}/auth/whoami/",
                     headers={
                         "Authorization": f'Bearer {request.session["token"]}'
-                        },
+                    },
                 )
                 request.session["logged_user"] = response_auth.json().get("currentUser")
                 return redirect("price_list")
