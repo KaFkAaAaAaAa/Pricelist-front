@@ -276,7 +276,7 @@ msgstr "Cennik"
 
 #: .\templates\price_list.html:14 .\templates\price_list.html:19
 msgid "Search"
-msgstr "Wyszukaj"
+msgstr "Szukaj"
 
 #: .\templates\price_list.html:18
 msgid "Clear"
