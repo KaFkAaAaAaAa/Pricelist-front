@@ -21,9 +21,10 @@
             <img src="{% static 'images/alku-logo-2013-10-17.jpg' %}" alt="ALKU-GMBH" class="img"/>
         </div>
         <div class="col-3 pe-2">
-            <h1>Prognosis</h1>
+            <h1>Final</h1>
         </div>
     </div>
+
 </div>
 <hr>
 <div class="container mt-3">
@@ -36,36 +37,14 @@
             <h4>{{ u.clientCountry }}</h4>
         </div>
         <div class="col-6 text-end">
-            {# TODO: add delivery date render #}
-            <h3 class="fw-semibold">Delivery date:</h3>
-            {# TODO: add collaboration render #}
-            <h3 class="fw-semibold">Together with:</h3>
-            <div class="row text-center">
-                <div class="col-6">
-
-                </div>
-                <div class="col-6 text-center mt-4">
-                    <h4>Plates</h4>
-                    <p style="border: 1px solid black">🇵🇱 DW 2345</p>
-                    <p style="border: 1px solid black">🇵🇱 DX 3343</p>
-                </div>
-            </div>
+            <h2 class="fw-semibold">Delivery date: {# TODO: add rendering delivery date #}</h2>
         </div>
     </div>
-
-    <div class="row mt-5">
-        <div class="col-6">
-            <h5 class="head"><strong>Shipping costs:</strong> <b>€1,200</b></h5>
-            <h5 class="head"><strong>Transport cost per kg:</strong> <b>€0.114</b></h5>
-            <h5 class="head"><strong>Transport costs as a percentage of delivery value:</strong> <b>0.354%</b></h5>
-        </div>
-    </div>
-
-    <div class="text-end mt-4">
+    <div class="text-end">
         <h4 class="fw-semibold">Offer from {% now "d-m-Y" %}</h4>
     </div>
 
-    <table class="table table-bordered mt-2 mb-3 table-striped">
+    <table class="table table-bordered mt-2 table-striped">
         <thead>
         <tr>
             <th scope="col">{# TODO: add rendering photos here #}</th>
@@ -73,7 +52,6 @@
             <th scope="col">{% trans "Product" %}</th>
             <th scope="col">{% trans "Amount" %}</th>
             <th scope="col">{% trans "Price" %}</th>
-            <th scope="col">Price with Transport</th>
             <th scope="col">{% trans "Sum" %}</th>
         </tr>
         </thead>
@@ -85,28 +63,22 @@
                 <td>{{ item.name }}</td>
                 <td>{{ item.amount }}</td>
                 <td>{{ item.price }}</td>
-                <td>{# TODO: add counting price with transport function #}</td>
                 <td>{{ item.sum|floatformat:2 }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <div>
-        <p class="paragraph">Shipping costs are covered by the buyer</p>
-        <p class="paragraph">Payment deadline - 7 business days from delivery</p>
-    </div>
-
+    <p class="paragraph">Shipping costs are covered by the buyer</p>
+    <p class="paragraph">Payment deadline - 7 business days from delivery</p>
     <hr>
     <div class="row my-2">
         {# TODO: add all the counting functions to the headers below #}
         <div class="col-6">
             <h5><b>Declared weight:</b></h5>
-            <h5><b>Final weight:</b></h5>
+            <h5><b>Confirmed weight:</b></h5>
         </div>
-        <div class="col-6">
+        <div class="col-6 text-end">
             <h5><b>Delivery value:</b></h5>
-            <h5><b>Delivery value incl. transport costs:</b></h5>
         </div>
     </div>
     <hr>
@@ -125,6 +97,10 @@
         <div class="col-4">
             <p><strong>Fax:</strong> +49 9471 60194 20</p>
         </div>
+    </div>
+    <hr>
+    <div class="text-center">
+        <p class="paragraph">Thank you for your cooperation!</p>
     </div>
 </div>
 
