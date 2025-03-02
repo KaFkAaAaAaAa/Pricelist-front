@@ -2,6 +2,7 @@ import copy
 from datetime import datetime
 from math import floor
 
+from django.http import HttpResponseServerError
 import requests
 from django.http.response import HttpResponseForbidden
 from django.shortcuts import redirect, render
@@ -14,6 +15,7 @@ from Pricelist.views import (
     _price_to_display,
     _price_to_store,
 )
+from pdfgenerator.views import generate_pdf
 
 
 def _calculate_total_mass(item_list, key="amount") -> float:
@@ -264,6 +266,58 @@ def admin_transaction_detail(request, transaction_uuid):
         "transaction_detail_admin.html",
         {"transaction": transaction, "msg": msg},
     )
+
+
+def edit_transaction_admin(request, transaction_uuid, item_sku):
+    pass
+
+
+def print_transaciton(request, transaction_uuid):
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+    headers = auth["headers"]
+
+    admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
+
+    response = requests.get(
+            f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
+            headers=headers,
+        )
+
+    if response.status_code != 200:
+        return HttpResponseServerError()
+    transaction = response.json()
+    totals = _get_stored_item_list_to_display(
+            transaction["transactionItemsOrdered"])
+    data = {
+            "items": transaction["transactionItemsOrdered"],
+            "client": transaction["transacitonClient"],
+            "total": totals,
+            "date": transaction["transactionStatusHistory"][-1]["time"],
+        }
+
+    status = transaction["transactionStatusHistory"][-1]["status"]
+    if status == "OFFER":
+        return print_offer(data)
+    if status == "PROGNOSE":
+        return print_prognose(data)
+    if status == "FINAL":
+        return print_final(data)
+
+
+def print_offer(data):
+    return generate_pdf("pdf_offer.html", data)
+
+
+def print_prognose(data):
+    pass
+
+
+def print_final(data):
+    pass
 
 
 def delete_transaction(request, transaction_uuid):

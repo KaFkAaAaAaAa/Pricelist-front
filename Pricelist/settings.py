@@ -14,7 +14,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent  # Używamy Path z pathlib
 
 load_dotenv()
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -27,6 +26,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "images")
 
 STATIC_URL = "/static/"
 
+TRANSACTION_ROOT = os.getenv("TRANSACTION_ROOT",
+                             os.path.join(BASE_DIR, "transactions_docs"))
+TRANSACTION_URL = "/docs/"
 
 STATICFILES_DIRS = [
     BASE_DIR / "front/static",
@@ -41,6 +43,8 @@ GROUPS_ROMAN = json.loads(os.getenv("GROUPS_ROMAN"))
 LANGS = json.loads(os.getenv("LANGS"))
 CATEGORIES = json.loads(os.getenv("CATEGORIES"))
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8888")
+# 512 MB
+MAX_FILE_SIZE = int(os.getenv("MAX_FILE_SIZE", "536870912"))
 
 # Application definition
 

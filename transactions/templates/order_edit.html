@@ -1,5 +1,6 @@
-{% extends 'base.html' %} {% load i18n %} {% block title %}Transaction List{%
-endblock %} {% block content %}
+{% extends 'base.html' %} {% load i18n %}
+{% block title %}Transaction List{% endblock %}
+{% block content %}
 <button
   class="btn btn-sm btn-outline-danger float-start mb-4"
   onclick="history.back()"
@@ -53,7 +54,7 @@ endblock %} {% block content %}
               value="{{ item.itemOrderedPrice }}"
             />
           </td>
-          <td>Price * Amount (JS!)</td>
+          <td>{{ item.total }}</td>
           <td>
             <input
               name="{{ item.itemOrderedSku }}-itemOrderedAdditionalInfo"
@@ -63,12 +64,12 @@ endblock %} {% block content %}
           <td>
             <a
               class="btn btn-outline-secondary"
-              href="/transaction/admin/{{item.sku}}/edit/"
+              href="/transactions/admin/{{item.sku}}/edit/"
               >Edit</a
             >
             <a
               class="btn btn-outline-danger"
-              href="/transaction/admin/{{item.sku}}/delete/"
+              href="/transactions/admin/{{item.sku}}/delete/"
               >Delete</a
             >
           </td>

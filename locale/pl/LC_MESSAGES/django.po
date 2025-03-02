@@ -227,8 +227,8 @@ msgid "Profile"
 msgstr "Profil"
 
 #: .\templates\navbar.html:40
-msgid "My orders"
-msgstr "Moje zamówienia"
+msgid "My transactions"
+msgstr "Moje transakcje"
 
 #: .\templates\navbar.html:42
 msgid "Edit"
@@ -255,23 +255,19 @@ msgid "Make offer"
 msgstr "Złóż ofertę"
 
 #: .\templates\order_list.html:6
-msgid "Offer list"
-msgstr ""
+msgid "Transaciton list"
+msgstr "Lista transakcji"
 
 #: .\templates\order_list.html:10
-msgid "Order status"
-msgstr ""
+msgid "Transaction status"
+msgstr "Status transakcji"
 
 #: .\templates\order_list.html:11
-#, fuzzy
-#| msgid "Save changes"
-msgid "Order change"
+msgid "Save changes"
 msgstr "Zapisz zmiany"
 
 #: .\templates\order_list.html:12
-#, fuzzy
-#| msgid "Company Name"
-msgid "CompanyName"
+msgid "Company Name"
 msgstr "Nazwa firmy"
 
 #: .\templates\price_list.html:3

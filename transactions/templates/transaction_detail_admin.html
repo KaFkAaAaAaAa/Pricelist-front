@@ -48,8 +48,8 @@
                     <td></td>
                 {% endif %}
                 <td>
-                    <a class="btn btn-outline-secondary" href="/transaction/admin/{{item.sku}}/edit/">Edit</a>
-                    <a class="btn btn-outline-danger" href="/transaction/admin/{{item.sku}}/delete/">Delete</a>
+                    <a class="btn btn-outline-secondary" href="/transactions/admin/{{transaction.uuid}}/{{item.itemOrderedSku}}/edit/">Edit</a>
+                    <a class="btn btn-outline-danger" href="/transactions/admin/{{transaction.uuid}}/{{item.itemOrderedSku}}/delete/">Delete</a>
                 </td>
             </tr>
             {% endfor %}
@@ -70,6 +70,8 @@
             </tr>
         </tbody>
     </table>
+    <a class="btn btn-outline-primary" href="/transactions/{{transaction.uuid}}/change-status/">Change status</a>
+    <a class="btn btn-outline-secondary" href="/transactions/{{transaction.uuid}}/print/">Print</a>
 
     
 

@@ -38,7 +38,7 @@
         </div>
     </div>
     <div class="text-end">
-        <h4>Offer from {% now "d-m-Y" %}</h4>
+        <h4>{% trans "Offer from" %}{{ date }}</h4>
     </div>
 
     <table class="table table-bordered mt-2">
@@ -65,11 +65,11 @@
         {% endfor %}
         </tbody>
     </table>
-    <p>Shipping costs are covered by the buyer</p>
-    <p>Payment deadline - 7 business days from delivery</p>
+    <p>{% trans "Shipping costs are covered by the buyer" %}</p>
+    <p>{% trans "Payment deadline - 7 business days from delivery"%}</p>
     <hr>
     <div class="text-end d-flex">
-        <h4>Total amount: {{ total_sum|floatformat:2 }}</h4>
+        <h4>{% trans "Total amount" %}: {{ total_sum|floatformat:2 }}</h4>
     </div>
     <hr>
     <div>

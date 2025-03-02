@@ -32,9 +32,19 @@ urlpatterns = [
         name="client_transaction_detail",
     ),
     path(
+        "<uuid:transaction_uuid>/print/",
+        views.print_transaciton,
+        name="print_transaciton",
+    ),
+    path(
         "delete/<uuid:transaction_uuid>/",
         views.delete_transaction,
         name="delete_transaction",
+    ),
+    path(
+        "admin/<uuid:transaction_uuid>/<str:item_sku>/edit/",
+        views.edit_transaction_admin,
+        name="edit_transaction_admin",
     ),
     path("", views.client_transactions, name="client_transactions")
 ]
