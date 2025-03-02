@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-12 12:39+0100\n"
+"POT-Creation-Date: 2025-03-02 17:22+0100\n"
 "PO-Revision-Date: 2025-02-05 00:32+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -21,7 +21,7 @@ msgstr ""
 "X-Generator: Poedit 3.5\n"
 
 #: .\Pricelist\forms.py:7 .\Pricelist\forms.py:10 .\templates\login.html:16
-#: .\templates\profile.html:31
+#: .\templates\profile.html:34
 msgid "Email"
 msgstr "Email"
 
@@ -109,95 +109,124 @@ msgstr "Numer konta bankowego:"
 msgid "Enter your bank account number"
 msgstr "Wprowadź numer swojego konta bankowego"
 
-#: .\Pricelist\settings.py:135
+#: .\Pricelist\settings.py:144
 msgid "English"
 msgstr "Angielski"
 
-#: .\Pricelist\settings.py:136
+#: .\Pricelist\settings.py:145
 msgid "Polski"
 msgstr "Polski"
 
-#: .\templates\edit_item_offer.html:11 .\templates\offer.html:11
-#, fuzzy
-#| msgid "Last Name"
-msgid "Name"
-msgstr "Nazwisko"
+#: .\Pricelist\views.py:553
+msgid "your "
+msgstr ""
 
-#: .\templates\edit_item_offer.html:15 .\templates\item_detail.html:32
-#: .\templates\offer.html:12
+#: .\pdfgenerator\templates\pdf_final.html:51
+#: .\pdfgenerator\templates\pdf_offer.html:48
+#: .\pdfgenerator\templates\pdf_prognose.html:72
+#: .\templates\item_detail.html:19 .\transactions\templates\offer.html:10
+#: .\transactions\templates\order_edit.html:25
+#: .\transactions\templates\transaction_detail_admin.html:26
+msgid "SKU"
+msgstr "SKU"
+
+#: .\pdfgenerator\templates\pdf_final.html:52
+#: .\pdfgenerator\templates\pdf_offer.html:49
+#: .\pdfgenerator\templates\pdf_prognose.html:73
+#: .\transactions\templates\offer.html:11
+#: .\transactions\templates\order_edit.html:26
+#: .\transactions\templates\transaction_detail_admin.html:27
+msgid "Product"
+msgstr ""
+
+#: .\pdfgenerator\templates\pdf_final.html:53
+#: .\pdfgenerator\templates\pdf_offer.html:50
+#: .\pdfgenerator\templates\pdf_prognose.html:74
+#: .\transactions\templates\edit_item_offer.html:15
+#: .\transactions\templates\offer.html:12
+#: .\transactions\templates\order_edit.html:27
+#: .\transactions\templates\transaction_detail_admin.html:28
 #, fuzzy
 #| msgid "Count"
 msgid "Amount"
 msgstr "Ilość"
 
-#: .\templates\edit_item_offer.html:26 .\templates\item_detail.html:21
+#: .\pdfgenerator\templates\pdf_final.html:54
+#: .\pdfgenerator\templates\pdf_offer.html:51
+#: .\pdfgenerator\templates\pdf_prognose.html:75
+#: .\templates\item_detail.html:21
+#: .\transactions\templates\edit_item_offer.html:26
+#: .\transactions\templates\offer.html:13
+#: .\transactions\templates\order_edit.html:28
+#: .\transactions\templates\transaction_detail_admin.html:29
 msgid "Price"
 msgstr "Cena"
 
-#: .\templates\edit_item_offer.html:30 .\templates\offer.html:14
-#: .\templates\order_list.html:13
-msgid "Total"
-msgstr "Suma"
-
-#: .\templates\edit_item_offer.html:34
-msgid "Additional informations"
+#: .\pdfgenerator\templates\pdf_final.html:55
+#: .\pdfgenerator\templates\pdf_offer.html:52
+#: .\pdfgenerator\templates\pdf_prognose.html:77
+msgid "Sum"
 msgstr ""
+
+#: .\pdfgenerator\templates\pdf_offer.html:41
+msgid "Offer from"
+msgstr ""
+
+#: .\pdfgenerator\templates\pdf_offer.html:59 .\templates\item_detail.html:9
+msgid "Item Thumbnail"
+msgstr "Miniatura przedmiotu"
+
+#: .\templates\change_password.html:9 .\templates\change_password.html:26
+#: .\templates\profile.html:118
+msgid "Change password"
+msgstr "Zmień hasło"
+
+#: .\templates\change_password.html:25 .\templates\profile.html:116
+#: .\templates\register.html:78
+msgid "Back"
+msgstr "Wstecz"
 
 #: .\templates\item_detail.html:3
 msgid "Item Details"
 msgstr "Szczegóły przedmiotu"
 
-#: .\templates\item_detail.html:9
-msgid "Item Thumbnail"
-msgstr "Miniatura przedmiotu"
+#: .\templates\item_detail.html:33
+#, fuzzy
+#| msgid "Count"
+msgid "Amount (kg)"
+msgstr "Ilość"
 
-#: .\templates\item_detail.html:19 .\templates\offer.html:10
-msgid "SKU"
-msgstr "SKU"
-
-#: .\templates\item_detail.html:34
-msgid "Unit"
-msgstr ""
-
-#: .\templates\item_detail.html:40
+#: .\templates\item_detail.html:36
 msgid "Add to your offer"
 msgstr ""
 
-#: .\templates\item_detail.html:43
+#: .\templates\item_detail.html:39
 #, fuzzy
 #| msgid "Total"
 msgid "Total:"
 msgstr "Suma"
 
-#: .\templates\item_detail.html:49
+#: .\templates\item_detail.html:44
 msgid "Gallery"
 msgstr "Galeria"
 
-#: .\templates\item_detail.html:54 .\templates\item_detail.html:75
+#: .\templates\item_detail.html:49
 msgid "Gallery Image"
 msgstr "Galeria"
 
-#: .\templates\item_detail.html:62
+#: .\templates\item_detail.html:57
 msgid "Previous"
 msgstr "Poprzedni"
 
-#: .\templates\item_detail.html:67
+#: .\templates\item_detail.html:62
 msgid "Next"
 msgstr "Następny"
 
-#: .\templates\item_detail.html:84
-msgid "Full Size Image"
-msgstr "Obraz w pełnym rozmiarze"
-
-#: .\templates\item_detail.html:89
-msgid "Close"
-msgstr "Zamknij"
-
-#: .\templates\item_detail.html:98
+#: .\templates\item_detail.html:67
 msgid "Description"
 msgstr "Opis"
 
-#: .\templates\item_detail.html:103
+#: .\templates\item_detail.html:72
 msgid "Back to Price List"
 msgstr "Powrót do cennika"
 
@@ -209,70 +238,42 @@ msgstr "Zaloguj się"
 msgid "No account? Register"
 msgstr "Nie masz konta? Zarejestruj się"
 
-#: .\templates\navbar.html:15
+#: .\templates\navbar.html:14
 msgid "Choose language"
 msgstr "Wybierz język"
 
-#: .\templates\navbar.html:27
+#: .\templates\navbar.html:25
 msgid "Offer"
 msgstr ""
 
-#: .\templates\navbar.html:37
+#: .\templates\navbar.html:35
 msgid "Admin Dashboard"
 msgstr "Panel Administracyjny"
 
-#: .\templates\navbar.html:38 .\templates\navbar.html:41
-#: .\templates\profile.html:3 .\templates\profile.html:7
+#: .\templates\navbar.html:36 .\templates\navbar.html:42
+#: .\templates\profile.html:3 .\templates\profile.html:8
 msgid "Profile"
 msgstr "Profil"
 
-#: .\templates\navbar.html:40
-msgid "My transactions"
+#: .\templates\navbar.html:39
+#, fuzzy
+#| msgid "My transactions"
+msgid "My Transactions"
 msgstr "Moje transakcje"
 
-#: .\templates\navbar.html:42
-msgid "Edit"
-msgstr "Edytuj"
+#: .\templates\navbar.html:41 .\templates\price_list.html:3
+msgid "Price List"
+msgstr "Cennik"
+
+#: .\templates\navbar.html:43
+#, fuzzy
+#| msgid "Change password"
+msgid "Change Password"
+msgstr "Zmień hasło"
 
 #: .\templates\navbar.html:45
 msgid "Logout"
 msgstr "Wyloguj się"
-
-#: .\templates\offer.html:6
-msgid "New offer"
-msgstr "Nowa oferta"
-
-#: .\templates\offer.html:13
-msgid "Price/Kg"
-msgstr "Cena/Kg"
-
-#: .\templates\offer.html:35
-msgid "No items added to the offer, add some items from the price list"
-msgstr ""
-
-#: .\templates\offer.html:44
-msgid "Make offer"
-msgstr "Złóż ofertę"
-
-#: .\templates\order_list.html:6
-msgid "Transaciton list"
-msgstr "Lista transakcji"
-
-#: .\templates\order_list.html:10
-msgid "Transaction status"
-msgstr "Status transakcji"
-
-#: .\templates\order_list.html:11
-msgid "Save changes"
-msgstr "Zapisz zmiany"
-
-#: .\templates\order_list.html:12
-msgid "Company Name"
-msgstr "Nazwa firmy"
-
-#: .\templates\price_list.html:3
-msgid "Price List"
-msgstr "Cennik"
 
 #: .\templates\price_list.html:14 .\templates\price_list.html:19
 msgid "Search"
@@ -282,21 +283,19 @@ msgstr "Szukaj"
 msgid "Clear"
 msgstr ""
 
-#: .\templates\price_list.html:23
+#: .\templates\price_list.html:24 .\transactions\templates\offer.html:54
+msgid "Make offer"
+msgstr "Złóż ofertę"
+
+#: .\templates\price_list.html:26
 msgid "February"
 msgstr "Luty"
 
-#: .\templates\price_list.html:37
+#: .\templates\price_list.html:49
 msgid "Item Image"
 msgstr "Obrazek przedmiotu"
 
-#: .\templates\price_list.html:48 .\templates\price_list.html:56
-#, fuzzy
-#| msgid "New offer"
-msgid "To offer"
-msgstr "Nowa oferta"
-
-#: .\templates\price_list.html:66
+#: .\templates\price_list.html:90
 msgid ""
 "Prices per 1 kg. The price list is for information purposes only. Prices are "
 "subject to change. Prices are not binding. Typographical errors excepted. "
@@ -306,47 +305,43 @@ msgstr ""
 "nie są wiążące. Zastrzegamy sobie prawo do błędów typograficznych. Prosimy o "
 "kontakt w sprawie cen dla większych ilości lub specjalnych materiałów."
 
-#: .\templates\profile.html:11
+#: .\templates\profile.html:14
 msgid "First Name"
 msgstr "Imię"
 
-#: .\templates\profile.html:21
+#: .\templates\profile.html:24
 msgid "Last Name"
 msgstr "Nazwisko"
 
-#: .\templates\profile.html:41
+#: .\templates\profile.html:44
 msgid "Telephone number"
 msgstr "Numer telefonu"
 
-#: .\templates\profile.html:52
+#: .\templates\profile.html:55
 msgid "Company Name"
 msgstr "Nazwa firmy"
 
-#: .\templates\profile.html:62
+#: .\templates\profile.html:65
 msgid "Street"
 msgstr "Ulica"
 
-#: .\templates\profile.html:72
+#: .\templates\profile.html:75
 msgid "Code"
 msgstr "Kod"
 
-#: .\templates\profile.html:82
+#: .\templates\profile.html:85
 msgid "City"
 msgstr "Miasto"
 
-#: .\templates\profile.html:92
+#: .\templates\profile.html:95
 msgid "Country"
 msgstr "Kraj"
 
-#: .\templates\profile.html:102
+#: .\templates\profile.html:105
 msgid "Bank Number"
 msgstr "Numer konta bankowego"
 
-#: .\templates\profile.html:113
-msgid "Change password"
-msgstr "Zmień hasło"
-
-#: .\templates\profile.html:114
+#: .\templates\profile.html:119
 msgid "Save changes"
 msgstr "Zapisz zmiany"
 
@@ -354,10 +349,6 @@ msgstr "Zapisz zmiany"
 #: .\templates\register.html:79 .\templates\register_success.html:3
 msgid "Register"
 msgstr "Zarejestruj się"
-
-#: .\templates\register.html:78
-msgid "Back"
-msgstr "Wstecz"
 
 #: .\templates\register_success.html:10
 msgid "Registration successful"
@@ -369,6 +360,113 @@ msgid ""
 "credentials soon."
 msgstr ""
 "Dziękujemy za rejestrację. Wkrótce orzymasz e-mail z danymi do logowania"
+
+#: .\transactions\templates\edit_item_offer.html:11
+#, fuzzy
+#| msgid "Last Name"
+msgid "Name"
+msgstr "Nazwisko"
+
+#: .\transactions\templates\edit_item_offer.html:30
+#: .\transactions\templates\offer.html:14
+#: .\transactions\templates\order_edit.html:29
+#: .\transactions\templates\transaction_detail_admin.html:30
+#: .\transactions\templates\transaction_list.html:13
+msgid "Total"
+msgstr "Suma"
+
+#: .\transactions\templates\edit_item_offer.html:34
+msgid "Additional informations"
+msgstr ""
+
+#: .\transactions\templates\offer.html:6
+msgid "New offer"
+msgstr "Nowa oferta"
+
+#: .\transactions\templates\offer.html:33
+#, fuzzy
+#| msgid "Total"
+msgid "Total price"
+msgstr "Suma"
+
+#: .\transactions\templates\offer.html:34
+msgid "Total quantity"
+msgstr ""
+
+#: .\transactions\templates\offer.html:37
+msgid "No items added to the offer, add some items from the price list"
+msgstr ""
+
+#: .\transactions\templates\offer.html:45
+#: .\transactions\templates\order_edit.html:30
+#: .\transactions\templates\transaction_detail_admin.html:31
+msgid "Comment"
+msgstr "Komentarz"
+
+#: .\transactions\templates\order_edit.html:79
+msgid "Error"
+msgstr ""
+
+#: .\transactions\templates\transaction_detail_admin.html:20
+msgid "Status"
+msgstr ""
+
+#: .\transactions\templates\transaction_detail_admin.html:20
+#, fuzzy
+#| msgid "Transaction status"
+msgid "no status"
+msgstr "Status transakcji"
+
+#: .\transactions\templates\transaction_detail_admin.html:58
+msgid "No items in the transaction"
+msgstr ""
+
+#: .\transactions\templates\transaction_list.html:10
+msgid "Transaction status"
+msgstr "Status transakcji"
+
+#: .\transactions\templates\transaction_list.html:11
+#, fuzzy
+#| msgid "Transaction status"
+msgid "Transaction last change"
+msgstr "Status transakcji"
+
+#: .\transactions\templates\transaction_list.html:12
+#, fuzzy
+#| msgid "Company name:"
+msgid "Company name"
+msgstr "Nazwa firmy:"
+
+#: .\transactions\templates\transaction_list.html:24
+msgid "Are you sure you want to delete this transaction?"
+msgstr ""
+
+#: .\transactions\templates\transaction_list.html:24
+msgid "Delete"
+msgstr ""
+
+#~ msgid "Make an offer"
+#~ msgstr "Złóż ofertę"
+
+#~ msgid "Full Size Image"
+#~ msgstr "Obraz w pełnym rozmiarze"
+
+#~ msgid "Close"
+#~ msgstr "Zamknij"
+
+#~ msgid "Edit"
+#~ msgstr "Edytuj"
+
+#~ msgid "Price/Kg"
+#~ msgstr "Cena/Kg"
+
+#~ msgid "Transaciton list"
+#~ msgstr "Lista transakcji"
+
+#, fuzzy
+#~| msgid "New offer"
+#~ msgid "To offer"
+#~ msgstr "Nowa oferta"
 
 #~ msgid "Count"
 #~ msgstr "Ilość"

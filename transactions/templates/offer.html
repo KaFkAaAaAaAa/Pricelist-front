@@ -3,8 +3,8 @@
 {% block title %}Offer{% endblock %}
 {% block content %}
     <div class="container text-center">
-        <h2 class="text-center">{% trans "New offer" %}</h2>
-        <table class="table">
+        <h1 class="text-center">{% trans "New offer" %}</h1>
+        <table class="table mt-3">
             <thead>
             <tr>
                 <th scope="col">{% trans "SKU" %}</th>
@@ -40,8 +40,9 @@
             </tbody>
         </table>
         {# TODO: add button logic #}
-    <form method="POST">
+    <form method="POST" class="mt-2">
         {% csrf_token %}
+        <h3>{% trans "Comment" %}</h3>
         <textarea name="transaction_description" cols="40" rows="3"></textarea><br/>
         {% if not request.session.logged_user.user %}
         <select name="client" class="form-select"> 
@@ -50,7 +51,7 @@
           {% endfor %}
         </select>
         {% endif %}
-        <input type="submit" class="btn btn-outline-success" value="{% trans "Make offer" %}" />
+        <input type="submit" class="btn btn-outline-success mt-2" value="{% trans "Make offer" %}" />
     </form>
     </div>
 {% endblock %}
