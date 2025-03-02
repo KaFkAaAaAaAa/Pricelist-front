@@ -42,17 +42,11 @@
                             {% for item in item_list %}
                                 <tr class="colored-row d-flex align-middle"
                                     style="cursor: pointer; font-size: 19px; vertical-align: middle;">
-                                    {% if item.path %}
                                         <td class="text-center px-0 flex-shrink-0 align-middle"
                                             style="width: 100px; vertical-align: middle;"
                                             onclick="window.location.href='/item/{{ item.sku }}/';"><img
-                                                src="{{ item.path }}" alt="{% trans "Item Image" %}" class="img"
+                                                src="/images/{{ item.sku }}.M.jpg" alt="" class="img"
                                                 style="width: 80px; height: auto; vertical-align: middle;"/></td>
-                                    {% else %}
-                                        <td class="flex-shrink-0 align-middle"
-                                            style="width: 100px; vertical-align: middle;"
-                                            onclick="window.location.href='/item/{{ item.sku }}/';"></td>
-                                    {% endif %}
                                     <td
                                             class="text-center flex-shrink-0 align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}"
                                             style="font-size: 17px; width: 80px; vertical-align: middle;"

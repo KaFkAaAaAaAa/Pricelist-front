@@ -20,14 +20,18 @@ SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 DEBUG = os.getenv("DEBUG", "true").lower() == "true"
 
 ALLOWED_HOSTS = json.loads(os.getenv("ALLOWED_HOSTS", '["localhost"]'))
+CSRF_TRUSTED_ORIGINS = json.loads(
+    os.getenv("CSRF_TRUSTED_ORIGINS", '["http://localhost:8000"]')
+)
 
 MEDIA_URL = "/images/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "images")
 
 STATIC_URL = "/static/"
 
-TRANSACTION_ROOT = os.getenv("TRANSACTION_ROOT",
-                             os.path.join(BASE_DIR, "transactions_docs"))
+TRANSACTION_ROOT = os.getenv(
+    "TRANSACTION_ROOT", os.path.join(BASE_DIR, "transactions_docs")
+)
 TRANSACTION_URL = "/docs/"
 
 STATICFILES_DIRS = [

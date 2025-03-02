@@ -1,7 +1,3 @@
-{# user.clientCompanyName user.clientStreet user.clientCode user.clientCity user.clientCountry #}
-{# date item in items item.itemSku item.itemName item.itemPrice item.itemAmount #}
-{# item.itemTotal (or js?) total.amount (js?) total weight (js?) grafiki: logo #}
-{# "images/logo.png" mini "images/{item.itemSku}.M.jpg" #}
 <!doctype html>
 {% load static %}
 <html lang="en">
@@ -18,7 +14,7 @@
 <div class="container-fluid">
     <div class="row my-2">
         <div class="col-9">
-            <img src="{% static 'images/alku-logo-2013-10-17.jpg' %}" alt="ALKU-GMBH" class="img"/>
+            <img src="/images/alku-logo-2013-10-17.jpg" alt="ALKU-GMBH" class="img"/>
         </div>
         <div class="col-3 pe-2">
             <h3 class="recycle">Recycling and reclamation as the basic principle of the company</h3>
@@ -38,13 +34,13 @@
         </div>
     </div>
     <div class="text-end">
-        <h4>{% trans "Offer from" %}{{ date }}</h4>
+        <h4>{% trans "Offer from " %}{{ date|date:"d-m-Y H:i" }}</h4>
     </div>
 
     <table class="table table-bordered mt-2 table-striped">
         <thead>
         <tr>
-            <th scope="col">{# TODO: add rendering photos here #}</th>
+            <th scope="col"></th>
             <th scope="col">{% trans "SKU" %}</th>
             <th scope="col">{% trans "Product" %}</th>
             <th scope="col">{% trans "Amount" %}</th>
@@ -56,7 +52,7 @@
         {% for item in items %}
             <tr>
                 <td>
-                    <img src="/images/{{ item.sku }}.M.jpg" alt="{% trans "Item Thumbnail" %}" class="img-thumbnail"
+                    <img src="/images/{{ item.sku }}.M.jpg" alt="" class="img-thumbnail"
                          style="width: 120px; height: auto; border-radius: 10px;"/>
                 </td>
                 <td>{{ item.itemOrderedSku }}</td>

@@ -6,7 +6,6 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from weasyprint import HTML
 
-
 # Create your views here.
 
 
@@ -131,9 +130,10 @@ def generate_pdf(template, data, filename="document"):
     """generate pdf response"""
 
     html_string = render_to_string(template, data)
+    base_url = os.path.dirname(os.path.realpath(__file__))
 
     pdf_file_path = tempfile.mktemp(suffix=".pdf")
-    HTML(string=html_string).write_pdf(pdf_file_path)
+    HTML(string=html_string, base_url=base_url).write_pdf(pdf_file_path)
 
     with open(pdf_file_path, "rb") as pdf_file:
         response = HttpResponse(pdf_file.read(), content_type="application/pdf")

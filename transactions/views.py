@@ -2,11 +2,12 @@ import copy
 from datetime import datetime
 from math import floor
 
-from django.http import HttpResponseServerError
 import requests
+from django.http import HttpResponseServerError
 from django.http.response import HttpResponseForbidden
 from django.shortcuts import redirect, render
 
+from pdfgenerator.views import generate_pdf
 from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS
 from Pricelist.views import (
     _amount_to_display,
@@ -15,7 +16,6 @@ from Pricelist.views import (
     _price_to_display,
     _price_to_store,
 )
-from pdfgenerator.views import generate_pdf
 
 
 def _calculate_total_mass(item_list, key="amount") -> float:
@@ -46,9 +46,7 @@ def _calculate_total_price(item_list, key_p="price", key_a="amount") -> float:
     return price
 
 
-def _get_stored_item_list_to_display(item_list,
-                                     key_p="price",
-                                     key_a="amount") -> dict:
+def _get_stored_item_list_to_display(item_list, key_p="price", key_a="amount") -> dict:
     price = 0
     mass = 0
     for item in item_list:
@@ -83,13 +81,15 @@ def _set_status(transaction) -> dict:
 def _current_offer_to_payload(current_offer):
     payload = []
     for item in current_offer:
-        payload.append({
-            "sku": item["sku"],
-            "name": item["name"],
-            "price": _price_to_store(item["price"]),
-            "amount": _amount_to_store(item["amount"]),
-            "additionalInfo": item["additionalInfo"],
-        })
+        payload.append(
+            {
+                "sku": item["sku"],
+                "name": item["name"],
+                "price": _price_to_store(item["price"]),
+                "amount": _amount_to_store(item["amount"]),
+                "additionalInfo": item["additionalInfo"],
+            }
+        )
     return payload
 
 
@@ -107,8 +107,7 @@ def offer(request):
     if request.method == "POST" and auth["group"] not in ADMIN_GROUPS:
         payload = {
             "description": request.POST["transaction_description"],
-            "itemsOrdered": _current_offer_to_payload(
-                request.session["current_offer"]),
+            "itemsOrdered": _current_offer_to_payload(request.session["current_offer"]),
         }
         # items already converted to "store" values
         response = requests.post(
@@ -131,8 +130,9 @@ def offer(request):
         )
         clients_auths = response.json()
 
-        for (client, client_auth) in zip(clients_auths["clients"],
-                                         clients_auths["auths"]):
+        for client, client_auth in zip(
+            clients_auths["clients"], clients_auths["auths"]
+        ):
             if client_auth["authGroup"] in CLIENT_GROUPS:
                 # TODO: two clients same company
                 client_emails.append(client["clientCompanyName"])
@@ -147,22 +147,24 @@ def offer(request):
             payload = {
                 "description": request.POST["transaction_description"],
                 "itemsOrdered": _current_offer_to_payload(
-                    request.session["current_offer"]),
+                    request.session["current_offer"]
+                ),
                 "clientUUID": client_uuid,
             }
             # items already converted to "store" values
-            __import__('pdb').set_trace()
             response = requests.post(
-                f"{API_BASE_URL}/transactions/admin/",
-                headers=headers, json=payload
+                f"{API_BASE_URL}/transactions/admin/", headers=headers, json=payload
             )
             if response.status_code == 200:
                 request.session["current_offer"] = []
                 request.session.modified = True
                 return redirect("price_list")
 
-    return render(request, "offer.html",
-                  {"offer": offer, "totals": totals, "clients": client_emails})
+    return render(
+        request,
+        "offer.html",
+        {"offer": offer, "totals": totals, "clients": client_emails},
+    )
 
 
 def delete_from_offer(request, item_sku):
@@ -229,8 +231,7 @@ def client_transactions(request):
             _calculate_total_price(transaction["transactionItemsOrdered"]),
             _calculate_total_mass(transaction["transactionItemsOrdered "]),
         )
-    return render(request, "transaction_list.html",
-                  {"transactions": transactions})
+    return render(request, "transaction_list.html", {"transactions": transactions})
 
 
 def admin_client_transactions(request, user_id):
@@ -258,8 +259,7 @@ def admin_client_transactions(request, user_id):
             key_a="itemOrderedAmount",
         )
 
-    return render(request, "transaction_list.html",
-                  {"transactions": transactions})
+    return render(request, "transaction_list.html", {"transactions": transactions})
 
 
 def admin_transaction_detail(request, transaction_uuid):
@@ -291,8 +291,7 @@ def admin_transaction_detail(request, transaction_uuid):
             msg["suc"] = "transaction data changed successfully"
 
     response = requests.get(
-        f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/",
-        headers=headers
+        f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/", headers=headers
     )
     transaction = response.json()
     transaction = _set_status(transaction)
@@ -324,25 +323,28 @@ def print_transaciton(request, transaction_uuid):
     admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
 
     response = requests.get(
-            f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
-            headers=headers,
-        )
+        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
+        headers=headers,
+    )
 
     if response.status_code != 200:
         return HttpResponseServerError()
     transaction = response.json()
-    __import__('pdb').set_trace()
     totals = _get_stored_item_list_to_display(
-            transaction["transactionItemsOrdered"],
-            key_a="itemOrderedAmount", key_p="itemOrderedPrice")
+        transaction["transactionItemsOrdered"],
+        key_a="itemOrderedAmount",
+        key_p="itemOrderedPrice",
+    )
+    transaction = _set_status(transaction)
     data = {
-            "items": transaction["transactionItemsOrdered"],
-            "client": transaction["transactionClient"],
-            "total": totals,
-            "date": transaction["transactionStatusHistory"][-1]["time"],
-        }
+        "items": transaction["transactionItemsOrdered"],
+        "client": transaction["transactionClient"],
+        "total": totals,
+        "date": transaction["status_time"],
+    }
 
-    status = transaction["transactionStatusHistory"][-1]["status"]
+    status = transaction["status"]
+
     if status == "OFFER":
         return print_offer(data)
     if status == "PROGNOSE":
@@ -373,13 +375,11 @@ def delete_transaction(request, transaction_uuid):
 
     if auth.get("group") not in ADMIN_GROUPS:
         response = requests.delete(
-            f"{API_BASE_URL}/transactions/{transaction_uuid}/",
-            headers=headers
+            f"{API_BASE_URL}/transactions/{transaction_uuid}/", headers=headers
         )
     else:
         response = requests.delete(
-            f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/",
-            headers=headers
+            f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/", headers=headers
         )
     redir_url = request.headers.get("referer")
     err = ""
