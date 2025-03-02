@@ -31,8 +31,8 @@ def _calculate_total_mass(item_list, key="amount") -> float:
 
 
 def _calculate_total_price(item_list, key_p="price", key_a="amount") -> float:
-    """calculates total for each item in item_list based on item.price and item.amount,
-    saves it in item["total"] and returns total of totals"""
+    """calculates total for each item in item_list based on item.price
+    and item.amount, saves it in item["total"] and returns total of totals"""
 
     price = 0
     if len(item_list) == 0:
@@ -46,7 +46,9 @@ def _calculate_total_price(item_list, key_p="price", key_a="amount") -> float:
     return price
 
 
-def _get_stored_item_list_to_display(item_list, key_p="price", key_a="amount") -> dict:
+def _get_stored_item_list_to_display(item_list,
+                                     key_p="price",
+                                     key_a="amount") -> dict:
     price = 0
     mass = 0
     for item in item_list:
@@ -86,7 +88,7 @@ def offer(request):
         return redirect("login")
     headers = auth["headers"]
 
-    if not "current_offer" in request.session.keys():
+    if "current_offer" not in request.session.keys():
         return redirect("price_list")
 
     if request.method == "POST" and auth["group"] not in ADMIN_GROUPS:
@@ -102,7 +104,8 @@ def offer(request):
             request.session["current_offer"] = []
             request.session.modified = True
             return redirect("price_list")
-        # TODO: weird bug, after getting error from api the prices arent formatted well
+        # TODO: weird bug, after getting error from api the
+        # prices aren't formatted well
 
     offer = request.session.get("current_offer")
     totals = _get_stored_item_list_to_display(offer)
@@ -115,14 +118,16 @@ def offer(request):
         __import__('pdb').set_trace()
         clients_auths = response.json()
 
-        for (client, client_auth) in zip(clients_auths["clients"], clients_auths["auths"]):
+        for (client, client_auth) in zip(clients_auths["clients"],
+                                         clients_auths["auths"]):
             if client_auth["authGroup"] in CLIENT_GROUPS:
                 client_emails.append(client["clientCompanyName"])
         if request.method == "POST":
             # TEST and finish admins offer creation
             pass
 
-    return render(request, "offer.html", {"offer": offer, "totals": totals, "clients": client_emails})
+    return render(request, "offer.html",
+                  {"offer": offer, "totals": totals, "clients": client_emails})
 
 
 def delete_from_offer(request, item_sku):
@@ -131,7 +136,6 @@ def delete_from_offer(request, item_sku):
     if not auth or auth["email"] == "anonymousUser":
         request.session.flush()
         return redirect("login")
-    headers = auth["headers"]
 
     item_skus = [item.get("sku") for item in request.session["current_offer"]]
     index = item_skus.index(item_sku)
@@ -147,7 +151,6 @@ def edit_item_offer(request, item_sku):
     if not auth or auth["email"] == "anonymousUser":
         request.session.flush()
         return redirect("login")
-    headers = auth["headers"]
 
     item_skus = [item.get("sku") for item in request.session["current_offer"]]
     index = item_skus.index(item_sku)
@@ -191,7 +194,8 @@ def client_transactions(request):
             _calculate_total_price(transaction["transactionItemsOrdered"]),
             _calculate_total_mass(transaction["transactionItemsOrdered "]),
         )
-    return render(request, "transaction_list.html", {"transactions": transactions})
+    return render(request, "transaction_list.html",
+                  {"transactions": transactions})
 
 
 def admin_client_transactions(request, user_id):
@@ -219,7 +223,8 @@ def admin_client_transactions(request, user_id):
             key_a="itemOrderedAmount",
         )
 
-    return render(request, "transaction_list.html", {"transactions": transactions})
+    return render(request, "transaction_list.html",
+                  {"transactions": transactions})
 
 
 def admin_transaction_detail(request, transaction_uuid):
@@ -251,7 +256,8 @@ def admin_transaction_detail(request, transaction_uuid):
             msg["suc"] = "transaction data changed successfully"
 
     response = requests.get(
-        f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/", headers=headers
+        f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/",
+        headers=headers
     )
     transaction = response.json()
     transaction = _set_status(transaction)
@@ -330,11 +336,13 @@ def delete_transaction(request, transaction_uuid):
 
     if auth.get("group") not in ADMIN_GROUPS:
         response = requests.delete(
-            f"{API_BASE_URL}/transactions/{transaction_uuid}/", headers=headers
+            f"{API_BASE_URL}/transactions/{transaction_uuid}/",
+            headers=headers
         )
     else:
         response = requests.delete(
-            f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/", headers=headers
+            f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/",
+            headers=headers
         )
     redir_url = request.headers.get("referer")
     err = ""
