@@ -163,14 +163,14 @@ class UserActivateForm(forms.Form):
 
 class PasswordResetForm(forms.Form):
     password = forms.CharField(
-        label="Password",
+        label=_("Password"),
         max_length=100,
         widget=forms.PasswordInput(
             attrs={"class": "form-control", "placeholder": "Password"}
         ),
     )
     confirmPassword = forms.CharField(
-        label="Confirm Password",
+        label=_("Confirm Password"),
         max_length=100,
         widget=forms.PasswordInput(
             attrs={"class": "form-control", "placeholder": "Confirm Password"}
@@ -178,9 +178,7 @@ class PasswordResetForm(forms.Form):
     )
 
 
-class EditProfileForm(
-    forms.Form,
-):
+class EditProfileForm(forms.Form):
     userFirstName = forms.CharField(
         label="First Name:",
         max_length=30,

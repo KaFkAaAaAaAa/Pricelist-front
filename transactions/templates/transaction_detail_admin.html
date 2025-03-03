@@ -5,19 +5,27 @@
 <div class="container text-center">
     <div class="container">
         {# TODO: this button should be on the left side #}
-        <div class="row d-inline-flex justify-content-left text-start">
+        <div class="row text-start float-start">
           <button
             class="btn btn-sm btn-outline-danger mb-4"
             onclick="history.back()"
           >
-            Go back
+                {% trans "Go back" %}
           </button>
         </div>
-        <div class="row text-left">{{ transaction.transactionClient.clientCompanyName }}</div>
-        <div class="row text-left">{{ transaction.transactionClient.clientStreet }}</div>
-        <div class="row text-left">{{ transaction.transactionClient.clientCode }} {{ transaction.transactionClient.clientCity }}</div>
-        <div class="row text-left">{{ transaction.transactionClient.clientCountry }}</div>
-        <div class="row text-right">{% trans "Status" %}: {% if transaction.status %}{{ transaction.status }} {{ transaction.status_time|date:"d-m-Y H:i" }}{% else %}{% trans "no status" %}{% now "d-m-Y H:i" %}{% endif %}</div>
+        <div class="clearfix"></div>
+        <div class="row text-start">{{ transaction.transactionClient.clientCompanyName }}</div>
+        <div class="row text-start">{{ transaction.transactionClient.clientStreet }}</div>
+        <div class="row text-start">{{ transaction.transactionClient.clientCode }} {{ transaction.transactionClient.clientCity }}</div>
+        <div class="row text-start">{{ transaction.transactionClient.clientCountry }}</div>
+        <div class="row text-start"><b class="text-start p-0">{% trans "Status" %}:</b> {% if transaction.status %}{{ transaction.status }} {{ transaction.status_time|date:"d-m-Y H:i" }}{% else %}{% trans "no status" %}{% now "d-m-Y H:i" %}{% endif %}</div>
+        <div class="row text-start float-start">
+          <a href="/transactions/admin/{{ transaction.uuid }}/add-item/"
+            class="btn btn-sm btn-outline-success mt-2 mb-2"
+          >
+                {% trans "Add item" %}
+          </a>
+        </div>
     </div>
     <table class="table">
         <thead>
@@ -39,9 +47,9 @@
                 <td><img src="/images/{{ item.itemOrderedSku }}.M.jpg"></td>
                 <td>{{ item.itemOrderedSku }}</td>
                 <td>{{ item.itemOrderedName }}</td>
-                <td>{{ item.itemOrderedAmount }}</td>
-                <td>{{ item.itemOrderedPrice }}</td>
-                <td>{{ item.total }}</td>
+                <td>{{ item.itemOrderedAmount }} kg</td>
+                <td>{{ item.itemOrderedPrice }} €</td>
+                <td>{{ item.total }} €</td>
                 {% if item.itemOrderedAdditionalInfo %}
                     <td>{{ item.itemOrderedAdditionalInfo }}</td>
                 {% else %}
@@ -62,16 +70,16 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                <td class="fw-bold">{{ transaction.totals.mass }} kg</td>
                 <td></td>
-                <td class="fw-bold">{{ transaction.totals.mass }}</td>
-                <td class="fw-bold">{{ transaction.totals.price }}</td>
+                <td class="fw-bold">{{ transaction.totals.price }} €</td>
                 <td></td>
                 <td></td>
             </tr>
         </tbody>
     </table>
-    <a class="btn btn-outline-primary" href="/transactions/{{transaction.uuid}}/change-status/">Change status</a>
-    <a class="btn btn-outline-secondary" href="/transactions/{{transaction.uuid}}/print/">Print</a>
+    <a class="btn btn-outline-primary" href="/transactions/{{transaction.uuid}}/change-status/">{% trans "Change status" %}</a>
+    <a class="btn btn-outline-secondary" href="/transactions/{{transaction.uuid}}/print/">{% trans "Print" %}</a>
 
     
 

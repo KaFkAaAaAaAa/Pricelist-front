@@ -1,4 +1,5 @@
 {% extends 'base.html' %} {% block title %}Item List{% endblock %}
+{% load i18n %}
 {% block content %}
     <form method="GET" class="container p-0">
         <div class="row w-50 align-items-center">
@@ -65,6 +66,12 @@
         {% endfor %}
         <tr>
             <a class="btn btn-primary mt-2" href="/admin/items/add">Add new</a>
+              <button
+                class="btn btn-outline-danger mt-2 mx-2"
+                onclick="history.back()"
+              >
+                    {% trans "Go back" %}
+              </button>
         </tr>
         </tbody>
     </table>

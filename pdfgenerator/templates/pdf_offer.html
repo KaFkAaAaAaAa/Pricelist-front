@@ -52,16 +52,14 @@
         {% for item in items %}
             <tr>
                 <td>
-                 {#    <img src="{{ base_url }}/images/{{ item.itemOrderedSku }}.M.jpg" alt="" class="img-thumbnail" #}
-                 {# style="width: 120px; height: auto; border-radius: 10px;"/> #}
                     <img src="{{ base_url }}/images/{{ item.itemOrderedSku }}.M.jpg" alt="" class="img"
                         style="width: 60px; height: auto; vertical-align: middle;"/>
                 </td>
                 <td>{{ item.itemOrderedSku }}</td>
                 <td>{{ item.itemOrderedName }}</td>
-                <td>{{ item.itemOrderedAmount }}</td>
-                <td>{{ item.itemOrderedPrice }}</td>
-                <td>{{ item.total|floatformat:2 }}</td>
+                <td>{{ item.itemOrderedAmount }} kg</td>
+                <td>{{ item.itemOrderedPrice|floatformat:2 }} €</td>
+                <td>{{ item.total|floatformat:2 }} ¢</td>
             </tr>
         {% endfor %}
         </tbody>

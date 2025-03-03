@@ -27,18 +27,6 @@
                             {% endif %}
                         </dl>
                     </div>
-                    <div class="col">
-                        <form method="post">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                <label for="amount" class="form-label">{% trans "Amount (kg)" %}</label>
-                                <input id="amount" name="amount" type="number" value="0" min="0" step="0.1" class="form-control w-50" onchange="calculateTotal()" />
-                            </div>
-                            <button type="submit" class="btn btn-outline-primary">{% trans "Add to your offer" %}</button>
-                        </form>
-                        <br/>
-                        <p>{% trans "Total:" %} <span id="totalPrice">0</span> €</p>
-                    </div>
                 </div>
             </div>
 
@@ -70,19 +58,13 @@
             </div>
 
             <div class="mt-4 text-center">
-                <a class="btn btn-secondary" href="/">{% trans "Back to Price List" %}</a>
+              <button
+                class="btn btn-outline-danger mb-4"
+                onclick="history.back()"
+              >
+                    {% trans "Go back" %}
+              </button>
             </div>
         </div>
     </div>
-
-    <script>
-        function calculateTotal() {
-            let amount = parseFloat(document.getElementById('amount').value);
-            let pricePerKg = {{ item.price }}; 
-            let totalPrice = amount * pricePerKg;
-            document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
-        }
-        
-        window.onload = calculateTotal;
-    </script>
 {% endblock %}

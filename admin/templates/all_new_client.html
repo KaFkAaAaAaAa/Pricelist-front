@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% block title %}My New Clients{% endblock %} {% block
 content %}
 <h2>New User List</h2>
-<table class="table">
+<table class="table table-hover table-striped">
   <thead>
     <tr>
       <th>Email</th>
@@ -11,7 +11,10 @@ content %}
   </thead>
   <tbody>
     {% for user in users %}
-    <tr>
+    <tr
+      onclick="window.location.href='/admin/clients/{{ client.id }}';"
+      style="cursor: pointer"
+    >
       <td>{{ user.userEmail }}</td>
       <td>{{ user.userTelephoneNumber }}</td>
       <!-- TODO: we might need client information here -->

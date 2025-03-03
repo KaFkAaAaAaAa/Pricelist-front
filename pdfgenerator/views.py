@@ -131,8 +131,6 @@ def final_offer(request):
 def generate_pdf(request, template, data, filename="document"):
     """generate pdf response"""
 
-    __import__("pdb").set_trace()
-    base_url = os.path.dirname(BASE_DIR)
     data["base_url"] = request.build_absolute_uri("/")[:-1]
     html_string = render_to_string(template, data)
 

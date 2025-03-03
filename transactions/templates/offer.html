@@ -3,8 +3,12 @@
 {% block title %}Offer{% endblock %}
 {% block content %}
     <div class="container text-center">
-        <h1 class="text-center">{% trans "New offer" %}</h1>
-
+        {% if request.session.logged_user.user %}
+            <h1 class="text-center">{% trans "New proposition" %}</h1>
+        {% else %}
+            <h1 class="text-center">{% trans "New offer" %}</h1>
+        {% endif %}
+        
         <form method="POST" class="mt-2">
         {% csrf_token %}
         {% if not request.session.logged_user.user %}
@@ -21,10 +25,10 @@
             <tr>
                 <th></th>
                 <th scope="col">{% trans "SKU" %}</th>
-                <th scope="col">{% trans "Product" %}</th>
-                <th scope="col">{% trans "Amount" %}</th>
-                <th scope="col">{% trans "Price" %}</th>
-                <th scope="col">{% trans "Total" %}</th>
+                <th scope="col" class="text-start">{% trans "Product" %}</th>
+                <th scope="col">{% trans "Amount" %} [kg]</th>
+                <th scope="col">{% trans "Price" %} [€]</th>
+                <th scope="col" class="text-end">{% trans "Total" %}</th>
                 <th></th>
             </tr>
             </thead>
@@ -41,7 +45,7 @@
                     <td class="text-center">
                         <input id="price-{{ item.sku }}" name="price" type="number" value="{{ item.price }}" min="0.1" step="0.01" class="form-control w-100 w-md-75 mx-auto" onchange="calculateTotal('{{ item.sku }}')" />
                     </td>
-                    <td class="text-center"><span id="totalPrice-{{ item.sku }}">{{ item.total }}</span> €</td>
+                    <td class="text-end"><span id="totalPrice-{{ item.sku }}">{{ item.total }}</span> €</td>
                     <td>
                         <a class="btn btn-outline-secondary" href="/transactions/offer/{{item.sku}}/edit/">Edit</a>
                         <a class="btn btn-outline-danger" href="/transactions/offer/{{item.sku}}/delete/">Delete</a>
@@ -60,7 +64,7 @@
         {# TODO: add button logic #}
         <h3>{% trans "Comment" %}</h3>
         <textarea name="transaction_description" cols="40" rows="3" class="form-control"></textarea><br/>
-        <input type="submit" class="btn btn-outline-success mt-2" value="{% trans "Make offer" %}" />
+        <input type="submit" class="btn btn-outline-success mt-2" value="{% if request.session.logged_user.user %}{% trans "Make proposition" %}"/>{% else %}{% trans "Make offer" %}"/>{% endif %}
     </form>
     </div>
     <script>

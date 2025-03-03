@@ -7,15 +7,12 @@ from django.http import HttpResponseServerError
 from django.http.response import HttpResponseForbidden
 from django.shortcuts import redirect, render
 
+from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
 from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS
-from Pricelist.views import (
-    _amount_to_display,
-    _amount_to_store,
-    _get_auth,
-    _price_to_display,
-    _price_to_store,
-)
+from Pricelist.views import (_amount_to_display, _amount_to_store, _get_auth,
+                             _price_to_display, _price_to_store)
+from transactions.forms import ItemForm
 
 
 def _calculate_total_mass(item_list, key="amount") -> float:
@@ -102,7 +99,7 @@ def offer(request):
     headers = auth["headers"]
 
     if "current_offer" not in request.session.keys():
-        return redirect("price_list")
+        request.session["current_offer"] = []
 
     if request.method == "POST" and auth["group"] not in ADMIN_GROUPS:
         payload = {
@@ -116,13 +113,13 @@ def offer(request):
         if response.status_code == 200:
             request.session["current_offer"] = []
             request.session.modified = True
-            return redirect("price_list")
+            return redirect("client_transaction_detail", response.json()["uuid"])
         # TODO: weird bug, after getting error from api the
         # prices aren't formatted well
 
     offer = request.session.get("current_offer")
     totals = _get_stored_item_list_to_display(offer)
-    client_emails = []
+    client_emails = []  # here bc unbound
     if auth["group"] in ADMIN_GROUPS:
         response = requests.get(
             f"{API_BASE_URL}/clients/admin/admin-list/groups/",
@@ -158,13 +155,32 @@ def offer(request):
             if response.status_code == 200:
                 request.session["current_offer"] = []
                 request.session.modified = True
-                return redirect("price_list")
+                return redirect("admin_transaction_detail", response.json()["uuid"])
 
     return render(
         request,
         "offer.html",
         {"offer": offer, "totals": totals, "clients": client_emails},
     )
+
+
+def offer_list(request):
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+    headers = auth["headers"]
+
+    if auth["group"] not in ADMIN_GROUPS + CLIENT_GROUPS:
+        return HttpResponseForbidden(
+            "<h1>You do not have access to that page<h1>".encode("utf-8")
+        )
+
+    if request.method == "POST":
+        return _add_items_to_offer(request, headers)
+
+    return _make_price_list(request, headers, pattern="offer_list.html")
 
 
 def delete_from_offer(request, item_sku):
@@ -180,6 +196,44 @@ def delete_from_offer(request, item_sku):
         request.session["current_offer"].pop(index)
         request.session.modified = True
     return redirect("offer")
+
+
+def add_new_item_to_transaction(request, transaction_uuid):
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+
+    if request.method == "POST":
+        form = ItemForm(request.POST)
+        if form.is_valid():
+            payload = {
+                "sku": form.cleaned_data["sku"],
+                "name": form.cleaned_data["name"],
+                "price": _price_to_store(form.cleaned_data["price"]),
+                "amount": _amount_to_store(form.cleaned_data["amount"]),
+                "additionalInfo": form.cleaned_data["additionalInfo"],
+            }
+            print(payload)
+            admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
+            response = requests.post(
+                f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/add-item/",
+                headers=auth["headers"],
+                json=payload,
+            )
+            if response.status_code == 200:
+                if admin_url:
+                    return redirect("admin_transaction_detail", response.json()["uuid"])
+
+    form = ItemForm()
+    return render(
+        request,
+        "new_item_transaction.html",
+        {
+            "form": form,
+        },
+    )
 
 
 def edit_item_offer(request, item_sku):
@@ -213,7 +267,6 @@ def edit_item_offer(request, item_sku):
 
 
 def client_transactions(request):
-
     # this is nearly the same func as the one below
     token = request.session.get("token")
     auth = _get_auth(token)
@@ -227,10 +280,37 @@ def client_transactions(request):
     transactions = response.json()
     for transaction in transactions:
         _set_status(transaction)
-        transaction["totals"] = (
-            _calculate_total_price(transaction["transactionItemsOrdered"]),
-            _calculate_total_mass(transaction["transactionItemsOrdered "]),
+        transaction["totals"] = _get_stored_item_list_to_display(
+            transaction["transactionItemsOrdered"],
+            key_p="itemOrderedPrice",
+            key_a="itemOrderedAmount",
         )
+    return render(request, "transaction_list.html", {"transactions": transactions})
+
+
+def admin_transactions(request):
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+    headers = auth["headers"]
+
+    if auth.get("group") not in ADMIN_GROUPS:
+        return HttpResponseForbidden(
+            "<h1>You do not have access to that page<h1>".encode("utf-8")
+        )
+
+    response = requests.get(f"{API_BASE_URL}/transactions/admin/", headers=headers)
+    transactions = response.json()
+    for transaction in transactions:
+        _set_status(transaction)
+        transaction["totals"] = _get_stored_item_list_to_display(
+            transaction["transactionItemsOrdered"],
+            key_p="itemOrderedPrice",
+            key_a="itemOrderedAmount",
+        )
+
     return render(request, "transaction_list.html", {"transactions": transactions})
 
 

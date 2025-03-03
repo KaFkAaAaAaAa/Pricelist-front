@@ -1,11 +1,11 @@
 {% extends 'base.html' %} {% load i18n %}
-{% block title %}Transaction List{% endblock %}
+{% block title %}Transaction{% endblock %}
 {% block content %}
 <button
   class="btn btn-sm btn-outline-danger float-start mb-4"
   onclick="history.back()"
 >
-  Go back
+  {% trans "Go back" %}
 </button>
 <div class="container text-center">
   <div class="container">

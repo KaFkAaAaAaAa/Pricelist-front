@@ -22,7 +22,13 @@
 
                 {% if request.session.token %}
                     <li class="nav-item my-1 mx-3">
-                        <a class="btn btn-danger" href="{% url 'offer' %}">{% trans "Offer" %}</a>
+                    <a class="btn btn-danger" href="{% url 'offer' %}">
+                        {% if request.session.logged_user.user %}
+                            {% trans "Proposition" %}
+                        {% else %}
+                            {% trans "Offer" %}
+                        {% endif %}
+                    </a>
                     </li>
 
                     <li class="nav-item dropdown ms-4">

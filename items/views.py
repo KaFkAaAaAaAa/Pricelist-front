@@ -1,25 +1,17 @@
-import requests
 import re
 from math import floor
 
-from django.shortcuts import render, redirect
-from django.http.response import (
-        Http404,
-        HttpResponseForbidden,
-)
+import requests
 from django.core.files.storage import FileSystemStorage
+from django.http.response import Http404, HttpResponseForbidden
+from django.shortcuts import redirect, render
 
+from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CATEGORIES, CLIENT_GROUPS
 from Pricelist.views import (
+    _amount_to_store,
     _get_auth,
     _price_to_display,
     _price_to_store,
-    _amount_to_store,
-)
-from Pricelist.settings import (
-    ADMIN_GROUPS,
-    API_BASE_URL,
-    CATEGORIES,
-    CLIENT_GROUPS,
 )
 
 
@@ -36,7 +28,7 @@ def _list_items(item_sku, fs=FileSystemStorage()):
     images_sku = []
     pattern = re.compile(r"{}.*".format(item_sku))
 
-    # TODO: can be optimized with binary search - look for any occurrence 
+    # TODO: can be optimized with binary search - look for any occurrence
     # and then look for first one,
     # then while match append
     # another optimization -> after finding match if not matching
@@ -45,6 +37,44 @@ def _list_items(item_sku, fs=FileSystemStorage()):
         if re.match(pattern, image) and not re.match(r".*\.M\..*", image):
             images_sku.append(image)
     return [fs.url(image) for image in images_sku]
+
+
+def _make_price_list(request, headers, pattern="price_list.html"):
+    lang = request.LANGUAGE_CODE.upper()
+    pln_exr = False
+
+    if lang == "PL":
+        pln_exr = _get_pln_exr()
+
+    if "search" in request.GET.keys():
+        response = requests.get(
+            f"{API_BASE_URL}/items/search?lang={lang}&query={request.GET['search']}",
+            headers=headers,
+        )
+    else:
+        response = requests.get(
+            f"{API_BASE_URL}/items/price-list?lang={lang}", headers=headers
+        )
+    items = {}
+    items = (
+        response.json() if response.status_code == 200 else {}
+    )  # items = {<String>:<List<PricelistItemModel>>}
+    is_results = False
+    for category in items.keys():
+        for item in items[category]:
+            # if PL add PLN
+            if pln_exr:
+                item["price_pln"] = floor(item["price"] * pln_exr)
+                item["price_pln"] = _price_to_display(item["price_pln"])
+            item["price"] = f"{item['price'] / 100:.2f}"
+
+            is_results = True
+
+    return render(
+        request,
+        pattern,
+        {"is_results": is_results, "items": items, "categories": CATEGORIES[lang]},
+    )
 
 
 def _add_items_to_offer(request, headers):
@@ -109,40 +139,7 @@ def price_list(request):
             "<h1>You do not have access to that page<h1>".encode("utf-8")
         )
 
-    if request.method == "POST":
-        return _add_items_to_offer(request, headers)
-
-    lang = request.LANGUAGE_CODE.upper()
-    pln_exr = False
-
-    if lang == "PL":
-        pln_exr = _get_pln_exr()
-
-    if "search" in request.GET.keys():
-        response = requests.get(
-            f"{API_BASE_URL}/items/search?lang={lang}&query={request.GET['search']}",
-            headers=headers,
-        )
-    else:
-        response = requests.get(
-            f"{API_BASE_URL}/items/price-list?lang={lang}", headers=headers
-        )
-    items = {}
-    items = (
-        response.json() if response.status_code == 200 else {}
-    )  # items = {<String>:<List<PricelistItemModel>>}
-    for category in items.keys():
-        for item in items[category]:
-            # if PL add PLN
-            if pln_exr:
-                item["price_pln"] = floor(item["price"] * pln_exr)
-                item["price_pln"] = _price_to_display(item["price_pln"])
-            item["price"] = f"{item['price'] / 100:.2f}"
-
-    return render(
-        request, "price_list.html",
-        {"items": items, "categories": CATEGORIES[lang]}
-    )
+    return _make_price_list(request, headers)
 
 
 def item_detail(request, item_sku):
@@ -168,38 +165,7 @@ def item_detail(request, item_sku):
                 item["price_pln"] = floor(item["price"] * pln_exr)
                 item["price_pln"] = _price_to_display(item["price_pln"])
         item["price"] = _price_to_display(item["price"])
-        if request.method == "POST":
-            units = {
-                "kg": 1,
-            }
-            unit_multi = units.get(request.POST["unit"])
-            amount = request.POST["amount"] * unit_multi
-            item_ordered = {
-                "sku": item.get("sku"),
-                "name": item.get("name"),
-                "price": item.get("price"),
-                "amount": amount,
-                "additionalInfo": "",
-            }
-            if (
-                "current_offer" in request.session.keys()
-                and isinstance(request.session["current_offer"], list)
-                and request.session["current_offer"]
-            ):
-                if item_ordered.get("sku") not in [
-                    item["sku"] for item in request.session["current_offer"]
-                ]:
-                    request.session["current_offer"].append(item_ordered)
-                else:
-                    # TODO: figure out some way to handle
-                    # "item is already in the order" situation
-                    pass
-            else:
-                request.session["current_offer"] = [item_ordered]
-            request.session.modified = True
-            return redirect("price_list")
-        return render(request, "item_detail.html",
-                      {"item": item, "images": images})
+        return render(request, "item_detail.html", {"item": item, "images": images})
     return render(request, "item_detail.html", {"error": "Item not found."})
 
 
@@ -223,8 +189,7 @@ def admin_items(request):
             headers=headers,
         )
     else:
-        response = requests.get(f"{API_BASE_URL}/items/admin/",
-                                headers=headers)
+        response = requests.get(f"{API_BASE_URL}/items/admin/", headers=headers)
     items = response.json() if response.status_code == 200 else []
     items_dict = {}
     for category in CATEGORIES.get("EN"):
@@ -264,8 +229,7 @@ def edit_item(request, item_sku):
                 "PL": request.POST.get("PL-d"),
             },
             "itemPrice": [
-                _price_to_store(request.POST.get(f"itemPrice-{i}"))
-                for i in range(1, 5)
+                _price_to_store(request.POST.get(f"itemPrice-{i}")) for i in range(1, 5)
             ],
         }
         if not re.match(r"^\w\w\d\d$", item_sku):
@@ -277,33 +241,28 @@ def edit_item(request, item_sku):
             payload["itemImgPath"] = ""
             # TODO: delete the image XD
         response = requests.put(
-            f"{API_BASE_URL}/items/admin/{item_sku}",
-            headers=headers, json=payload
+            f"{API_BASE_URL}/items/admin/{item_sku}", headers=headers, json=payload
         )
         if response.status_code == 200:
             return redirect("item_list")
         # error = payload.error
         return redirect("item_list")
-    else:
-        response = requests.get(
-            f"{API_BASE_URL}/items/admin/{item_sku}", headers=headers
+    response = requests.get(f"{API_BASE_URL}/items/admin/{item_sku}", headers=headers)
+    item = response.json() if response.status_code == 200 else 0
+    if item:
+        item["itemPrice"] = [
+            _price_to_display(group_price) for group_price in item["itemPrice"]
+        ]
+        return render(
+            request,
+            "edit_item.html",
+            {
+                "item": item,
+                "range": range(1, 5),
+                "categories": CATEGORIES["EN"],
+            },
         )
-        item = response.json() if response.status_code == 200 else 0
-        if item:
-            item["itemPrice"] = [
-                _price_to_display(group_price)
-                for group_price in item["itemPrice"]
-            ]
-            return render(
-                request,
-                "edit_item.html",
-                {
-                    "item": item,
-                    "range": range(1, 5),
-                    "categories": CATEGORIES["EN"],
-                },
-            )
-        return render(request, "edit_item.html", {"error": "Item not found!"})
+    return render(request, "edit_item.html", {"error": "Item not found!"})
 
 
 def delete_item(request, item_sku):
@@ -457,8 +416,7 @@ def admin_images(request, item_sku):
 
         return redirect("admin_images", item_sku)
     return render(
-        request, "admin_images.html",
-        {"images": images_url, "item_sku": item_sku}
+        request, "admin_images.html", {"images": images_url, "item_sku": item_sku}
     )
 
 
@@ -506,8 +464,7 @@ def add_item(request):
                 "FR": request.POST.get("FR-d"),
                 "PL": request.POST.get("PL-d"),
             },
-            "itemPrice": [_price_to_store(price) if price else 0
-                          for price in prices],
+            "itemPrice": [_price_to_store(price) if price else 0 for price in prices],
         }
 
         response = requests.post(
@@ -533,5 +490,3 @@ def add_item(request):
                 "categories": CATEGORIES["EN"],
             },
         )
-
-
