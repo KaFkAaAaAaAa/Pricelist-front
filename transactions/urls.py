@@ -28,7 +28,17 @@ urlpatterns = [
         name="admin_transaction_detail",
     ),
     path(
+        "<uuid:transaction_uuid>/",
+        views.admin_transaction_detail,
+        name="admin_transaction_detail",
+    ),
+    path(
         "admin/<uuid:transaction_uuid>/add-item/",
+        views.add_new_item_to_transaction,
+        name="add_new_item_to_transaction",
+    ),
+    path(
+        "<uuid:transaction_uuid>/add-item/",
         views.add_new_item_to_transaction,
         name="add_new_item_to_transaction",
     ),
@@ -49,8 +59,23 @@ urlpatterns = [
     ),
     path(
         "admin/<uuid:transaction_uuid>/<str:item_sku>/edit/",
-        views.edit_transaction_admin,
-        name="edit_transaction_admin",
+        views.edit_transaction_item,
+        name="edit_transaction_item",
+    ),
+    path(
+        "<uuid:transaction_uuid>/<str:item_sku>/edit/",
+        views.edit_transaction_item,
+        name="edit_transaction_item",
+    ),
+    path(
+        "admin/<uuid:transaction_uuid>/<str:item_sku>/delete/",
+        views.delete_transaction_item,
+        name="delete_transaction_item",
+    ),
+    path(
+        "<uuid:transaction_uuid>/<str:item_sku>/delete/",
+        views.delete_transaction_item,
+        name="delete_transaction_item",
     ),
     path("", views.client_transactions, name="client_transactions"),
     path("admin/", views.admin_transactions, name="admin_transactions"),

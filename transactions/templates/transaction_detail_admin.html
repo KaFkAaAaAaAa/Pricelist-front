@@ -44,7 +44,7 @@
         {% if transaction.transactionItemsOrdered %}
             {% for item in transaction.transactionItemsOrdered %}
             <tr>
-                <td><img src="/images/{{ item.itemOrderedSku }}.M.jpg"></td>
+                <td><img style="width: 80px; height: auto; vertical-align: middle;" src="/images/{{ item.itemOrderedSku }}.M.jpg"></td>
                 <td>{{ item.itemOrderedSku }}</td>
                 <td>{{ item.itemOrderedName }}</td>
                 <td>{{ item.itemOrderedAmount }} kg</td>

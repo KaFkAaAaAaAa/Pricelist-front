@@ -3,22 +3,13 @@ from typing import Iterable
 from uuid import UUID
 
 import requests
-from django.http.response import (
-    Http404,
-    HttpResponseForbidden,
-    HttpResponseNotFound,
-)
+from django.http import HttpResponseServerError
+from django.http.response import HttpResponseForbidden, HttpResponseNotFound
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
 
 from .forms import LoginForm, NewAdminForm, PasswordResetForm, RegisterForm
-from .settings import (
-    ADMIN_GROUPS,
-    API_BASE_URL,
-    CLIENT_GROUPS,
-    GROUPS_ROMAN,
-)
-
+from .settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, GROUPS_ROMAN
 
 # TODO: JSON errors -> if json error then redirect(login)
 
@@ -45,6 +36,21 @@ def _amount_to_store(amount: str) -> int:
 
 def _price_to_store(price: str) -> int:
     return int(floor(float(price) * 100))
+
+
+def _api_error_interpreter(status_code, msg_404=None, msg_401=None, msg_500=None):
+    """Interpreter for api error response status code. It renders error response pages.
+    If response code is not either 404 or 401, it uses HttpResponseServerError"""
+    output = False
+    if status_code == 404:
+        output = HttpResponseNotFound(msg_404) if msg_404 else HttpResponseNotFound
+    elif status_code in (401, 403):
+        output = HttpResponseForbidden(msg_401) if msg_401 else HttpResponseForbidden
+    elif status_code != 200:
+        output = (
+            HttpResponseServerError(msg_500) if msg_500 else HttpResponseServerError
+        )
+    return output
 
 
 def favicon():
@@ -89,15 +95,12 @@ def login_view(request):
                 "email": form.cleaned_data["email"],
                 "password": form.cleaned_data["password"],
             }
-            response = requests.post(f"{API_BASE_URL}/auth/login",
-                                     json=payload)
+            response = requests.post(f"{API_BASE_URL}/auth/login", json=payload)
             if response.status_code == 200:
                 request.session["token"] = response.json().get("token")
                 response_auth = requests.get(
                     f"{API_BASE_URL}/auth/whoami/",
-                    headers={
-                        "Authorization": f'Bearer {request.session["token"]}'
-                    },
+                    headers={"Authorization": f'Bearer {request.session["token"]}'},
                 )
                 request.session["logged_user"] = response_auth.json().get("currentUser")
                 return redirect("price_list")
@@ -136,8 +139,7 @@ def register_view(request):
                 "clientCountry": form.cleaned_data["clientCountry"],
                 "clientBankNumber": form.cleaned_data["clientBankNumber"],
             }
-            response = requests.post(f"{API_BASE_URL}/auth/register",
-                                     json=payload)
+            response = requests.post(f"{API_BASE_URL}/auth/register", json=payload)
             if response.status_code == 200:
                 return render(request, "register_success.html")
             else:
@@ -187,8 +189,7 @@ def profile(request):
                 "clientBankNumber": request.POST["clientBankNumber"],
             }
             client_response = requests.post(
-                f"{API_BASE_URL}/clients/self/",
-                json=client_payload, headers=headers
+                f"{API_BASE_URL}/clients/self/", json=client_payload, headers=headers
             )
             if client_response.status_code != 200:
                 err = "500 Internal Server Error"
@@ -270,8 +271,7 @@ def new_admin(request, msg=None):
                 "lastName": form.cleaned_data["userLastName"],
             }
             response = requests.post(
-                f"{API_BASE_URL}/auth/admin/new-admin",
-                headers=headers, json=payload
+                f"{API_BASE_URL}/auth/admin/new-admin", headers=headers, json=payload
             )
             if response.status_code == 200:
                 return render(
@@ -281,8 +281,7 @@ def new_admin(request, msg=None):
                 )
             else:
                 return render(
-                    request, "new_admin.html",
-                    {"form": form, "error": "Invalid email"}
+                    request, "new_admin.html", {"form": form, "error": "Invalid email"}
                 )
     else:
         form = NewAdminForm()
@@ -325,8 +324,7 @@ def new_users(request, msg="", func="assign-admin"):
         return redirect("login")
     headers = auth["headers"]
 
-    response = requests.get(f"{API_BASE_URL}/clients/admin/no-admin/",
-                            headers=headers)
+    response = requests.get(f"{API_BASE_URL}/clients/admin/no-admin/", headers=headers)
     clients = response.json()
     if response.status_code == 200 and isinstance(clients, Iterable):
         return render(
@@ -363,8 +361,7 @@ def assign_admin(request, user_id):
         admins_response = admins_response.json()
         for admin in admins_response:
             admins[
-                admin["userLastName"] if admin["userLastName"]
-                else admin["userEmail"]
+                admin["userLastName"] if admin["userLastName"] else admin["userEmail"]
             ] = admin["userId"]
     except:
         print("exception during fetching admins list from DB")
@@ -390,8 +387,7 @@ def assign_admin(request, user_id):
             {"email": user_email, "error": "API error!"},
         )
     return render(
-        request, "assign_admin.html",
-        {"email": user_email, "admins": admins.keys()}
+        request, "assign_admin.html", {"email": user_email, "admins": admins.keys()}
     )
 
 
@@ -403,8 +399,7 @@ def activate_user(request, user_id):
         return redirect("login")
     headers = auth["headers"]
 
-    response = requests.get(f"{API_BASE_URL}/users/admin/{user_id}",
-                            headers=headers)
+    response = requests.get(f"{API_BASE_URL}/users/admin/{user_id}", headers=headers)
     user_email = response.json()["userEmail"]
     response_group = requests.get(
         f"{API_BASE_URL}/auth/admin/{user_id}/group", headers=headers
@@ -460,7 +455,7 @@ def client_list(request):
 
 def client_detail(request, client_id):
     if not isinstance(client_id, UUID):
-        raise Http404
+        raise HttpResponseNotFound
     token = request.session.get("token")
     auth = _get_auth(token)
     if not auth or auth["email"] == "anonymousUser":
@@ -485,7 +480,7 @@ def client_detail(request, client_id):
 
 def client_delete(request, client_id):
     if not isinstance(client_id, UUID):
-        raise Http404
+        raise HttpResponseNotFound
     token = request.session.get("token")
     auth = _get_auth(token)
     if not auth or auth["email"] == "anonymousUser":
@@ -535,8 +530,9 @@ def client_add(request):
                 "clientCountry": form.cleaned_data["clientCountry"],
                 "clientBankNumber": form.cleaned_data["clientBankNumber"],
             }
-            response = requests.post(f"{API_BASE_URL}/auth/register",
-                                     json=payload, headers=headers)
+            response = requests.post(
+                f"{API_BASE_URL}/auth/register", json=payload, headers=headers
+            )
             if response.status_code == 200:
                 return redirect("client_list")
             return render(
@@ -613,13 +609,11 @@ def change_password(request):
                 "confirmPassword": form.cleaned_data["confirmPassword"],
             }
             response = requests.post(
-                f"{API_BASE_URL}/auth/change-password",
-                headers=headers, json=payload
+                f"{API_BASE_URL}/auth/change-password", headers=headers, json=payload
             )
             if response.status_code == 200:
                 try:
-                    return redirect("/",
-                                    {"msg": "Password changed successfully!"})
+                    return redirect("/", {"msg": "Password changed successfully!"})
                 except:
                     return redirect("/")
         return render(

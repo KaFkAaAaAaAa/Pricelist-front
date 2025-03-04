@@ -3,15 +3,27 @@ from datetime import datetime
 from math import floor
 
 import requests
-from django.http import HttpResponseServerError
+from django.http import (
+    HttpResponseBadRequest,
+    HttpResponseNotFound,
+    HttpResponseServerError,
+)
 from django.http.response import HttpResponseForbidden
 from django.shortcuts import redirect, render
 
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
 from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS
-from Pricelist.views import (_amount_to_display, _amount_to_store, _get_auth,
-                             _price_to_display, _price_to_store)
+from Pricelist.views import (
+    _amount_to_display,
+    _amount_to_float,
+    _amount_to_store,
+    _api_error_interpreter,
+    _get_auth,
+    _price_to_display,
+    _price_to_float,
+    _price_to_store,
+)
 from transactions.forms import ItemForm
 
 
@@ -388,8 +400,93 @@ def admin_transaction_detail(request, transaction_uuid):
     )
 
 
-def edit_transaction_admin(request, transaction_uuid, item_sku):
-    pass
+def edit_transaction_item(request, transaction_uuid, item_sku):
+    """edit item in transaction for both admin and user, function chooses
+    if it should behave as admin or client based on"""
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+
+    admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
+
+    if request.method == "POST":
+        form = ItemForm(request.POST)
+        if form.is_valid():
+            payload = {
+                "sku": form.cleaned_data["sku"],
+                "name": form.cleaned_data["name"],
+                "price": _price_to_store(form.cleaned_data["price"]),
+                "amount": _amount_to_store(form.cleaned_data["amount"]),
+                "additionalInfo": form.cleaned_data["additionalInfo"],
+            }
+            response = requests.put(
+                f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/{item_sku}",
+                headers=auth["headers"],
+                json=payload,
+            )
+            if response.status_code == 200:
+                if admin_url:
+                    return redirect("admin_transaction_detail", transaction_uuid)
+                return redirect("transaction_detail", transaction_uuid)
+
+    response = requests.get(
+        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
+        headers=auth["headers"],
+    )
+
+    error = _api_error_interpreter(response.status_code)
+    if error:
+        return error
+
+    transaction = response.json()
+
+    item = None
+    for item_obj in transaction["transactionItemsOrdered"]:
+        if item_obj.get("itemOrderedSku") == item_sku:
+            item = item_obj
+            break
+    if not item:
+        return HttpResponseNotFound
+    form = ItemForm(
+        initial={
+            "sku": item["itemOrderedSku"],
+            "name": item["itemOrderedName"],
+            "price": _price_to_float(item["itemOrderedPrice"]),
+            "amount": _amount_to_float(item["itemOrderedAmount"]),
+            "additionalInfo": item["itemOrderedAdditionalInfo"],
+        }
+    )
+
+    return render(
+        request,
+        "new_item_transaction.html",
+        {
+            "form": form,
+            "title": "Edit item",
+        },
+    )
+
+
+def delete_transaction_item(request, transaction_uuid, item_sku):
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+
+    admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
+
+    response = requests.delete(
+        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/{item_sku}",
+        headers=auth["headers"],
+    )
+
+    if response.status_code != 200:
+        print("error in delete function")
+
+    return redirect("admin_transaction_detail", transaction_uuid)
 
 
 def print_transaciton(request, transaction_uuid):
@@ -407,8 +504,10 @@ def print_transaciton(request, transaction_uuid):
         headers=headers,
     )
 
-    if response.status_code != 200:
-        return HttpResponseServerError()
+    error = _api_error_interpreter(response.status_code)
+    if error:
+        return error
+
     transaction = response.json()
     totals = _get_stored_item_list_to_display(
         transaction["transactionItemsOrdered"],
@@ -431,6 +530,10 @@ def print_transaciton(request, transaction_uuid):
         return print_prognose(data)
     if status == "FINAL":
         return print_final(data)
+    if status == "PROPOSITION":
+        return HttpResponseBadRequest(b"Proposition cannot be printed")
+
+    return HttpResponseServerError
 
 
 def print_offer(request, data):
