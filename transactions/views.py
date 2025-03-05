@@ -362,10 +362,10 @@ def admin_transaction_detail(request, transaction_uuid):
         return redirect("login")
     headers = auth["headers"]
 
-    if auth.get("group") not in ADMIN_GROUPS:
-        return HttpResponseForbidden(
-            "<h1>You do not have access to that page<h1>".encode("utf-8")
-        )
+    # if auth.get("group") not in ADMIN_GROUPS:
+    #     return HttpResponseForbidden(
+    #         "<h1>You do not have access to that page<h1>".encode("utf-8")
+    #     )
 
     msg = {}
 
