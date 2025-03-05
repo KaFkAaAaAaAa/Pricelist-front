@@ -5,12 +5,12 @@
         <div class="row w-50 align-items-center">
             <div class="col-12 col-sm-5 mb-2">
                 <input
-                    type="text"
-                    class="form-control"
-                    id="search"
-                    name="search"
-                    {# placeholder="{% trans "Search" %}..." #}
-                    placeholder="Search..."
+                        type="text"
+                        class="form-control"
+                        id="search"
+                        name="search"
+                        {# placeholder="{% trans "Search" %}..." #}
+                        placeholder="Search..."
                 />
             </div>
             <div class="col-12 col-sm-5 mb-2">
@@ -37,41 +37,38 @@
         </thead>
         <tbody>
         {% for category, items_list in items.items %}
-        {% if items_list %}
-        {# <tr><th></th><th colspan="7" class="fw-bold">{{ category }}</th></tr> #}
-        {% for item in items_list %}
-            <!-- <tr onclick="window.location.href='/item/{{ item.itemSku }}';" style="cursor: pointer;"> -->
-            <tr>
+            {% if items_list %}
+                {# <tr><th></th><th colspan="7" class="fw-bold">{{ category }}</th></tr> #}
+                {% for item in items_list %}
+                    <!-- <tr onclick="window.location.href='/item/{{ item.itemSku }}';" style="cursor: pointer;"> -->
+                    <tr>
 
-                {% if item.itemImgPath %}
-                    <td><img src="{{ item.itemImgPath }}" alt="Item Image" class="img"
-                             style="width: 80px; height: auto"/></td>
-                {% else %}
-                    <td></td>
-                {% endif %}
-                <td>{{ item.itemSku }}</td>
-                <td>{{ item.itemName.EN }}</td>
-                <td>{{ item.itemGroup }}</td>
-                {% for price in item.itemPrice %}
-                <td class="price">{{ price }} €</td>
+                        {% if item.itemImgPath %}
+                            <td><img src="{{ item.itemImgPath }}" alt="Item Image" class="img"
+                                     style="width: 80px; height: auto"/></td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                        <td>{{ item.itemSku }}</td>
+                        <td>{{ item.itemName.EN }}</td>
+                        <td>{{ item.itemGroup }}</td>
+                        {% for price in item.itemPrice %}
+                            <td class="price">{{ price }} €</td>
+                        {% endfor %}
+                        <td>
+                            <a class="btn btn-primary" href="/admin/items/{{ item.itemSku }}/edit">Edit</a>
+                            <a class="btn btn-danger" href="/admin/items/{{ item.itemSku }}/delete"
+                               onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+                        </td>
+                    </tr>
                 {% endfor %}
-                <td >
-                    <a class="btn btn-primary" href="/admin/items/{{ item.itemSku }}/edit">Edit</a>
-                    <a class="btn btn-danger" href="/admin/items/{{ item.itemSku }}/delete"
-                onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
-                </td>
-            </tr>
-        {% endfor %}
-        {% endif %}
+            {% endif %}
         {% endfor %}
         <tr>
+            <button class="btn btn-outline-danger mt-2 mx-2" onclick="history.back()">
+                {% trans "Go back" %}
+            </button>
             <a class="btn btn-primary mt-2" href="/admin/items/add">Add new</a>
-              <button
-                class="btn btn-outline-danger mt-2 mx-2"
-                onclick="history.back()"
-              >
-                    {% trans "Go back" %}
-              </button>
         </tr>
         </tbody>
     </table>
