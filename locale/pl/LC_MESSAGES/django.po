@@ -311,7 +311,7 @@ msgstr "Wyczyść"
 
 #: .\templates\price_list.html:26 .\transactions\templates\offer.html:67
 msgid "Make proposition"
-msgstr ""
+msgstr "Złóż zamówienie"
 
 #: .\templates\price_list.html:28 .\transactions\templates\offer.html:67
 #: .\transactions\templates\offer_list.html:24
@@ -555,3 +555,21 @@ msgstr "Czy na pewno chcesz usunąć tę transakcję?"
 
 #~ msgid "Count"
 #~ msgstr "Ilość"
+
+msgid "Items"
+msgstr "Artykuły"
+
+msgid "Admins"
+msgstr "Administratorzy"
+
+msgid "New clients"
+msgstr "Nowi klienci"
+
+msgid "Clients"
+msgstr "Lista klientów"
+
+msgid "My Clients"
+msgstr "Moi klienci"
+
+msgid "Transactions"
+msgstr "Lista transakcji"
