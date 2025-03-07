@@ -180,7 +180,6 @@ def register_view(request):
                 "clientCode": form.cleaned_data["clientCode"],
                 "clientCity": form.cleaned_data["clientCity"],
                 "clientCountry": form.cleaned_data["clientCountry"],
-                "clientBankNumber": form.cleaned_data["clientBankNumber"],
             }
             response = requests.post(f"{API_BASE_URL}/auth/register", json=payload)
             if response.status_code == 200:
@@ -303,7 +302,6 @@ def profile(request):
                 "clientCode": request.POST["clientCode"],
                 "clientCity": request.POST["clientCity"],
                 "clientCountry": request.POST["clientCountry"],
-                "clientBankNumber": request.POST["clientBankNumber"],
             }
             client_response = requests.post(
                 f"{API_BASE_URL}/clients/self/", json=client_payload, headers=headers
@@ -338,7 +336,6 @@ def profile(request):
             "clientCode": logged.get("clientCode"),
             "clientCity": logged.get("clientCity"),
             "clientCountry": logged.get("clientCountry"),
-            "clientBankNumber": logged.get("clientBankNumber"),
         }
     else:
         initial = {
@@ -979,7 +976,6 @@ def client_add(request):
                 "clientCode": form.cleaned_data["clientCode"],
                 "clientCity": form.cleaned_data["clientCity"],
                 "clientCountry": form.cleaned_data["clientCountry"],
-                "clientBankNumber": form.cleaned_data["clientBankNumber"],
             }
             response = requests.post(f"{API_BASE_URL}/auth/register", json=payload)
             if response.status_code == 200:
@@ -1021,7 +1017,6 @@ def edit_client(request, client_id):
             "clientCode": request.POST["clientCode"],
             "clientCity": request.POST["clientCity"],
             "clientCountry": request.POST["clientCountry"],
-            "clientBankNumber": request.POST["clientBankNumber"],
         }
 
         response_user = requests.put(

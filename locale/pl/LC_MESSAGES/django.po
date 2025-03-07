@@ -101,14 +101,6 @@ msgstr "Kraj:"
 msgid "Enter your country"
 msgstr "Wprowadź swój kraj"
 
-#: Pricelist/forms.py:112
-msgid "Bank account number:"
-msgstr "Numer konta bankowego:"
-
-#: Pricelist/forms.py:117
-msgid "Enter your bank account number"
-msgstr "Wprowadź numer swojego konta bankowego"
-
 #: Pricelist/settings.py:135
 msgid "English"
 msgstr "Angielski"
@@ -278,9 +270,6 @@ msgstr ""
 
 #~ msgid "Country"
 #~ msgstr "Kraj"
-
-#~ msgid "Bank Number"
-#~ msgstr "Numer konta bankowego"
 
 #~ msgid "You do not have access to that page"
 #~ msgstr "Nie masz dostępu do tej strony"
