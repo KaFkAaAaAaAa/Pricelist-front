@@ -1,37 +1,48 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load i18n %}
+
 {% block title %}{% trans "Price List" %}{% endblock %}
 
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/price_list.css' %}">
+{% endblock %}
+
 {% block content %}
-    <form method="GET" id="search" class="container">
-        <div class="row w-50">
-            <div class="col-12 col-sm-5">
-                <input
-                        type="text"
-                        class="form-control"
-                        id="search"
-                        name="search"
-                        placeholder="{% trans "Search" %}..."
-                />
+
+    <form method="GET" id="search" class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="search" placeholder="{% trans "Search" %}...">
+                    <button type="submit" class="btn btn-outline-secondary">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
             </div>
-            <div class="col-12 col-sm-5">
-                <a class="btn btn-outline-secondary mx-1" href="/">{% trans "Clear" %}</a>
-                <button class="btn btn-outline-secondary me-1">{% trans "Search" %}</button>
+            <div class="col-12 text-center mt-2">
+                <a class="btn btn-outline-secondary" href="/">{% trans "Clear" %}</a>
             </div>
         </div>
     </form>
-    <div class="pt-4">
-        <a href="/transactions/offer-list/" class="btn btn-outline-success">
-            {% if request.session.logged_user.user %}
-                {% trans "Make proposition" %}
-            {% else %}
-                {% trans "Make offer" %}
-            {% endif %}
-        </a>
+
+    <div class="row mt-3">
+        <div class="col-12 col-md-4 text-center text-md-start">
+            <a href="/transactions/offer/" class="btn btn-outline-success">
+                {% if request.session.logged_user.user %}
+                    {% trans "Make proposition" %}
+                {% else %}
+                    {% trans "Make offer" %}
+                {% endif %}
+            </a>
+        </div>
     </div>
+
     <div class="font-weight-light text-end">{% trans "March" %} 2025</div>
-    <table class="table table-hover table-bordered mt-1 align-middle" style="font-family: Calibri, sans-serif">
-        <tbody>
+
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered mt-1 align-middle" style="font-family: Calibri, sans-serif">
+            <tbody>
             {% if is_results %}
                 {% for sorting_category in categories %}
                     {% for category, item_list in items.items %}
@@ -47,12 +58,12 @@
                                 {% for item in item_list %}
                                     <tr class="colored-row d-flex align-middle"
                                         style="cursor: pointer; font-size: 19px; vertical-align: middle;">
-                                            <td class="text-center px-0 flex-shrink-0 align-middle"
-                                                style="width: 100px; vertical-align: middle;"
-                                                onclick="window.location.href='/item/{{ item.sku }}/';">
-                                                <img src="/images/{{ item.sku }}.M.jpg" alt="" class="img"
-                                                    style="width: 80px; height: auto; vertical-align: middle;"/>
-                                                </td>
+                                        <td class="text-center px-0 flex-shrink-0 align-middle"
+                                            style="width: 100px; vertical-align: middle;"
+                                            onclick="window.location.href='/item/{{ item.sku }}/';">
+                                            <img src="/images/{{ item.sku }}.M.jpg" alt="" class="img"
+                                                 style="width: 80px; height: auto; vertical-align: middle;"/>
+                                        </td>
                                         <td
                                                 class="text-center flex-shrink-0 align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}"
                                                 style="font-size: 17px; width: 80px; vertical-align: middle;"
@@ -61,16 +72,18 @@
                                         <td class="flex-fill align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}"
                                             style="font-size: 17px; vertical-align: middle;"
                                             onclick="window.location.href='/item/{{ item.sku }}/';">{{ item.name }}</td>
-                                        <td class="text-end fw-semibold flex-shrink-0 align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}"
-                                            style="font-size: 20px; width: 120px; vertical-align: middle;"
-                                            onclick="window.location.href='/item/{{ item.sku }}/';"
-                                        >{{ item.price }} €
-                                        </td>
+
                                         {% if item.price_pln %}
                                             <td class="text-end fw-semibold flex-shrink-0 align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}"
                                                 style="font-size: 20px; width: 130px; vertical-align: middle;"
                                                 onclick="window.location.href='/item/{{ item.sku }}/';"
                                             >{{ item.price_pln }} zł
+                                            </td>
+                                        {% else %}
+                                            <td class="text-end fw-semibold flex-shrink-0 align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}"
+                                                style="font-size: 20px; width: 120px; vertical-align: middle;"
+                                                onclick="window.location.href='/item/{{ item.sku }}/';"
+                                            >{{ item.price }} €
                                             </td>
                                         {% endif %}
                                     </tr>
@@ -82,7 +95,13 @@
             {% else %}
                 <div class="alert alert-danger w-75 mx-auto">{% trans "No items found..." %}</div>
             {% endif %}
-        </tbody>
-    </table>
-    <div class="font-weight-light text-center text-muted">{% trans "Prices per 1 kg. The price list is for information purposes only. Prices are subject to change. Prices are not binding. Typographical errors excepted. Please contact us for prices for larger quantities or special materials." %}</div>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="font-weight-light text-center text-muted mt-4">
+        <hr style="border-top: 1.5px solid black">
+        {% trans "Prices per 1 kg. The price list is for information purposes only. Prices are subject to change. Prices are not binding. Typographical errors excepted. Please contact us for prices for larger quantities or special materials." %}
+    </div>
+
 {% endblock %}

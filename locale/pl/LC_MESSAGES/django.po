@@ -136,7 +136,7 @@ msgstr "Twój "
 #: .\transactions\templates\order_edit.html:8
 #: .\transactions\templates\transaction_detail_admin.html:13
 msgid "Go back"
-msgstr ""
+msgstr "Powrót"
 
 #: .\admin\templates\new_users.html:14
 #: .\transactions\templates\transaction_list.html:12
@@ -267,7 +267,7 @@ msgstr "Wybierz język"
 
 #: .\templates\navbar.html:27
 msgid "Proposition"
-msgstr ""
+msgstr "Propozycja"
 
 #: .\templates\navbar.html:29
 msgid "Offer"
@@ -326,7 +326,7 @@ msgstr "Szukaj"
 
 #: .\templates\price_list.html:83 .\transactions\templates\offer_list.html:80
 msgid "No items found..."
-msgstr ""
+msgstr "Nie odnaleziono przedmiotu..."
 
 #: .\templates\price_list.html:87 .\transactions\templates\offer_list.html:86
 msgid ""
@@ -430,7 +430,7 @@ msgstr "Nowa oferta"
 
 #: .\transactions\templates\offer.html:15
 msgid "Client"
-msgstr ""
+msgstr "Klient"
 
 #: .\transactions\templates\offer.html:51
 #: .\transactions\templates\transaction_detail_admin.html:60
@@ -479,7 +479,7 @@ msgstr "Status transakcji"
 
 #: .\transactions\templates\transaction_detail_admin.html:26
 msgid "Add item"
-msgstr ""
+msgstr "Dodaj przedmiot"
 
 #: .\transactions\templates\transaction_detail_admin.html:60
 #: .\transactions\templates\transaction_list.html:24
@@ -498,7 +498,7 @@ msgstr "Status transakcji"
 
 #: .\transactions\templates\transaction_detail_admin.html:82
 msgid "Print"
-msgstr ""
+msgstr "Drukuj"
 
 #: .\transactions\templates\transaction_list.html:10
 msgid "Transaction status"
