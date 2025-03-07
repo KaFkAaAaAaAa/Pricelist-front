@@ -12,3 +12,4 @@ admin/__pycache__
 pdfgenerator/__pycache__
 transactions/__pycache__
 .env
+items/__pycache__
