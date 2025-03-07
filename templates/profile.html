@@ -1,9 +1,18 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block title %}{% trans "Profile" %}{% endblock %}
+
 {% block content %}
-    <div class="container d-flex justify-content-center mb-4">
-        <div class="card w-50">
+    <style>
+        @media (max-width: 576px) {
+            .btn {
+                font-size: 0.9rem;
+                padding: 0.4rem 0.6rem;
+            }
+        }
+    </style>
+    <div class="container mt-5">
+        <div class="card mx-auto" style="max-width: 600px;">
             <div class="card-header">
                 <h1 class="card-title text-center">{% trans "Profile" %}</h1>
             </div>
@@ -33,7 +42,7 @@
                     <div class="mb-3">
                         <label for="userEmail" class="form-label h5">{% trans "Email" %}</label>
                         <input
-                                type="text"
+                                type="email"
                                 class="form-control"
                                 id="userEmail"
                                 name="userEmail"
@@ -43,7 +52,7 @@
                     <div class="mb-3">
                         <label for="userTelephoneNumber" class="form-label h5">{% trans "Telephone number" %}</label>
                         <input
-                                type="text"
+                                type="tel"
                                 class="form-control"
                                 id="userTelephoneNumber"
                                 name="userTelephoneNumber"
@@ -113,11 +122,11 @@
                         </div>
                     {% endif %}
                     <div class="text-center">
-                        <button class="btn btn-outline-danger" onclick="history.back()">
+                        <button class="btn btn-outline-danger mb-2" onclick="history.back()">
                           {% trans "Go back" %}
                         </button>
-                        <a class="btn btn-secondary mx-3" href="{% url 'change_password' %}">{% trans "Change password" %}</a>
-                        <button class="btn btn-outline-primary">{% trans "Save changes" %}</button>
+                        <a class="btn btn-secondary mb-2 mx-2" href="{% url 'change_password' %}">{% trans "Change password" %}</a>
+                        <button class="btn btn-outline-primary mb-2">{% trans "Save changes" %}</button>
                     </div>
                 </form>
             </div>
