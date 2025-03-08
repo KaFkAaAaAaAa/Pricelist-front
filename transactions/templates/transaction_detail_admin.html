@@ -14,10 +14,10 @@
           </button>
         </div>
         <div class="clearfix"></div>
-        <div class="row text-start">{{ transaction.transactionClient.clientCompanyName }}</div>
-        <div class="row text-start">{{ transaction.transactionClient.clientStreet }}</div>
-        <div class="row text-start">{{ transaction.transactionClient.clientCode }} {{ transaction.transactionClient.clientCity }}</div>
-        <div class="row text-start">{{ transaction.transactionClient.clientCountry }}</div>
+        <div class="row text-start">{{ transaction.client.clientCompanyName }}</div>
+        <div class="row text-start">{{ transaction.client.clientStreet }}</div>
+        <div class="row text-start">{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</div>
+        <div class="row text-start">{{ transaction.client.clientCountry }}</div>
         <div class="row text-start"><b class="text-start p-0">{% trans "Status" %}:</b> {% if transaction.status %}{{ transaction.status }} {{ transaction.status_time|date:"d-m-Y H:i" }}{% else %}{% trans "no status" %}{% now "d-m-Y H:i" %}{% endif %}</div>
         <div class="row text-start float-start">
           <a href="/transactions/admin/{{ transaction.uuid }}/add-item/"
@@ -41,23 +41,23 @@
         </tr>
         </thead>
         <tbody>
-        {% if transaction.transactionItemsOrdered %}
-            {% for item in transaction.transactionItemsOrdered %}
+        {% if transaction.itemsOrdered %}
+            {% for item in transaction.itemsOrdered %}
             <tr>
-                <td><img style="width: 80px; height: auto; vertical-align: middle;" src="/images/{{ item.itemOrderedSku }}.M.jpg"></td>
-                <td>{{ item.itemOrderedSku }}</td>
-                <td>{{ item.itemOrderedName }}</td>
-                <td>{{ item.itemOrderedAmount }} kg</td>
-                <td>{{ item.itemOrderedPrice }} €</td>
+                <td><img style="width: 80px; height: auto; vertical-align: middle;" src="/images/{{ item.sku }}.M.jpg"></td>
+                <td>{{ item.sku }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.amount }} kg</td>
+                <td>{{ item.price }} €</td>
                 <td>{{ item.total }} €</td>
-                {% if item.itemOrderedAdditionalInfo %}
-                    <td>{{ item.itemOrderedAdditionalInfo }}</td>
+                {% if item.additionalInfo %}
+                    <td>{{ item.additionalInfo }}</td>
                 {% else %}
                     <td></td>
                 {% endif %}
                 <td>
-                    <a class="btn btn-outline-secondary" href="/transactions/admin/{{transaction.uuid}}/{{item.itemOrderedSku}}/edit/">Edit</a>
-                    <a class="btn btn-outline-danger" onclick="event.stopPropagation(); return confirm('{% trans "Are you sure you want to delete this item?" %}');" href="/transactions/admin/{{transaction.uuid}}/{{item.itemOrderedSku}}/delete/">{% trans "Delete" %}</a>
+                    <a class="btn btn-outline-secondary" href="/transactions/admin/{{transaction.uuid}}/{{item.uuid}}/edit/">Edit</a>
+                    <a class="btn btn-outline-danger" onclick="event.stopPropagation(); return confirm('{% trans "Are you sure you want to delete this item?" %}');" href="/transactions/admin/{{transaction.uuid}}/{{item.uuid}}/delete/">{% trans "Delete" %}</a>
                 </td>
             </tr>
             {% endfor %}

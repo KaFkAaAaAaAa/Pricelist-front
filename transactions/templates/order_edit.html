@@ -32,33 +32,33 @@
       </tr>
     </thead>
     <tbody>
-      {% if transaction %} {% for item in transaction.transactionItemsOrdered %}
+      {% if transaction %} {% for item in transaction.itemsOrdered %}
       <tr>
         <form>
-          <td>{{ item.itemOrderedSku }}</td>
+          <td>{{ item.sku }}</td>
           <td>
             <input
-              name="{{ item.itemOrderedSku }}-itemOrderedName"
-              value="{{ item.itemOrderedName }}"
+              name="{{ item.sku }}-name"
+              value="{{ item.name }}"
             />
           </td>
           <td>
             <input
-              name="{{ item.itemOrderedSku }}-itemOrderedAmount"
-              value="{{ item.itemOrderedAmount }}"
+              name="{{ item.sku }}-amount"
+              value="{{ item.amount }}"
             />
           </td>
           <td>
             <input
-              name="{{ item.itemOrderedSku }}-itemOrderedPrice"
-              value="{{ item.itemOrderedPrice }}"
+              name="{{ item.sku }}-price"
+              value="{{ item.price }}"
             />
           </td>
           <td>{{ item.total }}</td>
           <td>
             <input
-              name="{{ item.itemOrderedSku }}-itemOrderedAdditionalInfo"
-              value="{{ item.itemOrderedAdditionalInfo }}"
+              name="{{ item.sku }}-additionalInfo"
+              value="{{ item.additionalInfo }}"
             />
           </td>
           <td>
