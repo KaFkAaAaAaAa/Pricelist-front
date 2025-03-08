@@ -76,10 +76,10 @@ def _parse_date(date: str) -> datetime:
 
 
 def _set_status(transaction) -> dict:
-    if transaction["transactionStatusHistory"]:
-        transaction["status"] = transaction["transactionStatusHistory"][-1]["status"]
+    if transaction["statusHistory"]:
+        transaction["status"] = transaction["statusHistory"][-1]["status"]
         transaction["status_time"] = _parse_date(
-            transaction["transactionStatusHistory"][-1]["time"]
+            transaction["statusHistory"][-1]["time"]
         )
     else:
         transaction["status"] = "none"
@@ -109,6 +109,7 @@ def offer(request):
         request.session.flush()
         return redirect("login")
     headers = auth["headers"]
+    __import__("pdb").set_trace()
 
     if "current_offer" not in request.session.keys():
         request.session["current_offer"] = []
@@ -119,6 +120,7 @@ def offer(request):
             "itemsOrdered": _current_offer_to_payload(request.session["current_offer"]),
         }
         # items already converted to "store" values
+        __import__("pdb").set_trace()
         response = requests.post(
             f"{API_BASE_URL}/transactions/", headers=headers, json=payload
         )
@@ -293,9 +295,7 @@ def client_transactions(request):
     for transaction in transactions:
         _set_status(transaction)
         transaction["totals"] = _get_stored_item_list_to_display(
-            transaction["transactionItemsOrdered"],
-            key_p="itemOrderedPrice",
-            key_a="itemOrderedAmount",
+            transaction["itemsOrdered"]
         )
     return render(request, "transaction_list.html", {"transactions": transactions})
 
@@ -317,10 +317,9 @@ def admin_transactions(request):
     transactions = response.json()
     for transaction in transactions:
         _set_status(transaction)
+        __import__("pdb").set_trace()
         transaction["totals"] = _get_stored_item_list_to_display(
-            transaction["transactionItemsOrdered"],
-            key_p="itemOrderedPrice",
-            key_a="itemOrderedAmount",
+            transaction["itemsOrdered"]
         )
 
     return render(request, "transaction_list.html", {"transactions": transactions})
@@ -346,9 +345,7 @@ def admin_client_transactions(request, user_id):
     for transaction in transactions:
         _set_status(transaction)
         transaction["totals"] = _get_stored_item_list_to_display(
-            transaction["transactionItemsOrdered"],
-            key_p="itemOrderedPrice",
-            key_a="itemOrderedAmount",
+            transaction["itemsOrdered"]
         )
 
     return render(request, "transaction_list.html", {"transactions": transactions})
@@ -388,9 +385,7 @@ def admin_transaction_detail(request, transaction_uuid):
     transaction = response.json()
     transaction = _set_status(transaction)
     transaction["totals"] = _get_stored_item_list_to_display(
-        transaction["transactionItemsOrdered"],
-        key_p="itemOrderedPrice",
-        key_a="itemOrderedAmount",
+        transaction["itemsOrdered"],
     )
 
     return render(
@@ -443,19 +438,19 @@ def edit_transaction_item(request, transaction_uuid, item_sku):
     transaction = response.json()
 
     item = None
-    for item_obj in transaction["transactionItemsOrdered"]:
-        if item_obj.get("itemOrderedSku") == item_sku:
+    for item_obj in transaction["itemsOrdered"]:
+        if item_obj.get("sku") == item_sku:
             item = item_obj
             break
     if not item:
         return HttpResponseNotFound
     form = ItemForm(
         initial={
-            "sku": item["itemOrderedSku"],
-            "name": item["itemOrderedName"],
-            "price": _price_to_float(item["itemOrderedPrice"]),
-            "amount": _amount_to_float(item["itemOrderedAmount"]),
-            "additionalInfo": item["itemOrderedAdditionalInfo"],
+            "sku": item["sku"],
+            "name": item["name"],
+            "price": _price_to_float(item["price"]),
+            "amount": _amount_to_float(item["amount"]),
+            "additionalInfo": item["additionalInfo"],
         }
     )
 
@@ -509,15 +504,24 @@ def print_transaciton(request, transaction_uuid):
         return error
 
     transaction = response.json()
-    totals = _get_stored_item_list_to_display(
-        transaction["transactionItemsOrdered"],
-        key_a="itemOrderedAmount",
-        key_p="itemOrderedPrice",
-    )
+    totals = _get_stored_item_list_to_display(transaction["itemsOrdered"])
     transaction = _set_status(transaction)
+
+    if admin_url:
+        response_client = request.get(
+            f"{API_BASE_URL}/clients/{admin_url}{transaction['clientUUID']}/",
+            headers=headers,
+        )
+    else:
+        response_client = request.session["logged_user"]
+
+    error = _api_error_interpreter(response_client.status_code)
+    if error:
+        return error
+
     data = {
-        "items": transaction["transactionItemsOrdered"],
-        "client": transaction["transactionClient"],
+        "items": transaction["itemsOrdered"],
+        "client": response_client.json(),
         "total": totals,
         "date": transaction["status_time"],
     }

@@ -28,12 +28,8 @@
 
     <div class="row mt-3">
         <div class="col-12 col-md-4 text-center text-md-start">
-            <a href="/transactions/offer/" class="btn btn-outline-success">
-                {% if request.session.logged_user.user %}
-                    {% trans "Make proposition" %}
-                {% else %}
-                    {% trans "Make offer" %}
-                {% endif %}
+            <a href="{% url 'offer_list' %}" class="btn btn-outline-success">
+                {% trans "Select items" %}
             </a>
         </div>
     </div>
