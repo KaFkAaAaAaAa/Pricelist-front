@@ -195,7 +195,7 @@ def offer_list(request):
     return _make_price_list(request, headers, pattern="offer_list.html")
 
 
-def delete_from_offer(request, item_uuid):
+def delete_from_offer(request, item_sku):
     token = request.session.get("token")
     auth = _get_auth(token)
     if not auth or auth["email"] == "anonymousUser":
@@ -367,6 +367,15 @@ def admin_client_transactions(request, user_id):
     return render(request, "transaction_list.html", {"transactions": transactions})
 
 
+def edit_details(request, transaction):
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+    headers = auth["headers"]
+
+
 def admin_transaction_detail(request, transaction_uuid):
     token = request.session.get("token")
     auth = _get_auth(token)
@@ -403,11 +412,33 @@ def admin_transaction_detail(request, transaction_uuid):
     transaction["totals"] = _get_stored_item_list_to_display(
         transaction["itemsOrdered"],
     )
+    if transaction["status"] == "PROGNOSE":
+        response = requests.get(
+            f"{API_BASE_URL}/transactions/details/admin/{transaction_uuid}/",
+            headers=headers,
+        )
+        error = _api_error_interpreter(response.status_code)
+        if error:
+            return error
+
+        transaction_details = response.json()
+        return render(
+            request,
+            "transaction_detail_admin.html",
+            {
+                "transaction": transaction,
+                "transactionDetails": transaction_details,
+                "msg": msg,
+            },
+        )
 
     return render(
         request,
         "transaction_detail_admin.html",
-        {"transaction": transaction, "msg": msg},
+        {
+            "transaction": transaction,
+            "msg": msg,
+        },
     )
 
 
