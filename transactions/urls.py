@@ -58,22 +58,22 @@ urlpatterns = [
         name="delete_transaction",
     ),
     path(
-        "admin/<uuid:transaction_uuid>/<str:item_sku>/edit/",
+        "admin/<uuid:transaction_uuid>/<uuid:item_uuid>/edit/",
         views.edit_transaction_item,
         name="edit_transaction_item",
     ),
     path(
-        "<uuid:transaction_uuid>/<str:item_sku>/edit/",
+        "<uuid:transaction_uuid>/<uuid:item_uuid>/edit/",
         views.edit_transaction_item,
         name="edit_transaction_item",
     ),
     path(
-        "admin/<uuid:transaction_uuid>/<str:item_sku>/delete/",
+        "admin/<uuid:transaction_uuid>/<uuid:item_uuid>/delete/",
         views.delete_transaction_item,
         name="delete_transaction_item",
     ),
     path(
-        "<uuid:transaction_uuid>/<str:item_sku>/delete/",
+        "<uuid:transaction_uuid>/<uuid:item_uuid>/delete/",
         views.delete_transaction_item,
         name="delete_transaction_item",
     ),

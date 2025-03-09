@@ -13,18 +13,30 @@
                 {% trans "Go back" %}
           </button>
         </div>
-        <div class="clearfix"></div>
-        <div class="row text-start">{{ transaction.client.clientCompanyName }}</div>
-        <div class="row text-start">{{ transaction.client.clientStreet }}</div>
-        <div class="row text-start">{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</div>
-        <div class="row text-start">{{ transaction.client.clientCountry }}</div>
-        <div class="row text-start"><b class="text-start p-0">{% trans "Status" %}:</b> {% if transaction.status %}{{ transaction.status }} {{ transaction.status_time|date:"d-m-Y H:i" }}{% else %}{% trans "no status" %}{% now "d-m-Y H:i" %}{% endif %}</div>
-        <div class="row text-start float-start">
-          <a href="/transactions/admin/{{ transaction.uuid }}/add-item/"
-            class="btn btn-sm btn-outline-success mt-2 mb-2"
-          >
-                {% trans "Add item" %}
-          </a>
+        <div class="clearfix col">
+            <div class="row text-start"><b class="text-start p-0">{% trans "Status" %}:</b> {% if transaction.status %}{{ transaction.status }} {{ transaction.status_time|date:"d-m-Y H:i" }}{% else %}{% trans "no status" %}{% now "d-m-Y H:i" %}{% endif %}</div>
+            <div class="row text-start">{{ transaction.client.clientCompanyName }}</div>
+            <div class="row text-start">{{ transaction.client.clientStreet }}</div>
+            <div class="row text-start">{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</div>
+            <div class="row text-start">{{ transaction.client.clientCountry }}</div>
+            <div class="row text-start float-start">
+              <a href="/transactions/admin/{{ transaction.uuid }}/add-item/"
+                class="btn btn-sm btn-outline-success mt-2 mb-2"
+              >
+                    {% trans "Add item" %}
+              </a>
+            </div>
+            <div>
+                <div class="row text-start">{% trans "Transport cost" %}: {{ transactionDetails.transportCost }}</div>
+                <div class="row text-start">{% trans "Transport cost per kg" %}: {{ transactionDetails.transportCostPerKg }}</div>
+                <div class="row text-start">{% trans "Transport cost relative to total price" %}: {{ transactionDetails.transportCostPercent }}</div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="row text-end">{% trans "Delivery date" %}: {{ transactionDetails.informations.deliveryDate }}</div>
+            {% if transactionDetails.informations.withOthers %}
+            <div class="row text-end">{% trans "Together with" %}: {{ transactionDetails.informations.withOthers }}</div>
+            {% endif %}
         </div>
     </div>
     <table class="table">
@@ -34,7 +46,9 @@
             <th scope="col">{% trans "SKU" %}</th>
             <th scope="col">{% trans "Product" %}</th>
             <th scope="col">{% trans "Amount" %}</th>
+            <th scope="col">Alku</th>
             <th scope="col">{% trans "Price" %}</th>
+            <th scope="col">{% trans "Price with transport" %}</th>
             <th scope="col">{% trans "Total" %}</th>
             <th scope="col">{% trans "Comment" %}</th>
             <th></th>
@@ -48,7 +62,9 @@
                 <td>{{ item.sku }}</td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.amount }} kg</td>
+                <td>{# alku collumn #}</td>
                 <td>{{ item.price }} €</td>
+                <td>{{ item.price_trans }} €</td>
                 <td>{{ item.total }} €</td>
                 {% if item.additionalInfo %}
                     <td>{{ item.additionalInfo }}</td>
@@ -78,9 +94,19 @@
             </tr>
         </tbody>
     </table>
+    <hr class="hr" />
+    <div class="container text-end">
+        <div class="col">
+            <div class="row">{% trans "Stated weight" %}: <p class="text-end">{{ transaction.totals.mass }} kg</p></div>
+        </div>
+        <div class="col">
+            <div class="row">{% trans "Delivery price" %}: <p class="text-end">{{ transaction.totals.price }} kg</p></div>
+            <div class="row">{% trans "Delivery price including transport" %}: <p class="text-end">{{ transaction.totals.priceTransport }} kg</p></div>
+        </div>
+    </div>
+
     <a class="btn btn-outline-primary" href="/transactions/{{transaction.uuid}}/change-status/">{% trans "Change status" %}</a>
     <a class="btn btn-outline-secondary" href="/transactions/{{transaction.uuid}}/print/">{% trans "Print" %}</a>
-
     
 
 </div>

@@ -76,10 +76,10 @@ def _parse_date(date: str) -> datetime:
 
 
 def _set_status(transaction) -> dict:
-    if transaction["transactionStatusHistory"]:
-        transaction["status"] = transaction["transactionStatusHistory"][-1]["status"]
+    if transaction["statusHistory"]:
+        transaction["status"] = transaction["statusHistory"][-1]["status"]
         transaction["status_time"] = _parse_date(
-            transaction["transactionStatusHistory"][-1]["time"]
+            transaction["statusHistory"][-1]["time"]
         )
     else:
         transaction["status"] = "none"
@@ -131,7 +131,7 @@ def offer(request):
 
     offer = request.session.get("current_offer")
     totals = _get_stored_item_list_to_display(offer)
-    client_emails = []  # here bc unbound
+    client_company_names = []  # here bc unbound
     if auth["group"] in ADMIN_GROUPS:
         response = requests.get(
             f"{API_BASE_URL}/clients/admin/admin-list/groups/",
@@ -144,7 +144,7 @@ def offer(request):
         ):
             if client_auth["authGroup"] in CLIENT_GROUPS:
                 # TODO: two clients same company
-                client_emails.append(client["clientCompanyName"])
+                client_company_names.append(client["clientCompanyName"])
         if request.method == "POST":
             client_uuid = ""
             for client in clients_auths["clients"]:
@@ -158,7 +158,7 @@ def offer(request):
                 "itemsOrdered": _current_offer_to_payload(
                     request.session["current_offer"]
                 ),
-                "clientUUID": client_uuid,
+                "clientId": client_uuid,
             }
             # items already converted to "store" values
             response = requests.post(
@@ -172,7 +172,7 @@ def offer(request):
     return render(
         request,
         "offer.html",
-        {"offer": offer, "totals": totals, "clients": client_emails},
+        {"offer": offer, "totals": totals, "clients": client_company_names},
     )
 
 
@@ -292,11 +292,16 @@ def client_transactions(request):
     transactions = response.json()
     for transaction in transactions:
         _set_status(transaction)
-        transaction["totals"] = _get_stored_item_list_to_display(
-            transaction["transactionItemsOrdered"],
-            key_p="itemOrderedPrice",
-            key_a="itemOrderedAmount",
-        )
+        if "itemsOrdered" in transaction.keys():
+            transaction["totals"] = _get_stored_item_list_to_display(
+                transaction["itemsOrdered"]
+            )
+        else:
+            transaction["totals"] = {
+                "mass": 0,
+                "price": 0,
+            }
+
     return render(request, "transaction_list.html", {"transactions": transactions})
 
 
@@ -317,11 +322,15 @@ def admin_transactions(request):
     transactions = response.json()
     for transaction in transactions:
         _set_status(transaction)
-        transaction["totals"] = _get_stored_item_list_to_display(
-            transaction["transactionItemsOrdered"],
-            key_p="itemOrderedPrice",
-            key_a="itemOrderedAmount",
-        )
+        if "itemsOrdered" in transaction.keys():
+            transaction["totals"] = _get_stored_item_list_to_display(
+                transaction["itemsOrdered"]
+            )
+        else:
+            transaction["totals"] = {
+                "mass": 0,
+                "price": 0,
+            }
 
     return render(request, "transaction_list.html", {"transactions": transactions})
 
@@ -345,13 +354,26 @@ def admin_client_transactions(request, user_id):
     transactions = response.json()
     for transaction in transactions:
         _set_status(transaction)
-        transaction["totals"] = _get_stored_item_list_to_display(
-            transaction["transactionItemsOrdered"],
-            key_p="itemOrderedPrice",
-            key_a="itemOrderedAmount",
-        )
+        if "itemsOrdered" in transaction.keys():
+            transaction["totals"] = _get_stored_item_list_to_display(
+                transaction["itemsOrdered"]
+            )
+        else:
+            transaction["totals"] = {
+                "mass": 0,
+                "price": 0,
+            }
 
     return render(request, "transaction_list.html", {"transactions": transactions})
+
+
+def edit_details(request, transaction):
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+    headers = auth["headers"]
 
 
 def admin_transaction_detail(request, transaction_uuid):
@@ -388,19 +410,39 @@ def admin_transaction_detail(request, transaction_uuid):
     transaction = response.json()
     transaction = _set_status(transaction)
     transaction["totals"] = _get_stored_item_list_to_display(
-        transaction["transactionItemsOrdered"],
-        key_p="itemOrderedPrice",
-        key_a="itemOrderedAmount",
+        transaction["itemsOrdered"],
     )
+    if transaction["status"] == "PROGNOSE":
+        response = requests.get(
+            f"{API_BASE_URL}/transactions/details/admin/{transaction_uuid}/",
+            headers=headers,
+        )
+        error = _api_error_interpreter(response.status_code)
+        if error:
+            return error
+
+        transaction_details = response.json()
+        return render(
+            request,
+            "transaction_detail_admin.html",
+            {
+                "transaction": transaction,
+                "transactionDetails": transaction_details,
+                "msg": msg,
+            },
+        )
 
     return render(
         request,
         "transaction_detail_admin.html",
-        {"transaction": transaction, "msg": msg},
+        {
+            "transaction": transaction,
+            "msg": msg,
+        },
     )
 
 
-def edit_transaction_item(request, transaction_uuid, item_sku):
+def edit_transaction_item(request, transaction_uuid, item_uuid):
     """edit item in transaction for both admin and user, function chooses
     if it should behave as admin or client based on"""
     token = request.session.get("token")
@@ -422,7 +464,7 @@ def edit_transaction_item(request, transaction_uuid, item_sku):
                 "additionalInfo": form.cleaned_data["additionalInfo"],
             }
             response = requests.put(
-                f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/{item_sku}",
+                f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/{item_uuid}",
                 headers=auth["headers"],
                 json=payload,
             )
@@ -443,19 +485,19 @@ def edit_transaction_item(request, transaction_uuid, item_sku):
     transaction = response.json()
 
     item = None
-    for item_obj in transaction["transactionItemsOrdered"]:
-        if item_obj.get("itemOrderedSku") == item_sku:
+    for item_obj in transaction["itemsOrdered"]:
+        if item_obj.get("uuid") == str(item_uuid):
             item = item_obj
             break
     if not item:
-        return HttpResponseNotFound
+        return HttpResponseNotFound()
     form = ItemForm(
         initial={
-            "sku": item["itemOrderedSku"],
-            "name": item["itemOrderedName"],
-            "price": _price_to_float(item["itemOrderedPrice"]),
-            "amount": _amount_to_float(item["itemOrderedAmount"]),
-            "additionalInfo": item["itemOrderedAdditionalInfo"],
+            "sku": item["sku"],
+            "name": item["name"],
+            "price": _price_to_float(item["price"]),
+            "amount": _amount_to_float(item["amount"]),
+            "additionalInfo": item["additionalInfo"],
         }
     )
 
@@ -469,7 +511,7 @@ def edit_transaction_item(request, transaction_uuid, item_sku):
     )
 
 
-def delete_transaction_item(request, transaction_uuid, item_sku):
+def delete_transaction_item(request, transaction_uuid, item_uuid):
     token = request.session.get("token")
     auth = _get_auth(token)
     if not auth or auth["email"] == "anonymousUser":
@@ -479,7 +521,7 @@ def delete_transaction_item(request, transaction_uuid, item_sku):
     admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
 
     response = requests.delete(
-        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/{item_sku}",
+        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/{item_uuid}",
         headers=auth["headers"],
     )
 
@@ -509,15 +551,24 @@ def print_transaciton(request, transaction_uuid):
         return error
 
     transaction = response.json()
-    totals = _get_stored_item_list_to_display(
-        transaction["transactionItemsOrdered"],
-        key_a="itemOrderedAmount",
-        key_p="itemOrderedPrice",
-    )
+    totals = _get_stored_item_list_to_display(transaction["itemsOrdered"])
     transaction = _set_status(transaction)
+
+    if admin_url:
+        response_client = requests.get(
+            f"{API_BASE_URL}/clients/{admin_url}{transaction['clientId']}/",
+            headers=headers,
+        )
+    else:
+        response_client = request.session["logged_user"]
+
+    error = _api_error_interpreter(response_client.status_code)
+    if error:
+        return error
+
     data = {
-        "items": transaction["transactionItemsOrdered"],
-        "client": transaction["transactionClient"],
+        "items": transaction["itemsOrdered"],
+        "client": response_client.json(),
         "total": totals,
         "date": transaction["status_time"],
     }
@@ -533,7 +584,7 @@ def print_transaciton(request, transaction_uuid):
     if status == "PROPOSITION":
         return HttpResponseBadRequest(b"Proposition cannot be printed")
 
-    return HttpResponseServerError
+    return HttpResponseServerError()
 
 
 def print_offer(request, data):
