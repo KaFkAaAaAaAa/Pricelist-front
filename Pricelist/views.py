@@ -43,12 +43,12 @@ def _api_error_interpreter(status_code, msg_404=None, msg_401=None, msg_500=None
     If response code is not either 404 or 401, it uses HttpResponseServerError"""
     output = False
     if status_code == 404:
-        output = HttpResponseNotFound(msg_404) if msg_404 else HttpResponseNotFound
+        output = HttpResponseNotFound(msg_404) if msg_404 else HttpResponseNotFound()
     elif status_code in (401, 403):
-        output = HttpResponseForbidden(msg_401) if msg_401 else HttpResponseForbidden
+        output = HttpResponseForbidden(msg_401) if msg_401 else HttpResponseForbidden()
     elif status_code != 200:
         output = (
-            HttpResponseServerError(msg_500) if msg_500 else HttpResponseServerError
+            HttpResponseServerError(msg_500) if msg_500 else HttpResponseServerError()
         )
     return output
 

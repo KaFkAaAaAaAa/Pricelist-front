@@ -620,3 +620,70 @@ def delete_transaction(request, transaction_uuid):
     if response.status_code != 200:
         err = "Error!"
     return redirect(redir_url)
+
+
+def create_offer(request, data, headers):
+    if "user" in request.session["logged_user"].keys():
+        return HttpResponseForbidden()
+    response = requests.get(
+        f"{API_BASE_URL}/transactions/admin/{data['transaction_uuid']}/update-status/?status=offer",
+        headers=headers,
+    )
+    error = _api_error_interpreter(response.status_code)
+    if error:
+        return error
+    return redirect("transaction_detail", data["transaction_uuid"])
+
+
+def create_prognose(reqeust, data):
+    pass
+
+
+def change_status(request, transaction_uuid):
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+    headers = auth["headers"]
+
+    admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
+
+    __import__("pdb").set_trace()
+    response = requests.get(
+        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
+        headers=headers,
+    )
+    error = _api_error_interpreter(response.status_code)
+    if error:
+        return error
+
+    transaction = response.json()
+    totals = _get_stored_item_list_to_display(transaction["itemsOrdered"])
+    transaction = _set_status(transaction)
+    status = transaction["status"]
+
+    if admin_url:
+        response_client = requests.get(
+            f"{API_BASE_URL}/clients/{admin_url}{transaction['clientId']}/",
+            headers=headers,
+        )
+    else:
+        response_client = request.session["logged_user"]
+
+    data = {
+        "items": transaction["itemsOrdered"],
+        "client": response_client.json(),
+        "total": totals,
+        "date": transaction["status_time"],
+        "transaction_uuid": transaction_uuid,
+    }
+
+    if status == "PROPOSITION":
+        return create_offer(request, data, headers)
+    if status == "OFFER":
+        return create_prognose(request, data)
+    if status == "PROGNOSE":
+        return create_final(request, data)
+    if status == "FINAL":
+        return HttpResponseBadRequest(b"Order has already been finalised")
