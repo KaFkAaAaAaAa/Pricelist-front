@@ -1,22 +1,22 @@
 {% extends 'base.html' %} {% block title %}Upload Image{% endblock %}
 {% block content %}
-<div class="container mt-5">
-  <h1>Upload Image</h1>
-   <h2>{{ item_sku }}</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="mb-3">
-      <label for="image" class="form-label">Choose an image to upload:</label>
-      <input
-        type="file"
-        class="form-control"
-        id="image"
-        name="image"
-        accept="image/*"
-      />
+    <div class="container mt-5">
+        <h1>Upload Image</h1>
+        <h2 class="mt-4">{{ item_sku }}</h2>
+        <form method="post" enctype="multipart/form-data" class="mt-3">
+            {% csrf_token %}
+            <div class="my-3">
+                <label for="image" class="form-label">Choose an image to upload:</label>
+                <input
+                        type="file"
+                        class="form-control"
+                        id="image"
+                        name="image"
+                        accept="image/*"
+                />
+            </div>
+            <a class="btn btn-primary mt-3" href="/admin/items/{{ item_sku }}/edit">Back to Edit</a>
+            <button type="submit" class="btn btn-primary mt-3">Upload</button>
+        </form>
     </div>
-    <button type="submit" class="btn btn-primary">Upload</button>
-    <a class="btn btn-primary" href="/admin/items/{{ item_sku }}/edit">Back to Edit</a>
-  </form>
-
 {% endblock %}
