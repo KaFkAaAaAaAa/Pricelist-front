@@ -573,3 +573,6 @@ msgstr "Moi klienci"
 
 msgid "Transactions"
 msgstr "Lista transakcji"
+
+msgid "Choose an image to upload:"
+msgstr "Wybierz zdjęcie do wgrania:"

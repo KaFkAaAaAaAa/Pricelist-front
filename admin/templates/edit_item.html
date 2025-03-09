@@ -1,198 +1,99 @@
 {% extends 'base.html' %}
 {% block title %}Edit Item{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-center align-items-center flex-column mb-5">
-    <h2>{{item.itemSku}} {{item.name.EN}}</h2>
-      {% if error %}
-      <div class="alert alert-danger mt-3">{{ error }}</div>
-      {% endif %}
+<div class="container mt-4 mb-4">
+    <div class="text-center mb-4">
+        <h2>{{ item.itemSku }} - {{ item.name.EN }}</h2>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger text-center">{{ error }}</div>
+    {% endif %}
+
     {% if item %}
-        <form method="post" class="w-50">
-            {% csrf_token %}
+    <form method="post" class="mx-auto" style="max-width: 700px;">
+        {% csrf_token %}
+
+        <div class="d-flex justify-content-between mb-4">
+            <a class="btn btn-outline-secondary" href="/admin/items">Back to List</a>
             <button class="btn btn-success">Save Changes</button>
-            <div class="my-3">
-                <label for="itemSku" class="form-label h5">SKU</label>
-                <input
-                        type="text"
-                        class="form-control"
-                        id="itemSku"
-                        name="itemSku"
-                        value="{{ item.itemSku }}"
-                />
-            </div>
-            <div class="mb-3">
-                <label for="itemGroup" class="form-label h5">Group</label>
-                <select name="itemGroup" id="itemGroup" class="form-select">
-                    <option selected>{{ item.itemGroup }}</option>
-                    {% for category in categories %}
-                        <option value="{{ category }}">{{ category }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="mb-3">
-                <a class="btn btn-outline-primary" href="/admin/items/{{ item.itemSku }}/upload-image/"
-                >Upload Thumbnail</a>
-            </div>
+        </div>
+
+        <div class="mb-4">
+            <h4>Item Details</h4>
+            <hr>
+            <label for="itemSku" class="form-label fw-bold">SKU</label>
+            <input type="text" class="form-control mb-3" id="itemSku" name="itemSku" value="{{ item.itemSku }}">
+
+            <label for="itemGroup" class="form-label fw-bold">Group</label>
+            <select name="itemGroup" id="itemGroup" class="form-select">
+                <option selected>{{ item.itemGroup }}</option>
+                {% for category in categories %}
+                <option value="{{ category }}">{{ category }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    
+        <div class="mb-4">
+            <h4>Thumbnail</h4>
+            <hr>
+            <a class="btn btn-outline-primary me-2" href="/admin/items/{{ item.itemSku }}/upload-image/">Upload Thumbnail</a>
             {% if item.itemImgPath %}
-            <div class="mb-3">
-                <a class="btn btn-danger" href="/admin/items/delete{{ item.itemImgPath }}"
-                onclick="return confirm('Are you sure you want to delete this item?');">Delete Thumbnail</a>
-            </div>
-            <div class="mb-3">
-                <p class="form-label">Thumbnail:</p>
-                <img src="{{ item.itemImgPath }}" alt="Item Thumbnail" class="img" style="width: 80px; height: auto"/>
+            <a class="btn btn-danger" href="/admin/items/delete{{ item.itemImgPath }}" onclick="return confirm('Are you sure?');">Delete</a>
+            <div class="mt-3">
+                <img src="{{ item.itemImgPath }}" alt="Thumbnail" class="img-thumbnail" style="max-width: 150px;">
             </div>
             {% endif %}
-            <div class="mb-3">
-                <a class="btn btn-outline-primary" href="/admin/items/{{ item.itemSku }}/images/"
-                >Edit Images</a>
-            </div>
-            <div class="mb-3"><h5>Prices:</h5></div>
-            <div class="row mb-3">
+        </div>
+    
+        <div class="mb-4">
+            <h4>Additional Images</h4>
+            <hr>
+            <a class="btn btn-outline-primary" href="/admin/items/{{ item.itemSku }}/images/">Edit Images</a>
+        </div>
+
+        <div class="mb-4">
+            <h4>Prices</h4>
+            <hr>
+            <div class="row row-cols-1 row-cols-md-2 g-3">
+                {% for price in item.itemPrice %}
                 <div class="col">
-                    <label for="itemPrice-1" class="form-label">Price 1</label>
-                    <input
-                            type="number"
-                            step="0.01"
-                            class="form-control"
-                            id="itemPrice-1"
-                            name="itemPrice-1"
-                            value="{{ item.itemPrice.0 }}"
-                    />
+                    <label for="itemPrice-{{ forloop.counter }}" class="form-label">Price {{ forloop.counter }}</label>
+                    <input type="number" step="0.01" class="form-control" id="itemPrice-{{ forloop.counter }}" name="itemPrice-{{ forloop.counter }}" value="{{ price }}">
                 </div>
-                <div class="col">
-                    <label for="itemPrice-2" class="form-label">Price 2</label>
-                    <input
-                            type="number"
-                            step="0.01"
-                            class="form-control"
-                            id="itemPrice-2"
-                            name="itemPrice-2"
-                            value="{{ item.itemPrice.1 }}"
-                    />
-                </div>
-                <div class="col">
-                    <label for="itemPrice-3" class="form-label">Price 3</label>
-                    <input
-                            type="number"
-                            step="0.01"
-                            class="form-control"
-                            id="itemPrice-3"
-                            name="itemPrice-3"
-                            value="{{ item.itemPrice.2 }}"
-                    />
-                </div>
-                <div class="col">
-                    <label for="itemPrice-4" class="form-label">Price 4</label>
-                    <input
-                            type="number"
-                            step="0.01"
-                            class="form-control"
-                            id="itemPrice-4"
-                            name="itemPrice-4"
-                            value="{{ item.itemPrice.3 }}"
-                    />
-                </div>
+                {% endfor %}
             </div>
-            <div class="mb-3"><h5>Name:</h5></div>
-            <div class="mb-3">
-                <label for="EN-n" class="form-label">EN</label>
-                <input
-                        type="text"
-                        class="form-control"
-                        id="EN-n"
-                        name="EN-n"
-                        value="{{ item.itemName.EN }}"
-                />
+        </div>
+
+        <div class="mb-4">
+            <h4>Item Name</h4>
+            <hr>
+            {% for lang, name in item.itemName.items %}
+            <div class="mb-2">
+                <label for="{{ lang }}-n" class="form-label">{{ lang.upper }}</label>
+                <input type="text" class="form-control" id="{{ lang }}-n" name="{{ lang }}-n" value="{{ name }}">
             </div>
-            <div class="mb-3">
-                <label for="DE-n" class="form-label">DE</label>
-                <input
-                        type="text"
-                        class="form-control"
-                        id="DE-n"
-                        name="DE-n"
-                        value="{{ item.itemName.DE }}"
-                />
+            {% endfor %}
+        </div>
+
+        <div class="mb-4">
+            <h4>Description</h4>
+            <hr>
+            {% for lang, desc in item.itemDescription.items %}
+            <div class="mb-2">
+                <label for="{{ lang }}-d" class="form-label">{{ lang.upper }}</label>
+                <textarea class="form-control" id="{{ lang }}-d" name="{{ lang }}-d" rows="3">{{ desc }}</textarea>
             </div>
-            <div class="mb-3">
-                <label for="IT-n" class="form-label">IT</label>
-                <input
-                        type="text"
-                        class="form-control"
-                        id="IT-n"
-                        name="IT-n"
-                        value="{{ item.itemName.IT }}"
-                />
-            </div>
-            <div class="mb-3">
-                <label for="FR-n" class="form-label">FR</label>
-                <input
-                        type="text"
-                        class="form-control"
-                        id="FR-n"
-                        name="FR-n"
-                        value="{{ item.itemName.FR }}"
-                />
-            </div>
-            <div class="mb-3">
-                <label for="PL-n" class="form-label">PL</label>
-                <input
-                        type="text"
-                        class="form-control"
-                        id="PL-n"
-                        name="PL-n"
-                        value="{{ item.itemName.PL }}"
-                />
-            </div>
-            <div class="mb-3"><h5>Description:</h5></div>
-            <div class="mb-3">
-                <label for="EN-d" class="form-label">EN</label>
-                <textarea
-                        class="form-control"
-                        id="EN-d"
-                        name="EN-d"
-                        rows="3">{{ item.itemDescription.EN }}</textarea>
-            </div>
-            <div class="mb-3">
-                <label for="DE-d" class="form-label">DE</label>
-                <textarea
-                        class="form-control"
-                        id="DE-d"
-                        name="DE-d"
-                        rows="3">{{ item.itemDescription.DE }}</textarea>
-            </div>
-            <div class="mb-3">
-                <label for="IT-d" class="form-label">IT</label>
-                <textarea
-                        class="form-control"
-                        id="IT-d"
-                        name="IT-d"
-                        rows="3">{{ item.itemDescription.IT }}</textarea>
-            </div>
-            <div class="mb-3">
-                <label for="FR-d" class="form-label">FR</label>
-                <textarea
-                        class="form-control"
-                        id="FR-d"
-                        name="FR-d"
-                        rows="3">{{ item.itemDescription.FR }}</textarea>
-            </div>
-            <div class="mb-3">
-                <label for="PL-d" class="form-label">PL</label>
-                <textarea
-                        class="form-control"
-                        id="PL-d"
-                        name="PL-d"
-                        rows="3">{{ item.itemDescription.PL }}</textarea>
-            </div>
-            <div class="d-flex">
-                <a class="btn btn-outline-secondary" href="/admin/items">Back to List</a>
-                <button class="btn btn-success ms-2">Save Changes</button>
-            </div>
-        </form>
+            {% endfor %}
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a class="btn btn-outline-secondary" href="/admin/items">Back to List</a>
+            <button class="btn btn-success">Save Changes</button>
+        </div>
+    </form>
     {% else %}
-        <div class="alert alert-danger">Item not found.</div>
+    <div class="alert alert-danger text-center">Item not found.</div>
     {% endif %}
 </div>
 {% endblock %}

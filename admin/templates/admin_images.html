@@ -1,5 +1,6 @@
 
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
+{% load i18n %}
 {% block title %}Edit Item{% endblock %}
 
 {% block content %}
@@ -8,7 +9,7 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="mb-3">
-                <label for="image" class="form-label">Choose an image to upload:</label>
+                <label for="image" class="form-label">{% trans 'Choose an image to upload:' %}</label>
                 <input
                         type="file"
                         class="form-control"
@@ -17,9 +18,9 @@
                         accept="image/*"
                 />
             </div>
-            <button type="submit" class="btn btn-primary">Upload</button>
             <a class="btn btn-primary" href="/admin/items/{{ item_sku }}/edit"
             >Back to Edit</a>
+            <button type="submit" class="btn btn-primary">Upload</button>
         </form>
         <div class="gallery" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
             {% for image in images %}
