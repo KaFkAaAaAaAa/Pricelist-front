@@ -50,3 +50,11 @@ class ItemForm(forms.Form):
         ),
         required=False,
     )
+
+
+class PrognoseFrom(forms.Form):
+    plates_list = forms.CharField(
+        label=_("Plates") + ":",
+        widget=forms.HiddenInput(),
+        required=False,
+    )

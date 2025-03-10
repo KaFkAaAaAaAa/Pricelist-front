@@ -24,7 +24,7 @@ from Pricelist.views import (
     _price_to_float,
     _price_to_store,
 )
-from transactions.forms import ItemForm
+from transactions.forms import ItemForm, PrognoseFrom
 
 
 def _calculate_total_mass(item_list, key="amount") -> float:
@@ -471,7 +471,7 @@ def edit_transaction_item(request, transaction_uuid, item_uuid):
             if response.status_code == 200:
                 if admin_url:
                     return redirect("admin_transaction_detail", transaction_uuid)
-                return redirect("transaction_detail", transaction_uuid)
+                return redirect("client_transaction_detail", transaction_uuid)
 
     response = requests.get(
         f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
@@ -632,11 +632,24 @@ def create_offer(request, data, headers):
     error = _api_error_interpreter(response.status_code)
     if error:
         return error
-    return redirect("transaction_detail", data["transaction_uuid"])
+    return redirect("admin_transaction_detail", data["transaction_uuid"])
 
 
-def create_prognose(reqeust, data):
-    pass
+def create_prognose(request, data):
+    plates = []
+
+    if request.method == "POST":
+        form = PrognoseFrom(request.POST)
+        if form.is_valid():
+            plates = (
+                form.cleaned_data["plates_list"].split(",")
+                if form.cleaned_data["plates_list"]
+                else []
+            )
+    else:
+        form = PrognoseFrom()
+
+    return render(request, "create_prognose.html", {"form": form, "plates": plates})
 
 
 def change_status(request, transaction_uuid):

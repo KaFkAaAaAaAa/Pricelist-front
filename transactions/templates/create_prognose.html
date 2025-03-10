@@ -1,0 +1,74 @@
+{% extends 'base.html' %} {% block title %}Prognose{% endblock %}
+<!---->
+{% load i18n %}
+<!---->
+{% block content %}
+<div class="d-flex justify-content-center align-items-center flex-column mb-5">
+  <h1>{% trans "Change status to prognose" %}</h1>
+  {% if error %}
+  <div class="alert alert-danger mt-3">{{ error }}</div>
+  {% endif %}
+  <form method="post" class="w-50">
+    {% csrf_token %}
+    <div id="plate-list"></div>
+
+    <input type="text" id="plate-input" placeholder="Enter a plate" />
+    <button class="btn btn-outline-secondary" id="add-btn">Add</button>
+
+    {{ form.plate_list }}
+
+    <button class="btn btn-outline-success" type="submit">Submit</button>
+  </form>
+
+  {% if plates %}
+  <h3>Plates:</h3>
+  <ul>
+    {% for plate in plates %}
+    <li>{{ plate }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const inputField = document.getElementById("plate-input");
+      const addButton = document.getElementById("add-btn");
+      const listContainer = document.getElementById("plate-list");
+      const hiddenInput = document.getElementById("plate-input");
+
+      let stringArray = [];
+
+      function updateHiddenInput() {
+        hiddenInput.value = stringArray.join(",");
+      }
+
+      addButton.addEventListener("click", function (event) {
+        event.preventDefault();
+        const value = inputField.value.trim();
+
+        if (value) {
+          stringArray.push(value);
+          updateHiddenInput();
+
+          const listItem = document.createElement("div");
+          listItem.textContent = value;
+          listItem.classList.add("list-item");
+
+          const removeBtn = document.createElement("button");
+          removeBtn.textContent = "Remove";
+          removeBtn.inputField;
+          removeBtn.addEventListener("click", function () {
+            stringArray = stringArray.filter((item) => item !== value);
+            updateHiddenInput();
+            listContainer.removeChild(listItem);
+          });
+
+          listItem.appendChild(removeBtn);
+          listContainer.appendChild(listItem);
+
+          inputField.value = "";
+        }
+      });
+    });
+  </script>
+  {% endblock %}
+</div>
