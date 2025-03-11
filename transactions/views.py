@@ -635,17 +635,37 @@ def create_offer(request, data, headers):
     return redirect("admin_transaction_detail", data["transaction_uuid"])
 
 
-def create_prognose(request, data):
+def create_prognose(request, data, headers):
     plates = []
 
     if request.method == "POST":
         form = PrognoseFrom(request.POST)
+        __import__("pdb").set_trace()
         if form.is_valid():
             plates = (
                 form.cleaned_data["plates_list"].split(",")
                 if form.cleaned_data["plates_list"]
                 else []
             )
+            payload = {
+                "plates": (
+                    form.cleaned_data["plates_list"].split(",")
+                    if form.cleaned_data["plates_list"]
+                    else []
+                ),
+                "transportCost": form.cleaned_data["delivery_price"],
+                "infomrmations": {
+                    "additional_info": form.cleaned_data["additional_info"],
+                    "delivery_info": form.cleaned_data["delivery_info"],
+                    "delivery_date": str(form.cleaned_data["delivery_date"]),
+                },
+            }
+            response = requests.post(
+                f"{API_BASE_URL}/transactions/details/{data["transaction_uuid"]}/",
+                headers=headers,
+                json=payload,
+            )
+
     else:
         form = PrognoseFrom()
 
@@ -662,7 +682,6 @@ def change_status(request, transaction_uuid):
 
     admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
 
-    __import__("pdb").set_trace()
     response = requests.get(
         f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
         headers=headers,
@@ -695,8 +714,9 @@ def change_status(request, transaction_uuid):
     if status == "PROPOSITION":
         return create_offer(request, data, headers)
     if status == "OFFER":
-        return create_prognose(request, data)
+        return create_prognose(request, data, headers)
     if status == "PROGNOSE":
-        return create_final(request, data)
+        pass
+        # return create_final(request, data)
     if status == "FINAL":
         return HttpResponseBadRequest(b"Order has already been finalised")
