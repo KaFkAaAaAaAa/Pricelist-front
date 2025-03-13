@@ -414,7 +414,7 @@ def admin_transaction_detail(request, transaction_uuid):
     )
     if transaction["status"] == "PROGNOSE":
         response = requests.get(
-            f"{API_BASE_URL}/transactions/details/admin/{transaction_uuid}/",
+            f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
             headers=headers,
         )
         error = _api_error_interpreter(response.status_code)
@@ -653,19 +653,29 @@ def create_prognose(request, data, headers):
                     if form.cleaned_data["plates_list"]
                     else []
                 ),
-                "transportCost": form.cleaned_data["delivery_price"],
+                "transportCost": int(form.cleaned_data["delivery_price"]),
                 "infomrmations": {
-                    "additional_info": form.cleaned_data["additional_info"],
+                    "additional_info": form.cleaned_data["prognose_info"],
                     "delivery_info": form.cleaned_data["delivery_info"],
                     "delivery_date": str(form.cleaned_data["delivery_date"]),
                 },
             }
             response = requests.post(
-                f"{API_BASE_URL}/transactions/details/{data["transaction_uuid"]}/",
+                f"{API_BASE_URL}/transaction-details/admin/{data["transaction_uuid"]}/",
                 headers=headers,
                 json=payload,
             )
-
+            error = _api_error_interpreter(response.status_code)
+            if error:
+                return error
+            response = requests.get(
+                f"{API_BASE_URL}/transactions/admin/{data['transaction_uuid']}/update-status/?status=prognose",
+                headers=headers,
+            )
+            error = _api_error_interpreter(response.status_code)
+            if error:
+                return error
+            return redirect("admin_transaction_detail", data["transaction_uuid"])
     else:
         form = PrognoseFrom()
 

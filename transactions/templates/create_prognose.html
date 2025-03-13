@@ -10,7 +10,7 @@
         <form method="post" >
             {% csrf_token %}
                 <div id="plate-list" class="mb-3"></div>
-                {{ form.plate_list }}
+                {{ form.plates_list }}
                 <div class="d-flex gap-2">
                     <input type="text" class="form-control flex-grow-1" id="plate-input" placeholder="Enter a plate" />
                     <button class="btn btn-outline-secondary" id="add-btn">Add</button>
@@ -56,12 +56,13 @@
       const inputField = document.getElementById("plate-input");
       const addButton = document.getElementById("add-btn");
       const listContainer = document.getElementById("plate-list");
-      const platesPostParam = document.getElementById("plate-input");
+      const platesPostParam = document.getElementById("id_plates_list");
 
       let platesArray = [];
 
       function updateHiddenInput() {
         platesPostParam.value = platesArray.join(",");
+        console.log("updateHiddenInput");
       }
 
       addButton.addEventListener("click", function (event) {
@@ -91,6 +92,10 @@
           listItem.appendChild(textSpan);
           listItem.appendChild(removeBtn);
           listContainer.appendChild(listItem);
+          console.log(listItem);
+          console.log(listContainer);
+          console.log(platesPostParam);
+          console.log(platesArray);
 
           inputField.value = "";
         }

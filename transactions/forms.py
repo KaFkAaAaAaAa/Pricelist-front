@@ -66,7 +66,6 @@ class PrognoseFrom(forms.Form):
                 "class": "form-control",
             },
         ),
-        input_formats=["%d-%m-%Y"],
     )
     delivery_price = forms.DecimalField(
         label=_("Delivery price") + ":",
