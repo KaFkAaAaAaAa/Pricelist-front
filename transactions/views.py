@@ -4,6 +4,7 @@ from math import floor
 
 import requests
 from django.http import (
+    HttpResponse,
     HttpResponseBadRequest,
     HttpResponseNotFound,
     HttpResponseServerError,
@@ -640,7 +641,6 @@ def create_prognose(request, data, headers):
 
     if request.method == "POST":
         form = PrognoseFrom(request.POST)
-        __import__("pdb").set_trace()
         if form.is_valid():
             plates = (
                 form.cleaned_data["plates_list"].split(",")
@@ -654,7 +654,7 @@ def create_prognose(request, data, headers):
                     else []
                 ),
                 "transportCost": int(form.cleaned_data["delivery_price"]),
-                "infomrmations": {
+                "informations": {
                     "additional_info": form.cleaned_data["prognose_info"],
                     "delivery_info": form.cleaned_data["delivery_info"],
                     "delivery_date": str(form.cleaned_data["delivery_date"]),
@@ -682,6 +682,23 @@ def create_prognose(request, data, headers):
     return render(request, "create_prognose.html", {"form": form, "plates": plates})
 
 
+def create_final(request, data, headers):
+    if request.method == "POST":
+        return HttpResponse(b"Post request?")
+
+    response = requests.get(
+        f"{API_BASE_URL}/transaction-details/admin/{data["transaction_uuid"]}/",
+        headers=headers,
+    )
+    error = _api_error_interpreter(response.status_code)
+    if error:
+        return error
+
+    data["transactionDetails"] = response.json()
+    __import__("pdb").set_trace()
+    return render(request, "create_final.html", data)
+
+
 def change_status(request, transaction_uuid):
     token = request.session.get("token")
     auth = _get_auth(token)
@@ -707,13 +724,18 @@ def change_status(request, transaction_uuid):
 
     if admin_url:
         response_client = requests.get(
-            f"{API_BASE_URL}/clients/{admin_url}{transaction['clientId']}/",
+            f"{API_BASE_URL}/clients/{admin_url}{transaction['clientId']}",
             headers=headers,
         )
+        error = _api_error_interpreter(response_client.status_code)
+        if error:
+            return error
     else:
         response_client = request.session["logged_user"]
 
+    # TODO: cleanup
     data = {
+        "transaction": transaction,
         "items": transaction["itemsOrdered"],
         "client": response_client.json(),
         "total": totals,
@@ -726,7 +748,6 @@ def change_status(request, transaction_uuid):
     if status == "OFFER":
         return create_prognose(request, data, headers)
     if status == "PROGNOSE":
-        pass
-        # return create_final(request, data)
+        return create_final(request, data, headers)
     if status == "FINAL":
         return HttpResponseBadRequest(b"Order has already been finalised")
