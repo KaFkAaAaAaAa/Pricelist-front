@@ -684,6 +684,29 @@ def create_prognose(request, data, headers):
 
 def create_final(request, data, headers):
     if request.method == "POST":
+        items = {}
+        alku = {}
+        for param in request.POST:
+            field, uuid = param.split('-', 1)
+            if not (field and uuid):
+                continue
+            if uuid not in items:
+                items[uuid] = {"uuid": uuid}
+            value = request.POST[param]
+            if field == "alku":
+                alku[uuid] = value
+            else:
+                items[uuid][field] = value
+        payload_items = items.values()
+        response = requests.put(
+            f"{API_BASE_URL}/transactions/admin/{data['transaction_uuid']}",
+            payload_items,
+            headers=headers,
+        )
+        error = _api_error_interpreter(response.status_code)
+        if error:
+            return error
+
         return HttpResponse(b"Post request?")
 
     response = requests.get(
