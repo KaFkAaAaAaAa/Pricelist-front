@@ -50,3 +50,39 @@ class ItemForm(forms.Form):
         ),
         required=False,
     )
+
+
+class PrognoseFrom(forms.Form):
+    plates_list = forms.CharField(
+        label=_("Plates") + ":",
+        widget=forms.HiddenInput(),
+        required=False,
+    )
+    delivery_date = forms.DateField(
+        label=_("Delivery date") + ":",
+        widget=forms.DateInput(
+            attrs={
+                "type": "date",
+                "class": "form-control",
+            },
+        ),
+    )
+    delivery_price = forms.DecimalField(
+        label=_("Delivery price") + ":",
+        widget=forms.NumberInput(
+            attrs={
+                "min": "0.1",
+                "class": "form-control",
+            }
+        ),
+    )
+    prognose_info = forms.CharField(
+        label=_("Additional info about transaction") + ":",
+        widget=forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+        required=False,
+    )
+    delivery_info = forms.CharField(
+        label=_("Delivery info") + ":",
+        widget=forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+        required=False,
+    )

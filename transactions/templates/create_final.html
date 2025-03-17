@@ -50,7 +50,7 @@
         <thead>
         <tr>
             <th></th>
-            <th scope="col">{% trans "SKU" %}</th>
+            <th scope="col" class="col-xs-2">{% trans "SKU" %}</th>
             <th scope="col">{% trans "Product" %}</th>
             <th scope="col">{% trans "Amount" %}</th>
             <th scope="col">{% trans "Price" %}</th>
@@ -62,23 +62,26 @@
         <tbody>
         {% if transaction.itemsOrdered %}
             {% for item in transaction.itemsOrdered %}
-            <tr>
-                <td><img style="width: 80px; height: auto; vertical-align: middle;" src="/images/{{ item.sku }}.M.jpg"></td>
-                <td>{{ item.sku }}</td>
-                <td>{{ item.name }}</td>
-                <td>{{ item.amount }} kg</td>
-                <td>{{ item.price }} €</td>
-                <td>{{ item.total }} €</td>
-                {% if item.additionalInfo %}
-                    <td>{{ item.additionalInfo }}</td>
-                {% else %}
-                    <td></td>
-                {% endif %}
-                <td>
-                    <a class="btn btn-outline-secondary" href="/transactions/admin/{{transaction.uuid}}/{{item.uuid}}/edit/">Edit</a>
-                    <a class="btn btn-outline-danger" onclick="event.stopPropagation(); return confirm('{% trans "Are you sure you want to delete this item?" %}');" href="/transactions/admin/{{transaction.uuid}}/{{item.uuid}}/delete/">{% trans "Delete" %}</a>
-                </td>
-            </tr>
+            <form action="post">
+                <tr>
+                    {% csrf_token %}
+                    <td><img style="width: 80px; height: auto; vertical-align: middle;" src="/images/{{ item.sku }}.M.jpg"></td>
+                    <td id="sku-{{ item.uuid }}" class="col-xs-2"><input class="form-control" type="text" value="{{ item.sku }}"/></td>
+                    <td id="name-{{ item.uuid }}"><input class="form-control" type="text" value="{{ item.name }}"/></td>
+                    <td id="amount-{{ item.uuid }}"><div class="input-group"><input class="form-control" type="number" min="0.1" step="0.1" value="{{ item.amount }}"/><span class="input-group-text">kg</span></div></td>
+                    <td id="price-{{ item.uuid }}"><div class="input-group"><input class="form-control" type="number" min="0.01" step="0.01" value="{{ item.price }}"/><span class="input-group-text">€</span></div></td>
+                    <td id="total-{{ item.uuid }}" style="white-space: nowrap;">{{ item.total }} €</td>
+                    {% if item.additionalInfo %}
+                    <td id="additionalInfo-{{ item.uuid }}">{{ item.additionalInfo }}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    <td>
+                        <a class="btn btn-outline-secondary" href="/transactions/admin/{{transaction.uuid}}/{{item.uuid}}/edit/">Edit</a>
+                        <a class="btn btn-outline-danger" onclick="event.stopPropagation(); return confirm('{% trans "Are you sure you want to delete this item?" %}');" href="/transactions/admin/{{transaction.uuid}}/{{item.uuid}}/delete/">{% trans "Delete" %}</a>
+                    </td>
+                </tr>
+            </form>
             {% endfor %}
         {% else %}
                 <div class="alert alert-danger">
@@ -97,9 +100,9 @@
             </tr>
         </tbody>
     </table>
-    {% if transaction.status == "PROGNOSE" and transactionDetails.informations.prognose_info %}
-    <p class="mt-2 text-start">{{ transactionDetails.informations.prognose_info }}</p>
-    {% endif %}
+    {# {% if transaction.status == "PROGNOSE" and transactionDetails.informations.prognose_info %} #}
+    {# <p class="mt-2 text-start">{{ transactionDetails.informations.prognose_info }}</p> #}
+    {# {% endif %} #}
     <a class="btn btn-outline-primary" href="/transactions/{{transaction.uuid}}/change-status/">{% trans "Change status" %}</a>
     <a class="btn btn-outline-secondary" href="/transactions/{{transaction.uuid}}/print/">{% trans "Print" %}</a>
 
