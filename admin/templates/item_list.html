@@ -66,9 +66,7 @@
             {% endfor %}
             <tr>
                 <td colspan="9">
-                    <button class="btn btn-outline-danger mt-2 mx-2" onclick="history.back()">
-                        {% trans "Go back" %}
-                    </button>
+                    <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-danger mt-2 mx-2">{% trans "Go back" %}</a>
                     <a class="btn btn-primary mt-2" href="/admin/items/add">Add new</a>
                 </td>
             </tr>

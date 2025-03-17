@@ -1,35 +1,35 @@
 {% extends 'base.html' %} {% block title %}My New Clients{% endblock %} {% block
-content %}
-<h2>New User List</h2>
-<table class="table table-hover table-striped">
-  <thead>
-    <tr>
-      <th>Email</th>
-      <th>User Telephone Number</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for user in users %}
-    <tr
-      onclick="window.location.href='/admin/clients/{{ client.id }}';"
-      style="cursor: pointer"
-    >
-      <td>{{ user.userEmail }}</td>
-      <td>{{ user.userTelephoneNumber }}</td>
-      <!-- TODO: we might need client information here -->
-      <td>
-        <a
-          class="btn btn-outline-primary"
-          href="/admin/my-new-users/{{ user.userId }}/activate-user/"
-          >Add to a group</a
-        >
-        <a class="btn btn-primary" href="/admin/clients/{{ client.id }}/edit"
-          >Edit</a
-        >
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    content %}
+    <h1 class="text-center">New User List</h1>
+    <table class="table table-hover table-striped">
+        <thead>
+        <tr>
+            <th>Email</th>
+            <th>User Telephone Number</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr
+                    onclick="window.location.href='/admin/clients/{{ client.id }}';"
+                    style="cursor: pointer"
+            >
+                <td>{{ user.userEmail }}</td>
+                <td>{{ user.userTelephoneNumber }}</td>
+                <!-- TODO: we might need client information here -->
+                <td>
+                    <a
+                            class="btn btn-outline-primary"
+                            href="/admin/my-new-users/{{ user.userId }}/activate-user/"
+                    >Add to a group</a
+                    >
+                    <a class="btn btn-primary" href="/admin/clients/{{ client.id }}/edit"
+                    >Edit</a
+                    >
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
