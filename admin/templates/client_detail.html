@@ -1,35 +1,36 @@
 {% extends 'base.html' %}
 {% block title %}Client Details{% endblock %}
 {% block content %}
-<h2>Client Details</h2>
-{% if client %}
-    <dl class="row">
-        <dt class="col-sm-3">Email</dt>
-        <dd class="col-sm-9">{{ client.user.userEmail }}</dd>
-        <dt class="col-sm-3">Telephone number</dt>
-        <dd class="col-sm-9">{{ client.user.userTelephoneNumber }}</dd>
-        <dt class="col-sm-3">Company Name</dt>
-        <dd class="col-sm-9">{{ client.clientCompanyName }}</dd>
-        <dt class="col-sm-3">Street</dt>
-        <dd class="col-sm-9">{{ client.clientStreet}}</dd>
-        <dt class="col-sm-3">Code</dt>
-        <dd class="col-sm-9">{{ client.clientCode }}</dd>
-        <dt class="col-sm-3">City</dt>
-        <dd class="col-sm-9">{{ client.clientCity }}</dd>
-        <dt class="col-sm-3">Country</dt>
-        <dd class="col-sm-9">{{ client.clientCountry }}</dd>
-        <dt class="col-sm-3">Client's Transactions</dt>
-        <dd class="col-sm-9"><a href="/transactions/admin/client/{{ client.id }}/" class="btn btn-secondary">Transactions</a></dd>
-        
-    {# TODO: if owner display admin #}
+    <h2>Client Details</h2>
+    {% if client %}
+        <dl class="row">
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">{{ client.user.userEmail }}</dd>
+            <dt class="col-sm-3">Telephone number</dt>
+            <dd class="col-sm-9">{{ client.user.userTelephoneNumber }}</dd>
+            <dt class="col-sm-3">Company Name</dt>
+            <dd class="col-sm-9">{{ client.clientCompanyName }}</dd>
+            <dt class="col-sm-3">Street</dt>
+            <dd class="col-sm-9">{{ client.clientStreet }}</dd>
+            <dt class="col-sm-3">Code</dt>
+            <dd class="col-sm-9">{{ client.clientCode }}</dd>
+            <dt class="col-sm-3">City</dt>
+            <dd class="col-sm-9">{{ client.clientCity }}</dd>
+            <dt class="col-sm-3">Country</dt>
+            <dd class="col-sm-9">{{ client.clientCountry }}</dd>
+            <dt class="col-sm-3">Client's Transactions</dt>
+            <dd class="col-sm-9"><a href="/transactions/admin/client/{{ client.id }}/" class="btn btn-secondary">Transactions</a>
+            </dd>
 
-    {# {% if isOwner %} #}
-    {#     <dt class="col-sm-3">Admin</dt> #}
-    {#     <dd class="col-sm-9">{{ client.clientAdmin.userEmail }}</dd> #}
-    {# {% endif %} #}
-    </dl>
-{% elif error %}
-    <div class="alert alert-danger">{{ error }}</div>
-{% endif %}
-<a class="btn btn-secondary" href="/admin/clients">Back to Client List</a>
+            {# TODO: if owner display admin #}
+
+            {# {% if isOwner %} #}
+            {#     <dt class="col-sm-3">Admin</dt> #}
+            {#     <dd class="col-sm-9">{{ client.clientAdmin.userEmail }}</dd> #}
+            {# {% endif %} #}
+        </dl>
+    {% elif error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    <a class="btn btn-secondary" href="/admin/clients">Back to Client List</a>
 {% endblock %}
