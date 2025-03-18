@@ -684,30 +684,53 @@ def create_prognose(request, data, headers):
 
 def create_final(request, data, headers):
     if request.method == "POST":
+        __import__('pdb').set_trace()
         items = {}
         alku = {}
         for param in request.POST:
+            if param.find('-') == -1:
+                continue
             field, uuid = param.split('-', 1)
             if not (field and uuid):
                 continue
             if uuid not in items:
                 items[uuid] = {"uuid": uuid}
             value = request.POST[param]
+            if field == "amount":
+                value = _amount_to_store(value)
+            if field == "price":
+                value = _price_to_store(value)
             if field == "alku":
-                alku[uuid] = value
+                alku[uuid] = _amount_to_store(value)
             else:
                 items[uuid][field] = value
         payload_items = items.values()
         response = requests.put(
-            f"{API_BASE_URL}/transactions/admin/{data['transaction_uuid']}",
-            payload_items,
+            f"{API_BASE_URL}/transactions/admin/{data['transaction_uuid']}/",
+            json={"itemsOrdered": list(payload_items)},
             headers=headers,
         )
         error = _api_error_interpreter(response.status_code)
         if error:
             return error
 
-        return HttpResponse(b"Post request?")
+        response = requests.put(
+            f"{API_BASE_URL}/transaction-details/admin/{data['transaction_uuid']}/",
+            json={"alkuAmount": alku},
+            headers=headers,
+        )
+        error = _api_error_interpreter(response.status_code)
+        if error:
+            return error
+
+        response = requests.get(
+            f"{API_BASE_URL}/transactions/admin/{data['transaction_uuid']}/update-status/?status=final",
+            headers=headers,
+        )
+        error = _api_error_interpreter(response.status_code)
+        if error:
+            return error
+        return redirect("admin_transaction_detail", data["transaction_uuid"])
 
     response = requests.get(
         f"{API_BASE_URL}/transaction-details/admin/{data["transaction_uuid"]}/",

@@ -1,3 +1,4 @@
+from http.client import UNAUTHORIZED
 import re
 from math import floor
 
@@ -308,22 +309,15 @@ def upload_image(request, item_sku):
         # django needs an update to 5.1.5 so that can work
         # for now we have a workaround
         fs = FileSystemStorage()
-        filename = f"{item_sku}.M.{image.name.split('.')[-1]}"
+        ext = image.name.rsplit('.')[-1]
+        if ext not in ('jpg', 'JPG'):
+            return HttpResponseForbidden(b'Only jpg is allowed')
+        filename = f"{item_sku}.M.{ext}"
         if fs.exists(filename):
             fs.delete(filename)
         filename = fs.save(filename, image)
         # end workaround
         uploaded_url = fs.url(filename)
-        response = requests.post(
-            f"{API_BASE_URL}/items/admin/{item_sku}/img-path",
-            headers=headers,
-            data={"path": uploaded_url},
-        )
-        # TODO: Error handling
-        if response.status_code == 200:
-            redirect("edit_item", item_sku)
-        else:
-            redirect("edit_item", item_sku)
     return render(
         request,
         "upload_image.html",

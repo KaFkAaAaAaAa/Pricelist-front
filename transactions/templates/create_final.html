@@ -3,8 +3,8 @@
 {% block title %}Transaction List{% endblock %}
 {% block content %}
 <div class="container text-center">
+    <form method="post">
     <div class="container">
-        {# TODO: this button should be on the left side #}
         <div class="row text-start float-start">
           <button
             class="btn btn-sm btn-outline-danger mb-4"
@@ -18,7 +18,7 @@
         <div class="row text-start">{{ transaction.client.clientStreet }}</div>
         <div class="row text-start">{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</div>
         <div class="row text-start">{{ transaction.client.clientCountry }}</div>
-        <div class="row text-start"><b class="text-start p-0">{% trans "Status" %}:</b> {% if transaction.status %}{{ transaction.status }} {{ transaction.status_time|date:"d-m-Y H:i" }}{% else %}{% trans "no status" %}{% now "d-m-Y H:i" %}{% endif %}</div>
+        <div class="row text-start"><b class="text-start p-0">{% trans "Status" %}:</b> {% if transaction.status %}{{ transaction.status }} {{ transaction.status_time|date:"d-m-Y H:i" }}{% else %}{% trans "No status" %}{% now "d-m-Y H:i" %}{% endif %}{% trans "changing to FINAL" %}</div>
         <div class="row text-start ">
           <div class="col float-start ps-0">
                     <a href="/transactions/admin/{{ transaction.uuid }}/add-item/"
@@ -27,23 +27,9 @@
                     {% trans "Add item" %}
               </a>
             </div>
-            {% if transaction.status == "PROGNOSE" %}
             <div class="col-md-4 float-end text-end">
-                <h5 class="fw-bold">{% trans "Delivery" %}</h5>
-                <p class="mb-2"><strong>{% trans "Date" %}: </strong>{{ transactionDetails.informations.delivery_date }}</p>
-                    {% if transactionDetails.plates %}
-                    <div class="mt-2">
-                    <h6 class="fw-semibold">{% trans "Plates:" %}</h6>
-                    <ul class="list-group list-group-flush">
-                        {% for plate in transactionDetails.plates %}
-                            <li class="list-group-item p-1">{{ plate }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                    <p class="mt-2">{{ transactionDetails.informations.delivery_info }}</p>
-                    </div>
+                <p class="mb-2"><strong>{% trans "Delivery date" %}: </strong>{{ transactionDetails.informations.delivery_date }}</p>
             </div>
-            {% endif %}
         </div>
     </div>
     <table class="table">
@@ -53,6 +39,7 @@
             <th scope="col" class="col-xs-2">{% trans "SKU" %}</th>
             <th scope="col">{% trans "Product" %}</th>
             <th scope="col">{% trans "Amount" %}</th>
+            <th scope="col">{% trans "Alku" %}</th>
             <th scope="col">{% trans "Price" %}</th>
             <th scope="col">{% trans "Total" %}</th>
             <th scope="col">{% trans "Comment" %}</th>
@@ -62,15 +49,36 @@
         <tbody>
         {% if transaction.itemsOrdered %}
             {% for item in transaction.itemsOrdered %}
-            <form action="post">
                 <tr>
                     {% csrf_token %}
                     <td><img style="width: 80px; height: auto; vertical-align: middle;" src="/images/{{ item.sku }}.M.jpg"></td>
-                    <td id="sku-{{ item.uuid }}" class="col-xs-2"><input class="form-control" type="text" value="{{ item.sku }}"/></td>
-                    <td id="name-{{ item.uuid }}"><input class="form-control" type="text" value="{{ item.name }}"/></td>
-                    <td id="amount-{{ item.uuid }}"><div class="input-group"><input class="form-control" type="number" min="0.1" step="0.1" value="{{ item.amount }}"/><span class="input-group-text">kg</span></div></td>
-                    <td id="price-{{ item.uuid }}"><div class="input-group"><input class="form-control" type="number" min="0.01" step="0.01" value="{{ item.price }}"/><span class="input-group-text">€</span></div></td>
-                    <td id="total-{{ item.uuid }}" style="white-space: nowrap;">{{ item.total }} €</td>
+                    <td class="col-xs-2"><input name="sku-{{ item.uuid }}" id="sku-{{ item.uuid }}" class="form-control" type="text" value="{{ item.sku }}"/></td>
+                    <td><input name="name-{{ item.uuid }}"  id="name-{{ item.uuid }}" class="form-control" type="text" value="{{ item.name }}"/></td>
+                    <td>
+                        <div class="input-group">
+                            <input name="amount-{{ item.uuid }}"  id="amount-{{ item.uuid }}" class="form-control"
+                                type="number" min="0.1" step="0.1" value="{{ item.amount }}"
+                                onchange="calculateTotal('{{ item.uuid }}')"/>
+                            <span class="input-group-text">kg</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <input name="alku-{{ item.uuid }}" id="alku-{{ item.uuid }}" class="form-control"
+                                type="number" min="0.1" step="0.1" value="{{ item.amount }}"
+                                onchange="calculateTotal('{{ item.uuid }}')"/>
+                            <span class="input-group-text">kg</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <input name="price-{{ item.uuid }}" id="price-{{ item.uuid }}" class="form-control"
+                                type="number" min="0.01" step="0.01" value="{{ item.price }}"
+                                onchange="calculateTotal('{{ item.uuid }}')"/>
+                            <span class="input-group-text">€</span>
+                        </div>
+                    </td>
+                    <td style="white-space: nowrap;"><span id="total-{{ item.uuid }}">{{ item.total }}</span> €</td>
                     {% if item.additionalInfo %}
                     <td id="additionalInfo-{{ item.uuid }}">{{ item.additionalInfo }}</td>
                     {% else %}
@@ -81,7 +89,6 @@
                         <a class="btn btn-outline-danger" onclick="event.stopPropagation(); return confirm('{% trans "Are you sure you want to delete this item?" %}');" href="/transactions/admin/{{transaction.uuid}}/{{item.uuid}}/delete/">{% trans "Delete" %}</a>
                     </td>
                 </tr>
-            </form>
             {% endfor %}
         {% else %}
                 <div class="alert alert-danger">
@@ -92,21 +99,49 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td class="fw-bold">{{ transaction.totals.mass }} kg</td>
+                <td class="fw-bold" style="white-space: nowrap;"><span id="totalAmount">{{ totals.mass }}</span> kg</td>
+                <td class="fw-bold" style="white-space: nowrap;"><span id="totalAlku"></span></td>
                 <td></td>
-                <td class="fw-bold">{{ transaction.totals.price }} €</td>
-                <td></td>
+                <td class="fw-bold" style="white-space: nowrap;"><span id="totalPrice">{{ totals.price }}</span> €</td>
                 <td></td>
             </tr>
         </tbody>
     </table>
-    {# {% if transaction.status == "PROGNOSE" and transactionDetails.informations.prognose_info %} #}
-    {# <p class="mt-2 text-start">{{ transactionDetails.informations.prognose_info }}</p> #}
-    {# {% endif %} #}
-    <a class="btn btn-outline-primary" href="/transactions/{{transaction.uuid}}/change-status/">{% trans "Change status" %}</a>
-    <a class="btn btn-outline-secondary" href="/transactions/{{transaction.uuid}}/print/">{% trans "Print" %}</a>
-
-    
-
+    <input class="btn btn-success" type=submit value="{% trans "Save and change to final" %}">
+    </form>
 </div>
+<script>
+        function calculateTotal(uuidChanged) {
+            let allTotalPrice = 0.0, allTotalAmount = 0.0, allTotalAlku = 0.0;
+            let amount = parseFloat(document.getElementById(`amount-${uuidChanged}`).value) || 0;
+            let alku = parseFloat(document.getElementById(`alku-${uuidChanged}`).value) || 0;
+            let pricePerKg = parseFloat(document.getElementById(`price-${uuidChanged}`).value) || 0;
+            document.getElementById(`total-${uuidChanged}`).textContent = (alku * pricePerKg).toFixed(2);
+
+            uuids.forEach(uuid => {
+                let amount = parseFloat(document.getElementById(`amount-${uuid}`).value) || 0;
+                let alku = parseFloat(document.getElementById(`alku-${uuid}`).value) || 0;
+                let pricePerKg = parseFloat(document.getElementById(`price-${uuid}`).value) || 0;
+                allTotalPrice += alku * pricePerKg;
+                allTotalAlku += alku
+                allTotalAmount += amount;
+            });
+
+            document.getElementById(`totalPrice`).textContent = allTotalPrice.toFixed(2);
+            document.getElementById(`totalAmount`).textContent = allTotalAmount.toFixed(1);
+            document.getElementById(`totalAlku`).textContent = allTotalAlku.toFixed(1);
+        }
+
+        function validateOffer() {
+            if (uuids.length === 0) {
+                var emptyOfferModal = new bootstrap.Modal(document.getElementById('emptyOfferModal'));
+                emptyOfferModal.show();
+                return false;
+            }
+            return true;
+        }
+
+        const uuids = [{% for item in transaction.itemsOrdered %}"{{ item.uuid }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+        window.onload = () => uuids.forEach(uuid => calculateTotal(uuid));
+</script>
 {% endblock %}

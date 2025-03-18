@@ -2,6 +2,7 @@ from math import floor
 from typing import Iterable
 from uuid import UUID
 
+from django.forms import BoundField
 import requests
 from django.http import HttpResponseServerError
 from django.http.response import HttpResponseForbidden, HttpResponseNotFound
@@ -557,9 +558,12 @@ def client_add(request):
             )
     else:
         form = RegisterForm()
-        for field in form.visible_fields():
-            if "placeholder" in field.widget.attrs:
-                field.widget.attrs["placeholder"] = field.widget.attrs[
+        for bound_field in form.visible_fields():
+            # TODO: fix translation here
+            if "placeholder" in bound_field.field.widget.attrs:
+                bound_field.field.widget.attrs[
+                        "placeholder"
+                        ] = bound_field.field.widget.attrs[
                     "placeholder"
                 ].replace(_("your "), "")
     return render(request, "new_client.html", {"form": form})
