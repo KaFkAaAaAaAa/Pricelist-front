@@ -122,10 +122,9 @@
                         </div>
                     {% endif %}
                     <div class="text-center">
-                        <button class="btn btn-outline-danger mb-2" onclick="history.back()">
-                          {% trans "Go back" %}
-                        </button>
-                        <a class="btn btn-secondary mb-2 mx-2" href="{% url 'change_password' %}">{% trans "Change password" %}</a>
+                        <a href="{% url 'price_list' %}" class="btn btn-outline-danger mb-2">{% trans "Go back" %}</a>
+                        <a class="btn btn-secondary mb-2 mx-2"
+                           href="{% url 'change_password' %}">{% trans "Change password" %}</a>
                         <button class="btn btn-outline-primary mb-2">{% trans "Save changes" %}</button>
                     </div>
                 </form>

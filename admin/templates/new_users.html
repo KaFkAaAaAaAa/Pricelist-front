@@ -1,39 +1,44 @@
 {% extends 'base.html' %} {% block title %}Clients{% endblock %}
 {% block content %}
-{% load i18n %}
-<h2>Clients</h2>
-<button
-  class="btn btn-sm btn-outline-danger float-start mb-4"
-  onclick="history.back()"
->
-  {% trans "Go back" %}
-</button>
-<table class="table table-hover table-striped text-center">
-  <thead>
-    <tr>
-        <th>{% trans "Company name" %}</th>
-        <th>{% trans "First Name" %}</th>
-        <th>{% trans "Last Name" %}</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for client in clients %}
-    <tr
-      onclick="window.location.href='/admin/clients/{{ client.id }}';"
-      style="cursor: pointer"
-    >
-      <td>{{ client.clientCompanyName }}</td>
-      <td>{{ client.user.userFirstName }}</td>
-      <td>{{ client.user.userLastName }}</td>
-      <td>
-                <a class="btn btn-outline-primary" href="/admin/clients/{{ client.id }}/{{ func }}">{% trans "Actions" %}</a>
-                <a class="btn btn-primary" href="/admin/clients/{{ client.id }}/edit"
-                >{% trans "Edit" %}</a
-                >
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    {% load i18n %}
+    <style>
+    @media (max-width: 576px) {
+    .table .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        display: block;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+    </style>
+    <h1 class="text-center">Clients</h1>
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-danger float-start mb-4 mt-3">{% trans "Go back" %}</a>
+    <table class="table table-hover table-striped text-center">
+        <thead>
+        <tr>
+            <th>{% trans "Company name" %}</th>
+            <th>{% trans "First Name" %}</th>
+            <th>{% trans "Last Name" %}</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for client in clients %}
+            <tr onclick="window.location.href='/admin/clients/{{ client.id }}';" style="cursor: pointer">
+                <td>{{ client.clientCompanyName }}</td>
+                <td>{{ client.user.userFirstName }}</td>
+                <td>{{ client.user.userLastName }}</td>
+                <td>
+                    <a class="btn btn-outline-primary" href="/admin/clients/{{ client.id }}/{{ func }}">
+                        {% trans "Actions" %}
+                    </a>
+                    <a class="btn btn-primary" href="/admin/clients/{{ client.id }}/edit">
+                        {% trans "Edit" %}
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
