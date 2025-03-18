@@ -53,6 +53,21 @@ def _api_error_interpreter(status_code, msg_404=None, msg_401=None, msg_500=None
     return output
 
 
+def _make_api_request(url, method=requests.get, headers=None, body=None):
+    """Function makes request for api and return json body of response, if
+    the response is an error or api response can't be parsed using .json()
+    function returns Error HTTP response as a second value """
+    response = method(
+            url,
+            headers=headers,
+            json=body,
+    )
+    try:
+        return response.json(), _api_error_interpreter(response.status_code)
+    except:
+        return {}, _api_error_interpreter(500)
+
+
 def favicon():
     """render 404 for favicon request"""
     return HttpResponseNotFound()

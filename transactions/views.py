@@ -718,7 +718,6 @@ def create_final(request, data, headers):
         return error
 
     data["transactionDetails"] = response.json()
-    __import__("pdb").set_trace()
     return render(request, "create_final.html", data)
 
 
