@@ -413,7 +413,7 @@ def admin_transaction_detail(request, transaction_uuid):
     transaction["totals"] = _get_stored_item_list_to_display(
         transaction["itemsOrdered"],
     )
-    if transaction["status"] == "PROGNOSE":
+    if transaction["status"] in ("PROGNOSE", "FINAL"):
         response = requests.get(
             f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
             headers=headers,

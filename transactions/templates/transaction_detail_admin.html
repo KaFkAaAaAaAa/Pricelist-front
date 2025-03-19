@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}Transaction List{% endblock %}
+{% block title %}Transaction{% endblock %}
 {% block content %}
 <div class="container text-center">
     <div class="container">
@@ -44,6 +44,11 @@
                     </div>
             </div>
             {% endif %}
+            {% if transaction.status == "FINAL" %}
+            <div class="col-md-4 float-end text-end">
+                <p class="mb-2"><strong>{% trans "Delivery date" %}: </strong>{{ transactionDetails.informations.delivery_date }}</p>
+            </div>
+            {% endif %}
         </div>
     </div>
     <table class="table">
@@ -53,6 +58,9 @@
             <th scope="col">{% trans "SKU" %}</th>
             <th scope="col">{% trans "Product" %}</th>
             <th scope="col">{% trans "Amount" %}</th>
+            {% if transaction.status == "FINAL" %}
+            <th scope="col">{% trans "Alku" %}</th>
+            {% endif %}
             <th scope="col">{% trans "Price" %}</th>
             <th scope="col">{% trans "Total" %}</th>
             <th scope="col">{% trans "Comment" %}</th>
@@ -66,9 +74,12 @@
                 <td><img style="width: 80px; height: auto; vertical-align: middle;" src="/images/{{ item.sku }}.M.jpg"></td>
                 <td>{{ item.sku }}</td>
                 <td>{{ item.name }}</td>
-                <td>{{ item.amount }} kg</td>
-                <td>{{ item.price }} €</td>
-                <td>{{ item.total }} €</td>
+                <td style="white-space: nowrap;">{{ item.amount }} kg</td>
+                {% if item.alku %}
+                <td style="white-space: nowrap;">{{ item.alku }} kg</td>
+                {% endif %}
+                <td style="white-space: nowrap;">{{ item.price }} €</td>
+                <td style="white-space: nowrap;">{{ item.total }} €</td>
                 {% if item.additionalInfo %}
                     <td>{{ item.additionalInfo }}</td>
                 {% else %}
@@ -89,16 +100,23 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td class="fw-bold">{{ transaction.totals.mass }} kg</td>
+                <td class="fw-bold" style="white-space: nowrap;">{{ transaction.totals.mass }} kg</td>
+                {% if transaction.status == "FINAL" %}
+                <td class="fw-bold" style="white-space: nowrap;">{{ transaction.totals.alku }} kg</td>
+                {% endif %}
                 <td></td>
-                <td class="fw-bold">{{ transaction.totals.price }} €</td>
-                <td></td>
+                <td class="fw-bold" style="white-space: nowrap;">{{ transaction.totals.price }} €</td>
                 <td></td>
             </tr>
         </tbody>
     </table>
     {% if transaction.status == "PROGNOSE" and transactionDetails.informations.prognose_info %}
     <p class="mt-2 text-start">{{ transactionDetails.informations.prognose_info }}</p>
+    {% endif %}
+    {% if transaction.status == "FINAL" and transacitonDetails.informations.final_info %}
+    <p class="mt-2 text-start">{{ transactionDetails.informations.final_info }}</p>
+    {% else %}
+    
     {% endif %}
     <a class="btn btn-outline-primary" href="/transactions/{{transaction.uuid}}/change-status/">{% trans "Change status" %}</a>
     <a class="btn btn-outline-secondary" href="/transactions/{{transaction.uuid}}/print/">{% trans "Print" %}</a>
