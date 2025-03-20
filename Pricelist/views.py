@@ -1,3 +1,5 @@
+from http.client import INTERNAL_SERVER_ERROR
+from json import JSONDecodeError
 from math import floor
 from typing import Iterable
 from uuid import UUID
@@ -64,9 +66,12 @@ def _make_api_request(url, method=requests.get, headers=None, body=None):
             json=body,
     )
     try:
-        return response.json(), _api_error_interpreter(response.status_code)
+        if response:
+            return response.json(), _api_error_interpreter(response.status_code)
+    except JSONDecodeError:
+        return response.text, _api_error_interpreter(response.status_code)
     except:
-        return {}, _api_error_interpreter(500)
+        return {}, _api_error_interpreter(INTERNAL_SERVER_ERROR)
 
 
 def favicon():

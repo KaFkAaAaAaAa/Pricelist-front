@@ -21,12 +21,11 @@
         <div class="row text-start"><b class="text-start p-0">{% trans "Status" %}:</b> {% if transaction.status %}{{ transaction.status }} {{ transaction.status_time|date:"d-m-Y H:i" }}{% else %}{% trans "no status" %}{% now "d-m-Y H:i" %}{% endif %}</div>
         <div class="row text-start ">
           <div class="col float-start ps-0">
-                    <a href="/transactions/admin/{{ transaction.uuid }}/add-item/"
-                class="btn btn-sm btn-outline-success mt-2 mb-2"
-              >
-                    {% trans "Add item" %}
-              </a>
-            </div>
+            <a href="/transactions/admin/{{ transaction.uuid }}/add-item/"
+                class="btn btn-sm btn-outline-success mt-2 mb-2">
+                {% trans "Add item" %}
+            </a>
+          </div>
             {% if transaction.status == "PROGNOSE" %}
             <div class="col-md-4 float-end text-end">
                 <h5 class="fw-bold">{% trans "Delivery" %}</h5>

@@ -24,6 +24,7 @@ from Pricelist.views import (
     _price_to_display,
     _price_to_float,
     _price_to_store,
+    _make_api_request,
 )
 from transactions.forms import ItemForm, PrognoseFrom
 
@@ -74,6 +75,31 @@ def _get_stored_item_list_to_display(item_list, key_p="price", key_a="amount") -
 
 def _parse_date(date: str) -> datetime:
     return datetime.fromisoformat(date)
+
+
+def _parse_transaction_edit_items(request):
+    """function parses post parameters in format {field}-{item-uuid}
+    returns item list and alku dictionary {"uuid": value}"""
+    items = {}
+    alku = {}
+    for param in request.POST:
+        if param.find('-') == -1:
+            continue
+        field, uuid = param.split('-', 1)
+        if not (field and uuid):
+            continue
+        if uuid not in items:
+            items[uuid] = {"uuid": uuid}
+        value = request.POST[param]
+        if field == "amount":
+            value = _amount_to_store(value)
+        if field == "price":
+            value = _price_to_store(value)
+        if field == "alku":
+            alku[uuid] = _amount_to_store(value)
+        else:
+            items[uuid][field] = value
+    return list(items.values()), alku
 
 
 def _set_status(transaction) -> dict:
@@ -685,29 +711,10 @@ def create_prognose(request, data, headers):
 def create_final(request, data, headers):
     if request.method == "POST":
         __import__('pdb').set_trace()
-        items = {}
-        alku = {}
-        for param in request.POST:
-            if param.find('-') == -1:
-                continue
-            field, uuid = param.split('-', 1)
-            if not (field and uuid):
-                continue
-            if uuid not in items:
-                items[uuid] = {"uuid": uuid}
-            value = request.POST[param]
-            if field == "amount":
-                value = _amount_to_store(value)
-            if field == "price":
-                value = _price_to_store(value)
-            if field == "alku":
-                alku[uuid] = _amount_to_store(value)
-            else:
-                items[uuid][field] = value
-        payload_items = items.values()
+        items, alku = _parse_transaction_edit_items(request)
         response = requests.put(
             f"{API_BASE_URL}/transactions/admin/{data['transaction_uuid']}/",
-            json={"itemsOrdered": list(payload_items)},
+            json={"itemsOrdered": items},
             headers=headers,
         )
         error = _api_error_interpreter(response.status_code)
@@ -796,3 +803,73 @@ def change_status(request, transaction_uuid):
         return create_final(request, data, headers)
     if status == "FINAL":
         return HttpResponseBadRequest(b"Order has already been finalised")
+
+
+def new_transaction_detail(request, transaction_uuid):
+    # if post -> edit transaction/transaction details
+    token = request.session.get("token")
+    auth = _get_auth(token)
+    if not auth or auth["email"] == "anonymousUser":
+        request.session.flush()
+        return redirect("login")
+    headers = auth["headers"]
+    
+    __import__('pdb').set_trace()
+
+    msg = {}
+
+    admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
+
+    if request.method == "POST":
+        items, alku = _parse_transaction_edit_items(request)
+        payload = {"itemsOrdered": items}
+        response, error = _make_api_request(
+            f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
+            method=requests.put,
+            headers=headers,
+            body=payload,
+        )
+        if error:
+            return error
+
+    transaction, error = _make_api_request(
+        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
+        headers=headers
+    )
+    if error:
+        return error
+
+    transaction = _set_status(transaction)
+    transaction["totals"] = _get_stored_item_list_to_display(
+        transaction["itemsOrdered"],
+    )
+    data = {
+        "transaction": transaction,
+        "msg": msg,
+    }
+    if transaction["status"] in ("PROGNOSE", "FINAL"):
+        transaction_details, error = _make_api_request(
+            f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
+            headers=headers
+        )
+        if error:
+            return error
+
+        if transaction["status"] == "FINAL" and transaction_details["alkuAmount"]:
+            for item in transaction["itemsOrdered"]:
+                try:
+                    item["alku"] = transaction_details["alkuAmount"][item["uuid"]]
+                except KeyError:
+                    continue
+        # with __setitem__ instead of data['transactionDetails']
+        # it doesn't make any warnings
+        data.__setitem__("transactionDetails", transaction_details)
+        # TODO: check if it is needed (it shouldn't be bc data.transaction is
+        # a reference to transaction)
+        data["transaction"] = transaction
+
+    return render(
+        request,
+        "new_transaction_detail.html",
+        data
+    )

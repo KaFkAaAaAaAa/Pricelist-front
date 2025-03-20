@@ -46,10 +46,10 @@
                                 <td>{{ item.sku }}</td>
                                 <td class="text-start">{{ item.name }}</td>
                                 <td>
-                                    <div class="input-group">
+                                    <div class="input-group text-center" style="margin: 0 auto;">
                                         <input id="amount-{{ item.sku }}" name="amount" type="number"
                                                value="{{ item.amount }}" min="0.1" step="0.1"
-                                               class="form-control" style="max-width: 100px; margin: 0 auto;"
+                                               class="form-control" style="max-width: 100px;"
                                                onchange="calculateTotal('{{ item.sku }}')">
                                         <span class="input-group-text">kg<span>
                                     </div>
@@ -57,9 +57,8 @@
                                 <td>
                                     <div class="input-group">
                                         <input id="price-{{ item.sku }}" name="price" type="number" value="{{ item.price }}"
-                                               min="0.1" step="0.01" class="form-control" style="max-width: 100px; margin: 0 auto;"
-                                               onchange="calculateTotal('{{ item.sku }}')">
-                                        <span class="input-group-text">€<span>
+                                               min="0.1" step="0.01" class="form-control" style="max-width: 100px; margin: 0;"
+                                               onchange="calculateTotal('{{ item.sku }}')"><span class="input-group-text">€<span>
                                     </div>
                                 </td>
                                 <td class="text-end" style="white-space: nowrap;"><span id="totalPrice-{{ item.sku }}">{{ item.total }}</span> €</td>

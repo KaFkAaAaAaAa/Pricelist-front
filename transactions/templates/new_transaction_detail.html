@@ -3,7 +3,7 @@
 {% block title %}Transaction{% endblock %}
 {% block content %}
 <div class="container text-center">
-    <form method="post">
+    <form id="edit-form" method="post">
     <div class="container">
         <div class="row text-start float-start">
           <button
@@ -18,18 +18,37 @@
         <div class="row text-start">{{ transaction.client.clientStreet }}</div>
         <div class="row text-start">{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</div>
         <div class="row text-start">{{ transaction.client.clientCountry }}</div>
-        <div class="row text-start"><b class="text-start p-0">{% trans "Status" %}:</b> {% if transaction.status %}{{ transaction.status }} {{ transaction.status_time|date:"d-m-Y H:i" }}{% else %}{% trans "No status" %}{% now "d-m-Y H:i" %}{% endif %} {% trans "changing to FINAL" %}</div>
+        <div class="row text-start"><b class="text-start p-0">{% trans "Status" %}:</b> {% if transaction.status %}{{ transaction.status }} {{ transaction.status_time|date:"d-m-Y H:i" }}{% else %}{% trans "No status" %}{% now "d-m-Y H:i" %}{% endif %}</div>
         <div class="row text-start ">
           <div class="col float-start ps-0">
-                    <a href="/transactions/admin/{{ transaction.uuid }}/add-item/"
-                class="btn btn-sm btn-outline-success mt-2 mb-2"
-              >
+            <a href="/transactions/admin/{{ transaction.uuid }}/add-item/"
+                class="btn btn-sm btn-outline-success mt-2 mb-2">
                     {% trans "Add item" %}
-              </a>
+            </a>
             </div>
+            {% if transaction.status == "PROGNOSE" %}
+            <div class="col-md-4 float-end text-end">
+                <h5 class="fw-bold">{% trans "Delivery" %}</h5>
+                <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Date" %}: </strong>{{ transactionDetails.informations.delivery_date }}</p>
+                <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Price" %}: </strong>{{ transactionDetails.transportCost }} €</p>
+                    {% if transactionDetails.plates %}
+                    <div class="mt-2">
+                    <h6 class="fw-semibold">{% trans "Plates:" %}</h6>
+                    <ul class="list-group list-group-flush">
+                        {% for plate in transactionDetails.plates %}
+                            <li class="list-group-item p-1">{{ plate }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    <p class="mt-2">{{ transactionDetails.informations.delivery_info }}</p>
+                    </div>
+            </div>
+            {% endif %}
+            {% if transaction.status == "FINAL" %}
             <div class="col-md-4 float-end text-end">
                 <p class="mb-2"><strong>{% trans "Delivery date" %}: </strong>{{ transactionDetails.informations.delivery_date }}</p>
             </div>
+            {% endif %}
         </div>
     </div>
     <table class="table">
@@ -39,7 +58,9 @@
             <th scope="col" class="col-xs-2">{% trans "SKU" %}</th>
             <th scope="col">{% trans "Product" %}</th>
             <th scope="col">{% trans "Amount" %}</th>
+            {% if transaction.status == "FINAL" %}
             <th scope="col">{% trans "Alku" %}</th>
+            {% endif %}
             <th scope="col">{% trans "Price" %}</th>
             <th scope="col">{% trans "Total" %}</th>
             <th scope="col">{% trans "Comment" %}</th>
@@ -62,6 +83,7 @@
                             <span class="input-group-text">kg</span>
                         </div>
                     </td>
+                    {% if transaction.status == "FINAL" %}
                     <td>
                         <div class="input-group">
                             <input name="alku-{{ item.uuid }}" id="alku-{{ item.uuid }}" class="form-control"
@@ -70,6 +92,7 @@
                             <span class="input-group-text">kg</span>
                         </div>
                     </td>
+                    {% endif %}
                     <td>
                         <div class="input-group">
                             <input name="price-{{ item.uuid }}" id="price-{{ item.uuid }}" class="form-control"
@@ -100,39 +123,75 @@
                 <td></td>
                 <td></td>
                 <td class="fw-bold" style="white-space: nowrap;"><span id="totalAmount">{{ totals.mass }}</span> kg</td>
-                <td class="fw-bold" style="white-space: nowrap;"><span id="totalAlku"></span> kg</td>
+                {% if transaction.status == "FINAL" %}
+                <td class="fw-bold" style="white-space: nowrap;"><span id="totalAlku"></span></td>
+                {% endif %}
                 <td></td>
                 <td class="fw-bold" style="white-space: nowrap;"><span id="totalPrice">{{ totals.price }}</span> €</td>
                 <td></td>
             </tr>
         </tbody>
     </table>
-    <input class="btn btn-success" type=submit value="{% trans "Save and change to final" %}">
+    <input id="saveButton" class="btn btn-success" style="display: none;" type=submit value="{% trans "Save changes" %}">
+    <a class="btn btn-outline-primary" href="/transactions/{{transaction.uuid}}/change-status/">{% trans "Change status" %}</a>
+    <a class="btn btn-outline-secondary" href="/transactions/{{transaction.uuid}}/print/">{% trans "Print" %}</a>
     </form>
 </div>
 <script>
         function calculateTotal(uuidChanged) {
             let allTotalPrice = 0.0, allTotalAmount = 0.0, allTotalAlku = 0.0;
             let amount = parseFloat(document.getElementById(`amount-${uuidChanged}`).value) || 0;
-            let alku = parseFloat(document.getElementById(`alku-${uuidChanged}`).value) || 0;
             let pricePerKg = parseFloat(document.getElementById(`price-${uuidChanged}`).value) || 0;
+            {% if transaction.status == "FINAL" %}
+            let alku = parseFloat(document.getElementById(`alku-${uuidChanged}`).value) || 0;
             document.getElementById(`total-${uuidChanged}`).textContent = (alku * pricePerKg).toFixed(2);
+            {% else %}
+            document.getElementById(`total-${uuidChanged}`).textContent = (amount * pricePerKg).toFixed(2);
+            {% endif %}
 
             uuids.forEach(uuid => {
                 let amount = parseFloat(document.getElementById(`amount-${uuid}`).value) || 0;
+                {% if transaction.status == "FINAL" %}
                 let alku = parseFloat(document.getElementById(`alku-${uuid}`).value) || 0;
+                {% endif %}
                 let pricePerKg = parseFloat(document.getElementById(`price-${uuid}`).value) || 0;
+                {% if transaction.status == "FINAL" %}
                 allTotalPrice += alku * pricePerKg;
                 allTotalAlku += alku
+                {% else %}
+                allTotalPrice += amount * pricePerKg;
+                {% endif %}
                 allTotalAmount += amount;
             });
 
             document.getElementById(`totalPrice`).textContent = allTotalPrice.toFixed(2);
             document.getElementById(`totalAmount`).textContent = allTotalAmount.toFixed(1);
+            {% if transaction.status == "FINAL" %}
             document.getElementById(`totalAlku`).textContent = allTotalAlku.toFixed(1);
+            {% endif %}
         }
 
         const uuids = [{% for item in transaction.itemsOrdered %}"{{ item.uuid }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
         window.onload = () => uuids.forEach(uuid => calculateTotal(uuid));
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const inputs = document.querySelectorAll("input, textarea");
+            const saveButton = document.getElementById("saveButton");
+            const form = document.getElementById("edit-form");
+
+            inputs.forEach(input => {
+                input.addEventListener("input", () => {
+                    saveButton.style.display = "inline-block";
+                });
+            });
+
+            form.addEventListener("submit", function (event) {
+                if (!confirm("{% trans "Are you sure you want to save changes?" %}")) {
+                    event.preventDefault();
+                }
+            });
+        });
+
+
 </script>
 {% endblock %}
