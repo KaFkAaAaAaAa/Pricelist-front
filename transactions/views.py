@@ -21,10 +21,10 @@ from Pricelist.views import (
     _amount_to_store,
     _api_error_interpreter,
     _get_auth,
+    _make_api_request,
     _price_to_display,
     _price_to_float,
     _price_to_store,
-    _make_api_request,
 )
 from transactions.forms import ItemForm, PrognoseFrom
 
@@ -83,9 +83,9 @@ def _parse_transaction_edit_items(request):
     items = {}
     alku = {}
     for param in request.POST:
-        if param.find('-') == -1:
+        if param.find("-") == -1:
             continue
-        field, uuid = param.split('-', 1)
+        field, uuid = param.split("-", 1)
         if not (field and uuid):
             continue
         if uuid not in items:
@@ -710,7 +710,6 @@ def create_prognose(request, data, headers):
 
 def create_final(request, data, headers):
     if request.method == "POST":
-        __import__('pdb').set_trace()
         items, alku = _parse_transaction_edit_items(request)
         response = requests.put(
             f"{API_BASE_URL}/transactions/admin/{data['transaction_uuid']}/",
@@ -813,8 +812,6 @@ def new_transaction_detail(request, transaction_uuid):
         request.session.flush()
         return redirect("login")
     headers = auth["headers"]
-    
-    __import__('pdb').set_trace()
 
     msg = {}
 
@@ -833,8 +830,7 @@ def new_transaction_detail(request, transaction_uuid):
             return error
 
     transaction, error = _make_api_request(
-        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
-        headers=headers
+        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/", headers=headers
     )
     if error:
         return error
@@ -850,7 +846,7 @@ def new_transaction_detail(request, transaction_uuid):
     if transaction["status"] in ("PROGNOSE", "FINAL"):
         transaction_details, error = _make_api_request(
             f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
-            headers=headers
+            headers=headers,
         )
         if error:
             return error
@@ -868,8 +864,4 @@ def new_transaction_detail(request, transaction_uuid):
         # a reference to transaction)
         data["transaction"] = transaction
 
-    return render(
-        request,
-        "new_transaction_detail.html",
-        data
-    )
+    return render(request, "new_transaction_detail.html", data)
