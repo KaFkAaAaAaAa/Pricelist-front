@@ -652,8 +652,9 @@ def delete_transaction(request, transaction_uuid):
 def create_offer(request, data, headers):
     if "user" in request.session["logged_user"].keys():
         return HttpResponseForbidden()
+    uuid = data["transaction_uuid"]
     response = requests.get(
-        f"{API_BASE_URL}/transactions/admin/{data['transaction_uuid']}/update-status/?status=offer",
+        f"{API_BASE_URL}/transactions/admin/{uuid}/update-status/?status=offer",
         headers=headers,
     )
     error = _api_error_interpreter(response.status_code)
@@ -686,8 +687,9 @@ def create_prognose(request, data, headers):
                     "delivery_date": str(form.cleaned_data["delivery_date"]),
                 },
             }
+            uuid = data["transaction_uuid"]
             response = requests.post(
-                f"{API_BASE_URL}/transaction-details/admin/{data["transaction_uuid"]}/",
+                f"{API_BASE_URL}/transaction-details/admin/{uuid}/",
                 headers=headers,
                 json=payload,
             )
@@ -695,7 +697,7 @@ def create_prognose(request, data, headers):
             if error:
                 return error
             response = requests.get(
-                f"{API_BASE_URL}/transactions/admin/{data['transaction_uuid']}/update-status/?status=prognose",
+                f"{API_BASE_URL}/transactions/admin/{uuid}/update-status/?status=prognose",
                 headers=headers,
             )
             error = _api_error_interpreter(response.status_code)
@@ -709,10 +711,11 @@ def create_prognose(request, data, headers):
 
 
 def create_final(request, data, headers):
+    uuid = data["transaction_uuid"]
     if request.method == "POST":
         items, alku = _parse_transaction_edit_items(request)
         response = requests.put(
-            f"{API_BASE_URL}/transactions/admin/{data['transaction_uuid']}/",
+            f"{API_BASE_URL}/transactions/admin/{uuid}/",
             json={"itemsOrdered": items},
             headers=headers,
         )
@@ -721,7 +724,7 @@ def create_final(request, data, headers):
             return error
 
         response = requests.put(
-            f"{API_BASE_URL}/transaction-details/admin/{data['transaction_uuid']}/",
+            f"{API_BASE_URL}/transaction-details/admin/{uuid}/",
             json={"alkuAmount": alku},
             headers=headers,
         )
@@ -730,7 +733,7 @@ def create_final(request, data, headers):
             return error
 
         response = requests.get(
-            f"{API_BASE_URL}/transactions/admin/{data['transaction_uuid']}/update-status/?status=final",
+            f"{API_BASE_URL}/transactions/admin/{uuid}/update-status/?status=final",
             headers=headers,
         )
         error = _api_error_interpreter(response.status_code)
@@ -739,7 +742,7 @@ def create_final(request, data, headers):
         return redirect("admin_transaction_detail", data["transaction_uuid"])
 
     response = requests.get(
-        f"{API_BASE_URL}/transaction-details/admin/{data["transaction_uuid"]}/",
+        f"{API_BASE_URL}/transaction-details/admin/{uuid}/",
         headers=headers,
     )
     error = _api_error_interpreter(response.status_code)
