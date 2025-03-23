@@ -68,7 +68,7 @@
             {% endif %}
             <th scope="col">{% trans "Price" %}</th>
             {% if transaction.status == "PROGNOSE" %}
-            <th scope="col">{% trans "with Transport" %}</th>
+            <th scope="col">{% trans "With transport" %}</th>
             {% endif %}
             <th scope="col">{% trans "Total" %}</th>
             <th scope="col">{% trans "Comment" %}</th>
@@ -192,7 +192,7 @@
                 transportPerKg = transport / allTotalAmount
                 transportPercent = transport / allTotalPrice
             uuids.forEach(uuid => {
-                document.getElementById(`priceWithTransport-${uuidChanged}`).textContent = (pricePerKg * transportPerKg).toFixed(2);
+                document.getElementById(`priceWithTransport-${uuidChanged}`).textContent = (pricePerKg + pricePerKg * transportPerKg).toFixed(2);
             });
             document.getElementById(`totalTransportIncluded`).textContent = (allTotalPrice + transport).toFixed(2);
             document.getElementById(`transportPerKg`).textContent = transportPerKg.toFixed(2);
