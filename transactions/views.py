@@ -568,6 +568,7 @@ def print_transaciton(request, transaction_uuid):
 
     admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
 
+    __import__("pdb").set_trace()
     response = requests.get(
         f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
         headers=headers,
@@ -581,21 +582,8 @@ def print_transaciton(request, transaction_uuid):
     totals = _get_stored_item_list_to_display(transaction["itemsOrdered"])
     transaction = _set_status(transaction)
 
-    if admin_url:
-        response_client = requests.get(
-            f"{API_BASE_URL}/clients/{admin_url}{transaction['clientId']}/",
-            headers=headers,
-        )
-    else:
-        response_client = request.session["logged_user"]
-
-    error = _api_error_interpreter(response_client.status_code)
-    if error:
-        return error
-
     data = {
-        "items": transaction["itemsOrdered"],
-        "client": response_client.json(),
+        "transaction": transaction,
         "total": totals,
         "date": transaction["status_time"],
     }
@@ -604,10 +592,16 @@ def print_transaciton(request, transaction_uuid):
 
     if status == "OFFER":
         return print_offer(request, data)
+    data["transactionDetails"], error = _make_api_request(
+        f"{API_BASE_URL}/transaction-details/{admin_url}{transaction_uuid}/",
+        headers=headers,
+    )
+    if error:
+        return error
     if status == "PROGNOSE":
-        return print_prognose(data)
+        return print_prognose(request, data)
     if status == "FINAL":
-        return print_final(data)
+        return print_final(request, data)
     if status == "PROPOSITION":
         return HttpResponseBadRequest(b"Proposition cannot be printed")
 
@@ -618,12 +612,17 @@ def print_offer(request, data):
     return generate_pdf(request, "pdf_offer.html", data)
 
 
-def print_prognose(data):
-    pass
+def print_prognose(request, data):
+    transport = data["transactionDetails"]["transportCost"]
+    data["transport"]["transportPerKg"] = transport / data["total"]["mass"]
+    data["transport"]["transportPercent"] = transport / data["total"]["mass"]
+    for item in data["transaction"]["itemsOrdered"]:
+        item["price_per_kg"] = item["price"] + item["price"] * data["transportPerKg"]
+    return generate_pdf(request, "pdf_prognose.html", data)
 
 
-def print_final(data):
-    pass
+def print_final(request, data):
+    return generate_pdf(request, "pdf_final.html", data)
 
 
 def delete_transaction(request, transaction_uuid):

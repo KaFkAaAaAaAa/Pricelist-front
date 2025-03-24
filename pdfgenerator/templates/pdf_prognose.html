@@ -14,10 +14,10 @@
 <div class="container-fluid">
     <div class="row my-2">
         <div class="col-9">
-            <img src="{% static 'images/alku-logo-2013-10-17.jpg' %}" alt="ALKU-GMBH" class="img"/>
+            <img src="{{ images_root }}/images/alku-logo-2013-10-17.jpg" alt="ALKU-GMBH" class="img"/>
         </div>
         <div class="col-3 pe-2">
-            <h1>Prognosis</h1>
+            <h1>Prognose</h1>
         </div>
     </div>
 </div>
@@ -25,25 +25,27 @@
 <div class="container mt-3">
     <div class="row">
         <div class="col-6">
-            <h4>{{ u.clientCompanyName }}</h4>
-            <h4>{{ u.clientStreet }}</h4>
-            <h4>{{ u.clientCode }}</h4>
-            <h4>{{ u.clientCity }}</h4>
-            <h4>{{ u.clientCountry }}</h4>
+            <h4>{{ transaction.client.clientCompanyName }}</h4>
+            <h4>{{ transaction.client.clientStreet }}</h4>
+            <h4>{{ transaction.client.clientCode }}</h4>
+            <h4>{{ transaction.client.clientCity }}</h4>
+            <h4>{{ transaction.client.clientCountry }}</h4>
         </div>
         <div class="col-6 text-end">
             {# TODO: add delivery date render #}
             <h3 class="fw-semibold">Delivery date:</h3>
-            {# TODO: add collaboration render #}
-            <h3 class="fw-semibold">Together with:</h3>
+            <p>{{ transactionDetails.informations.delivery_date}}</p>
+            {# <h3 class="fw-semibold">Together with:</h3> #}
+            <p>{{ transactionDetails.informations.delivery_info}}</p>
             <div class="row text-center">
                 <div class="col-6">
 
                 </div>
                 <div class="col-6 text-center mt-4">
                     <h4>Plates</h4>
-                    <p style="border: 1px solid black">🇵🇱 DW 2345</p>
-                    <p style="border: 1px solid black">🇵🇱 DX 3343</p>
+                    {% for plate in transactionDetails.plates %}
+                        <p style="border: 1px solid black">{{ plate }}</p>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -51,36 +53,39 @@
 
     <div class="row mt-5">
         <div class="col-6">
-            <h5 class="head"><strong>Shipping costs:</strong> <b>€1,200</b></h5>
-            <h5 class="head"><strong>Transport cost per kg:</strong> <b>€0.114</b></h5>
-            <h5 class="head"><strong>Transport costs as a percentage of delivery value:</strong> <b>0.354%</b></h5>
+                    <h5 class="head"><strong>{% trans "Shipping costs" %}:</strong> <b>{{ transactionDetails.transportCost }} €</b></h5>
+            <h5 class="head"><strong>{% trans "Transport cost per kg" %}:</strong> <b></b></h5>
+            <h5 class="head"><strong>{% trans "Transport costs as a percentage of delivery value" %}:</strong> <b>%</b></h5>
         </div>
     </div>
 
     <div class="text-end mt-4">
-        <h4 class="fw-semibold">Offer from {% now "d-m-Y" %}</h4>
+        <h4 class="fw-semibold">{% trans "Offer from" %} {% now "d-m-Y" %}</h4>
     </div>
 
     <table class="table table-bordered mt-2 mb-3 table-striped">
         <thead>
         <tr>
-            <th scope="col">{# TODO: add rendering photos here #}</th>
+            <th scope="col"></th>
             <th scope="col">{% trans "SKU" %}</th>
             <th scope="col">{% trans "Product" %}</th>
             <th scope="col">{% trans "Amount" %}</th>
             <th scope="col">{% trans "Price" %}</th>
-            <th scope="col">Price with Transport</th>
+            <th scope="col">{% trans "With transport" %}</th>
             <th scope="col">{% trans "Sum" %}</th>
         </tr>
         </thead>
         <tbody>
-        {% for item in items %}
+        {% for item in transaction.itemsOrdered %}
             <tr>
-                <td></td>
+                <td>
+                    <img src="{{ base_url }}/images/{{ item.sku }}.M.jpg" alt="" class="img"
+                        style="width: 60px; height: auto; vertical-align: middle;"/>
+                </td>
                 <td>{{ item.sku }}</td>
                 <td>{{ item.name }}</td>
-                <td>{{ item.amount }}</td>
-                <td>{{ item.price }}</td>
+                <td>{{ item.amount }} kg</td>
+                <td>{{ item.price }} €</td>
                 <td>{# TODO: add counting price with transport function #}</td>
                 <td>{{ item.sum|floatformat:2 }}</td>
             </tr>
@@ -89,20 +94,19 @@
     </table>
 
     <div>
-        <p class="paragraph">Shipping costs are covered by the buyer</p>
-        <p class="paragraph">Payment deadline - 7 business days from delivery</p>
+        {{ transactionDetails.informations.prognose_info }}
     </div>
 
     <hr>
     <div class="row my-2">
         {# TODO: add all the counting functions to the headers below #}
         <div class="col-6">
-            <h5><b>Declared weight:</b></h5>
-            <h5><b>Final weight:</b></h5>
+            <h5><b>{% trans "Declared weight" %}:</b></h5>
+            <h5><b>{% trans "Final weight" %}:</b></h5>
         </div>
         <div class="col-6">
-            <h5><b>Delivery value:</b></h5>
-            <h5><b>Delivery value incl. transport costs:</b></h5>
+            <h5><b>{% trans "Delivery value" %}:</b></h5>
+            <h5><b>{% trans "Delivery value incl. transport costs" %}:</b></h5>
         </div>
     </div>
     <hr>
