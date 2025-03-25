@@ -819,7 +819,6 @@ def change_status(request, transaction_uuid):
 
 
 def new_transaction_detail(request, transaction_uuid):
-    # if post -> edit transaction/transaction details
     token = request.session.get("token")
     auth = _get_auth(token)
     if not auth or auth["email"] == "anonymousUser":
@@ -832,6 +831,7 @@ def new_transaction_detail(request, transaction_uuid):
     admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
 
     if request.method == "POST":
+        __import__("pdb").set_trace()
         items, alku = _parse_transaction_edit_items(request)
         payload = {"itemsOrdered": items}
         response, error = _make_api_request(
@@ -840,6 +840,24 @@ def new_transaction_detail(request, transaction_uuid):
             headers=headers,
             body=payload,
         )
+        if request.POST["plates_list"]:
+            payload = {
+                "informations": {
+                    "delivery_date": "2025-03-28",
+                    "delivery_info": request.POST["delivery_info"],
+                    "prognose_info": request.POST["prognose_info"],
+                },
+                "transportCost": request.POST["transport"],
+                "plates": request.POST["plates_list"].split(","),
+            }
+            response, error = _make_api_request(
+                f"{API_BASE_URL}/transaction-details/{admin_url}{transaction_uuid}/",
+                method=requests.put,
+                headers=headers,
+                body=payload,
+            )
+            if error:
+                return error
         if alku:
             payload = {"alkuAmount": alku}
             response, error = _make_api_request(
@@ -883,7 +901,8 @@ def new_transaction_detail(request, transaction_uuid):
                     continue
         # with __setitem__ instead of data['transactionDetails']
         # it doesn't make any warnings
-        data.__setitem__("transactionDetails", transaction_details)
+        # data.__setitem__("transactionDetails", transaction_details)
+        data["transactionDetails"] = transaction_details
         # TODO: check if it is needed (it shouldn't be bc data.transaction is
         # a reference to transaction)
         data["transaction"] = transaction

@@ -35,17 +35,23 @@
             <div class="col-md-4 float-end text-end">
                 <h5 class="fw-bold">{% trans "Delivery" %}</h5>
                 <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Date" %}: </strong>{{ transactionDetails.informations.delivery_date }}</p>
-                <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Price" %}: </strong><span id="transport">{{ transactionDetails.transportCost }}</span> €</p>
-                    {% if transactionDetails.plates %}
+                <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Price" %}: </strong>
+                        <div class="input-group">
+                            <input name="transport"  id="transport" class="form-control"
+                                type="number" min="1" step="1" value="{{ transactionDetails.transportCost }}"
+                                onchange="uuids.forEach(uuid => calculateTotal(uuid));"/>
+                            <span class="input-group-text">€</span>
+                        </div>
                     <div class="mt-2">
                     <h6 class="fw-semibold">{% trans "Plates:" %}</h6>
-                    <ul class="list-group list-group-flush">
-                        {% for plate in transactionDetails.plates %}
-                            <li class="list-group-item p-1">{{ plate }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                    <p class="mt-2">{{ transactionDetails.informations.delivery_info }}</p>
+                    <div id="plate-list" class="mb-3"></div>
+                    <input type="hidden" name="plates_list" id="id_plates_list" />
+                    <div class="d-flex gap-2">
+                        <input type="text" class="form-control flex-grow-1" id="plate-input" placeholder="Enter a plate" />
+                        <button class="btn btn-outline-secondary" id="add-btn">Add</button>
+                    </div>
+                        <label for="delivery_info" class="form-label mt-3">{% trans "Delivery info" %}:</label>
+                    <input name="delivery_info"  id="delivery_info" class="form-control" type="text" value="{{ transactionDetails.informations.delivery_info }}"/>
                     </div>
             </div>
             {% endif %}
@@ -113,14 +119,17 @@
                     <td><span style="white-space: nowrap;" id="priceWithTransport-{{ item.uuid }}"></span> €</td>
                     {% endif %}
                     <td style="white-space: nowrap;"><span id="total-{{ item.uuid }}">{{ item.total }}</span> €</td>
+                    <input type="hidden" name="additionalInfo-{{ item.uuid }}" id="additionalInfo-{{ item.uuid }}" value="{{ item.additionalInfo }}"/>
                     {% if item.additionalInfo %}
-                    <td id="additionalInfo-{{ item.uuid }}">{{ item.additionalInfo }}</td>
+                    <td>{{ item.additionalInfo }}</td>
                     {% else %}
                         <td></td>
                     {% endif %}
                     <td>
-                        <a class="btn btn-outline-secondary" href="/transactions/admin/{{transaction.uuid}}/{{item.uuid}}/edit/">Edit</a>
-                        <a class="btn btn-outline-danger" onclick="event.stopPropagation(); return confirm('{% trans "Are you sure you want to delete this item?" %}');" href="/transactions/admin/{{transaction.uuid}}/{{item.uuid}}/delete/">{% trans "Delete" %}</a>
+                        <div class="d-grid gap-1">
+                            <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-target="#commentModal" data-bs-toggle="modal" data-bs-uuid="{{item.uuid}}">{% trans "Add comment" %}</button>
+                            <a class="btn btn-outline-danger btn-sm" onclick="event.stopPropagation(); return confirm('{% trans "Are you sure you want to delete this item?" %}');" href="/transactions/admin/{{transaction.uuid}}/{{item.uuid}}/delete/">{% trans "Delete" %}</a>
+                        </div>
                     </td>
                 </tr>
             {% endfor %}
@@ -135,7 +144,7 @@
                 <td></td>
                 <td class="fw-bold" style="white-space: nowrap;"><span id="totalAmount">{{ totals.mass }}</span> kg</td>
                 {% if transaction.status == "FINAL" %}
-                <td class="fw-bold" style="white-space: nowrap;"><span id="totalAlku"></span></td>
+                <td class="fw-bold" style="white-space: nowrap;"><span id="totalAlku"></span> kg</td>
                 {% endif %}
                 <td></td>
                 {% if transaction.status == "PROGNOSE" %}
@@ -147,17 +156,37 @@
             </tr>
         </tbody>
     </table>
+        <label for="prognose_info" class="form-label">{% trans "Prognose bottom text" %}:</label>
+        <textarea class="form-control mb-3" id="prognose_info" name="prognose_info">{{ transactionDetails.informations.prognose_info }}</textarea>
     <input id="saveButton" class="btn btn-success" style="display: none;" type=submit value="{% trans "Save changes" %}">
     <a class="btn btn-outline-primary" href="/transactions/{{transaction.uuid}}/change-status/">{% trans "Change status" %}</a>
-    <a class="btn btn-outline-secondary" href="/transactions/{{transaction.uuid}}/print/">{% trans "Print" %}</a>
+    <a class="btn btn-outline-secondary" href="/transactions/{{transaction.uuid}}/print/" target="_blank">{% trans "Print" %}</a>
     </form>
+</div>
+<div class="modal" id="commentModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{% trans "Add comment" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <label for="comment">{% trans "Comment" %}:</label>
+        <input type="text" class="form-control" id="comment"/>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+        <button type="button" class="btn btn-primary" id="modalSaveButton">{% trans "Save changes" %}</button>
+      </div>
+    </div>
+  </div>
 </div>
 <script>
         function calculateTotal(uuidChanged) {
             let allTotalPrice = 0.0, allTotalAmount = 0.0, allTotalAlku = 0.0;
             {% if transaction.status == "PROGNOSE" %}
             let totalWithTransport = 0.0, transportPerKg = 0.0, transportPercent = 0.0;
-            let transport = parseFloat(document.getElementById("transport").textContent)
+            let transport = parseFloat(document.getElementById("transport").value)
             {% endif %}
             let amount = parseFloat(document.getElementById(`amount-${uuidChanged}`).value) || 0;
             let pricePerKg = parseFloat(document.getElementById(`price-${uuidChanged}`).value) || 0;
@@ -200,25 +229,103 @@
             {% endif %}
         }
 
-        const uuids = [{% for item in transaction.itemsOrdered %}"{{ item.uuid }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
-        window.onload = () => uuids.forEach(uuid => calculateTotal(uuid));
+        function updateHiddenInput() {
+            platesPostParam.value = platesArray.join(",");
+        }
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const inputs = document.querySelectorAll("input, textarea");
-            const saveButton = document.getElementById("saveButton");
-            const form = document.getElementById("edit-form");
+        function addPlate(value) {
+                platesArray.push(value);
+                updateHiddenInput();
 
-            inputs.forEach(input => {
-                input.addEventListener("input", () => {
+                const listItem = document.createElement("div");
+                listItem.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center", "ps-2" );
+
+                const textSpan = document.createElement("span");
+                textSpan.textContent = value;
+                textSpan.classList.add("fw-bold")
+
+                const removeBtn = document.createElement("button");
+                removeBtn.textContent = "Remove";
+                removeBtn.classList.add("btn", "btn-outline-danger", "btn-sm");
+                removeBtn.addEventListener("click", function () {
+                    platesArray = platesArray.filter((item) => item !== value);
+                    updateHiddenInput();
+                    listContainer.removeChild(listItem);
                     saveButton.style.display = "inline-block";
                 });
-            });
 
-            form.addEventListener("submit", function (event) {
-                if (!confirm("{% trans "Are you sure you want to save changes?" %}")) {
-                    event.preventDefault();
+                listItem.appendChild(textSpan);
+                listItem.appendChild(removeBtn);
+                listContainer.appendChild(listItem);
+                inputField.value = "";
+        }
+
+        const uuids = [{% for item in transaction.itemsOrdered %}"{{ item.uuid }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+
+        const inputField = document.getElementById("plate-input");
+        const addButton = document.getElementById("add-btn");
+        const listContainer = document.getElementById("plate-list");
+        const platesPostParam = document.getElementById("id_plates_list");
+        const initPlates = [{% for plate in transactionDetails.plates %}"{{ plate }}"{% if not forloop.last %}, {% endif %}{% endfor %}]
+
+        const commentModal = document.getElementById('commentModal');
+        let uuid = null;
+        if (commentModal) {
+            commentModal.addEventListener('show.bs.modal', event => {
+                const button = event.relatedTarget;
+                uuid = button.getAttribute('data-bs-uuid');
+
+                const inputComment = document.getElementById(`additionalInfo-${uuid}`); 
+                const commentInput = document.getElementById('comment');
+                if (inputComment) {
+                    commentInput.value = inputComment.value;
                 }
             });
+        }
+        const modalSaveButton = document.getElementById('modalSaveButton');
+
+        modalSaveButton.addEventListener("click", event => {
+            event.preventDefault();
+            if (!uuid) return;
+            const inputComment = document.getElementById(`additionalInfo-${uuid}`); 
+            if (inputComment) {
+                inputComment.value = document.getElementById('comment').value;
+            }
+            const modal = bootstrap.Modal.getInstance(commentModal);
+            modal.hide();
+        });
+
+        window.onload = () => uuids.forEach(uuid => calculateTotal(uuid));
+
+        let platesArray = [];
+
+        initPlates.forEach(plate => {
+            addPlate(plate);
+        });
+
+        const inputs = document.querySelectorAll("input, textarea");
+        const saveButton = document.getElementById("saveButton");
+        const form = document.getElementById("edit-form");
+
+        inputs.forEach(input => {
+            input.addEventListener("input", () => {
+                saveButton.style.display = "inline-block";
+            });
+        });
+
+        form.addEventListener("submit", function (event) {
+            if (!confirm("{% trans "Are you sure you want to save changes?" %}")) {
+                event.preventDefault();
+            }
+        });
+
+        addButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            const value = inputField.value.trim();
+
+            if (value) {
+                addPlate(value);
+            }
         });
 
 

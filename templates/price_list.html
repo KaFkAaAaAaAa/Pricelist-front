@@ -80,13 +80,12 @@
                                                 onclick="window.location.href='/item/{{ item.sku }}/';">
                                                 {{ item.price_pln }} zł
                                             </td>
-                                        {% else %}
-                                            <td class="text-end fw-semibold flex-shrink-0 align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}"
-                                                style="font-size: 20px; width: 120px; vertical-align: middle;"
-                                                onclick="window.location.href='/item/{{ item.sku }}/';">
-                                                {{ item.price }} €
-                                            </td>
                                         {% endif %}
+                                        <td class="text-end fw-semibold flex-shrink-0 align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}"
+                                            style="font-size: 20px; width: 120px; vertical-align: middle;"
+                                            onclick="window.location.href='/item/{{ item.sku }}/';">
+                                            {{ item.price }} €
+                                        </td>
                                     </tr>
                                 {% endfor %}
                             {% endif %}
