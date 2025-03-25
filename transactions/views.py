@@ -568,7 +568,6 @@ def print_transaciton(request, transaction_uuid):
 
     admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
 
-    __import__("pdb").set_trace()
     response = requests.get(
         f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
         headers=headers,
@@ -614,14 +613,27 @@ def print_offer(request, data):
 
 def print_prognose(request, data):
     transport = data["transactionDetails"]["transportCost"]
-    data["transport"]["transportPerKg"] = transport / data["total"]["mass"]
-    data["transport"]["transportPercent"] = transport / data["total"]["mass"]
+    total_amount = float(data["total"]["mass"])
+    total_price = float(data["total"]["price"])
+    data["transport"] = {}
+    data["transport"]["transportPerKg"] = transport / total_amount
+    data["transport"]["transportPercent"] = transport / total_price * 100
     for item in data["transaction"]["itemsOrdered"]:
-        item["price_per_kg"] = item["price"] + item["price"] * data["transportPerKg"]
+        item["price_per_kg"] = float(item["price"]) * (
+            1 + data["transport"]["transportPerKg"]
+        )
+        item["price_per_kg"] = item["price_per_kg"]
+    data["total"]["wTransport"] = transport + total_price
     return generate_pdf(request, "pdf_prognose.html", data)
 
 
 def print_final(request, data):
+    data["total"]["alku"] = 0
+    for item in data["transaction"]["itemsOrdered"]:
+        item["alku"] = _amount_to_float(
+            data["transactionDetails"]["alkuAmount"][item["uuid"]]
+        )
+        data["total"]["alku"] += item["alku"]
     return generate_pdf(request, "pdf_final.html", data)
 
 
@@ -829,7 +841,6 @@ def new_transaction_detail(request, transaction_uuid):
             body=payload,
         )
         if alku:
-            __import__("pdb").set_trace()
             payload = {"alkuAmount": alku}
             response, error = _make_api_request(
                 f"{API_BASE_URL}/transaction-details/{admin_url}{transaction_uuid}/",
@@ -865,7 +876,9 @@ def new_transaction_detail(request, transaction_uuid):
         if transaction["status"] == "FINAL" and transaction_details["alkuAmount"]:
             for item in transaction["itemsOrdered"]:
                 try:
-                    item["alku"] = transaction_details["alkuAmount"][item["uuid"]]
+                    item["alku"] = _amount_to_display(
+                        transaction_details["alkuAmount"][item["uuid"]]
+                    )
                 except KeyError:
                     continue
         # with __setitem__ instead of data['transactionDetails']

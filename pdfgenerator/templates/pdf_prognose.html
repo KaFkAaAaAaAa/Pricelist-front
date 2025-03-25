@@ -4,9 +4,6 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'css/pdf.css' %}">
     <title>{% block title %}document{% endblock %}</title>
     {% load i18n %}
 </head>
@@ -32,20 +29,20 @@
             <h4>{{ transaction.client.clientCountry }}</h4>
         </div>
         <div class="col-6 text-end">
-            {# TODO: add delivery date render #}
             <h3 class="fw-semibold">Delivery date:</h3>
             <p>{{ transactionDetails.informations.delivery_date}}</p>
-            {# <h3 class="fw-semibold">Together with:</h3> #}
             <p>{{ transactionDetails.informations.delivery_info}}</p>
             <div class="row text-center">
                 <div class="col-6">
 
                 </div>
                 <div class="col-6 text-center mt-4">
+                    {% if transactionDetails.plates %}
                     <h4>Plates</h4>
                     {% for plate in transactionDetails.plates %}
                         <p style="border: 1px solid black">{{ plate }}</p>
                     {% endfor %}
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -53,41 +50,41 @@
 
     <div class="row mt-5">
         <div class="col-6">
-                    <h5 class="head"><strong>{% trans "Shipping costs" %}:</strong> <b>{{ transactionDetails.transportCost }} €</b></h5>
-            <h5 class="head"><strong>{% trans "Transport cost per kg" %}:</strong> <b></b></h5>
-            <h5 class="head"><strong>{% trans "Transport costs as a percentage of delivery value" %}:</strong> <b>%</b></h5>
+            <p class="head"><strong>{% trans "Shipping costs" %}:</strong> <b class="unit">{{ transactionDetails.transportCost|floatformat:2 }} €</b></p>
+            <p class="head"><strong>{% trans "Transport cost per kg" %}:</strong> <b class="unit">{{ transport.transportPerKg|floatformat:2 }} €</b></p>
+            <p class="head"><strong>{% trans "Transport costs as a percentage of delivery value" %}:</strong> <b class="unit">{{ transport.transportPerKg|floatformat:2 }}%</b></p>
         </div>
     </div>
 
     <div class="text-end mt-4">
-        <h4 class="fw-semibold">{% trans "Offer from" %} {% now "d-m-Y" %}</h4>
+            <h4 class="fw-semibold">{% trans "Prognose of " %}{{ date|date:"d-m-Y H:i" }}</h4>
     </div>
 
     <table class="table table-bordered mt-2 mb-3 table-striped">
         <thead>
-        <tr>
+        <tr class="text-center">
             <th scope="col"></th>
             <th scope="col">{% trans "SKU" %}</th>
             <th scope="col">{% trans "Product" %}</th>
             <th scope="col">{% trans "Amount" %}</th>
             <th scope="col">{% trans "Price" %}</th>
             <th scope="col">{% trans "With transport" %}</th>
-            <th scope="col">{% trans "Sum" %}</th>
+            <th scope="col">{% trans "Total" %}</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody class="text-center">
         {% for item in transaction.itemsOrdered %}
             <tr>
                 <td>
-                    <img src="{{ base_url }}/images/{{ item.sku }}.M.jpg" alt="" class="img"
-                        style="width: 60px; height: auto; vertical-align: middle;"/>
+                    <img class="py-1" src="{{ base_url }}/images/{{ item.sku }}.M.jpg" alt="" class="img"
+                        style="width: 50px; height: auto; vertical-align: middle;"/>
                 </td>
                 <td>{{ item.sku }}</td>
                 <td>{{ item.name }}</td>
-                <td>{{ item.amount }} kg</td>
-                <td>{{ item.price }} €</td>
-                <td>{# TODO: add counting price with transport function #}</td>
-                <td>{{ item.sum|floatformat:2 }}</td>
+                <td class="unit text-end">{{ item.amount }} kg</td>
+                <td class="unit text-end">{{ item.price }} €</td>
+                <td class="unit text-end">{{ item.price_per_kg|floatformat:2 }} €</td>
+                <td class="unit text-end">{{ item.total|floatformat:2 }} €</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -98,38 +95,23 @@
     </div>
 
     <hr>
-    <div class="row my-2">
-        {# TODO: add all the counting functions to the headers below #}
-        <div class="col-6">
-            <h5><b>{% trans "Declared weight" %}:</b></h5>
-            <h5><b>{% trans "Final weight" %}:</b></h5>
-        </div>
-        <div class="col-6">
-            <h5><b>{% trans "Delivery value" %}:</b></h5>
-            <h5><b>{% trans "Delivery value incl. transport costs" %}:</b></h5>
-        </div>
-    </div>
-    <hr>
-    <div class="row">
-        <div class="col-12">
-            <p class="text-center">ALKU GmbH Hans-Böckler-Straße 6 93142 Maxhütte-Haidhof Deutschland</p>
-        </div>
-    </div>
-    <div class="row text-center">
+    <div class="row my-2 fs-6">
         <div class="col-4">
-            <p><strong>E-mail:</strong> pawel.zubrzycki@alku-gmbh.de</p>
+            <p class="unit"><b>{% trans "Declared weight" %}: </b></p>
+        </div>
+        <div class="col-2">
+            <p class="text-end pe-2">{{ total.mass }} kg</p>
         </div>
         <div class="col-4">
-            <p><strong>Tel:</strong> +49 151 21402684</p>
+                    <p class="unit"><b>{% trans "Delivery value" %}: </b></p>
+                    <p><b>{% trans "Delivery value incl. transport costs" %}: </b> </p>
         </div>
-        <div class="col-4">
-            <p><strong>Fax:</strong> +49 9471 60194 20</p>
+        <div class="col-2">
+            <p class="text-end pe-1">{{ total.price }} €</p>
+            <p class="text-end pe-1 align-text-bottom"><span class="unit">{{ total.wTransport|floatformat:2 }} €</span></p>
         </div>
     </div>
+    {% include "pdf_footer.html" %}
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
 </body>
 </html>

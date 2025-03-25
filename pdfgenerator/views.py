@@ -4,9 +4,10 @@ import tempfile
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
-from weasyprint import HTML
+from weasyprint import CSS, HTML
+from weasyprint.text.fonts import FontConfiguration
 
-from Pricelist.settings import BASE_DIR
+from Pricelist.settings import BASE_DIR, STATICFILES_DIRS
 
 # Create your views here.
 
@@ -133,10 +134,21 @@ def generate_pdf(request, template, data, filename="document"):
 
     data["base_url"] = request.build_absolute_uri("/")[:-1]
     html_string = render_to_string(template, data)
+    font_conf = FontConfiguration()
 
     pdf_file_path = tempfile.mktemp(suffix=".pdf")
     HTML(string=html_string, base_url=request.build_absolute_uri("/")).write_pdf(
-        pdf_file_path
+        pdf_file_path,
+        stylesheets=[
+            CSS(
+                filename=str(STATICFILES_DIRS[0]) + "/css/bootstrap.css",
+                font_config=font_conf,
+            ),
+            # CSS(
+            #     filename=str(STATICFILES_DIRS[0]) + "/css/pdf.css",
+            #     font_config=font_conf,
+            # ),
+        ],
     )
 
     with open(pdf_file_path, "rb") as pdf_file:
