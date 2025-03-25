@@ -147,6 +147,7 @@ LOCALE_PATHS = [
 LANGUAGES = [
     ("en", _("English")),
     ("pl", _("Polski")),
+    ("de", _("Deutsch")),
 ]
 
 # Static files (CSS, JavaScript, Images)

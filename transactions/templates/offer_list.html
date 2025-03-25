@@ -23,7 +23,7 @@
     <div class="pt-4">
         <button class="btn btn-outline-success" onclick="submit()">{% trans "Make offer" %}</button>
     </div>
-    <div class="font-weight-light text-end">{% trans "February" %} 2025</div>
+    <div class="font-weight-light text-end">{% now "m-Y" %}</div>
     <table class="table table-bordered mt-1 align-middle" style="font-family: Calibri, sans-serif">
         <tbody>
         <form method="POST" id="offer">
