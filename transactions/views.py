@@ -1,6 +1,7 @@
 import copy
 import re
 from datetime import datetime
+from http.client import INTERNAL_SERVER_ERROR
 from math import floor
 
 import requests
@@ -90,7 +91,6 @@ def _parse_transaction_edit_items(request):
         if not (field and uuid):
             continue
         if uuid not in items:
-            __import__("pdb").set_trace()
             if re.match(r"^new.*", uuid):
                 items[uuid] = {}
             else:
@@ -838,7 +838,7 @@ def new_transaction_detail(request, transaction_uuid):
     if request.method == "POST":
         items, alku = _parse_transaction_edit_items(request)
         payload = {"itemsOrdered": items}
-        response, error = _make_api_request(
+        _, error = _make_api_request(
             f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
             method=requests.put,
             headers=headers,
@@ -854,7 +854,7 @@ def new_transaction_detail(request, transaction_uuid):
                 "transportCost": request.POST["transport"],
                 "plates": request.POST["plates_list"].split(","),
             }
-            response, error = _make_api_request(
+            _, error = _make_api_request(
                 f"{API_BASE_URL}/transaction-details/{admin_url}{transaction_uuid}/",
                 method=requests.put,
                 headers=headers,
@@ -864,7 +864,7 @@ def new_transaction_detail(request, transaction_uuid):
                 return error
         if alku:
             payload = {"alkuAmount": alku}
-            response, error = _make_api_request(
+            _, error = _make_api_request(
                 f"{API_BASE_URL}/transaction-details/{admin_url}{transaction_uuid}/",
                 method=requests.put,
                 headers=headers,
@@ -878,6 +878,8 @@ def new_transaction_detail(request, transaction_uuid):
     )
     if error:
         return error
+
+    __import__("pdb").set_trace()
 
     transaction = _set_status(transaction)
     transaction["totals"] = _get_stored_item_list_to_display(
@@ -894,6 +896,12 @@ def new_transaction_detail(request, transaction_uuid):
         )
         if error:
             return error
+
+        if not (
+            isinstance(transaction_details, dict)
+            and "alkuAmount" in transaction_details.keys()
+        ):
+            return _api_error_interpreter(INTERNAL_SERVER_ERROR)
 
         if transaction["status"] == "FINAL" and transaction_details["alkuAmount"]:
             for item in transaction["itemsOrdered"]:

@@ -3,7 +3,7 @@
 {% block title %}Transaction{% endblock %}
 {% block content %}
 <div class="container text-center">
-    <form id="edit-form" method="post">
+    <form id="edit-form" class="mb-2" method="post">
     {% csrf_token %}
     <div class="container">
         <div class="row text-start float-start">
@@ -48,10 +48,10 @@
                             <input type="hidden" name="plates_list" id="id_plates_list" />
                             <div class="d-flex gap-2">
                                 <input type="text" class="form-control flex-grow-1" id="plate-input" placeholder="Enter a plate" />
-                                <button class="btn btn-outline-secondary" id="add-btn">Add</button>
+                                <button class="btn btn-outline-secondary" type="button" id="add-btn">Add</button>
                             </div>
                                 <label for="delivery_info" class="form-label mt-3">{% trans "Delivery info" %}:</label>
-                            <input name="delivery_info"  id="delivery_info" class="form-control" type="text" value="{{ transactionDetails.informations.delivery_info }}"/>
+                            <textarea name="delivery_info"  id="delivery_info" class="form-control">{{ transactionDetails.informations.delivery_info }}</textarea>
                         </div>
                 {% endif %}
             </div>
@@ -119,11 +119,7 @@
                     {% endif %}
                     <td style="white-space: nowrap;"><span id="total-{{ item.uuid }}">{{ item.total }}</span> €</td>
                     <input type="hidden" name="additionalInfo-{{ item.uuid }}" id="additionalInfo-{{ item.uuid }}" value="{{ item.additionalInfo }}"/>
-                    {% if item.additionalInfo %}
-                    <td>{{ item.additionalInfo }}</td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
+                    <td id="comment-{{item.uuid}}">{{ item.additionalInfo }}</td>
                     <td>
                         <div class="d-grid gap-1">
                             <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-target="#commentModal" data-bs-toggle="modal" data-bs-uuid="{{item.uuid}}">{% trans "Add comment" %}</button>
@@ -191,20 +187,22 @@
       </div>
       <div class="modal-body">
         <label for="comment">{% trans "Search" %}:</label>
-        <input type="text" class="form-control mb-2" id="searchQuery"/>
+        <input type="text" class="form-control" id="searchQuery"/>
+        <p class="text-body-secondary mb-2">{% trans "Empty search query returns all items" %}</p>
         <div id="searchResults"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
-        <button type="button" class="btn btn-outline-primary" onclick="addItemToTransaction(crypto.randomUUID(), '', '', 0)">{% trans "Create new item" %}</button>
+        <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="addItemToTransaction('', '', 0)">{% trans "Create new item" %}</button>
         <button type="button" class="btn btn-primary" id="searchBtn">{% trans "Search" %}</button>
       </div>
     </div>
   </div>
 </div>
 <script>
-        function addItemToTransaction(uuid, sku, name, price) {
+        function addItemToTransaction(sku, name, price) {
             let newRow = document.createElement("tr");
+            uuid = `new-${crypto.randomUUID()}`
             newRow.id = uuid;
             if (sku) {
                 newRow.innerHTML = `
@@ -249,7 +247,7 @@
                 {% endif %}
                 <td style="white-space: nowrap;"><span id="total-${uuid}"></span> €</td>
                 <input type="hidden" name="additionalInfo-${uuid}" id="additionalInfo-${uuid}" value=""/>
-                <td></td>
+                <td id="comment-${uuid}"></td>
                 <td>
                     <div class="d-grid gap-1">
                         <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-target="#commentModal" data-bs-toggle="modal" data-bs-uuid="${uuid}">{% trans "Add comment" %}</button>
@@ -324,7 +322,20 @@
             {% endif %}
         }
 
-        {% if transaciton.status == "PROGNOSE" %}
+        {% if transaction.status == "PROGNOSE" %}
+
+        const inputField = document.getElementById("plate-input");
+        const initPlates = [{% for plate in transactionDetails.plates %}"{{ plate }}"{% if not forloop.last %}, {% endif %}{% endfor %}]
+        const addButton = document.getElementById("add-btn");
+        const listContainer = document.getElementById("plate-list");
+        const platesPostParam = document.getElementById("id_plates_list");
+        
+        let platesArray = [];
+
+        initPlates.forEach(plate => {
+            addPlate(plate);
+        });
+
         function updateHiddenInput() {
             platesPostParam.value = platesArray.join(",");
         }
@@ -355,18 +366,6 @@
                 listContainer.appendChild(listItem);
                 inputField.value = "";
         }
-
-        const inputField = document.getElementById("plate-input");
-        const initPlates = [{% for plate in transactionDetails.plates %}"{{ plate }}"{% if not forloop.last %}, {% endif %}{% endfor %}]
-        const addButton = document.getElementById("add-btn");
-        const listContainer = document.getElementById("plate-list");
-        const platesPostParam = document.getElementById("id_plates_list");
-        
-        let platesArray = [];
-
-        initPlates.forEach(plate => {
-            addPlate(plate);
-        });
 
         addButton.addEventListener("click", function (event) {
             event.preventDefault();
@@ -403,6 +402,10 @@
             const inputComment = document.getElementById(`additionalInfo-${uuid}`); 
             if (inputComment) {
                 inputComment.value = document.getElementById('comment').value;
+                comment = document.getElementById(`comment-${uuid}`)
+                // TODO: add the link
+                if (comment) comment.textContent = inputComment.value;
+                saveButton.style.display = "inline-block";
             }
             const modal = bootstrap.Modal.getInstance(commentModal);
             modal.hide();
@@ -422,7 +425,7 @@
 
         form.addEventListener("submit", function (event) {
             const submitButton = document.activeElement;
-            if (sybmitButton && submitButton.type === "submit") {
+            if (submitButton && submitButton.type === "submit") {
                 if (!confirm("{% trans "Are you sure you want to save changes?" %}")) {
                     event.preventDefault();
                 }
@@ -469,7 +472,7 @@
 
                             listItem.innerHTML = `
                                 <span><strong>${item.sku}</strong> - ${item.name} (€${item.price}/kg)</span>
-                                <button class="btn btn-sm btn-outline-success" onclick="addItemToTransaction('new-${crypto.randomUUID()}', '${item.sku}', '${item.name}', ${item.price})">Add</button>
+                                <button class="btn btn-sm btn-outline-success" data-bs-dismiss="modal" onclick="addItemToTransaction('${item.sku}', '${item.name}', ${item.price})">Add</button>
                             `;
 
                             resultList.appendChild(listItem);

@@ -46,12 +46,16 @@ def _api_error_interpreter(status_code, msg_404=None, msg_401=None, msg_500=None
     If response code is not either 404 or 401, it uses HttpResponseServerError"""
     output = False
     if status_code == 404:
-        output = HttpResponseNotFound(msg_404) if msg_404 else HttpResponseNotFound()
+        output = HttpResponseNotFound(msg_404) if msg_404 else HttpResponseNotFound(b"")
     elif status_code in (401, 403):
-        output = HttpResponseForbidden(msg_401) if msg_401 else HttpResponseForbidden()
+        output = (
+            HttpResponseForbidden(msg_401) if msg_401 else HttpResponseForbidden(b"")
+        )
     elif status_code != 200:
         output = (
-            HttpResponseServerError(msg_500) if msg_500 else HttpResponseServerError()
+            HttpResponseServerError(msg_500)
+            if msg_500
+            else HttpResponseServerError(b"")
         )
     return output
 
@@ -71,7 +75,8 @@ def _make_api_request(url, method=requests.get, headers=None, body=None):
     except JSONDecodeError:
         return response.text, _api_error_interpreter(response.status_code)
     except:
-        return {}, _api_error_interpreter(INTERNAL_SERVER_ERROR)
+        return False, _api_error_interpreter(INTERNAL_SERVER_ERROR)
+    return False, _api_error_interpreter(response.status_code)
 
 
 def favicon():
