@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% block title %}Add Item{% endblock %}
+{% load i18n %}
 {% block content %}
     <div class="d-flex justify-content-center align-items-center flex-column mb-5">
-        <h1>Add Item</h1>
+        <h1>{% trans "Add Item" %}</h1>
         {% if error %}
             <div class="alert alert-danger mt-3">{{ error }}</div>
         {% endif %}

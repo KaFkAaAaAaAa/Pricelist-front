@@ -1,4 +1,5 @@
 import copy
+import re
 from datetime import datetime
 from math import floor
 
@@ -89,7 +90,10 @@ def _parse_transaction_edit_items(request):
         if not (field and uuid):
             continue
         if uuid not in items:
-            items[uuid] = {"uuid": uuid}
+            if re.match(r"^new.*", uuid):
+                items[uuid] = {}
+            else:
+                items[uuid] = {"uuid": uuid}
         value = request.POST[param]
         if field == "amount":
             value = _amount_to_store(value)
@@ -831,7 +835,6 @@ def new_transaction_detail(request, transaction_uuid):
     admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
 
     if request.method == "POST":
-        __import__("pdb").set_trace()
         items, alku = _parse_transaction_edit_items(request)
         payload = {"itemsOrdered": items}
         response, error = _make_api_request(
@@ -899,12 +902,6 @@ def new_transaction_detail(request, transaction_uuid):
                     )
                 except KeyError:
                     continue
-        # with __setitem__ instead of data['transactionDetails']
-        # it doesn't make any warnings
-        # data.__setitem__("transactionDetails", transaction_details)
         data["transactionDetails"] = transaction_details
-        # TODO: check if it is needed (it shouldn't be bc data.transaction is
-        # a reference to transaction)
-        data["transaction"] = transaction
 
     return render(request, "new_transaction_detail.html", data)

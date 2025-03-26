@@ -1,9 +1,10 @@
-from http.client import UNAUTHORIZED
 import re
+from http.client import UNAUTHORIZED
 from math import floor
 
 import requests
 from django.core.files.storage import FileSystemStorage
+from django.http import JsonResponse
 from django.http.response import Http404, HttpResponseForbidden
 from django.shortcuts import redirect, render
 
@@ -70,7 +71,8 @@ def _make_price_list(request, headers, pattern="price_list.html"):
             item["price"] = f"{item['price'] / 100:.2f}"
 
             is_results = True
-
+    if "f" in request.GET.keys() and request.GET["f"] == "json":
+        return JsonResponse({"items": items})
     return render(
         request,
         pattern,
@@ -309,9 +311,9 @@ def upload_image(request, item_sku):
         # django needs an update to 5.1.5 so that can work
         # for now we have a workaround
         fs = FileSystemStorage()
-        ext = image.name.rsplit('.')[-1]
-        if ext not in ('jpg', 'JPG'):
-            return HttpResponseForbidden(b'Only jpg is allowed')
+        ext = image.name.rsplit(".")[-1]
+        if ext not in ("jpg", "JPG"):
+            return HttpResponseForbidden(b"Only jpg is allowed")
         filename = f"{item_sku}.M.{ext}"
         if fs.exists(filename):
             fs.delete(filename)

@@ -4,8 +4,8 @@ from math import floor
 from typing import Iterable
 from uuid import UUID
 
-from django.forms import BoundField
 import requests
+from django.forms import BoundField
 from django.http import HttpResponseServerError
 from django.http.response import HttpResponseForbidden, HttpResponseNotFound
 from django.shortcuts import redirect, render
@@ -34,11 +34,11 @@ def _amount_to_display(amount: float) -> str:
 
 
 def _amount_to_store(amount: str) -> int:
-    return int(floor(float(amount) * 10))
+    return int(floor(float(amount) * 10)) if amount else 0
 
 
 def _price_to_store(price: str) -> int:
-    return int(floor(float(price) * 100))
+    return int(floor(float(price) * 100)) if price else 0
 
 
 def _api_error_interpreter(status_code, msg_404=None, msg_401=None, msg_500=None):
@@ -59,11 +59,11 @@ def _api_error_interpreter(status_code, msg_404=None, msg_401=None, msg_500=None
 def _make_api_request(url, method=requests.get, headers=None, body=None):
     """Function makes request for api and return json body of response, if
     the response is an error or api response can't be parsed using .json()
-    function returns Error HTTP response as a second value """
+    function returns Error HTTP response as a second value"""
     response = method(
-            url,
-            headers=headers,
-            json=body,
+        url,
+        headers=headers,
+        json=body,
     )
     try:
         if response:
@@ -566,11 +566,11 @@ def client_add(request):
         for bound_field in form.visible_fields():
             # TODO: fix translation here
             if "placeholder" in bound_field.field.widget.attrs:
-                bound_field.field.widget.attrs[
-                        "placeholder"
-                        ] = bound_field.field.widget.attrs[
-                    "placeholder"
-                ].replace(_("your "), "")
+                bound_field.field.widget.attrs["placeholder"] = (
+                    bound_field.field.widget.attrs["placeholder"].replace(
+                        _("your "), ""
+                    )
+                )
     return render(request, "new_client.html", {"form": form})
 
 

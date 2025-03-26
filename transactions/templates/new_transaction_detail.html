@@ -4,6 +4,7 @@
 {% block content %}
 <div class="container text-center">
     <form id="edit-form" method="post">
+    {% csrf_token %}
     <div class="container">
         <div class="row text-start float-start">
           <button
@@ -26,41 +27,40 @@
             <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Transport cost per 1 kg" %}: </strong><span id="transportPerKg"></span> €</p>
                     <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Transport cost as a part of total price" %}: </strong><span id="transportPercent"></span>%</p>
             {% endif %}
-            <a href="/transactions/admin/{{ transaction.uuid }}/add-item/"
-                class="btn btn-sm btn-outline-success mt-2 mb-2">
-                    {% trans "Add item" %}
-            </a>
             </div>
-            {% if transaction.status == "PROGNOSE" %}
+            {% if transaction.status == "PROGNOSE" or transaction.status == "FINAL" %}
             <div class="col-md-4 float-end text-end">
                 <h5 class="fw-bold">{% trans "Delivery" %}</h5>
-                <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Date" %}: </strong>{{ transactionDetails.informations.delivery_date }}</p>
-                <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Price" %}: </strong>
-                        <div class="input-group">
-                            <input name="transport"  id="transport" class="form-control"
-                                type="number" min="1" step="1" value="{{ transactionDetails.transportCost }}"
-                                onchange="uuids.forEach(uuid => calculateTotal(uuid));"/>
-                            <span class="input-group-text">€</span>
+                    <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Date" %}: </strong>
+                        <input class="form-control" name="delivery_date" id="delivery_date" type="date" value="{{ transactionDetails.informations.delivery_date }}"/>
+                {% if transaction.status == "PROGNOSE" %}
+                    <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Price" %}: </strong>
+                            <div class="input-group">
+                                <input name="transport"  id="transport" class="form-control"
+                                    type="number" min="1" step="1" value="{{ transactionDetails.transportCost }}"
+                                    onchange="uuids.forEach(uuid => calculateTotal(uuid));"/>
+                                <span class="input-group-text">€</span>
+                            </div>
+                        <div class="mt-2">
+                            <h6 class="fw-semibold">{% trans "Plates:" %}</h6>
+                            <div id="plate-list" class="mb-3">
+                            </div>
+                            <input type="hidden" name="plates_list" id="id_plates_list" />
+                            <div class="d-flex gap-2">
+                                <input type="text" class="form-control flex-grow-1" id="plate-input" placeholder="Enter a plate" />
+                                <button class="btn btn-outline-secondary" id="add-btn">Add</button>
+                            </div>
+                                <label for="delivery_info" class="form-label mt-3">{% trans "Delivery info" %}:</label>
+                            <input name="delivery_info"  id="delivery_info" class="form-control" type="text" value="{{ transactionDetails.informations.delivery_info }}"/>
                         </div>
-                    <div class="mt-2">
-                    <h6 class="fw-semibold">{% trans "Plates:" %}</h6>
-                    <div id="plate-list" class="mb-3"></div>
-                    <input type="hidden" name="plates_list" id="id_plates_list" />
-                    <div class="d-flex gap-2">
-                        <input type="text" class="form-control flex-grow-1" id="plate-input" placeholder="Enter a plate" />
-                        <button class="btn btn-outline-secondary" id="add-btn">Add</button>
-                    </div>
-                        <label for="delivery_info" class="form-label mt-3">{% trans "Delivery info" %}:</label>
-                    <input name="delivery_info"  id="delivery_info" class="form-control" type="text" value="{{ transactionDetails.informations.delivery_info }}"/>
-                    </div>
-            </div>
-            {% endif %}
-            {% if transaction.status == "FINAL" %}
-            <div class="col-md-4 float-end text-end">
-                <p class="mb-2"><strong>{% trans "Delivery date" %}: </strong>{{ transactionDetails.informations.delivery_date }}</p>
+                {% endif %}
             </div>
             {% endif %}
         </div>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#searchModal"
+            class="btn btn-sm btn-outline-success mt-2 mb-2">
+                {% trans "Add item" %}
+        </button>
     </div>
     <table class="table">
         <thead>
@@ -84,8 +84,7 @@
         <tbody>
         {% if transaction.itemsOrdered %}
             {% for item in transaction.itemsOrdered %}
-                <tr>
-                    {% csrf_token %}
+                <tr id="{{ item.uuid }}">
                     <td><img style="width: 80px; height: auto; vertical-align: middle;" src="/images/{{ item.sku }}.M.jpg"></td>
                     <td class="col-xs-2"><input name="sku-{{ item.uuid }}" id="sku-{{ item.uuid }}" class="form-control" type="text" value="{{ item.sku }}"/></td>
                     <td><input name="name-{{ item.uuid }}"  id="name-{{ item.uuid }}" class="form-control" type="text" value="{{ item.name }}"/></td>
@@ -128,7 +127,7 @@
                     <td>
                         <div class="d-grid gap-1">
                             <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-target="#commentModal" data-bs-toggle="modal" data-bs-uuid="{{item.uuid}}">{% trans "Add comment" %}</button>
-                            <a class="btn btn-outline-danger btn-sm" onclick="event.stopPropagation(); return confirm('{% trans "Are you sure you want to delete this item?" %}');" href="/transactions/admin/{{transaction.uuid}}/{{item.uuid}}/delete/">{% trans "Delete" %}</a>
+                            <button class="btn btn-outline-danger btn-sm" type="button" onclick="deleteItem(event, '{{ item.uuid }}')">{% trans "Delete" %}</button>
                         </div>
                     </td>
                 </tr>
@@ -138,25 +137,27 @@
                     {% trans "No items in the transaction" %}
                 </div>
         {% endif %}
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td class="fw-bold" style="white-space: nowrap;"><span id="totalAmount">{{ totals.mass }}</span> kg</td>
-                {% if transaction.status == "FINAL" %}
-                <td class="fw-bold" style="white-space: nowrap;"><span id="totalAlku"></span> kg</td>
-                {% endif %}
-                <td></td>
-                {% if transaction.status == "PROGNOSE" %}
-                <td></td>
-                {% endif %}
-                <td class="fw-bold" style="white-space: nowrap;"><span id="totalPrice">{{ totals.price }}</span> €</td>
-                <td></td>
-                <td></td>
-            </tr>
         </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="fw-bold" style="white-space: nowrap;"><span id="totalAmount">{{ totals.mass }}</span> kg</td>
+                    {% if transaction.status == "FINAL" %}
+                    <td class="fw-bold" style="white-space: nowrap;"><span id="totalAlku"></span> kg</td>
+                    {% endif %}
+                    <td></td>
+                    {% if transaction.status == "PROGNOSE" %}
+                    <td></td>
+                    {% endif %}
+                    <td class="fw-bold" style="white-space: nowrap;"><span id="totalPrice">{{ totals.price }}</span> €</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tfoot>
     </table>
-        <label for="prognose_info" class="form-label">{% trans "Prognose bottom text" %}:</label>
+        <label for="prognose_info" class="form-label">{% trans "Bottom text" %}:</label>
         <textarea class="form-control mb-3" id="prognose_info" name="prognose_info">{{ transactionDetails.informations.prognose_info }}</textarea>
     <input id="saveButton" class="btn btn-success" style="display: none;" type=submit value="{% trans "Save changes" %}">
     <a class="btn btn-outline-primary" href="/transactions/{{transaction.uuid}}/change-status/">{% trans "Change status" %}</a>
@@ -181,7 +182,99 @@
     </div>
   </div>
 </div>
+<div class="modal" id="searchModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{% trans "Add item" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <label for="comment">{% trans "Search" %}:</label>
+        <input type="text" class="form-control mb-2" id="searchQuery"/>
+        <div id="searchResults"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+        <button type="button" class="btn btn-outline-primary" onclick="addItemToTransaction(crypto.randomUUID(), '', '', 0)">{% trans "Create new item" %}</button>
+        <button type="button" class="btn btn-primary" id="searchBtn">{% trans "Search" %}</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
+        function addItemToTransaction(uuid, sku, name, price) {
+            let newRow = document.createElement("tr");
+            newRow.id = uuid;
+            if (sku) {
+                newRow.innerHTML = `
+                <td><img style="width: 80px; height: auto; vertical-align: middle;" src="/images/${sku}.M.jpg"></td>`
+            } else {
+                newRow.innerHTML = `
+                <td></td>
+                `
+            }
+
+            newRow.innerHTML += `
+                <td class="col-xs-2"><input name="sku-${uuid}" id="sku-${uuid}" class="form-control" type="text" value="${sku}"/></td>
+                <td><input name="name-${uuid}"  id="name-${uuid}" class="form-control" type="text" value="${name}"/></td>
+                <td>
+                    <div class="input-group">
+                        <input name="amount-${uuid}"  id="amount-${uuid}" class="form-control"
+                            type="number" min="0.1" step="0.1"
+                            onchange="calculateTotal('${uuid}')"/>
+                        <span class="input-group-text">kg</span>
+                    </div>
+                </td>
+                {% if transaction.status == "FINAL" %}
+                <td>
+                    <div class="input-group">
+                        <input name="alku-${uuid}" id="alku-${uuid}" class="form-control"
+                            type="number" min="0.1" step="0.1"
+                            onchange="calculateTotal('${uuid}')"/>
+                        <span class="input-group-text">kg</span>
+                    </div>
+                </td>
+                {% endif %}
+                <td>
+                    <div class="input-group">
+                        <input name="price-${uuid}" id="price-${uuid}" class="form-control"
+                            type="number" min="0.01" step="0.01" value="${price}"
+                            onchange="calculateTotal('${uuid}')"/>
+                        <span class="input-group-text">€</span>
+                    </div>
+                </td>
+                {% if transaction.status == "PROGNOSE" %}
+                <td><span style="white-space: nowrap;" id="priceWithTransport-${uuid}"></span> €</td>
+                {% endif %}
+                <td style="white-space: nowrap;"><span id="total-${uuid}"></span> €</td>
+                <input type="hidden" name="additionalInfo-${uuid}" id="additionalInfo-${uuid}" value=""/>
+                <td></td>
+                <td>
+                    <div class="d-grid gap-1">
+                        <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-target="#commentModal" data-bs-toggle="modal" data-bs-uuid="${uuid}">{% trans "Add comment" %}</button>
+                        <button class="btn btn-outline-danger btn-sm" onclick="deleteItem(event, '${uuid}')");" >{% trans "Delete" %}</button>
+                    </div>
+                </td>
+            `;
+
+            document.querySelector("table tbody").appendChild(newRow);
+            uuids.push(uuid);
+            calculateTotal(uuid);
+        }
+
+        function deleteItem(event, uuid) {
+            event.stopPropagation();
+
+            if (confirm('{% trans "Are you sure you want to delete this item" %}?')) {
+                let itemElement = document.getElementById(uuid);
+                if (itemElement) {
+                    itemElement.remove();
+                }
+                uuids = uuids.filter(itemUuid => itemUuid !== uuid);
+            }
+        }
+
         function calculateTotal(uuidChanged) {
             let allTotalPrice = 0.0, allTotalAmount = 0.0, allTotalAlku = 0.0;
             {% if transaction.status == "PROGNOSE" %}
@@ -229,6 +322,7 @@
             {% endif %}
         }
 
+        {% if transaciton.status == "PROGNOSE" %}
         function updateHiddenInput() {
             platesPostParam.value = platesArray.join(",");
         }
@@ -260,13 +354,30 @@
                 inputField.value = "";
         }
 
-        const uuids = [{% for item in transaction.itemsOrdered %}"{{ item.uuid }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
-
         const inputField = document.getElementById("plate-input");
+        const initPlates = [{% for plate in transactionDetails.plates %}"{{ plate }}"{% if not forloop.last %}, {% endif %}{% endfor %}]
         const addButton = document.getElementById("add-btn");
         const listContainer = document.getElementById("plate-list");
         const platesPostParam = document.getElementById("id_plates_list");
-        const initPlates = [{% for plate in transactionDetails.plates %}"{{ plate }}"{% if not forloop.last %}, {% endif %}{% endfor %}]
+        
+        let platesArray = [];
+
+        initPlates.forEach(plate => {
+            addPlate(plate);
+        });
+
+        addButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            const value = inputField.value.trim();
+
+            if (value) {
+                addPlate(value);
+            }
+        });
+        {% endif %}
+
+        let uuids = [{% for item in transaction.itemsOrdered %}"{{ item.uuid }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+
 
         const commentModal = document.getElementById('commentModal');
         let uuid = null;
@@ -292,20 +403,15 @@
                 inputComment.value = document.getElementById('comment').value;
             }
             const modal = bootstrap.Modal.getInstance(commentModal);
+            saveButton.style.display = "inline-block";
             modal.hide();
         });
 
         window.onload = () => uuids.forEach(uuid => calculateTotal(uuid));
 
-        let platesArray = [];
-
-        initPlates.forEach(plate => {
-            addPlate(plate);
-        });
-
-        const inputs = document.querySelectorAll("input, textarea");
-        const saveButton = document.getElementById("saveButton");
         const form = document.getElementById("edit-form");
+        const inputs = form.querySelectorAll("input, textarea");
+        const saveButton = document.getElementById("saveButton");
 
         inputs.forEach(input => {
             input.addEventListener("input", () => {
@@ -314,18 +420,65 @@
         });
 
         form.addEventListener("submit", function (event) {
-            if (!confirm("{% trans "Are you sure you want to save changes?" %}")) {
-                event.preventDefault();
+            const submitButton = document.activeElement;
+            if (sybmitButton && submitButton.type === "submit") {
+                if (!confirm("{% trans "Are you sure you want to save changes?" %}")) {
+                    event.preventDefault();
+                }
             }
         });
 
-        addButton.addEventListener("click", function (event) {
+        document.getElementById("searchBtn").addEventListener("click", function (event) {
             event.preventDefault();
-            const value = inputField.value.trim();
 
-            if (value) {
-                addPlate(value);
-            }
+            let query = document.getElementById("searchQuery").value.trim();
+
+            if (!query)
+                url = "/?f=json";
+            else
+                url = `/?search=${query}&f=json`
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    let resultsContainer = document.getElementById("searchResults");
+                    resultsContainer.innerHTML = "";
+                    
+                    if (data.items.length === 0) {
+                        resultsContainer.innerHTML = "<p>No items found.</p>";
+                        return;
+                    }
+
+                    let resultList = document.createElement("ul");
+                    resultList.classList.add("list-group");
+
+
+                    Object.entries(data.items).forEach(([category, categoryItems]) =>{
+                        if (categoryItems.length === 0) {
+                            return;
+                        }
+                        let listItem = document.createElement("li");
+                        listItem.innerHTML = `<strong>${category}</strong>`;
+                        listItem.classList.add("list-group-item", "text-left", "text-light", "fw-semibold", "text-uppercase", "align-middle");
+                        listItem.style.backgroundColor = "#9E0F06";
+                        resultList.appendChild(listItem);
+                        categoryItems.forEach(item => {
+                            let listItem = document.createElement("li");
+                            listItem.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
+
+                            listItem.innerHTML = `
+                                <span><strong>${item.sku}</strong> - ${item.name} (€${item.price}/kg)</span>
+                                <button class="btn btn-sm btn-outline-success" onclick="addItemToTransaction('new-${crypto.randomUUID()}', '${item.sku}', '${item.name}', ${item.price})">Add</button>
+                            `;
+
+                            resultList.appendChild(listItem);
+                        });
+
+                    });
+
+                    resultsContainer.appendChild(resultList)
+                })
+                .catch(error => console.error("Error fetching items: " + error));
         });
 
 
