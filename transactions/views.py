@@ -90,6 +90,7 @@ def _parse_transaction_edit_items(request):
         if not (field and uuid):
             continue
         if uuid not in items:
+            __import__("pdb").set_trace()
             if re.match(r"^new.*", uuid):
                 items[uuid] = {}
             else:
@@ -843,7 +844,7 @@ def new_transaction_detail(request, transaction_uuid):
             headers=headers,
             body=payload,
         )
-        if request.POST["plates_list"]:
+        if "plates_list" in request.POST.keys():
             payload = {
                 "informations": {
                     "delivery_date": "2025-03-28",
