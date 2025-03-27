@@ -5,29 +5,18 @@ from http.client import INTERNAL_SERVER_ERROR
 from math import floor
 
 import requests
-from django.http import (
-    HttpResponse,
-    HttpResponseBadRequest,
-    HttpResponseNotFound,
-    HttpResponseServerError,
-)
+from django.http import (HttpResponse, HttpResponseBadRequest,
+                         HttpResponseNotFound, HttpResponseServerError)
 from django.http.response import HttpResponseForbidden
 from django.shortcuts import redirect, render
 
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
 from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS
-from Pricelist.views import (
-    _amount_to_display,
-    _amount_to_float,
-    _amount_to_store,
-    _api_error_interpreter,
-    _get_auth,
-    _make_api_request,
-    _price_to_display,
-    _price_to_float,
-    _price_to_store,
-)
+from Pricelist.views import (_amount_to_display, _amount_to_float,
+                             _amount_to_store, _api_error_interpreter,
+                             _get_auth, _make_api_request, _price_to_display,
+                             _price_to_float, _price_to_store)
 from transactions.forms import ItemForm, PrognoseFrom
 
 
@@ -879,9 +868,9 @@ def new_transaction_detail(request, transaction_uuid):
     if error:
         return error
 
-    __import__("pdb").set_trace()
-
     transaction = _set_status(transaction)
+    if "itemsOrdered" not in transaction.keys():
+        transaction["itemsOrdered"] = {}
     transaction["totals"] = _get_stored_item_list_to_display(
         transaction["itemsOrdered"],
     )
