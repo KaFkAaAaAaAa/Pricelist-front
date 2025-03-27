@@ -40,7 +40,7 @@
             <th scope="col"></th>
             <th scope="col">{% trans "SKU" %}</th>
             <th scope="col">{% trans "Product" %}</th>
-            <th scope="col">{% trans "Amount" %}</th>
+            <th scope="col">{% trans "Amount [kg]" %}</th>
             <th scope="col">{% trans "Price" %}</th>
             <th scope="col">{% trans "Sum" %}</th>
         </tr>
@@ -54,8 +54,8 @@
                 </td>
                 <td>{{ item.sku }}</td>
                 <td>{{ item.name }}</td>
-                <td class="unit text-end">{{ item.amount }} kg</td>
-                <td class="unit text-end">{{ item.price }} €</td>
+                <td class="unit text-end">{{ item.amount }}</td>
+                <td class="unit text-end">{{ item.price }}</td>
                 <td class="unit text-end">{{ item.total|floatformat:2 }} €</td>
             </tr>
         {% endfor %}

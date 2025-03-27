@@ -38,7 +38,7 @@
                 <h4 class="fw-semibold">{% trans "Final of " %}{{ date|date:"d-m-Y H:i" }}</h4>
     </div>
 
-    <table class="table table-bordered mt-2 mb-3 table-striped">
+    <table class="table table-bordered mt-2 mb-6 table-striped">
         <thead>
         <tr class="text-center">
             <th scope="col"></th>
@@ -50,25 +50,25 @@
             <th scope="col">{% trans "Total" %}</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody class="tbody-text">
         {% for item in transaction.itemsOrdered %}
             <tr>
                 <td>
                     <img class="py-1" src="{{ base_url }}/images/{{ item.sku }}.M.jpg" alt="" class="img"
                         style="width: 50px; height: auto; vertical-align: middle;"/>
                 </td>
-                <td>{{ item.sku }}</td>
-                <td>{{ item.name }}</td>
-                <td class="unit text-end">{{ item.amount }} kg</td>
-                <td class="unit text-end">{{ item.alku }} kg</td>
-                <td class="unit text-end">{{ item.price }} €</td>
-                <td class="unit text-end">{{ item.total|floatformat:2 }} €</td>
+                <td class="px-1">{{ item.sku }}</td>
+                <td class="text-start px-1">{{ item.name }}</td>
+                <td class="unit text-end px-1">{{ item.amount }} kg</td>
+                <td class="unit text-end px-1">{{ item.alku }} kg</td>
+                <td class="unit text-end px-1">{{ item.price }} €</td>
+                <td class="unit text-end px-1">{{ item.total|floatformat:2 }} €</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-    <p class="paragraph">Shipping costs are covered by the buyer</p>
-    <p class="paragraph">Payment deadline - 7 business days from delivery</p>
+
+    <div class="mt-5"><p class="paragraph">{{ transaction.informations.transaction_info }} Text test</p></div>
     <hr>
     <div class="row my-2 fs-6">
         <div class="col-4">

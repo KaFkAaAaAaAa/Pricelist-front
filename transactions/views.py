@@ -308,12 +308,20 @@ def client_transactions(request):
         return redirect("login")
     headers = auth["headers"]
 
-    response = requests.get(f"{API_BASE_URL}/transactions/", headers=headers)
+    transactions, error = _make_api_request(f"{API_BASE_URL}/transactions/", headers=headers)
 
-    transactions = response.json()
+    if error or not transactions:
+        return error
+
     for transaction in transactions:
         _set_status(transaction)
         if "itemsOrdered" in transaction.keys():
+            if transaction["status"] == 'FINAL':
+                transaction_details, error = _make_api_request(f"{API_BASE_URL}/transaction-details/{transaction['uuid']}/", headers=headers)
+                if error or not transaction_details:
+                    return error
+                for item in transaction["itemsOrdered"]:
+                    item["amount"] = transaction_details["alkuAmount"][item["uuid"]]
             transaction["totals"] = _get_stored_item_list_to_display(
                 transaction["itemsOrdered"]
             )
@@ -344,6 +352,12 @@ def admin_transactions(request):
     for transaction in transactions:
         _set_status(transaction)
         if "itemsOrdered" in transaction.keys():
+            if transaction["status"] == 'FINAL':
+                transaction_details, error = _make_api_request(f"{API_BASE_URL}/transaction-details/admin/{transaction['uuid']}/", headers=headers)
+                if error or not transaction_details:
+                    return error
+                for item in transaction["itemsOrdered"]:
+                    item["amount"] = transaction_details["alkuAmount"][item["uuid"]]
             transaction["totals"] = _get_stored_item_list_to_display(
                 transaction["itemsOrdered"]
             )
@@ -623,11 +637,14 @@ def print_prognose(request, data):
 
 def print_final(request, data):
     data["total"]["alku"] = 0
+    data["total"]["price"] = 0
     for item in data["transaction"]["itemsOrdered"]:
         item["alku"] = _amount_to_float(
             data["transactionDetails"]["alkuAmount"][item["uuid"]]
         )
+        item["total"] = item["alku"] * float(item["price"])
         data["total"]["alku"] += item["alku"]
+        data["total"]["price"] += item["total"]
     return generate_pdf(request, "pdf_final.html", data)
 
 

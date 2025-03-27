@@ -157,8 +157,8 @@
                 </tr>
             </tfoot>
     </table>
-        <label for="prognose_info" class="form-label">{% trans "Bottom text" %}:</label>
-        <textarea class="form-control mb-3" id="prognose_info" name="prognose_info">{{ transactionDetails.informations.prognose_info }}</textarea>
+        <label for="transaction_info" class="form-label">{% trans "Bottom text" %}:</label>
+        <textarea class="form-control mb-3" id="transaction_info" name="transaction_info">{{ transactionDetails.informations.transaction_info }}</textarea>
     <input id="saveButton" class="btn btn-success" style="display: none;" type=submit value="{% trans "Save changes" %}">
     <a class="btn btn-outline-primary" href="/transactions/{{transaction.uuid}}/change-status/">{% trans "Change status" %}</a>
     <a class="btn btn-outline-secondary" href="/transactions/{{transaction.uuid}}/print/" target="_blank">{% trans "Print" %}</a>
