@@ -5,6 +5,7 @@ from typing import Iterable
 from uuid import UUID
 
 import requests
+from django.contrib import messages
 from django.forms import BoundField
 from django.http import HttpResponseServerError
 from django.http.response import HttpResponseForbidden, HttpResponseNotFound
@@ -130,12 +131,11 @@ def login_view(request):
                 )
                 request.session["logged_user"] = response_auth.json().get("currentUser")
                 return redirect("price_list")
-            else:
-                return render(
-                    request,
-                    "login.html",
-                    {"form": form, "error": "Invalid credentials"},
-                )
+            return render(
+                request,
+                "login.html",
+                {"form": form, "error": "Invalid credentials"},
+            )
     else:
         form = LoginForm()
     return render(request, "login.html", {"form": form})
@@ -152,6 +152,7 @@ def logout_view(request):
 def register_view(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
+        error = ""
         if form.is_valid():
             payload = {
                 "userFirstName": form.cleaned_data["userFirstName"],
@@ -166,16 +167,21 @@ def register_view(request):
                 "clientBankNumber": form.cleaned_data["clientBankNumber"],
             }
             response = requests.post(f"{API_BASE_URL}/auth/register", json=payload)
-            if response.status_code == 200:
+            if (
+                response.status_code == 200
+                and response.text == "Registration Successfull"
+            ):
                 return render(request, "register_success.html")
-            else:
-                return render(
-                    request,
-                    "register.html",
-                    {"form": form, "error": "Registration failed."},
-                )
-    else:
-        form = RegisterForm()
+            if response.text == "Email used":
+                error = _("Email is already used")
+        if not error:
+            error = _("Registration failed.")
+        return render(
+            request,
+            "register.html",
+            {"form": form, "error": error},
+        )
+    form = RegisterForm()
     return render(request, "register.html", {"form": form})
 
 
@@ -640,14 +646,16 @@ def change_password(request):
             response = requests.post(
                 f"{API_BASE_URL}/auth/change-password", headers=headers, json=payload
             )
-            if response.status_code == 200:
-                try:
-                    return redirect("/", {"msg": "Password changed successfully!"})
-                except:
-                    return redirect("/")
+            if (
+                response.status_code == 200
+                and response.text == "Password Change Successful"
+            ):
+                messages.info(request, _("Password change successful!"))
+                return redirect("/profile/")
+        messages.error(request, _("Passwords don't match!"))
         return render(
             request,
             "change_password.html",
-            {"form": form, "err": "Passwords doesn't match!"},
+            {"form": form},
         )
     return render(request, "change_password.html", {"form": form})

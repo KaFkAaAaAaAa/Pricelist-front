@@ -1,12 +1,13 @@
 import re
-from http.client import UNAUTHORIZED
 from math import floor
 
 import requests
+from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
-from django.http.response import Http404, HttpResponseForbidden
+from django.http.response import Http404, HttpResponseForbidden, HttpResponseNotFound
 from django.shortcuts import redirect, render
+from django.utils.translation import gettext_lazy as _
 
 from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CATEGORIES, CLIENT_GROUPS
 from Pricelist.views import (
@@ -169,7 +170,7 @@ def item_detail(request, item_sku):
                 item["price_pln"] = _price_to_display(item["price_pln"])
         item["price"] = _price_to_display(item["price"])
         return render(request, "item_detail.html", {"item": item, "images": images})
-    return render(request, "item_detail.html", {"error": "Item not found."})
+    return HttpResponseNotFound()
 
 
 def admin_items(request):
@@ -246,10 +247,16 @@ def edit_item(request, item_sku):
         response = requests.put(
             f"{API_BASE_URL}/items/admin/{item_sku}", headers=headers, json=payload
         )
+        __import__("pdb").set_trace()
         if response.status_code == 200:
+            messages.success(request, _("Item edited successfully"))
             return redirect("item_list")
-        # error = payload.error
-        return redirect("item_list")
+        if response.text == "SKU exists":
+            messages.error(request, _("Error, SKU already exists"))
+        else:
+            messages.error(request, _("Error, item has not been edited"))
+        return render(request, "edit_item.html")
+
     response = requests.get(f"{API_BASE_URL}/items/admin/{item_sku}", headers=headers)
     item = response.json() if response.status_code == 200 else 0
     if item:
@@ -286,8 +293,10 @@ def delete_item(request, item_sku):
     )
     # TODO: Errors and success messages
     if response.status_code == 200:
+        messages.success(request, _("Item deleted successfully!"))
         return redirect("item_list")
     else:
+        messages.error(request, _("API error"))
         return redirect("item_list")
 
 
@@ -467,14 +476,19 @@ def add_item(request):
             f"{API_BASE_URL}/items/admin/", headers=headers, json=payload
         )
         if response.status_code == 200:
+            messages.success(request, "_(Item successfully added)")
             return redirect("upload_image", item_sku)
+        if response.text == "SKU exists":
+            error = _("Error, SKU already exists")
+        else:
+            error = _("API error")
         return render(
             request,
             "add_item.html",
             {
                 "range": range(1, 5),
                 "categories": CATEGORIES["EN"],
-                "error": "API error",
+                "error": error,
             },
         )
     else:
