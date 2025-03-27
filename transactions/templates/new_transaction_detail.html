@@ -3,6 +3,10 @@
 {% block title %}Transaction{% endblock %}
 {% block content %}
 <div class="container text-center">
+<div id="successAlert" class="alert alert-success alert-dismissible fade show alert-custom" role="alert" style="display: none;">
+    {% trans "Item added successfully!" %}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
     <form id="edit-form" class="mb-2" method="post">
     {% csrf_token %}
     <div class="container">
@@ -200,6 +204,12 @@
   </div>
 </div>
 <script>
+        function showSuccessAlert() {
+            successAlert.style.display = "block";  // Show alert
+            setTimeout(() => {
+                successAlert.style.display = "none"; // Hide after 3 seconds
+            }, 3000);
+        }
         function addItemToTransaction(sku, name, price) {
             let newRow = document.createElement("tr");
             uuid = `new-${crypto.randomUUID()}`
@@ -260,6 +270,7 @@
             uuids.push(uuid);
             calculateTotal(uuid);
             saveButton.style.display = "inline-block";
+            showSuccessAlert();
         }
 
         function deleteItem(event, uuid) {
@@ -321,6 +332,8 @@
             document.getElementById(`transportPercent`).textContent = (transportPercent*100).toFixed(2);
             {% endif %}
         }
+
+        const successAlert = document.getElementById("successAlert");
 
         {% if transaction.status == "PROGNOSE" %}
 
@@ -432,6 +445,15 @@
             }
         });
 
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                let searchModal = document.getElementById("searchModal");
+                if (searchModal.classList.contains("show")) {
+                    event.preventDefault();
+                    document.getElementById("searchBtn").click();
+                }
+            }
+        });
         document.getElementById("searchBtn").addEventListener("click", function (event) {
             event.preventDefault();
 
