@@ -12749,4 +12749,29 @@ fieldset:disabled .btn {
   padding-bottom: auto;
 }
 
-/*# sourceMappingURL=bootstrap.css.map */
+@page {
+  size: A4;
+  margin: 2cm;
+}
+
+.watermark {
+  position: fixed;
+  top: -200px;
+  left: -400px;
+  width: 200%;
+  height: 200%;
+  background-repeat: repeat;
+  background-size: 1200px auto; /* Adjust size */
+  opacity: 0.1; /* Light watermark */
+  z-index: 2; /* Behind content */
+  transform: rotate(20deg);
+}
+
+.text-info {
+  font-size: 12pt;
+  color: #b3b3b3 !important;
+}
+
+.text-head {
+  font-size: 10pt;
+}

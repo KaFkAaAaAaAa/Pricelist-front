@@ -6,16 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>{% block title %}document{% endblock %}</title>
     {% load i18n %}
+    <style>
+        .watermark {
+            background-image: url("{{ images_root }}/images/alku-logo-2013-10-17.jpg"); /* Absolute path */
+        }
+    </style>
 </head>
 <body>
+<div class="watermark"></div>
 <div class="container-fluid">
     <div class="row my-2">
         <div class="col-9">
             <img src="{{ images_root }}/images/alku-logo-2013-10-17.jpg" alt="ALKU-GMBH" class="img"/>
         </div>
-        <div class="col-3 pe-2">
-            <h1>Prognose</h1>
-        </div>
+        <!-- <div class="col-3 pe-2"> -->
+        <!--     <h1>{% trans "Prognose" %}</h1> -->
+        <!-- </div> -->
     </div>
 </div>
 <hr>
@@ -51,24 +57,23 @@
     <div class="row mt-5">
         <div class="col-6">
             <p class="head"><strong>{% trans "Shipping costs" %}:</strong> <b class="unit">{{ transactionDetails.transportCost|floatformat:2 }} €</b></p>
-            <p class="head"><strong>{% trans "Transport cost per kg" %}:</strong> <b class="unit">{{ transport.transportPerKg|floatformat:2 }} €</b></p>
-            <p class="head"><strong>{% trans "Transport costs as a percentage of delivery value" %}:</strong> <b class="unit">{{ transport.transportPerKg|floatformat:2 }}%</b></p>
+            <p class="head"><strong>{% trans "c/k" %}:</strong> <b class="unit">{{ transport.transportPerKg|floatformat:2 }} €</b></p>
+            <p class="head"><strong>{% trans "c/v" %}:</strong> <b class="unit">{{ transport.transportPerKg|floatformat:2 }}%</b></p>
         </div>
     </div>
 
     <div class="text-end mt-4">
-            <h4 class="fw-semibold">{% trans "Prognose of " %}{{ date|date:"d-m-Y H:i" }}</h4>
+            <h4 class="fw-semibold">{% trans "Prognose of" %} {{ date|date:"d-m-Y H:i" }}</h4>
     </div>
 
-    <table class="table table-bordered mt-2 mb-3 table-striped">
-        <thead>
+    <table class="table table-bordered mt-2 mb-6 table-striped">
+        <thead class="text-head">
         <tr class="text-center">
             <th scope="col"></th>
             <th scope="col">{% trans "SKU" %}</th>
             <th scope="col">{% trans "Product" %}</th>
-            <th scope="col">{% trans "Amount" %}</th>
+            <th scope="col">{% trans "Amount" %} [kg]</th>
             <th scope="col">{% trans "Price" %}</th>
-            <th scope="col">{% trans "With transport" %}</th>
             <th scope="col">{% trans "Total" %}</th>
         </tr>
         </thead>
@@ -76,15 +81,14 @@
         {% for item in transaction.itemsOrdered %}
             <tr>
                 <td>
-                    <img class="py-1" src="{{ base_url }}/images/{{ item.sku }}.M.jpg" alt="" class="img"
+                    <img class="py-1 img" src="{{ base_url }}/images/{{ item.sku }}.M.jpg" alt="" class="img"
                         style="width: 50px; height: auto; vertical-align: middle;"/>
                 </td>
-                <td>{{ item.sku }}</td>
-                <td>{{ item.name }}</td>
-                <td class="unit text-end">{{ item.amount }} kg</td>
-                <td class="unit text-end">{{ item.price }} €</td>
-                <td class="unit text-end">{{ item.price_per_kg|floatformat:2 }} €</td>
-                <td class="unit text-end">{{ item.total|floatformat:2 }} €</td>
+                <td class="px-1">{{ item.sku }}</td>
+                <td class="px-1 text-start">{{ item.name }}</td>
+                <td class="unit text-end px-1">{{ item.amount }}</td>
+                <td class="unit text-end px-1">{{ item.price }}</td>
+                <td class="unit text-end px-1">{{ item.total|floatformat:2 }}€</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -111,6 +115,10 @@
             <p class="text-end pe-1 align-text-bottom"><span class="unit">{{ total.wTransport|floatformat:2 }} €</span></p>
         </div>
     </div>
+<div class="fixed-bottom pb-5">
+    <p class="text-info">{% trans "c/k - transport cost per kg" %}</p>
+    <p class="text-info">{% trans "c/v - transport cost per delivery value" %}</p>
+</div>                   
     {% include "pdf_footer.html" %}
 </div>
 </body>

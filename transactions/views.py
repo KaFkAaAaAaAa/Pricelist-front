@@ -248,7 +248,6 @@ def add_new_item_to_transaction(request, transaction_uuid):
                 "amount": _amount_to_store(form.cleaned_data["amount"]),
                 "additionalInfo": form.cleaned_data["additionalInfo"],
             }
-            print(payload)
             admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
             response = requests.post(
                 f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/add-item/",
@@ -636,15 +635,16 @@ def print_prognose(request, data):
 
 
 def print_final(request, data):
+    data["prognose_date"] = _parse_date(data["transaction"]["statusHistory"][-2]["time"])
     data["total"]["alku"] = 0
-    data["total"]["price"] = 0
+    data["total"]["alku_price"] = 0
     for item in data["transaction"]["itemsOrdered"]:
         item["alku"] = _amount_to_float(
             data["transactionDetails"]["alkuAmount"][item["uuid"]]
         )
         item["total"] = item["alku"] * float(item["price"])
         data["total"]["alku"] += item["alku"]
-        data["total"]["price"] += item["total"]
+        data["total"]["alku_price"] += item["total"]
     return generate_pdf(request, "pdf_final.html", data)
 
 
@@ -689,6 +689,7 @@ def create_prognose(request, data, headers):
     plates = []
 
     if request.method == "POST":
+        __import__('pdb').set_trace()
         form = PrognoseFrom(request.POST)
         if form.is_valid():
             plates = (
@@ -842,20 +843,15 @@ def new_transaction_detail(request, transaction_uuid):
     admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
 
     if request.method == "POST":
+        __import__('pdb').set_trace()
         items, alku = _parse_transaction_edit_items(request)
-        payload = {"itemsOrdered": items}
-        _, error = _make_api_request(
-            f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
-            method=requests.put,
-            headers=headers,
-            body=payload,
-        )
+        payload_transaction = {"itemsOrdered": items}
         if "plates_list" in request.POST.keys():
             payload = {
                 "informations": {
-                    "delivery_date": "2025-03-28",
+                    "delivery_date": request.POST["delivery_date"],
                     "delivery_info": request.POST["delivery_info"],
-                    "prognose_info": request.POST["prognose_info"],
+                    "prognose_info": request.POST["description"],
                 },
                 "transportCost": request.POST["transport"],
                 "plates": request.POST["plates_list"].split(","),
@@ -868,8 +864,12 @@ def new_transaction_detail(request, transaction_uuid):
             )
             if error:
                 return error
-        if alku:
-            payload = {"alkuAmount": alku}
+        elif alku:
+            payload = {
+                    "alkuAmount": alku,
+                    "informations": {
+                        "final_info": request.POST["description"],
+                    }}
             _, error = _make_api_request(
                 f"{API_BASE_URL}/transaction-details/{admin_url}{transaction_uuid}/",
                 method=requests.put,
@@ -878,6 +878,14 @@ def new_transaction_detail(request, transaction_uuid):
             )
             if error:
                 return error
+        else:
+            payload_transaction["description"] = request.POST["description"]
+        _, error = _make_api_request(
+            f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
+            method=requests.put,
+            headers=headers,
+            body=payload_transaction,
+        )
 
     transaction, error = _make_api_request(
         f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/", headers=headers

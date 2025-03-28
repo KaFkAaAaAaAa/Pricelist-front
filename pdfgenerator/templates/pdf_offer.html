@@ -6,8 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>{% block title %}document{% endblock %}</title>
     {% load i18n %}
+    <style>
+        .watermark {
+            background-image: url("{{ images_root }}/images/alku-logo-2013-10-17.jpg"); /* Absolute path */
+        }
+    </style>
 </head>
 <body>
+<div class="watermark"></div>
 <div class="container-fluid">
     <div class="row my-2 d-flex">
         <div class="col-6 align-items-start">
@@ -31,10 +37,10 @@
         </div>
     </div>
     <div class="text-end">
-        <h4>{% trans "Offer of " %}{{ date|date:"d-m-Y H:i" }}</h4>
+        <h4>{% trans "Offer of" %} {{ date|date:"d-m-Y H:i" }}</h4>
     </div>
 
-    <table class="table table-bordered mt-2 table-striped text-center">
+    <table class="table table-bordered mt-2 mb-6 table-striped text-center">
         <thead>
         <tr>
             <th scope="col"></th>
@@ -45,30 +51,33 @@
             <th scope="col">{% trans "Sum" %}</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody class="tbody-text">
         {% for item in transaction.itemsOrdered %}
             <tr>
                 <td>
-                    <img src="{{ base_url }}/images/{{ item.sku }}.M.jpg" alt="" class="img"
-                        style="width: 60px; height: auto; vertical-align: middle;"/>
+                    <img class="py-1 img" src="{{ base_url }}/images/{{ item.sku }}.M.jpg" alt=""
+                        style="width: 50px; height: auto; vertical-align: middle;"/>
                 </td>
-                <td>{{ item.sku }}</td>
-                <td>{{ item.name }}</td>
-                <td class="unit text-end">{{ item.amount }}</td>
-                <td class="unit text-end">{{ item.price }}</td>
-                <td class="unit text-end">{{ item.total|floatformat:2 }} €</td>
+                <td class="px-1">{{ item.sku }}</td>
+                <td class="text-start px-1">{{ item.name }}</td>
+                <td class="unit text-end px-1">{{ item.amount }}</td>
+                <td class="unit text-end px-1">{{ item.price }}</td>
+                <td class="unit text-end px-1">{{ item.total|floatformat:2 }} €</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-    <p class="paragraph">Shipping costs are covered by the buyer</p>
-    <p class="paragraph">Payment deadline - 7 business days from delivery</p>
-    <hr>
-    <div class="d-flex justify-content-end">
-        <p class="unit"><strong>{% trans "Total price" %}:</strong> {{ total.price|floatformat:2 }} €</p>
+    <div class="mt-5">
+        <p class="paragraph">{{ transaciton.description }}</p>
     </div>
-    <div class="d-flex justify-content-end">
-        <p class="unit"><strong>{% trans "Total amount" %}:</strong> {{ total.mass|floatformat:1 }} kg</p>
+    <hr>
+    <div class="row my-2 fs-6">
+        <div class="d-flex justify-content-end">
+            <p class="unit"><strong>{% trans "Total price" %}:</strong> {{ total.price|floatformat:2 }} €</p>
+        </div>
+        <div class="d-flex justify-content-end">
+            <p class="unit"><strong>{% trans "Total amount" %}:</strong> {{ total.mass|floatformat:1 }} kg</p>
+        </div>
     </div>
     {% include "pdf_footer.html" %}
 </div>

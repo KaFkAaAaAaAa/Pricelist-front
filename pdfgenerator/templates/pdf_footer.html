@@ -9,8 +9,14 @@
   </div>
   <div class="row text-center">
     <p>
-      <strong>e-mail:</strong> pawel.zubrzycki@alku-gmbh.de
-      <strong>tel:</strong> +49 151 21402684
+      <strong>e-mail:</strong>
+      {% if transaction.client.clientAdmin.userEmail %}
+      {{transaction.client.clientAdmin.userEmail}} {% else %}
+      pawel.zubrzycki@alku-gmbh.de {% endif %}
+      <strong>tel:</strong>
+      {% if transaction.client.clientAdmin.userEmail %}
+      {{transaction.client.clientAdmin.userTelephoneNumber}} {% else %}
+      +4915121402684 {% endif %}
     </p>
   </div>
 </div>

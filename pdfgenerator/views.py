@@ -141,7 +141,7 @@ def generate_pdf(request, template, data, filename="document"):
         pdf_file_path,
         stylesheets=[
             CSS(
-                filename=str(STATICFILES_DIRS[0]) + "/css/bootstrap.css",
+                filename=str(STATICFILES_DIRS[0]) + "/css/bootstrap-pdf.css",
                 font_config=font_conf,
             ),
             # CSS(
