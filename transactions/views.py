@@ -5,7 +5,7 @@ from http.client import INTERNAL_SERVER_ERROR
 from math import floor
 
 import requests
-from django.http import (HttpResponse, HttpResponseBadRequest,
+from django.http import (HttpResponseBadRequest,
                          HttpResponseNotFound, HttpResponseServerError)
 from django.http.response import HttpResponseForbidden
 from django.shortcuts import redirect, render
@@ -607,6 +607,8 @@ def print_transaciton(request, transaction_uuid):
     if status == "PROGNOSE":
         return print_prognose(request, data)
     if status == "FINAL":
+        if admin_url:
+            return print_final_admin(request, data)
         return print_final(request, data)
     if status == "PROPOSITION":
         return HttpResponseBadRequest(b"Proposition cannot be printed")
@@ -625,19 +627,13 @@ def print_prognose(request, data):
     data["transport"] = {}
     data["transport"]["transportPerKg"] = transport / total_amount
     data["transport"]["transportPercent"] = transport / total_price * 100
-    for item in data["transaction"]["itemsOrdered"]:
-        item["price_per_kg"] = float(item["price"]) * (
-            1 + data["transport"]["transportPerKg"]
-        )
-        item["price_per_kg"] = item["price_per_kg"]
     data["total"]["wTransport"] = transport + total_price
     return generate_pdf(request, "pdf_prognose.html", data)
 
 
 def print_final(request, data):
     data["prognose_date"] = _parse_date(data["transaction"]["statusHistory"][-2]["time"])
-    data["total"]["alku"] = 0
-    data["total"]["alku_price"] = 0
+    data["total"]["alku"], data["total"]["alku_price"] = 0, 0
     for item in data["transaction"]["itemsOrdered"]:
         item["alku"] = _amount_to_float(
             data["transactionDetails"]["alkuAmount"][item["uuid"]]
@@ -647,6 +643,23 @@ def print_final(request, data):
         data["total"]["alku_price"] += item["total"]
     return generate_pdf(request, "pdf_final.html", data)
 
+def print_final_admin(request, data):
+    data["prognose_date"] = _parse_date(data["transaction"]["statusHistory"][-2]["time"])
+    transport = data["transactionDetails"]["transportCost"]
+    data["total"]["amount"], data["total"]["price"] = 0, 0
+    for item in data["transaction"]["itemsOrdered"]:
+        item["alku"] = _amount_to_float(data["transactionDetails"]["alkuAmount"][item["uuid"]])
+        item["total"] = item["alku"] * float(item["price"])
+        data["total"]["amount"] += item["alku"]
+        data["total"]["price"] += item["total"]
+    data["transport"] = {}
+    data["transport"]["transportPerKg"] = transport / data["total"]["amount"]
+    data["transport"]["transportPercent"] = transport / data["total"]["price"] * 100 
+    for item in data["transaction"]["itemsOrdered"]:
+        item["total_transport"] = (1 + data["transport"]["transportPercent"] / 100) * item["total"]
+        item["price_transport"] = item["total_transport"] / item["alku"]
+    data["total"]["price_transport"] = transport + data["total"]["price"]
+    return generate_pdf(request, "pdf_final_admin.html", data)
 
 def delete_transaction(request, transaction_uuid):
     token = request.session.get("token")
@@ -843,7 +856,6 @@ def new_transaction_detail(request, transaction_uuid):
     admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
 
     if request.method == "POST":
-        __import__('pdb').set_trace()
         items, alku = _parse_transaction_edit_items(request)
         payload_transaction = {"itemsOrdered": items}
         if "plates_list" in request.POST.keys():

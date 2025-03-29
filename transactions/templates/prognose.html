@@ -94,14 +94,14 @@
             </tr>
         </tbody>
     </table>
-    <hr class="hr" />
+    <hr class="hr"/>
     <div class="container text-end">
         <div class="col">
             <div class="row">{% trans "Stated weight" %}: <p class="text-end">{{ transaction.totals.mass }} kg</p></div>
         </div>
         <div class="col">
             <div class="row">{% trans "Delivery price" %}: <p class="text-end">{{ transaction.totals.price }} kg</p></div>
-            <div class="row">{% trans "Delivery price including transport" %}: <p class="text-end">{{ transaction.totals.priceTransport }} kg</p></div>
+            <div class="row">{% trans "incl. transport" %}: <p class="text-end">{{ transaction.totals.priceTransport }} kg</p></div>
         </div>
     </div>
 
