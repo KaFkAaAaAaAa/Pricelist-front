@@ -23,9 +23,6 @@
             class="img"
           />
         </div>
-        <!-- <div class="col-3 pe-2"> -->
-        <!--     <h1>{% trans "Prognose" %}</h1> -->
-        <!-- </div> -->
       </div>
     </div>
     <hr />
@@ -72,7 +69,6 @@
       <table class="table table-bordered mt-2 mb-6 table-striped">
         <thead class="text-head">
           <tr class="text-center">
-            <th scope="col"></th>
             <th scope="col">{% trans "SKU" %}</th>
             <th scope="col">{% trans "Product" %}</th>
             <th scope="col">{% trans "Alku" %} [kg]</th>
@@ -85,20 +81,11 @@
         <tbody class="text-center">
           {% for item in transaction.itemsOrdered %}
           <tr>
-            <td>
-              <img
-                class="py-1 img"
-                src="{{ base_url }}/images/{{ item.sku }}.M.jpg"
-                alt=""
-                class="img"
-                style="width: 50px; height: auto; vertical-align: middle"
-              />
-            </td>
             <td class="px-1">{{ item.sku }}</td>
             <td class="px-1 text-start">{{ item.name }}</td>
-            <td class="unit text-end px-1">{{ item.alku }}</td>
-            <td class="unit text-end px-1">{{ item.price }}</td>
-            <td class="unit text-end px-1">{{ item.price_transport }}</td>
+            <td class="unit text-end px-1">{{ item.alku|floatformat:1 }}</td>
+            <td class="unit text-end px-1">{{ item.price|floatformat:2 }}</td>
+            <td class="unit text-end px-1">{{ item.price_transport|floatformat:2 }}</td>
             <td class="unit text-end px-1">{{ item.total|floatformat:2 }}€</td>
             <td class="unit text-end px-1">
               {{ item.total_transport|floatformat:2 }}€

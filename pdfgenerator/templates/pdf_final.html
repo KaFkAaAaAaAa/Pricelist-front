@@ -47,7 +47,6 @@
     <table class="table table-bordered mt-2 mb-6 table-striped">
         <thead>
         <tr class="text-center">
-            <th scope="col"></th>
             <th scope="col">{% trans "SKU" %}</th>
             <th scope="col">{% trans "Product" %}</th>
             <th scope="col">{% trans "Amount [kg]" %}</th>
@@ -59,15 +58,11 @@
         <tbody class="tbody-text">
         {% for item in transaction.itemsOrdered %}
             <tr>
-                <td>
-                    <img class="py-1 img" src="{{ base_url }}/images/{{ item.sku }}.M.jpg" alt=""
-                        style="width: 50px; height: auto; vertical-align: middle;"/>
-                </td>
                 <td class="px-1">{{ item.sku }}</td>
                 <td class="text-start px-1">{{ item.name }}</td>
-                <td class="unit text-end px-1">{{ item.amount }}</td>
-                <td class="unit text-end px-1">{{ item.alku }}</td>
-                <td class="unit text-end px-1">{{ item.price }}</td>
+                <td class="unit text-end px-1">{{ item.amount|floatformat:1 }}</td>
+                <td class="unit text-end px-1">{{ item.alku|floatformat:1 }}</td>
+                <td class="unit text-end px-1">{{ item.price|floatformat:2 }}</td>
                 <td class="unit text-end px-1">{{ item.total|floatformat:2 }} €</td>
             </tr>
         {% endfor %}
