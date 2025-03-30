@@ -157,8 +157,16 @@
                 </tr>
             </tfoot>
     </table>
-        <label for="description" class="form-label">{% trans "Additional informations" %}:</label>
-        <textarea class="form-control mb-3" id="description" name="description">{{ transaction.description }}</textarea>
+    <div class="row">
+                <label for="description" class="form-label">{% trans "Additional informations" %}:</label>
+            <div class="col-11">
+                <textarea class="form-control mb-3" id="description" name="description" rows="3">{{ transaction.description }}</textarea>
+            </div>
+            <div class="col-1">
+                <button type="button" id="EXW" class="btn btn-outline-secondary">EXW</button>
+                <button type="button" id="DDP" class="btn btn-outline-secondary">DDP</button>
+            </div>
+    </div>
     <input id="saveButton" class="btn btn-success" style="display: none;" type=submit value="{% trans "Save changes" %}">
     <a class="btn btn-outline-primary" href="/transactions/{{transaction.uuid}}/change-status/">{% trans "Change status" %}</a>
     <a class="btn btn-outline-secondary" href="/transactions/{{transaction.uuid}}/print/" target="_blank">{% trans "Print" %}</a>
@@ -507,6 +515,13 @@
                 .catch(error => console.error("Error fetching items: " + error));
         });
 
+    
+        document.getElementById("EXW").addEventListener("click", function (event) {
+            document.getElementById("description").value = "{% trans "- Shipping costs are covered by the buyer.\n - Payment deadline - 7 business days from delivery." %}" 
+        });
 
+        document.getElementById("DDP").addEventListener("click", function (event) {
+            document.getElementById("description").value = "{% trans "- Delivered to Alku offices." %}" 
+        });
 </script>
 {% endblock %}
