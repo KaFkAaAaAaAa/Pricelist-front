@@ -15,6 +15,7 @@ urlpatterns = (
         path("pdf/", include("pdfgenerator.urls")),
         path("profile/", views.profile, name="profile"),
         path("login/", views.login_view, name="login"),
+        path("reset-password/", views.reset_password, name="reset_password"),
         path("logout/", views.logout_view, name="logout"),
         path("register/", views.register_view, name="register"),
         path("change/", views.change_password, name="change_password"),

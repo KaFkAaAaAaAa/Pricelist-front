@@ -659,3 +659,15 @@ def change_password(request):
             {"form": form},
         )
     return render(request, "change_password.html", {"form": form})
+
+def reset_password(request):
+    if request.method == "POST":
+        payload = { "userEmail": request.POST["email"] }
+        text, error = _make_api_request(f"{API_BASE_URL}/auth/reset-password", requests.post, json=payload)
+        if error:
+            messages.error(_("Invalid email"))
+        elif text == "success":
+            messages.success(_("Message sent, check your spam folder"))
+        else:
+            messages.error(_("Unknown error"))
+    return render(request, "reset_password.html")
