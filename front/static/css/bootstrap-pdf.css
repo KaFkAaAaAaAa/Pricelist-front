@@ -12775,3 +12775,14 @@ fieldset:disabled .btn {
 .text-head {
   font-size: 10pt;
 }
+
+footer {
+  position: fixed;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  margin-bottom: -20mm;
+  height: 20mm;
+  text-align: center;
+  font-size: 10px;
+}
