@@ -35,13 +35,13 @@ def _amount_to_display(amount: float) -> str:
 
 
 def _amount_to_store(amount: str) -> int:
-    if amount in ('', '0', False):
+    if amount in ("", "0", False):
         amount = "0"
     return int(floor(float(amount) * 10)) if amount else 0
 
 
 def _price_to_store(price: str) -> int:
-    if price in ('', '0', False):
+    if price in ("", "0", False):
         price = "0"
     return int(floor(float(price) * 100)) if price else 0
 
@@ -322,6 +322,10 @@ def new_admin(request, msg=None):
     else:
         form = NewAdminForm()
     return render(request, "new_admin.html", {"form": form, "msg": msg})
+
+
+def verify_registration(request):
+    return render(request, "verify_registration.html")
 
 
 def my_users(request, msg="", func="activate-user"):
@@ -664,10 +668,13 @@ def change_password(request):
         )
     return render(request, "change_password.html", {"form": form})
 
+
 def reset_password(request):
     if request.method == "POST":
-        payload = { "userEmail": request.POST["email"] }
-        text, error = _make_api_request(f"{API_BASE_URL}/auth/reset-password", requests.post, json=payload)
+        payload = {"userEmail": request.POST["email"]}
+        text, error = _make_api_request(
+            f"{API_BASE_URL}/auth/reset-password", requests.post, json=payload
+        )
         if error:
             messages.error(_("Invalid email"))
         elif text == "success":

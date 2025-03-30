@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.conf.urls.i18n import set_language
 from django.conf.urls.static import static
-
 from django.urls import include, path
 
 from admin import admin_views
@@ -16,6 +15,11 @@ urlpatterns = (
         path("profile/", views.profile, name="profile"),
         path("login/", views.login_view, name="login"),
         path("reset-password/", views.reset_password, name="reset_password"),
+        path(
+            "verify-registration/",
+            views.verify_registration,
+            name="verify_registration",
+        ),
         path("logout/", views.logout_view, name="logout"),
         path("register/", views.register_view, name="register"),
         path("change/", views.change_password, name="change_password"),
