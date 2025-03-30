@@ -59,8 +59,8 @@
                 </td>
                 <td class="px-1">{{ item.sku }}</td>
                 <td class="text-start px-1">{{ item.name }}</td>
-                <td class="unit text-end px-1">{{ item.amount }}</td>
-                <td class="unit text-end px-1">{{ item.price }}</td>
+                <td class="unit text-end px-1">{{ item.amount|floatformat:1 }}</td>
+                <td class="unit text-end px-1">{{ item.price|floatformat:2 }}</td>
                 <td class="unit text-end px-1">{{ item.total|floatformat:2 }} €</td>
             </tr>
         {% endfor %}

@@ -30,7 +30,7 @@
         <div class="col-6">
             <h4>{{ transaction.client.clientCompanyName }}</h4>
             <h4>{{ transaction.client.clientStreet }}</h4>
-          <h4>{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</h4>
+            <h4>{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</h4>
             <h4>{{ transaction.client.clientCountry }}</h4>
         </div>
         <div class="col-6 text-end">
@@ -87,7 +87,7 @@
                 <td class="px-1 text-start">{{ item.name }}</td>
                 <td class="unit text-end px-1">{{ item.amount }}</td>
                 <td class="unit text-end px-1">{{ item.price }}</td>
-                <td class="unit text-end px-1">{{ item.total|floatformat:2 }}€</td>
+                <td class="unit text-end px-1">{{ item.total|floatformat:2 }} €</td>
             </tr>
         {% endfor %}
         </tbody>

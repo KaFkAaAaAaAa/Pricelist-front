@@ -132,7 +132,7 @@ def final_offer(request):
 def generate_pdf(request, template, data, filename="document"):
     """generate pdf response"""
 
-    data["base_url"] = "file://" + str(BASE_DIR)
+    data["images_root"] = "file://" + str(BASE_DIR)
     html_string = render_to_string(template, data)
     font_conf = FontConfiguration()
 
