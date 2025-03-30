@@ -95,9 +95,6 @@
         </tbody>
       </table>
 
-      <div>{{ transactionDetails.informations.transaction_info }}</div>
-
-      <hr />
       <div class="row my-2 fs-6">
         <div class="col-4">
           <p class="unit"><b>{% trans "Declared weight" %}: </b></p>
@@ -121,6 +118,8 @@
         </div>
       </div>
       <div class="pt-5">
+      <div>{{ transactionDetails.informations.transaction_info }}</div>
+      <hr />
         <p class="text-info">{% trans "c/k - transport cost per kg" %}</p>
         <p class="text-info">
           {% trans "c/v - transport cost per delivery value" %}

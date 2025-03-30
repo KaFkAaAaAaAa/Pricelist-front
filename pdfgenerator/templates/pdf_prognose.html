@@ -90,11 +90,7 @@
         </tbody>
     </table>
 
-    <div class="mt-5">
-        {{ transactionDetails.informations.prognose_info }}
-    </div>
 
-    <hr>
     <div class="row my-2 fs-6">
         <div class="col-4">
             <p class="unit"><b>{% trans "Declared weight" %}: </b></p>
@@ -110,6 +106,10 @@
             <p class="text-end pe-1">{{ total.price }} €</p>
             <p class="text-end pe-1 align-text-bottom"><span class="unit">{{ total.wTransport|floatformat:2 }} €</span></p>
         </div>
+    </div>
+    <hr>
+    <div class="mt-5">
+        {{ transactionDetails.informations.prognose_info }}
     </div>
 <div class="pt-5">
     <p class="text-info">{% trans "c/k - transport cost per kg" %}</p>

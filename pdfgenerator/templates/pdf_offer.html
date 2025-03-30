@@ -20,7 +20,7 @@
             <img src="{{ images_root }}/images/alku-logo-2013-10-17.jpg" alt="ALKU-GMBH" class="img"/>
         </div>
         <div class="col-6 align-items-end">
-            <h3 class="opacity-75">Recycling and reclamation as the basic principle of the company</h3>
+            <h4 class="text-end opacity-75">Recycling and reclamation as the basic principle of the company</h4>
         </div>
     </div>
 
@@ -66,9 +66,6 @@
         {% endfor %}
         </tbody>
     </table>
-    <div class="mt-5">
-        <p class="paragraph">{{ transaction.description }}</p>
-    </div>
     <hr>
     <div class="row my-2 fs-6">
         <div class="d-flex justify-content-end">
@@ -77,6 +74,9 @@
         <div class="d-flex justify-content-end">
             <p class="unit"><strong>{% trans "Total amount" %}:</strong> {{ total.mass|floatformat:1 }} kg</p>
         </div>
+    </div>
+    <div class="mt-5">
+        <p class="paragraph">{{ transaction.description }}</p>
     </div>
     {% include "pdf_footer.html" %}
 </div>
