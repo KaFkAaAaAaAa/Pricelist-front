@@ -702,7 +702,6 @@ def create_prognose(request, data, headers):
     plates = []
 
     if request.method == "POST":
-        __import__('pdb').set_trace()
         form = PrognoseFrom(request.POST)
         if form.is_valid():
             plates = (

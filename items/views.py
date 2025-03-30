@@ -247,7 +247,6 @@ def edit_item(request, item_sku):
         response = requests.put(
             f"{API_BASE_URL}/items/admin/{item_sku}", headers=headers, json=payload
         )
-        __import__("pdb").set_trace()
         if response.status_code == 200:
             messages.success(request, _("Item edited successfully"))
             return redirect("item_list")
