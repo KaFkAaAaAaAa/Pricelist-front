@@ -20,7 +20,7 @@
             <img src="{{ images_root }}/images/alku-logo-2013-10-17.jpg" alt="ALKU-GMBH" class="img"/>
         </div>
         <div class="col-6 align-items-end">
-            <h3>Recycling and reclamation as the basic principle of the company</h3>
+            <h3 class="opacity-75">Recycling and reclamation as the basic principle of the company</h3>
         </div>
     </div>
 
@@ -29,10 +29,10 @@
 <div class="container mt-3">
     <div class="row">
         <div class="col-6">
-            <h4>{{ transaction.client.clientCompanyName }}</h4>
-            <h4>{{ transaction.client.clientStreet }}</h4>
-          <h4>{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</h4>
-            <h4>{{ transaction.client.clientCountry }}</h4>
+            <div class="row fw-bold">{{ transaction.client.clientCompanyName }}</div>
+            <div class="row fw-bold">{{ transaction.client.clientStreet }}</div>
+            <div class="row fw-bold">{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</div>
+            <div class="row fw-bold">{{ transaction.client.clientCountry }}</div>
         </div>
     </div>
     <div class="text-end">
@@ -45,7 +45,7 @@
             <th scope="col"></th>
             <th scope="col">{% trans "SKU" %}</th>
             <th scope="col">{% trans "Product" %}</th>
-            <th scope="col">{% trans "Amount [kg]" %}</th>
+            <th scope="col">{% trans "Amount" %}</th>
             <th scope="col">{% trans "Price" %}</th>
             <th scope="col">{% trans "Sum" %}</th>
         </tr>
