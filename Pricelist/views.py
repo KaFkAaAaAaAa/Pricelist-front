@@ -35,10 +35,14 @@ def _amount_to_display(amount: float) -> str:
 
 
 def _amount_to_store(amount: str) -> int:
+    if amount in ('', '0', False):
+        amount = "0"
     return int(floor(float(amount) * 10)) if amount else 0
 
 
 def _price_to_store(price: str) -> int:
+    if price in ('', '0', False):
+        price = "0"
     return int(floor(float(price) * 100)) if price else 0
 
 

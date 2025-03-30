@@ -57,7 +57,7 @@
         <div class="col-6">
             <p class="head"><strong>{% trans "Shipping costs" %}:</strong> <b class="unit">{{ transactionDetails.transportCost|floatformat:2 }} €</b></p>
             <p class="head"><strong>{% trans "c/k" %}:</strong> <b class="unit">{{ transport.transportPerKg|floatformat:2 }} €</b></p>
-            <p class="head"><strong>{% trans "c/v" %}:</strong> <b class="unit">{{ transport.transportPerKg|floatformat:2 }}%</b></p>
+            <p class="head"><strong>{% trans "c/v" %}:</strong> <b class="unit">{{ transport.transportPercent|floatformat:2 }}%</b></p>
         </div>
     </div>
 
