@@ -19,19 +19,16 @@
         <div class="col-9">
             <img src="{{ images_root }}/images/alku-logo-2013-10-17.jpg" alt="ALKU-GMBH" class="img"/>
         </div>
-        <!-- <div class="col-3 pe-2"> -->
-        <!--     <h1>{% trans "Prognose" %}</h1> -->
-        <!-- </div> -->
     </div>
 </div>
 <hr>
 <div class="container mt-3">
     <div class="row">
         <div class="col-6">
-            <h4>{{ transaction.client.clientCompanyName }}</h4>
-            <h4>{{ transaction.client.clientStreet }}</h4>
-            <h4>{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</h4>
-            <h4>{{ transaction.client.clientCountry }}</h4>
+            <div class="fw-bold">{{ transaction.client.clientCompanyName }}</div>
+            <div class="fw-bold">{{ transaction.client.clientStreet }}</div>
+            <div class="fw-bold">{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</div>
+            <div class="fw-bold">{{ transaction.client.clientCountry }}</div>
         </div>
         <div class="col-6 text-end">
             <h3 class="fw-semibold">Delivery date:</h3>
