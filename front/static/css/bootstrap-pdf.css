@@ -12755,6 +12755,7 @@ fieldset:disabled .btn {
 @page {
   size: A4;
   margin: 2cm;
+  margin-bottom: 3cm;
 }
 
 .watermark {
@@ -12784,8 +12785,7 @@ footer {
   right: 0;
   left: 0;
   bottom: -30mm;
-  margin-bottom: -30mm;
-  height: 20mm;
+  height: 30;
   text-align: center;
   font-size: 10px;
 }
