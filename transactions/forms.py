@@ -11,7 +11,6 @@ class StatusForm(forms.Form):
         super().__init__(*args, **kwargs)
         if init_status.upper() not in STATUSES:
             raise ValueError
-        __import__("pdb").set_trace()
         if init_status == "FINAL":
             return
         self.fields["select_status"].choices = [
