@@ -5,19 +5,29 @@ from http.client import INTERNAL_SERVER_ERROR
 from math import floor
 
 import requests
-from django.http import (HttpResponseBadRequest,
-                         HttpResponseNotFound, HttpResponseServerError)
+from django.http import (
+    HttpResponseBadRequest,
+    HttpResponseNotFound,
+    HttpResponseServerError,
+)
 from django.http.response import HttpResponseForbidden
 from django.shortcuts import redirect, render
 
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
 from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS
-from Pricelist.views import (_amount_to_display, _amount_to_float,
-                             _amount_to_store, _api_error_interpreter,
-                             _get_auth, _make_api_request, _price_to_display,
-                             _price_to_float, _price_to_store)
-from transactions.forms import ItemForm, PrognoseFrom
+from Pricelist.views import (
+    _amount_to_display,
+    _amount_to_float,
+    _amount_to_store,
+    _api_error_interpreter,
+    _get_auth,
+    _make_api_request,
+    _price_to_display,
+    _price_to_float,
+    _price_to_store,
+)
+from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
 
 def _calculate_total_mass(item_list, key="amount") -> float:
@@ -307,7 +317,9 @@ def client_transactions(request):
         return redirect("login")
     headers = auth["headers"]
 
-    transactions, error = _make_api_request(f"{API_BASE_URL}/transactions/", headers=headers)
+    transactions, error = _make_api_request(
+        f"{API_BASE_URL}/transactions/", headers=headers
+    )
 
     if error or not transactions:
         return error
@@ -315,8 +327,11 @@ def client_transactions(request):
     for transaction in transactions:
         _set_status(transaction)
         if "itemsOrdered" in transaction.keys():
-            if transaction["status"] == 'FINAL':
-                transaction_details, error = _make_api_request(f"{API_BASE_URL}/transaction-details/{transaction['uuid']}/", headers=headers)
+            if transaction["status"] == "FINAL":
+                transaction_details, error = _make_api_request(
+                    f"{API_BASE_URL}/transaction-details/{transaction['uuid']}/",
+                    headers=headers,
+                )
                 if error or not transaction_details:
                     return error
                 for item in transaction["itemsOrdered"]:
@@ -351,8 +366,11 @@ def admin_transactions(request):
     for transaction in transactions:
         _set_status(transaction)
         if "itemsOrdered" in transaction.keys():
-            if transaction["status"] == 'FINAL':
-                transaction_details, error = _make_api_request(f"{API_BASE_URL}/transaction-details/admin/{transaction['uuid']}/", headers=headers)
+            if transaction["status"] == "FINAL":
+                transaction_details, error = _make_api_request(
+                    f"{API_BASE_URL}/transaction-details/admin/{transaction['uuid']}/",
+                    headers=headers,
+                )
                 if error or not transaction_details:
                     return error
                 for item in transaction["itemsOrdered"]:
@@ -632,7 +650,9 @@ def print_prognose(request, data):
 
 
 def print_final(request, data):
-    data["prognose_date"] = _parse_date(data["transaction"]["statusHistory"][-2]["time"])
+    data["prognose_date"] = _parse_date(
+        data["transaction"]["statusHistory"][-2]["time"]
+    )
     data["total"]["alku"], data["total"]["alku_price"] = 0, 0
     for item in data["transaction"]["itemsOrdered"]:
         item["alku"] = _amount_to_float(
@@ -643,23 +663,31 @@ def print_final(request, data):
         data["total"]["alku_price"] += item["total"]
     return generate_pdf(request, "pdf_final.html", data)
 
+
 def print_final_admin(request, data):
-    data["prognose_date"] = _parse_date(data["transaction"]["statusHistory"][-2]["time"])
+    data["prognose_date"] = _parse_date(
+        data["transaction"]["statusHistory"][-2]["time"]
+    )
     transport = data["transactionDetails"]["transportCost"]
     data["total"]["amount"], data["total"]["price"] = 0, 0
     for item in data["transaction"]["itemsOrdered"]:
-        item["alku"] = _amount_to_float(data["transactionDetails"]["alkuAmount"][item["uuid"]])
+        item["alku"] = _amount_to_float(
+            data["transactionDetails"]["alkuAmount"][item["uuid"]]
+        )
         item["total"] = item["alku"] * float(item["price"])
         data["total"]["amount"] += item["alku"]
         data["total"]["price"] += item["total"]
     data["transport"] = {}
     data["transport"]["transportPerKg"] = transport / data["total"]["amount"]
-    data["transport"]["transportPercent"] = transport / data["total"]["price"] * 100 
+    data["transport"]["transportPercent"] = transport / data["total"]["price"] * 100
     for item in data["transaction"]["itemsOrdered"]:
-        item["total_transport"] = (1 + data["transport"]["transportPercent"] / 100) * item["total"]
+        item["total_transport"] = (
+            1 + data["transport"]["transportPercent"] / 100
+        ) * item["total"]
         item["price_transport"] = item["total_transport"] / item["alku"]
     data["total"]["price_transport"] = transport + data["total"]["price"]
     return generate_pdf(request, "pdf_final_admin.html", data)
+
 
 def delete_transaction(request, transaction_uuid):
     token = request.session.get("token")
@@ -810,6 +838,17 @@ def change_status(request, transaction_uuid):
     totals = _get_stored_item_list_to_display(transaction["itemsOrdered"])
     transaction = _set_status(transaction)
     status = transaction["status"]
+    __import__("pdb").set_trace()
+    if "select_status" in request.GET.keys() and request.GET["select_status"]:
+        if STATUSES.index(request.GET["select_status"].upper()) < STATUSES.index(
+            status
+        ):
+            uuid = transaction["uuid"]
+            response = _make_api_request(
+                f"{API_BASE_URL}/transactions/admin/{uuid}/update-status/?status={request.GET['select_status']}",
+                headers=headers,
+            )
+            return redirect("admin_transaction_detail", uuid)
 
     if admin_url:
         response_client = requests.get(
@@ -877,10 +916,11 @@ def new_transaction_detail(request, transaction_uuid):
                 return error
         elif alku:
             payload = {
-                    "alkuAmount": alku,
-                    "informations": {
-                        "final_info": request.POST["description"],
-                    }}
+                "alkuAmount": alku,
+                "informations": {
+                    "final_info": request.POST["description"],
+                },
+            }
             _, error = _make_api_request(
                 f"{API_BASE_URL}/transaction-details/{admin_url}{transaction_uuid}/",
                 method=requests.put,
@@ -910,10 +950,8 @@ def new_transaction_detail(request, transaction_uuid):
     transaction["totals"] = _get_stored_item_list_to_display(
         transaction["itemsOrdered"],
     )
-    data = {
-        "transaction": transaction,
-        "msg": msg,
-    }
+    form = StatusForm(init_status=transaction["status"])
+    data = {"transaction": transaction, "msg": msg, "form": form}
     if transaction["status"] in ("PROGNOSE", "FINAL"):
         transaction_details, error = _make_api_request(
             f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",

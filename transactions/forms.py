@@ -1,5 +1,30 @@
 from django import forms
+from django.forms.widgets import Widget
 from django.utils.translation import gettext_lazy as _
+
+STATUSES = ["PROPOSITION", "OFFER", "PROGNOSE", "FINAL"]
+
+
+class StatusForm(forms.Form):
+
+    def __init__(self, init_status=STATUSES[0], *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if init_status.upper() not in STATUSES:
+            raise ValueError
+        __import__("pdb").set_trace()
+        if init_status == "FINAL":
+            return
+        self.fields["select_status"].choices = [
+            (s, s.lower())
+            for s in STATUSES
+            if STATUSES.index(s) <= STATUSES.index(init_status.upper()) + 1
+        ]
+        self.fields["select_status"].initial = self.fields["select_status"].choices[-1]
+
+    select_status = forms.ChoiceField(
+        choices=[],
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
 
 
 class ItemForm(forms.Form):

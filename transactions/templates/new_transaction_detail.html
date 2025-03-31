@@ -159,6 +159,7 @@
     </table>
     <div class="row">
                 <label for="description" class="form-label">{% trans "Additional informations" %}:</label>
+            {% if transaction.status == "OFFER" %}
             <div class="col-11">
                 <textarea class="form-control mb-3" id="description" name="description" rows="3">{{ transaction.description }}</textarea>
             </div>
@@ -166,9 +167,12 @@
                 <button type="button" id="EXW" class="btn btn-outline-secondary">EXW</button>
                 <button type="button" id="DDP" class="btn btn-outline-secondary">DDP</button>
             </div>
+            {% else%}
+                <textarea class="form-control mb-3" id="description" name="description" rows="3">{{ transaction.description }}</textarea>
+            {% endif %}
     </div>
     <input id="saveButton" class="btn btn-success" style="display: none;" type=submit value="{% trans "Save changes" %}">
-    <a class="btn btn-outline-primary" href="/transactions/{{transaction.uuid}}/change-status/">{% trans "Change status" %}</a>
+    <button type="button" data-bs-toggle="modal" data-bs-target="#changeStatusModal" class="btn btn-outline-primary">{% trans "Change status" %}</button>
     <a class="btn btn-outline-secondary" href="/transactions/{{transaction.uuid}}/print/" target="_blank">{% trans "Print" %}</a>
     </form>
 </div>
@@ -208,6 +212,26 @@
         <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="addItemToTransaction('', '', 0)">{% trans "Create new item" %}</button>
         <button type="button" class="btn btn-primary" id="searchBtn">{% trans "Search" %}</button>
       </div>
+    </div>
+  </div>
+</div>
+<div class="modal" id="changeStatusModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <form method="GET" action="/transactions/{{ transaction.uuid }}/change-status/">
+          <div class="modal-header">
+            <h5 class="modal-title">{% trans "Change status" %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+                        <label for="id_select_status">{% trans "Change status to" %}:</label>
+                        {{ form.select_status }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            <button type="submit" class="btn btn-primary" id="submit-status">{% trans "Submit" %}</button>
+          </div>
+        </form>
     </div>
   </div>
 </div>
@@ -517,12 +541,12 @@
 
     
         document.getElementById("EXW").addEventListener("click", function (event) {
-            document.getElementById("description").value = "{% trans "- Shipping costs are covered by the buyer.\n" %}{% trans " - Payment deadline - 7 business days from delivery." %}"
+            document.getElementById("description").value = "{% trans "- Shipping costs are covered by the buyer.\n" %}{% trans "- Payment deadline - 7 business days from delivery." %}"
             saveButton.style.display = "inline-block";
         });
 
         document.getElementById("DDP").addEventListener("click", function (event) {
-            document.getElementById("description").value = "{% trans "- Delivered to Alku offices.\n" %} {% trans " - Payment deadline - 7 business days from delivery." %}" 
+            document.getElementById("description").value = "{% trans "- Delivered to Alku.\n" %} {% trans "- Payment deadline - 7 business days from delivery." %}" 
             saveButton.style.display = "inline-block";
         });
 </script>

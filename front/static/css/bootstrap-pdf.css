@@ -12735,6 +12735,7 @@ fieldset:disabled .btn {
 .paragraph {
   color: #9d1006 !important;
   font-size: 12pt;
+  white-space: pre;
 }
 
 .head strong {

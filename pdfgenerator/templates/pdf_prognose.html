@@ -53,8 +53,8 @@
     <div class="row mt-5">
         <div class="col-6">
             <p class="head"><strong>{% trans "Shipping costs" %}:</strong> <b class="unit">{{ transactionDetails.transportCost|floatformat:2 }} €</b></p>
-            <p class="head"><strong>{% trans "c/k" %}:</strong> <b class="unit">{{ transport.transportPerKg|floatformat:2 }} €</b></p>
-            <p class="head"><strong>{% trans "c/v" %}:</strong> <b class="unit">{{ transport.transportPercent|floatformat:2 }}%</b></p>
+            <p class="head"><strong>{% trans "c/k" %}:</strong> <b class="unit">{{ transport.transportPerKg|floatformat:2 }} €</b>
+            <strong>{% trans "c/v" %}:</strong> <b class="unit">{{ transport.transportPercent|floatformat:2 }}%</b></p>
         </div>
     </div>
 
@@ -112,8 +112,8 @@
         {{ transactionDetails.informations.prognose_info }}
     </div>
 <div class="pt-5">
-    <p class="text-info">{% trans "c/k - transport cost per kg" %}</p>
-    <p class="text-info">{% trans "c/v - transport cost per delivery value" %}</p>
+    <p class="text-info">{% trans "c/k - transport cost per kg" %}
+    {% trans "c/v - transport cost per delivery value" %}</p>
 </div>                   
     {% include "pdf_footer.html" %}
 </div>
