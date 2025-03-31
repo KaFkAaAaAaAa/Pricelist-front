@@ -1,3 +1,4 @@
+import re
 from http.client import INTERNAL_SERVER_ERROR
 from json import JSONDecodeError
 from math import floor
@@ -6,7 +7,6 @@ from uuid import UUID
 
 import requests
 from django.contrib import messages
-from django.forms import BoundField
 from django.http import HttpResponseServerError
 from django.http.response import HttpResponseForbidden, HttpResponseNotFound
 from django.shortcuts import redirect, render
@@ -325,6 +325,23 @@ def new_admin(request, msg=None):
 
 
 def verify_registration(request):
+    if request.method == "POST":
+        payload = {
+            "password": request.POST["password"],
+            "confirmPassword": request.POST["confirmPassword"],
+        }
+        response, error = _make_api_request(
+            f"{API_BASE_URL}/auth/reset-password/reset?token={request.GET['token']}",
+            method=requests.post,
+            body=payload,
+        )
+        if isinstance(response, str) and re.match("uccess", response):
+            messages.success(request, _("Password change successful"))
+        elif error:
+            messages.error(request, _("API error"))
+        else:
+            messages.warning(request, _("Passwords are invalid"))
+        redirect("login")
     return render(request, "verify_registration.html")
 
 
@@ -660,7 +677,7 @@ def change_password(request):
             ):
                 messages.info(request, _("Password change successful!"))
                 return redirect("/profile/")
-        messages.error(request, _("Passwords don't match!"))
+        messages.error(request, _("Passwords are invalid"))
         return render(
             request,
             "change_password.html",
@@ -671,14 +688,36 @@ def change_password(request):
 
 def reset_password(request):
     if request.method == "POST":
-        payload = {"userEmail": request.POST["email"]}
+        if "token" in request.GET and request.GET["token"]:
+            payload = {
+                "password": request.POST["password"],
+                "confirmPassword": request.POST["confirmPassword"],
+            }
+            response, error = _make_api_request(
+                f"{API_BASE_URL}/auth/reset-password/reset?token={request.GET['token']}",
+                method=requests.post,
+                body=payload,
+            )
+            if isinstance(response, str) and re.match("uccess", response):
+                messages.success(request, _("Password change successful"))
+                return redirect("login")
+            elif error:
+                messages.error(request, _("API error"))
+                return redirect("login")
+            messages.warning(request, _("Passwords are invalid"))
+            return render(request, "reset_password_form.html")
+        payload = {"email": request.POST["email"]}
         text, error = _make_api_request(
-            f"{API_BASE_URL}/auth/reset-password", requests.post, json=payload
+            f"{API_BASE_URL}/auth/reset-password",
+            requests.post,
+            body=payload,
         )
         if error:
-            messages.error(_("Invalid email"))
-        elif text == "success":
-            messages.success(_("Message sent, check your spam folder"))
+            messages.error(request, _("Invalid email"))
+        elif isinstance(text, str) and re.match("success", text.lower()):
+            messages.success(request, _("Message sent, check your spam folder"))
         else:
-            messages.error(_("Unknown error"))
+            messages.error(request, _("Unknown error"))
+    if "token" in request.GET and request.GET["token"]:
+        return render(request, "reset_password_form.html")
     return render(request, "reset_password.html")
