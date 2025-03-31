@@ -335,7 +335,7 @@ def verify_registration(request):
             method=requests.post,
             body=payload,
         )
-        if isinstance(response, str) and re.match("uccess", response):
+        if isinstance(response, str) and re.match(".*uccess.*", response):
             messages.success(request, _("Password change successful"))
         elif error:
             messages.error(request, _("API error"))
@@ -698,10 +698,10 @@ def reset_password(request):
                 method=requests.post,
                 body=payload,
             )
-            if isinstance(response, str) and re.match("uccess", response):
+            if isinstance(response, str) and re.match(".*uccess.*", response):
                 messages.success(request, _("Password change successful"))
                 return redirect("login")
-            elif error:
+            if error:
                 messages.error(request, _("API error"))
                 return redirect("login")
             messages.warning(request, _("Passwords are invalid"))
