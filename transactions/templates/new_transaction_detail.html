@@ -41,7 +41,7 @@
                     <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Price" %}: </strong>
                             <div class="input-group">
                                 <input name="transport"  id="transport" class="form-control"
-                                    type="number" min="1" step="1" value="{{ transactionDetails.transportCost }}"
+                                    type="number" value="{{ transactionDetails.transportCost }}"
                                     onchange="uuids.forEach(uuid => calculateTotal(uuid));"/>
                                 <span class="input-group-text">€</span>
                             </div>
