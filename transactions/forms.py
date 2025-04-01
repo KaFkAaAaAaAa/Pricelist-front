@@ -100,7 +100,7 @@ class PrognoseFrom(forms.Form):
             }
         ),
     )
-    prognose_info = forms.CharField(
+    description = forms.CharField(
         label=_("Additional info about transaction") + ":",
         widget=forms.Textarea(attrs={"class": "form-control", "rows": 3}),
         required=False,

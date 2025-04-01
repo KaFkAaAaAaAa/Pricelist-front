@@ -55,18 +55,18 @@
                                         <td class="flex-fill align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}"
                                             style="font-size: 17px; vertical-align: middle;"
                                             >{{ item.name }}</td>
-                                        <td class="text-end fw-semibold flex-shrink-0 align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}"
+                                        <td class="text-end separator fw-semibold flex-shrink-0 align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}"
                                             style="font-size: 20px; width: 120px; vertical-align: middle;"
                                         >{{ item.price }} €
                                         </td>
                                         {% if item.price_pln %}
-                                            <td class="text-end fw-semibold flex-shrink-0 align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}"
+                                            <td class="separator text-end fw-semibold flex-shrink-0 align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}"
                                                 style="font-size: 20px; width: 130px; vertical-align: middle;"
                                             >{{ item.price_pln }} zł
                                             </td>
                                         {% endif %}
                                         <td class="align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}"
-                                            style="vertical-align: middle;"><input type="number" style="width: 80px"
+                                            style="vertical-align: middle;"><input type="number" style="width: 80px" class="seperator-input"
                                                                                    placeholder="0.0" step="0.1" min="0"
                                                                                    name="{{ item.sku }}"/> kg
                                         </td>

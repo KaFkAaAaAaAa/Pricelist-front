@@ -29,10 +29,7 @@
 <div class="container mt-3">
     <div class="row">
         <div class="col-6">
-            <div class="row fw-bold">{{ transaction.client.clientCompanyName }}</div>
-            <div class="row fw-bold">{{ transaction.client.clientStreet }}</div>
-            <div class="row fw-bold">{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</div>
-            <div class="row fw-bold">{{ transaction.client.clientCountry }}</div>
+            {% include "pdf_client.html" %}
         </div>
     </div>
     <div class="text-end">
@@ -74,10 +71,12 @@
             <p class="unit"><strong>{% trans "Total amount" %}:</strong> {{ total.mass|floatformat:1 }} kg</p>
         </div>
     </div>
-    <hr>
-    <div class="mt-5">
-        <p class="paragraph">{{ transaction.description }}</p>
-    </div>
+    {% if transaction.description %}
+        <hr />
+        <div class="mt-5 paragraph">
+            {{ transaction.description }}
+        </div>
+    {% endif %}
     {% include "pdf_footer.html" %}
 </div>
 </body>

@@ -56,7 +56,7 @@
                     <td><input name="name-{{ item.uuid }}"  id="name-{{ item.uuid }}" class="form-control" type="text" value="{{ item.name }}"/></td>
                     <td>
                         <div class="input-group">
-                            <input name="amount-{{ item.uuid }}"  id="amount-{{ item.uuid }}" class="form-control"
+                            <input name="amount-{{ item.uuid }}"  id="amount-{{ item.uuid }}" class="form-control separator-input"
                                 type="number" min="0.1" step="0.1" value="{{ item.amount }}"
                                 onchange="calculateTotal('{{ item.uuid }}')"/>
                             <span class="input-group-text">kg</span>
@@ -64,7 +64,7 @@
                     </td>
                     <td>
                         <div class="input-group">
-                            <input name="alku-{{ item.uuid }}" id="alku-{{ item.uuid }}" class="form-control"
+                            <input name="alku-{{ item.uuid }}" id="alku-{{ item.uuid }}" class="form-control separator-input"
                                 type="number" min="0.1" step="0.1" value="{{ item.amount }}"
                                 onchange="calculateTotal('{{ item.uuid }}')"/>
                             <span class="input-group-text">kg</span>
@@ -72,13 +72,13 @@
                     </td>
                     <td>
                         <div class="input-group">
-                            <input name="price-{{ item.uuid }}" id="price-{{ item.uuid }}" class="form-control"
+                            <input name="price-{{ item.uuid }}" id="price-{{ item.uuid }}" class="form-control separator-input"
                                 type="number" min="0.01" step="0.01" value="{{ item.price }}"
                                 onchange="calculateTotal('{{ item.uuid }}')"/>
                             <span class="input-group-text">€</span>
                         </div>
                     </td>
-                    <td style="white-space: nowrap;"><span id="total-{{ item.uuid }}">{{ item.total }}</span> €</td>
+                    <td style="white-space: nowrap;"><span class="separator" id="total-{{ item.uuid }}">{{ item.total }}</span> €</td>
                     {% if item.additionalInfo %}
                     <td id="additionalInfo-{{ item.uuid }}">{{ item.additionalInfo }}</td>
                     {% else %}
@@ -99,14 +99,16 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td class="fw-bold" style="white-space: nowrap;"><span id="totalAmount">{{ totals.mass }}</span> kg</td>
-                <td class="fw-bold" style="white-space: nowrap;"><span id="totalAlku"></span> kg</td>
+                <td class="fw-bold separator" style="white-space: nowrap;"><span id="totalAmount">{{ totals.mass }}</span> kg</td>
+                <td class="fw-bold separator" style="white-space: nowrap;"><span id="totalAlku"></span> kg</td>
                 <td></td>
-                <td class="fw-bold" style="white-space: nowrap;"><span id="totalPrice">{{ totals.price }}</span> €</td>
+                <td class="fw-bold separator" style="white-space: nowrap;"><span id="totalPrice">{{ totals.price }}</span> €</td>
                 <td></td>
             </tr>
         </tbody>
     </table>
+    <label for="description" class="form-label">{% trans "Additional informations" %}:</label>
+    <textarea class="form-control mb-3" id="description" name="description" rows="3">{{ transaction.description }}</textarea>
     <input class="btn btn-success" type=submit value="{% trans "Save and change to final" %}">
     </form>
 </div>

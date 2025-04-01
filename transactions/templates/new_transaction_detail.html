@@ -14,6 +14,7 @@
           <button
             class="btn btn-sm btn-outline-danger mb-4"
             onclick="history.back()"
+            type="button"
           >
                 {% trans "Go back" %}
           </button>
@@ -27,9 +28,9 @@
         <div class="row text-start ">
           <div class="col float-start ps-0">
             {% if transaction.status == "PROGNOSE" %}
-            <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Total price with transport included" %}: </strong><span id="totalTransportIncluded"></span> €</p>
-            <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Transport cost per 1 kg" %}: </strong><span id="transportPerKg"></span> €</p>
-                    <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Transport cost as a part of total price" %}: </strong><span id="transportPercent"></span>%</p>
+            <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Total price with transport included" %}: </strong><span class="separator" id="totalTransportIncluded"></span> €</p>
+            <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Transport cost per 1 kg" %}: </strong><span class="separator" id="transportPerKg"></span> €</p>
+                    <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Transport cost as a part of total price" %}: </strong><span class="separator" id="transportPercent"></span>%</p>
             {% endif %}
             </div>
             {% if transaction.status == "PROGNOSE" or transaction.status == "FINAL" %}
@@ -40,7 +41,7 @@
                 {% if transaction.status == "PROGNOSE" %}
                     <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Price" %}: </strong>
                             <div class="input-group">
-                                <input name="transport"  id="transport" class="form-control"
+                                <input name="transport"  id="transport" class="form-control separator-input"
                                     type="number" value="{{ transactionDetails.transportCost }}"
                                     onchange="uuids.forEach(uuid => calculateTotal(uuid));"/>
                                 <span class="input-group-text">€</span>
@@ -94,7 +95,7 @@
                     <td><input name="name-{{ item.uuid }}"  id="name-{{ item.uuid }}" class="form-control" type="text" value="{{ item.name }}"/></td>
                     <td>
                         <div class="input-group">
-                            <input name="amount-{{ item.uuid }}"  id="amount-{{ item.uuid }}" class="form-control"
+                            <input name="amount-{{ item.uuid }}"  id="amount-{{ item.uuid }}" class="form-control separator-input"
                                 type="number" min="0.1" step="0.1" value="{{ item.amount }}"
                                 onchange="calculateTotal('{{ item.uuid }}')"/>
                             <span class="input-group-text">kg</span>
@@ -103,7 +104,7 @@
                     {% if transaction.status == "FINAL" %}
                     <td>
                         <div class="input-group">
-                            <input name="alku-{{ item.uuid }}" id="alku-{{ item.uuid }}" class="form-control"
+                            <input name="alku-{{ item.uuid }}" id="alku-{{ item.uuid }}" class="form-control separator-input"
                                 type="number" min="0.1" step="0.1" value="{{ item.alku }}"
                                 onchange="calculateTotal('{{ item.uuid }}')"/>
                             <span class="input-group-text">kg</span>
@@ -112,16 +113,16 @@
                     {% endif %}
                     <td>
                         <div class="input-group">
-                            <input name="price-{{ item.uuid }}" id="price-{{ item.uuid }}" class="form-control"
+                            <input name="price-{{ item.uuid }}" id="price-{{ item.uuid }}" class="form-control separator-input"
                                 type="number" min="0.01" step="0.01" value="{{ item.price }}"
                                 onchange="calculateTotal('{{ item.uuid }}')"/>
                             <span class="input-group-text">€</span>
                         </div>
                     </td>
                     {% if transaction.status == "PROGNOSE" %}
-                    <td><span style="white-space: nowrap;" id="priceWithTransport-{{ item.uuid }}"></span> €</td>
+                    <td><span style="white-space: nowrap;" class="separator" id="priceWithTransport-{{ item.uuid }}"></span> €</td>
                     {% endif %}
-                    <td style="white-space: nowrap;"><span id="total-{{ item.uuid }}">{{ item.total }}</span> €</td>
+                    <td style="white-space: nowrap;"><span class="separator" id="total-{{ item.uuid }}">{{ item.total }}</span> €</td>
                     <input type="hidden" name="additionalInfo-{{ item.uuid }}" id="additionalInfo-{{ item.uuid }}" value="{{ item.additionalInfo }}"/>
                     <td id="comment-{{item.uuid}}">{{ item.additionalInfo }}</td>
                     <td>
@@ -143,15 +144,15 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td class="fw-bold" style="white-space: nowrap;"><span id="totalAmount">{{ totals.mass }}</span> kg</td>
+                    <td class="fw-bold" style="white-space: nowrap;"><span class="separator" id="totalAmount">{{ totals.mass }}</span> kg</td>
                     {% if transaction.status == "FINAL" %}
-                    <td class="fw-bold" style="white-space: nowrap;"><span id="totalAlku"></span> kg</td>
+                    <td class="fw-bold" style="white-space: nowrap;"><span class="separator" id="totalAlku"></span> kg</td>
                     {% endif %}
                     <td></td>
                     {% if transaction.status == "PROGNOSE" %}
                     <td></td>
                     {% endif %}
-                    <td class="fw-bold" style="white-space: nowrap;"><span id="totalPrice">{{ totals.price }}</span> €</td>
+                    <td class="fw-bold" style="white-space: nowrap;"><span class="separator" id="totalPrice">{{ totals.price }}</span> €</td>
                     <td></td>
                     <td></td>
                 </tr>
@@ -260,7 +261,7 @@
                 <td><input name="name-${uuid}"  id="name-${uuid}" class="form-control" type="text" value="${name}"/></td>
                 <td>
                     <div class="input-group">
-                        <input name="amount-${uuid}"  id="amount-${uuid}" class="form-control"
+                        <input name="amount-${uuid}"  id="amount-${uuid}" class="form-control separator-input"
                             type="number" min="1.1" step="0.1"
                             onchange="calculateTotal('${uuid}')"/>
                         <span class="input-group-text">kg</span>
@@ -269,7 +270,7 @@
                 {% if transaction.status == "FINAL" %}
                 <td>
                     <div class="input-group">
-                        <input name="alku-${uuid}" id="alku-${uuid}" class="form-control"
+                        <input name="alku-${uuid}" id="alku-${uuid}" class="form-control separator-input"
                             type="number" min="0.1" step="0.1"
                             onchange="calculateTotal('${uuid}')"/>
                         <span class="input-group-text">kg</span>
@@ -278,14 +279,14 @@
                 {% endif %}
                 <td>
                     <div class="input-group">
-                        <input name="price-${uuid}" id="price-${uuid}" class="form-control"
+                        <input name="price-${uuid}" id="price-${uuid}" class="form-control separator-input"
                             type="number" min="0.01" step="0.01" value="${price}"
                             onchange="calculateTotal('${uuid}')"/>
                         <span class="input-group-text">€</span>
                     </div>
                 </td>
                 {% if transaction.status == "PROGNOSE" %}
-                <td><span style="white-space: nowrap;" id="priceWithTransport-${uuid}"></span> €</td>
+                <td><span style="white-space: nowrap;" id="priceWithTransport-${uuid}" class="separator"></span> €</td>
                 {% endif %}
                 <td style="white-space: nowrap;"><span id="total-${uuid}"></span> €</td>
                 <input type="hidden" name="additionalInfo-${uuid}" id="additionalInfo-${uuid}" value=""/>
@@ -470,6 +471,10 @@
 
         form.addEventListener("submit", function (event) {
             const submitButton = document.activeElement;
+            {% if transaction.status == "PROGNOSE" %}
+            if ( inputField && inputField.value )
+                addPlate(inputField.value);
+            {% endif %}
             if (submitButton && submitButton.type === "submit") {
                 if (!confirm("{% trans "Are you sure you want to save changes?" %}")) {
                     event.preventDefault();
@@ -546,7 +551,7 @@
         });
 
         document.getElementById("DDP").addEventListener("click", function (event) {
-            document.getElementById("description").value = "{% trans "- Delivered to Alku.\n" %} {% trans "- Payment deadline - 7 business days from delivery." %}" 
+            document.getElementById("description").value = "{% trans "- Delivered to Alku.\n" %}{% trans "- Payment deadline - 7 business days from delivery." %}" 
             saveButton.style.display = "inline-block";
         });
 </script>

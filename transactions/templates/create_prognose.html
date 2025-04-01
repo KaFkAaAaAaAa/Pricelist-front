@@ -34,12 +34,12 @@
                     {{ form.delivery_info }}
                 </div>
                 <div class="mb-3">
-                    <label for="id_prognose_info" class="form-label">
-                        {{ form.prognose_info.label }}
+                    <label for="id_description" class="form-label">
+                        {{ form.description.label }}
                     </label>
-                    {{ form.prognose_info }}
+                    {{ form.description }}
                 </div>
-                <button class="btn btn-outline-success" type="submit">Submit</button>
+                <button class="btn btn-outline-success" id="submit" type="submit">Submit</button>
         </form>
     </div>
 
@@ -51,56 +51,63 @@
     {% endfor %}
   </ul>
   {% endif %}
-  <script>
+  <script> 
     document.addEventListener("DOMContentLoaded", function () {
-      const inputField = document.getElementById("plate-input");
-      const addButton = document.getElementById("add-btn");
-      const listContainer = document.getElementById("plate-list");
-      const platesPostParam = document.getElementById("id_plates_list");
+    const inputField = document.getElementById("plate-input");
+    const addButton = document.getElementById("add-btn");
+    const listContainer = document.getElementById("plate-list");
+    const platesPostParam = document.getElementById("id_plates_list");
+    const form = document.getElementById("your-form-id"); // Replace with your actual form ID
 
-      let platesArray = [];
+    let platesArray = [];
 
-      function updateHiddenInput() {
+    function updateHiddenInput() {
         platesPostParam.value = platesArray.join(",");
-        console.log("updateHiddenInput");
-      }
+    }
 
-      addButton.addEventListener("click", function (event) {
+    addButton.addEventListener("click", function (event) {
         event.preventDefault();
+        addPlateFromInput();
+    });
+
+    function addPlateFromInput() {
         const value = inputField.value.trim();
 
-        if (value) {
-          platesArray.push(value);
-          updateHiddenInput();
-
-          const listItem = document.createElement("div");
-          listItem.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center", "ps-2" );
-
-          const textSpan = document.createElement("span");
-          textSpan.textContent = value;
-          textSpan.classList.add("fw-bold")
-
-          const removeBtn = document.createElement("button");
-          removeBtn.textContent = "Remove";
-          removeBtn.classList.add("btn", "btn-outline-danger", "btn-sm");
-          removeBtn.addEventListener("click", function () {
-            platesArray = platesArray.filter((item) => item !== value);
+        if (value && !platesArray.includes(value)) {  // Prevent duplicates
+            platesArray.push(value);
             updateHiddenInput();
-            listContainer.removeChild(listItem);
-          });
 
-          listItem.appendChild(textSpan);
-          listItem.appendChild(removeBtn);
-          listContainer.appendChild(listItem);
-          console.log(listItem);
-          console.log(listContainer);
-          console.log(platesPostParam);
-          console.log(platesArray);
+            const listItem = document.createElement("div");
+            listItem.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center", "ps-2");
 
-          inputField.value = "";
+            const textSpan = document.createElement("span");
+            textSpan.textContent = value;
+            textSpan.classList.add("fw-bold");
+
+            const removeBtn = document.createElement("button");
+            removeBtn.textContent = "Remove";
+            removeBtn.classList.add("btn", "btn-outline-danger", "btn-sm");
+            removeBtn.addEventListener("click", function () {
+                platesArray = platesArray.filter((item) => item !== value);
+                updateHiddenInput();
+                listContainer.removeChild(listItem);
+            });
+
+            listItem.appendChild(textSpan);
+            listItem.appendChild(removeBtn);
+            listContainer.appendChild(listItem);
+
+            inputField.value = "";
         }
-      });
+    }
+
+    form.addEventListener("submit", function (event) {
+        if (inputField.value.trim()) {
+            addPlateFromInput();
+        }
     });
+});
+
   </script>
   {% endblock %}
 </div>

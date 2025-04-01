@@ -5,18 +5,28 @@ from http.client import INTERNAL_SERVER_ERROR
 from math import floor
 
 import requests
-from django.http import (HttpResponseBadRequest, HttpResponseNotFound,
-                         HttpResponseServerError)
+from django.http import (
+    HttpResponseBadRequest,
+    HttpResponseNotFound,
+    HttpResponseServerError,
+)
 from django.http.response import HttpResponseForbidden
 from django.shortcuts import redirect, render
 
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
 from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS
-from Pricelist.views import (_amount_to_display, _amount_to_float,
-                             _amount_to_store, _api_error_interpreter,
-                             _get_auth, _make_api_request, _price_to_display,
-                             _price_to_float, _price_to_store)
+from Pricelist.views import (
+    _amount_to_display,
+    _amount_to_float,
+    _amount_to_store,
+    _api_error_interpreter,
+    _get_auth,
+    _make_api_request,
+    _price_to_display,
+    _price_to_float,
+    _price_to_store,
+)
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
 
@@ -720,6 +730,7 @@ def create_prognose(request, data, headers):
     plates = []
 
     if request.method == "POST":
+        __import__("pdb").set_trace()
         form = PrognoseFrom(request.POST)
         if form.is_valid():
             plates = (
@@ -735,7 +746,6 @@ def create_prognose(request, data, headers):
                 ),
                 "transportCost": int(form.cleaned_data["delivery_price"]),
                 "informations": {
-                    "additional_info": form.cleaned_data["prognose_info"],
                     "delivery_info": form.cleaned_data["delivery_info"],
                     "delivery_date": str(form.cleaned_data["delivery_date"]),
                 },
@@ -748,7 +758,20 @@ def create_prognose(request, data, headers):
             )
             error = _api_error_interpreter(response.status_code)
             if error:
-                return error
+                text, error = _make_api_request(
+                    f"{API_BASE_URL}/transaction-details/admin/{uuid}/",
+                    method=requests.put,
+                    headers=headers,
+                    body=payload,
+                )
+                if error:
+                    return error
+            _, error = _make_api_request(
+                f"{API_BASE_URL}/transaction-details/admin/{uuid}/",
+                method=requests.put,
+                headers=headers,
+                body={"description": form.cleaned_data["description"]},
+            )
             response = requests.get(
                 f"{API_BASE_URL}/transactions/admin/{uuid}/update-status/?status=prognose",
                 headers=headers,
@@ -758,7 +781,7 @@ def create_prognose(request, data, headers):
                 return error
             return redirect("admin_transaction_detail", data["transaction_uuid"])
     else:
-        form = PrognoseFrom()
+        form = PrognoseFrom(initial={"description": data["transaction"]["description"]})
 
     return render(request, "create_prognose.html", {"form": form, "plates": plates})
 
@@ -769,7 +792,7 @@ def create_final(request, data, headers):
         items, alku = _parse_transaction_edit_items(request)
         response = requests.put(
             f"{API_BASE_URL}/transactions/admin/{uuid}/",
-            json={"itemsOrdered": items},
+            json={"itemsOrdered": items, "description": request.POST["description"]},
             headers=headers,
         )
         error = _api_error_interpreter(response.status_code)
