@@ -45,6 +45,7 @@
             <th scope="col">{% trans "Amount" %}</th>
             <th scope="col">{% trans "Price" %}</th>
             <th scope="col">{% trans "Sum" %}</th>
+            <th scope="col"></th>
         </tr>
         </thead>
         <tbody class="tbody-text">
@@ -59,6 +60,11 @@
                 <td class="unit text-end px-1">{{ item.amount|floatformat:1 }}</td>
                 <td class="unit text-end px-1">{{ item.price|floatformat:2 }}</td>
                 <td class="unit text-end px-1">{{ item.total|floatformat:2 }} €</td>
+                <td class="px-1 text-start">
+                {% if item.additionalInfo and item.additionalInfo|length < 15 %}
+                    {{ item.additionalInfo }}
+                {% endif %}
+                </td>
             </tr>
         {% endfor %}
         </tbody>
@@ -76,6 +82,11 @@
         <hr />
         <div class="mt-5 paragraph">{{ transaction.description }}</div>
     {% endif %}
+    {% for item in transaction.itemsOrdered %}
+            {% if item.additionalInfo|length >= 15 %}
+            <p class="text-start">{{ item.sku }}: {{ item.additionalInfo }}</p>
+            {% endif %}
+    {% endfor %}
     {% include "pdf_footer.html" %}
 </div>
 </body>

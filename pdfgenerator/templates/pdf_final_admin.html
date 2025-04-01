@@ -73,6 +73,7 @@
             <th scope="col">{% trans "w/transport" %}</th>
             <th scope="col">{% trans "Total" %}</th>
             <th scope="col">{% trans "Total w/transport" %}</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody class="text-center">
@@ -86,6 +87,11 @@
             <td class="unit text-end px-1">{{ item.total|floatformat:2 }} €</td>
             <td class="unit text-end px-1">
               {{ item.total_transport|floatformat:2 }} €
+            </td>
+            <td class="px-1 text-start">
+            {% if item.additionalInfo and item.additionalInfo|length < 10 %}
+                {{ item.additionalInfo }}
+            {% endif %}
             </td>
           </tr>
           {% endfor %}
@@ -116,10 +122,13 @@
       </div>
     {% if transaction.description %}
         <hr />
-        <div class="mt-5 paragraph">
-            {{ transaction.description }}
-        </div>
+        <div class="mt-5 paragraph">{{ transaction.description }}</div>
     {% endif %}
+    {% for item in transaction.itemsOrdered %}
+            {% if item.additionalInfo|length >= 10 %}
+            <p class="text-start">{{ item.sku }}: {{ item.additionalInfo }}</p>
+            {% endif %}
+    {% endfor %}
       <hr />
         <p class="text-info">{% trans "c/k - transport cost per kg" %}</p>
         <p class="text-info">

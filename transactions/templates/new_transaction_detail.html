@@ -177,6 +177,9 @@
     <input id="saveButton" class="btn btn-success" style="display: none;" type=submit value="{% trans "Save changes" %}">
     <button type="button" data-bs-toggle="modal" data-bs-target="#changeStatusModal" class="btn btn-outline-primary">{% trans "Change status" %}</button>
     <a class="btn btn-outline-secondary" href="/transactions/{{transaction.uuid}}/print/" target="_blank">{% trans "Print" %}</a>
+    {% if transaction.status == "FINAL" %}
+    <a class="btn btn-outline-secondary" href="/transactions/{{transaction.uuid}}/print/?client=1" target="_blank">{% trans "Print client version" %}</a>
+    {% endif %}
     </form>
 </div>
 <div class="modal" id="commentModal" tabindex="-1" aria-hidden="true">

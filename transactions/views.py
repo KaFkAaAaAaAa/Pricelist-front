@@ -638,7 +638,7 @@ def print_transaciton(request, transaction_uuid):
     if status == "PROGNOSE":
         return print_prognose(request, data)
     if status == "FINAL":
-        if admin_url:
+        if admin_url and request.GET["client"] != "1":
             return print_final_admin(request, data)
         return print_final(request, data)
     if status == "PROPOSITION":
@@ -796,7 +796,7 @@ def create_prognose(request, data, headers):
                 if error:
                     return error
             _, error = _make_api_request(
-                f"{API_BASE_URL}/transaction-details/admin/{uuid}/",
+                f"{API_BASE_URL}/transactions/admin/{uuid}/",
                 method=requests.put,
                 headers=headers,
                 body={"description": form.cleaned_data["description"]},
@@ -942,7 +942,6 @@ def new_transaction_detail(request, transaction_uuid):
                 "informations": {
                     "delivery_date": request.POST["delivery_date"],
                     "delivery_info": request.POST["delivery_info"],
-                    "prognose_info": request.POST["description"],
                 },
                 "transportCost": request.POST["transport"],
                 "plates": request.POST["plates_list"].split(","),
@@ -956,10 +955,11 @@ def new_transaction_detail(request, transaction_uuid):
             if error:
                 return error
         elif alku:
+
             payload = {
                 "alkuAmount": alku,
                 "informations": {
-                    "final_info": request.POST["description"],
+                    "delivery_date": request.POST["delivery_date"],
                 },
             }
             _, error = _make_api_request(
@@ -970,8 +970,7 @@ def new_transaction_detail(request, transaction_uuid):
             )
             if error:
                 return error
-        else:
-            payload_transaction["description"] = request.POST["description"]
+        payload_transaction["description"] = request.POST["description"]
         _, error = _make_api_request(
             f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
             method=requests.put,

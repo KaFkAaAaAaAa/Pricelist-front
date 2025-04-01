@@ -47,6 +47,7 @@
             <th scope="col">{% trans "Alku" %}</th>
             <th scope="col">{% trans "Price" %}</th>
             <th scope="col">{% trans "Total" %}</th>
+            <th scope="col"></th>
         </tr>
         </thead>
         <tbody class="tbody-text">
@@ -58,6 +59,11 @@
                 <td class="unit text-end px-1">{{ item.alku|floatformat:1 }}</td>
                 <td class="unit text-end px-1">{{ item.price|floatformat:2 }}</td>
                 <td class="unit text-end px-1">{{ item.total|floatformat:2 }} €</td>
+                <td class="px-1 text-start">
+                {% if item.additionalInfo and item.additionalInfo|length < 15 %}
+                    {{ item.additionalInfo }}
+                {% endif %}
+                </td>
             </tr>
         {% endfor %}
         </tbody>
@@ -81,12 +87,15 @@
             <p class="text-end pe-1">{{ total.alku_price }} €</p>
         </div>
     </div>
-            {% if transaction.description %}
-    <hr>
-    <div class="mt-5 paragraph">
-        {{ transaction.description }}
-    </div>
-            {% endif %}
+    {% if transaction.description %}
+    <hr />
+    <div class="mt-5 paragraph">{{ transaction.description }}</div>
+    {% endif %}
+    <td class="px-1 text-start">
+    {% if item.additionalInfo and item.additionalInfo|length < 15 %}
+        {{ item.additionalInfo }}
+    {% endif %}
+    </td>
     <hr>
     <div class="text-center">
         <p class="paragraph">{% trans "Thank you for your cooperation!" %}</p>

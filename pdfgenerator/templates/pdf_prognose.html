@@ -65,9 +65,10 @@
             <th scope="col"></th>
             <th scope="col">{% trans "SKU" %}</th>
             <th scope="col">{% trans "Product" %}</th>
-            <th scope="col">{% trans "Amount" %} [kg]</th>
+            <th scope="col">{% trans "Amount" %}</th>
             <th scope="col">{% trans "Price" %}</th>
             <th scope="col">{% trans "Total" %}</th>
+            <th scope="col"></th>
         </tr>
         </thead>
         <tbody class="text-center">
@@ -82,6 +83,11 @@
                 <td class="unit text-end px-1">{{ item.amount }}</td>
                 <td class="unit text-end px-1">{{ item.price }}</td>
                 <td class="unit text-end px-1">{{ item.total|floatformat:2 }} €</td>
+                <td class="px-1 text-start">
+                {% if item.additionalInfo and item.additionalInfo|length < 15 %}
+                    {{ item.additionalInfo }}
+                {% endif %}
+                </td>
             </tr>
         {% endfor %}
         </tbody>
@@ -101,15 +107,18 @@
         </div>
         <div class="col-2">
             <p class="text-end pe-1">{{ total.price }} €</p>
-            <p class="text-end pe-1 align-text-bottom"><span class="unit">{{ total.wTransport|floatformat:2 }} €</span></p>
+            <p class="text-end pe-1"><span class="unit">{{ total.wTransport|floatformat:2 }} €</span></p>
         </div>
     </div>
     {% if transaction.description %}
         <hr />
-        <div class="mt-5 paragraph">
-            {{ transaction.description }}
-        </div>
+        <div class="mt-5 paragraph">{{ transaction.description }}</div>
     {% endif %}
+    {% for item in transaction.itemsOrdered %}
+            {% if item.additionalInfo|length >= 15 %}
+            <p class="text-start">{{ item.sku }}: {{ item.additionalInfo }}</p>
+            {% endif %}
+    {% endfor %}
 <div class="pt-5">
     <p class="text-info">{% trans "c/k - transport cost per kg" %}
     {% trans "c/v - transport cost per delivery value" %}</p>
