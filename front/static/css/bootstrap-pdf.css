@@ -12727,6 +12727,12 @@ fieldset:disabled .btn {
   }
 }
 
+@page {
+  size: A4;
+  margin: 2cm;
+  margin-bottom: 3cm;
+}
+
 .recycle {
   color: #9d1006 !important;
   font-weight: 650 !important;
@@ -12751,12 +12757,6 @@ fieldset:disabled .btn {
   vertical-align: middle !important;
   padding-top: auto;
   padding-bottom: auto;
-}
-
-@page {
-  size: A4;
-  margin: 2cm;
-  margin-bottom: 3cm;
 }
 
 .watermark {
@@ -12802,4 +12802,12 @@ tr {
 td,
 th {
   padding: 5px;
+  font-size: 15px;
+}
+.client-company {
+  font-size: 17px;
+}
+.client-address {
+  line-height: 100%;
+  font-size: 15px;
 }

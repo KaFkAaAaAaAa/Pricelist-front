@@ -1,6 +1,8 @@
 <div class="m-0 p-0">
-  <div class="fw-bold">{{ transaction.client.clientCompanyName }}</div>
-  <div class="mx-0" style="line-height: 100%">
+  <div class="fw-bold client-company">
+    {{ transaction.client.clientCompanyName }}
+  </div>
+  <div class="mx-0 client-address">
     {{ transaction.client.clientStreet }}<br />
     {{ transaction.client.clientCode }} {{ transaction.client.clientCity }}<br />
     {{ transaction.client.clientCountry }}<br />

@@ -1,6 +1,6 @@
 import copy
 import re
-from datetime import datetime
+from datetime import date, datetime
 from http.client import INTERNAL_SERVER_ERROR
 from math import floor
 
@@ -28,6 +28,15 @@ from Pricelist.views import (
     _price_to_store,
 )
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
+
+
+def _generate_doc_filename(transaction):
+    """generates a file name for a transaction with keys client, status and status time"""
+    try:
+        transaction["status_time"] = _get_date_from_datetime(transaction["status_time"])
+        return f'{transaction["status_time"]}_{transaction["client"]["clientCompanyName"]}_{transaction["status"]}.pdf'
+    except KeyError:
+        return "document_er"
 
 
 def _calculate_total_mass(item_list, key="amount") -> float:
@@ -74,8 +83,12 @@ def _get_stored_item_list_to_display(item_list, key_p="price", key_a="amount") -
     }
 
 
-def _parse_date(date: str) -> datetime:
-    return datetime.fromisoformat(date)
+def _parse_date(date_to_parse: str) -> datetime:
+    return datetime.fromisoformat(date_to_parse)
+
+
+def _get_date_from_datetime(date_to_parse: datetime) -> date:
+    return date_to_parse.date()
 
 
 def _parse_transaction_edit_items(request):
@@ -635,7 +648,9 @@ def print_transaciton(request, transaction_uuid):
 
 
 def print_offer(request, data):
-    return generate_pdf(request, "pdf_offer.html", data)
+    return generate_pdf(
+        request, "pdf_offer.html", data, _generate_doc_filename(data["transaction"])
+    )
 
 
 def print_prognose(request, data):
@@ -646,7 +661,12 @@ def print_prognose(request, data):
     data["transport"]["transportPerKg"] = transport / total_amount
     data["transport"]["transportPercent"] = transport / total_price * 100
     data["total"]["wTransport"] = transport + total_price
-    return generate_pdf(request, "pdf_prognose.html", data)
+    return generate_pdf(
+        request,
+        "pdf_prognose.html",
+        data,
+        filename=_generate_doc_filename(data["transaction"]),
+    )
 
 
 def print_final(request, data):
@@ -661,7 +681,12 @@ def print_final(request, data):
         item["total"] = item["alku"] * float(item["price"])
         data["total"]["alku"] += item["alku"]
         data["total"]["alku_price"] += item["total"]
-    return generate_pdf(request, "pdf_final.html", data)
+    return generate_pdf(
+        request,
+        "pdf_final.html",
+        data,
+        filename=_generate_doc_filename(data["transaction"]),
+    )
 
 
 def print_final_admin(request, data):
@@ -686,7 +711,12 @@ def print_final_admin(request, data):
         ) * item["total"]
         item["price_transport"] = item["total_transport"] / item["alku"]
     data["total"]["price_transport"] = transport + data["total"]["price"]
-    return generate_pdf(request, "pdf_final_admin.html", data)
+    return generate_pdf(
+        request,
+        "pdf_final_admin.html",
+        data,
+        filename=_generate_doc_filename(data["transaction"]),
+    )
 
 
 def delete_transaction(request, transaction_uuid):

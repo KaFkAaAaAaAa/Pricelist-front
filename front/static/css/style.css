@@ -24,7 +24,7 @@ body {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  z-index: 1050; /* Ensure it appears above other elements */
+  z-index: 1050;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   max-width: 300px;
 }
@@ -35,8 +35,21 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-/* Hide spin buttons in Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
+}
+
+.w-sku {
+  width: 80px !important;
+}
+.w-price {
+  width: 80px !important;
+}
+.w-amount {
+  width: 90px !important;
+}
+.input-group {
+  white-space: nowrap;
+  flex-wrap: nowrap;
 }

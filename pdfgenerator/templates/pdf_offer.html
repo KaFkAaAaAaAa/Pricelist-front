@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>{% block title %}document{% endblock %}</title>
+<title>{% block title %}{{ filename }}{% endblock %}</title>
     {% load i18n %}
     <style>
         .watermark {
@@ -72,10 +72,9 @@
         </div>
     </div>
     {% if transaction.description %}
+        {# the description has to stay formatted as such #}
         <hr />
-        <div class="mt-5 paragraph">
-            {{ transaction.description }}
-        </div>
+        <div class="mt-5 paragraph">{{ transaction.description }}</div>
     {% endif %}
     {% include "pdf_footer.html" %}
 </div>
