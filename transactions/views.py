@@ -5,28 +5,19 @@ from http.client import INTERNAL_SERVER_ERROR
 from math import floor
 
 import requests
-from django.http import (
-    HttpResponseBadRequest,
-    HttpResponseNotFound,
-    HttpResponseServerError,
-)
+from django.http import (HttpResponseBadRequest, HttpResponseNotFound,
+                         HttpResponseServerError)
 from django.http.response import HttpResponseForbidden
 from django.shortcuts import redirect, render
+from requests.sessions import session
 
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
 from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS
-from Pricelist.views import (
-    _amount_to_display,
-    _amount_to_float,
-    _amount_to_store,
-    _api_error_interpreter,
-    _get_auth,
-    _make_api_request,
-    _price_to_display,
-    _price_to_float,
-    _price_to_store,
-)
+from Pricelist.views import (_amount_to_display, _amount_to_float,
+                             _amount_to_store, _api_error_interpreter,
+                             _get_auth, _make_api_request, _price_to_display,
+                             _price_to_float, _price_to_store)
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
 
@@ -41,7 +32,6 @@ def _generate_doc_filename(transaction):
 
 def _calculate_total_mass(item_list, key="amount") -> float:
     """calculates total mass of item_list by item.amount"""
-
     mass = 0
     if len(item_list) == 0:
         return 0
@@ -71,6 +61,7 @@ def _get_stored_item_list_to_display(item_list, key_p="price", key_a="amount") -
     price = 0
     mass = 0
     for item in item_list:
+        __import__('pdb').set_trace()
         item["total"] = floor(item.get(key_p) * item.get(key_a) / 10)
         price += item.get("total")
         mass += item.get(key_a)
@@ -96,6 +87,7 @@ def _parse_transaction_edit_items(request):
     returns item list and alku dictionary {"uuid": value}"""
     items = {}
     alku = {}
+    __import__('pdb').set_trace()
     for param in request.POST:
         if param.find("-") == -1:
             continue
@@ -145,6 +137,8 @@ def _current_offer_to_payload(current_offer):
         )
     return payload
 
+def _add_items_to_session(request):
+    request.session["current_offer"], _ = _parse_transaction_edit_items(request)
 
 def offer(request):
     token = request.session.get("token")
@@ -157,7 +151,9 @@ def offer(request):
     if "current_offer" not in request.session.keys():
         request.session["current_offer"] = []
 
-    if request.method == "POST" and auth["group"] not in ADMIN_GROUPS:
+    if request.method == "POST" and request.POST["action"] == "save":
+        _add_items_to_session(request)
+    elif request.method == "POST" and auth["group"] not in ADMIN_GROUPS:
         payload = {
             "description": request.POST["transaction_description"],
             "itemsOrdered": _current_offer_to_payload(request.session["current_offer"]),

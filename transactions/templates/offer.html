@@ -4,6 +4,10 @@
 {% block title %}{% trans "Offer" %}{% endblock %}
 
 {% block content %}
+    <div id="successAlert" class="alert alert-success alert-dismissible fade show alert-custom" role="alert" style="display: none;">
+        {% trans "Item added successfully!" %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
     <div class="container py-4" style="max-width: 900px;">
         <h1 class="text-center">
             {% if request.session.logged_user.user %}
@@ -15,7 +19,8 @@
 
         <form method="POST" class="mt-3" onsubmit="return validateOffer();" id="edit-form">
             {% csrf_token %}
-
+            <input type="hidden" name="mode" id="mode" />
+ 
             {% if not request.session.logged_user.user %}
                 <div class="mb-3 text-center">
                     <label for="client" class="form-label h5">{% trans "Client" %}:</label>
@@ -48,7 +53,9 @@
                     {% if request.session.current_offer %}
                         {% for item in request.session.current_offer %}
                         <tr id={{ item.sku }}>
+                                <input type="hidden" name="sku-{{ item.sku }}" value={{ item.sku }}/>
                                 <td>{{ item.sku }}</td>
+                                <input type="hidden" name="name-{{ item.sku }}" value={{ item.name }}/>
                                 <td class="text-start">{{ item.name }}</td>
                                 <td>
                                     <div class="input-group text-center" style="margin: 0 auto;">
@@ -61,7 +68,7 @@
                                 </td>
                                 <td>
                                     <div class="input-group">
-                                        <input id="price-{{ item.sku }}" name="price" type="number" value="{{ item.price }}"
+                                        <input id="price-{{ item.sku }}" name="price-{{ item.sku }}" type="number" value="{{ item.price }}"
                                                min="0.1" step="0.01" class="form-control ms-auto separator-input" style="max-width: 100px; margin: 0;"
                                                onchange="calculateTotal('{{ item.sku }}')"><span class="input-group-text me-auto">€<span>
                                     </div>
@@ -71,7 +78,7 @@
                                 <td id="comment-{{item.sku}}">{{ item.additionalInfo }}</td>
                                 <td>
                                     <div class="d-grid gap-1 w-100">
-                                        <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-target="#commentModal" data-bs-toggle="modal" data-bs-sku="{{item.sku}}">{% trans "Add comment" %}</button>
+                                        <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-target="#commentModal" data-bs-toggle="modal" data-bs-sku="{{ item.sku }}">{% trans "Add comment" %}</button>
                                         <button class="btn btn-outline-danger btn-sm" type="button" onclick="deleteItem(event, '{{ item.sku }}')">{% trans "Delete" %}</button>
                                     </div>
                                 </td>
@@ -79,7 +86,7 @@
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="7" class="text-center">
+                            <td colspan="7" class="text-center" id="alert-no-items">
                                 <div class="alert alert-secondary">
                                     {% trans "No items added to the offer, add some items from the price list" %}
                                 </div>
@@ -98,10 +105,11 @@
             <h3 class="mt-4">{% trans "Comment" %}</h3>
             <textarea name="transaction_description" class="form-control" rows="3" style="max-width: 100%;"></textarea>
 
-            <button type="submit" class="btn btn-success mt-3 float-end">
+            <button type="submit" name="action" value="make" class="btn btn-success mt-3 float-end">
                 {% if request.session.logged_user.user %}{% trans "Make proposition" %}{% else %}
                     {% trans "Make offer" %}{% endif %}
             </button>
+            <button id="saveButton" name="action" class="btn btn-success mt-3" style="display: none;" value="save" type="submit">{% trans "Save changes" %}</button>
         </form>
     </div>
 
@@ -162,8 +170,35 @@
   </div>
 </div>
     <script>
+    let skus = [{% for item in request.session.current_offer %}"{{ item.sku }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+
+    function checkSkuList() {
+        const noItemsAlert = document.getElementById("alert-no-items");
+        if (skus.length === 0) {
+            noItemsAlert.style.display = "";
+        } else {
+            noItemsAlert.style.display = "none";
+        }
+    }
+
+    function getNextSku() {
+        let prefix = "NA"; // Fixed prefix
+        let maxNumber = 0;
+
+        skus.forEach(sku => {
+            let match = sku.match(/^NA(\d\d)$/);
+            if (match) {
+                let num = parseInt(match[1], 10);
+                if (num > maxNumber) {
+                    maxNumber = num;
+                }
+            }
+        });
+
+        let nextNumber = (maxNumber + 1).toString().padStart(2, '0'); // Ensure 2-digit format
+        return `${prefix}${nextNumber}`;
+    }
     const modalSaveButton = document.getElementById('modalSaveButton');
-    let skuCounter = 0;
 
     modalSaveButton.addEventListener("click", event => {
         event.preventDefault();
@@ -188,9 +223,10 @@
             if (itemElement) {
                 itemElement.remove();
             }
-            skus = sku.filter(itemSku => itemSku !== sku);
+            skus = skus.filter(itemSku => itemSku !== sku);
         }
         saveButton.style.display = "inline-block";
+        checkSkuList();
     }
 
     function calculateTotal(skuChanged) {
@@ -213,57 +249,66 @@
     function addItemToTransaction(sku, name, price) {
         let newRow = document.createElement("tr");
         if (sku) {
-            newRow.innerHTML = `<td><img style="width: 80px; height: auto; vertical-align: middle;" src="/images/${sku}.M.jpg"></td>`
+            newRow.innerHTML = `<td><img style="width: 80px; height: auto; vertical-align: middle;" src="/images/${sku}.M.jpg"></td>
+        <input type="hidden" name="sku-${sku}" />
+        <td>${sku}</td>
+        <input type="hidden" name="sku-${sku}" value="${sku}"/>
+        <td class="text-start">
+        ${sku}
+        </td>
+        <input id="name-${sku}" name="name-${sku}" type="text"
+            value="${name}" class="ms-auto form-control"/>`
         } else {
-            sku = `NE${skuCounter}`;
-            newRow.innerHTML = `<td>NE${skuCounter}</td>
-            <td class="text-start">
-                <input id="name-${sku}" name="name-sku" type="text"
-                    value="${name}" class="ms-auto form-control"/>
-                </td>
-                            <td>
-                                <div class="input-group text-center" style="margin: 0 auto;">
-                                <input id="amount-${sku}" name="amount-${sku}" type="number"
-                                           value="0" min="0.1" step="0.1"
-                                           class="form-control ms-auto separator-input" style="max-width: 100px;"
-                                           onchange="calculateTotal('${sku}')">
-                                    <span class="input-group-text me-auto">kg<span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="input-group">
-                                    <input id="price-${sku}" name="price" type="number" value="0"
-                                           min="0.1" step="0.01" class="form-control ms-auto separator-input" style="max-width: 100px; margin: 0;"
-                                           onchange="calculateTotal('${sku}')"><span class="input-group-text me-auto">€<span>
-                                </div>
-                            </td>
-                            <td class="text-end" style="white-space: nowrap;"><span class="separator" id="totalPrice-${sku}"></span> €</td>
-                            <input type="hidden" name="additionalInfo-${sku}" id="additionalInfo-${sku}" />
-                            <td id="comment-${sku}"></td>
-                            <td>
-                                <div class="d-grid gap-1 w-100">
-                                    <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-target="#commentModal" data-bs-toggle="modal" data-bs-sku="{{item.sku}}">{% trans "Add comment" %}</button>
-                                    <button class="btn btn-outline-danger btn-sm" type="button" onclick="deleteItem(event, '${sku}')">{% trans "Delete" %}</button>
-                                </div>
-                            </td>
-                    `;
+            sku = getNextSku();
+        }
+        skus.push(sku);
+        checkSkuList();
+        newRow.innerHTML = `<td>${sku}</td>
+        <td class="text-start">
+            <input id="name-${sku}" name="name-${sku}" type="text"
+                value="${name}" class="ms-auto form-control"/>
+        </td>
+                    <td>
+                        <div class="input-group text-center" style="margin: 0 auto;">
+                        <input id="amount-${sku}" name="amount-${sku}" type="number"
+                                   value="0" min="0.1" step="0.1"
+                                   class="form-control ms-auto separator-input" style="max-width: 100px;"
+                                   onchange="calculateTotal('${sku}')">
+                            <span class="input-group-text me-auto">kg<span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <input id="price-${sku}" name="price-${sku}" type="number" value="0"
+                                   min="0.1" step="0.01" class="form-control ms-auto separator-input" style="max-width: 100px; margin: 0;"
+                                   onchange="calculateTotal('${sku}')"><span class="input-group-text me-auto">€<span>
+                        </div>
+                    </td>
+                    <td class="text-end" style="white-space: nowrap;"><span class="separator" id="totalPrice-${sku}"></span> €</td>
+                    <input type="hidden" name="additionalInfo-${sku}" id="additionalInfo-${sku}" />
+                    <td id="comment-${sku}"></td>
+                    <td>
+                        <div class="d-grid gap-1 w-100">
+                            <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-target="#commentModal" data-bs-toggle="modal" data-bs-sku="${sku}">{% trans "Add comment" %}</button>
+                            <button class="btn btn-outline-danger btn-sm" type="button" onclick="deleteItem(event, '${sku}')">{% trans "Delete" %}</button>
+                        </div>
+                    </td>
+                `;
         newRow.id = sku;
         document.querySelector("table tbody").appendChild(newRow);
-        skus.push(sku);
         calculateTotal(sku);
         saveButton.style.display = "inline-block";
-        skuCounter++;
         showSuccessAlert();
-        }
     }
 
     function showSuccessAlert() {
-        successAlert.style.display = "block";  // Show alert
+        successAlert.style.display = "block";
         setTimeout(() => {
-            successAlert.style.display = "none"; // Hide after 3 seconds
+            successAlert.style.display = "none";
         }, 3000);
     }
 
+    const successAlert = document.getElementById("successAlert");
     function validateOffer() {
         if (skus.length === 0) {
             var emptyOfferModal = new bootstrap.Modal(document.getElementById('emptyOfferModal'));
@@ -318,6 +363,7 @@
             }
         }
     });
+
     document.getElementById("searchBtn").addEventListener("click", function (event) {
         event.preventDefault();
 
@@ -369,7 +415,7 @@
             })
             .catch(error => console.error("Error fetching items: " + error));
     });
-    const skus = [{% for item in request.session.current_offer %}"{{ item.sku }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+    
     window.onload = () => skus.forEach(sku => calculateTotal(sku));
     </script>
 {% endblock %}
