@@ -2,8 +2,10 @@
 {% load i18n %}
 {% block title %}Admin Dashboard{% endblock %}
 {% block content %}
-    <h1 class="text-center">{% trans 'Admin Dashboard' %}</h1>
-    <nav class="nav nav-tabs flex-column flex-sm-row mt-3 text-center">
+    <div class="text-center">
+        <a class="btn btn-outline-danger mt-5" href="{% url 'price_list' %}">{% trans 'Back' %}</a>
+    </div>
+    <nav class="nav nav-tabs flex-column flex-sm-row my-3 text-center">
         <a class="nav-link flex-sm-fill text-sm-center" href="/admin/items">{% trans 'Items' %}</a>
         <a class="nav-link flex-sm-fill text-sm-center" href="/admin/admins">{% trans 'Admins' %}</a>
         <a class="nav-link flex-sm-fill text-sm-center" href="/admin/new-clients">{% trans 'New clients' %}</a>
@@ -11,7 +13,24 @@
         <a class="nav-link flex-sm-fill text-sm-center" href="/admin/my-users">{% trans 'My Clients' %}</a>
         <a class="nav-link flex-sm-fill text-sm-center" href="/transactions/admin/">{% trans 'Transactions' %}</a>
     </nav>
-    <div class="text-center">
-        <a class="btn btn-outline-danger mt-5" href="{% url 'price_list' %}">{% trans 'Back' %}</a>
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card mb-3">
+                <div class="card-header text-bg-secondary"><h3 class="fw-bold">{% trans "New users" %}</h3></div>
+                  <div class="card-body">
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-3">
+                <div class="card-header text-bg-secondary"><h3 class="fw-bold">{% trans "Last transactions" %}</h3></div>
+                  <div class="card-body">
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  </div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
