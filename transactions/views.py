@@ -5,29 +5,21 @@ from http.client import INTERNAL_SERVER_ERROR
 from math import floor
 
 import requests
-from django.http import (
-    HttpResponseBadRequest,
-    HttpResponseNotFound,
-    HttpResponseServerError,
-)
+from django.contrib import messages
+from django.http import (HttpResponseBadRequest, HttpResponseNotFound,
+                         HttpResponseServerError)
 from django.http.response import HttpResponseForbidden
 from django.shortcuts import redirect, render
-from requests.sessions import session
+from django.utils.translation import gettext_lazy as _
 
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
-from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, SKU_REGEX
-from Pricelist.views import (
-    _amount_to_display,
-    _amount_to_float,
-    _amount_to_store,
-    _api_error_interpreter,
-    _get_auth,
-    _make_api_request,
-    _price_to_display,
-    _price_to_float,
-    _price_to_store,
-)
+from Pricelist.settings import (ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS,
+                                SKU_REGEX)
+from Pricelist.views import (_amount_to_display, _amount_to_float,
+                             _amount_to_store, _api_error_interpreter,
+                             _get_auth, _make_api_request, _price_to_display,
+                             _price_to_float, _price_to_store)
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
 
@@ -71,7 +63,6 @@ def _get_stored_item_list_to_display(item_list, key_p="price", key_a="amount") -
     price = 0
     mass = 0
     for item in item_list:
-        __import__("pdb").set_trace()
         item["total"] = floor(item.get(key_p) * item.get(key_a) / 10)
         price += item.get("total")
         mass += item.get(key_a)
@@ -97,7 +88,6 @@ def _parse_transaction_edit_items(request):
     returns item list and alku dictionary {"uuid": value}"""
     items = {}
     alku = {}
-    __import__("pdb").set_trace()
     for param in request.POST:
         if param.find("-") == -1:
             continue
@@ -159,8 +149,6 @@ def offer(request):
         request.session.flush()
         return redirect("login")
     headers = auth["headers"]
-
-    __import__("pdb").set_trace()
 
     if "current_offer" not in request.session.keys():
         request.session["current_offer"] = []
@@ -461,6 +449,7 @@ def admin_transaction_detail(request, transaction_uuid):
         return redirect("login")
     headers = auth["headers"]
 
+    lang = request.LANGUAGE_CODE.upper()
     # if auth.get("group") not in ADMIN_GROUPS:
     #     return HttpResponseForbidden(
     #         "<h1>You do not have access to that page<h1>".encode("utf-8")
@@ -482,7 +471,8 @@ def admin_transaction_detail(request, transaction_uuid):
             msg["suc"] = "transaction data changed successfully"
 
     response = requests.get(
-        f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/", headers=headers
+        f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/?lang={lang}",
+        headers=headers,
     )
     transaction = response.json()
     transaction = _set_status(transaction)
@@ -530,6 +520,8 @@ def edit_transaction_item(request, transaction_uuid, item_uuid):
 
     admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
 
+    lang = request.LANGUAGE_CODE.upper()
+
     if request.method == "POST":
         form = ItemForm(request.POST)
         if form.is_valid():
@@ -551,7 +543,7 @@ def edit_transaction_item(request, transaction_uuid, item_uuid):
                 return redirect("client_transaction_detail", transaction_uuid)
 
     response = requests.get(
-        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
+        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/?lang={lang}",
         headers=auth["headers"],
     )
 
@@ -617,9 +609,10 @@ def print_transaciton(request, transaction_uuid):
     headers = auth["headers"]
 
     admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
+    lang = request.LANGUAGE_CODE.upper()
 
     response = requests.get(
-        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
+        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/?lang={lang}",
         headers=headers,
     )
 
@@ -641,6 +634,9 @@ def print_transaciton(request, transaction_uuid):
 
     if status == "OFFER":
         return print_offer(request, data)
+    if status == "PROPOSITION":
+        messages.warning(request, _("Proposition cannot be printed"))
+        return redirect("admin_transaction_detail", transaction_uuid)
     data["transactionDetails"], error = _make_api_request(
         f"{API_BASE_URL}/transaction-details/{admin_url}{transaction_uuid}/",
         headers=headers,
@@ -653,8 +649,6 @@ def print_transaciton(request, transaction_uuid):
         if admin_url and request.GET["client"] != "1":
             return print_final_admin(request, data)
         return print_final(request, data)
-    if status == "PROPOSITION":
-        return HttpResponseBadRequest(b"Proposition cannot be printed")
 
     return HttpResponseServerError()
 
@@ -829,6 +823,7 @@ def create_prognose(request, data, headers):
 
 def create_final(request, data, headers):
     uuid = data["transaction_uuid"]
+    lang = request.LANGUAGE_CODE.upper()
     if request.method == "POST":
         items, alku = _parse_transaction_edit_items(request)
         response = requests.put(
@@ -859,7 +854,7 @@ def create_final(request, data, headers):
         return redirect("admin_transaction_detail", data["transaction_uuid"])
 
     response = requests.get(
-        f"{API_BASE_URL}/transaction-details/admin/{uuid}/",
+        f"{API_BASE_URL}/transaction-details/admin/{uuid}/?lang={lang}",
         headers=headers,
     )
     error = _api_error_interpreter(response.status_code)
@@ -879,9 +874,10 @@ def change_status(request, transaction_uuid):
     headers = auth["headers"]
 
     admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
+    lang = request.LANGUAGE_CODE.upper()
 
     response = requests.get(
-        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
+        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/?lang={lang}",
         headers=headers,
     )
     error = _api_error_interpreter(response.status_code)
@@ -946,6 +942,8 @@ def new_transaction_detail(request, transaction_uuid):
 
     admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
 
+    lang = request.LANGUAGE_CODE.upper()
+
     if request.method == "POST":
         items, alku = _parse_transaction_edit_items(request)
         payload_transaction = {"itemsOrdered": items}
@@ -991,7 +989,8 @@ def new_transaction_detail(request, transaction_uuid):
         )
 
     transaction, error = _make_api_request(
-        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/", headers=headers
+        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/?lang={lang}",
+        headers=headers,
     )
     if error:
         return error

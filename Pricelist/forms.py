@@ -108,16 +108,6 @@ class RegisterForm(forms.Form):
             }
         ),
     )
-    clientBankNumber = forms.CharField(
-        label=_("Bank account number:"),
-        max_length=50,
-        widget=forms.TextInput(
-            attrs={
-                "class": "form-control",
-                "placeholder": _("Enter your bank account number"),
-            }
-        ),
-    )
 
 
 class NewAdminForm(forms.Form):

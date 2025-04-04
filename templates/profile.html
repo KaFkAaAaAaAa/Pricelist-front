@@ -110,16 +110,6 @@
                                     value="{{ initial.clientCountry }}"
                             />
                         </div>
-                        <div class="mb-3">
-                            <label for="clientBankNumber" class="form-label h5">{% trans "Bank Number" %}</label>
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    id="clientBankNumber"
-                                    name="clientBankNumber"
-                                    value="{{ initial.clientBankNumber }}"
-                            />
-                        </div>
                     {% endif %}
                     <div class="text-center">
                         <a href="{% url 'price_list' %}" class="btn btn-outline-danger mb-2">{% trans "Go back" %}</a>

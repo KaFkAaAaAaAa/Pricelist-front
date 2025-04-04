@@ -101,14 +101,6 @@ msgstr "Kraj:"
 msgid "Enter your country"
 msgstr "Wprowadź swój kraj"
 
-#: Pricelist/forms.py:112
-msgid "Bank account number:"
-msgstr "Numer konta bankowego:"
-
-#: Pricelist/forms.py:117
-msgid "Enter your bank account number"
-msgstr "Wprowadź numer swojego konta bankowego"
-
 #: Pricelist/forms.py:173
 msgid "Confirm Password"
 msgstr "Zmień hasło"
@@ -490,10 +482,6 @@ msgstr "Miasto"
 #: templates/profile.html:104
 msgid "Country"
 msgstr "Kraj"
-
-#: templates/profile.html:114
-msgid "Bank Number"
-msgstr "Numer konta bankowego"
 
 #: templates/profile.html:128
 #: transactions/templates/new_transaction_detail.html:150

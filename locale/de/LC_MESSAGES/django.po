@@ -100,14 +100,6 @@ msgstr ""
 msgid "Enter your country"
 msgstr ""
 
-#: Pricelist/forms.py:112
-msgid "Bank account number:"
-msgstr ""
-
-#: Pricelist/forms.py:117
-msgid "Enter your bank account number"
-msgstr ""
-
 #: Pricelist/forms.py:173
 msgid "Confirm Password"
 msgstr ""
@@ -477,10 +469,6 @@ msgstr ""
 
 #: templates/profile.html:104
 msgid "Country"
-msgstr ""
-
-#: templates/profile.html:114
-msgid "Bank Number"
 msgstr ""
 
 #: templates/profile.html:128
