@@ -15,3 +15,9 @@ transactions/__pycache__
 pdfgenerator/__pycache__
 .idea
 items/__pycache__
+.eslintrc
+.prettierrc
+node_modules
+eslint.config.js
+package-lock.json
+package.json

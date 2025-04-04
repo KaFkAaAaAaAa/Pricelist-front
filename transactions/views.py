@@ -5,19 +5,29 @@ from http.client import INTERNAL_SERVER_ERROR
 from math import floor
 
 import requests
-from django.http import (HttpResponseBadRequest, HttpResponseNotFound,
-                         HttpResponseServerError)
+from django.http import (
+    HttpResponseBadRequest,
+    HttpResponseNotFound,
+    HttpResponseServerError,
+)
 from django.http.response import HttpResponseForbidden
 from django.shortcuts import redirect, render
 from requests.sessions import session
 
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
-from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS
-from Pricelist.views import (_amount_to_display, _amount_to_float,
-                             _amount_to_store, _api_error_interpreter,
-                             _get_auth, _make_api_request, _price_to_display,
-                             _price_to_float, _price_to_store)
+from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, SKU_REGEX
+from Pricelist.views import (
+    _amount_to_display,
+    _amount_to_float,
+    _amount_to_store,
+    _api_error_interpreter,
+    _get_auth,
+    _make_api_request,
+    _price_to_display,
+    _price_to_float,
+    _price_to_store,
+)
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
 
@@ -61,7 +71,7 @@ def _get_stored_item_list_to_display(item_list, key_p="price", key_a="amount") -
     price = 0
     mass = 0
     for item in item_list:
-        __import__('pdb').set_trace()
+        __import__("pdb").set_trace()
         item["total"] = floor(item.get(key_p) * item.get(key_a) / 10)
         price += item.get("total")
         mass += item.get(key_a)
@@ -87,7 +97,7 @@ def _parse_transaction_edit_items(request):
     returns item list and alku dictionary {"uuid": value}"""
     items = {}
     alku = {}
-    __import__('pdb').set_trace()
+    __import__("pdb").set_trace()
     for param in request.POST:
         if param.find("-") == -1:
             continue
@@ -95,7 +105,7 @@ def _parse_transaction_edit_items(request):
         if not (field and uuid):
             continue
         if uuid not in items:
-            if re.match(r"^new.*", uuid):
+            if re.match(r"^new.*", uuid) or re.match(SKU_REGEX, uuid):
                 items[uuid] = {}
             else:
                 items[uuid] = {"uuid": uuid}
@@ -137,8 +147,10 @@ def _current_offer_to_payload(current_offer):
         )
     return payload
 
+
 def _add_items_to_session(request):
     request.session["current_offer"], _ = _parse_transaction_edit_items(request)
+
 
 def offer(request):
     token = request.session.get("token")
@@ -148,15 +160,18 @@ def offer(request):
         return redirect("login")
     headers = auth["headers"]
 
+    __import__("pdb").set_trace()
+
     if "current_offer" not in request.session.keys():
         request.session["current_offer"] = []
 
     if request.method == "POST" and request.POST["action"] == "save":
         _add_items_to_session(request)
     elif request.method == "POST" and auth["group"] not in ADMIN_GROUPS:
+        items, _ = _parse_transaction_edit_items(request)
         payload = {
             "description": request.POST["transaction_description"],
-            "itemsOrdered": _current_offer_to_payload(request.session["current_offer"]),
+            "itemsOrdered": items,
         }
         # items already converted to "store" values
         response = requests.post(
@@ -166,11 +181,12 @@ def offer(request):
             request.session["current_offer"] = []
             request.session.modified = True
             return redirect("client_transaction_detail", response.json()["uuid"])
+        return _api_error_interpreter(response.status_code)
         # TODO: weird bug, after getting error from api the
         # prices aren't formatted well
 
-    offer = request.session.get("current_offer")
-    totals = _get_stored_item_list_to_display(offer)
+    current_offer = request.session.get("current_offer")
+    totals = _get_stored_item_list_to_display(current_offer)
     client_company_names = []  # here bc unbound
     if auth["group"] in ADMIN_GROUPS:
         response = requests.get(
@@ -212,7 +228,7 @@ def offer(request):
     return render(
         request,
         "offer.html",
-        {"offer": offer, "totals": totals, "clients": client_company_names},
+        {"offer": current_offer, "totals": totals, "clients": client_company_names},
     )
 
 

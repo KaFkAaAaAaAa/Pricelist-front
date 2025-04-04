@@ -9,7 +9,13 @@ from django.http.response import Http404, HttpResponseForbidden, HttpResponseNot
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext_lazy as _
 
-from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CATEGORIES, CLIENT_GROUPS
+from Pricelist.settings import (
+    ADMIN_GROUPS,
+    API_BASE_URL,
+    CATEGORIES,
+    CLIENT_GROUPS,
+    SKU_REGEX,
+)
 from Pricelist.views import (
     _amount_to_store,
     _get_auth,
@@ -86,7 +92,7 @@ def _add_items_to_offer(request, headers):
     helper for price_list func"""
     items = request.POST
     for sku in items:
-        if not re.match(r"^\w\w\d\d$", sku):
+        if not re.match(SKU_REGEX, sku):
             # csrf and wrong requests
             continue
 
@@ -147,7 +153,7 @@ def price_list(request):
 
 
 def item_detail(request, item_sku):
-    if not re.match(r"^\w\w\d\d$", item_sku):
+    if not re.match(SKU_REGEX, item_sku):
         raise Http404
     token = request.session.get("token")
     auth = _get_auth(token)
@@ -236,7 +242,7 @@ def edit_item(request, item_sku):
                 _price_to_store(request.POST.get(f"itemPrice-{i}")) for i in range(1, 5)
             ],
         }
-        if not re.match(r"^\w\w\d\d$", item_sku):
+        if not re.match(SKU_REGEX, item_sku):
             return render(request, "edit_item.html", {"error": "Wrong sku format"})
 
         # not used??
@@ -354,7 +360,8 @@ def delete_image(request, image_path):
     if fs.exists(image_fs):
         fs.delete(image_fs)
     if re.match(r".*\.M\..*", image_path):
-        sku = re.match(r"\w\w\d\d(?=.*)", image_path)
+        sku_regex_from_filename = SKU_REGEX.rstrip("$") + "(?.*)"
+        sku = re.match(sku_regex_from_filename, image_path)
         if not sku:
             return redirect(redir_url)
         requests.post(
@@ -437,7 +444,7 @@ def add_item(request):
         # image = request.FILES['image']
         # fs = FileSystemStorage()
         item_sku = request.POST.get("itemSku")
-        if not re.match(r"^\w\w\d\d$", item_sku):
+        if not re.match(SKU_REGEX, item_sku):
             return render(
                 request,
                 "add_item.html",

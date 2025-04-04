@@ -20,6 +20,8 @@ SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "true").lower() == "true"
 
+SKU_REGEX = r"^[a-zA-Z]{2}\d{2,3}$"
+
 ALLOWED_HOSTS = json.loads(os.getenv("ALLOWED_HOSTS", '["localhost"]'))
 CSRF_TRUSTED_ORIGINS = json.loads(
     os.getenv("CSRF_TRUSTED_ORIGINS", '["http://localhost:8000"]')
