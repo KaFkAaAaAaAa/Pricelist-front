@@ -6,11 +6,7 @@ from math import floor
 
 import requests
 from django.contrib import messages
-from django.http import (
-    HttpResponseBadRequest,
-    HttpResponseNotFound,
-    HttpResponseServerError,
-)
+from django.http import HttpResponseNotFound, HttpResponseServerError
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext_lazy as _
 
@@ -18,11 +14,11 @@ from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
 from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, SKU_REGEX
 from Pricelist.utils import (
+    Page,
     _amount_to_display,
     _amount_to_float,
     _amount_to_store,
     _api_error_interpreter,
-    _get_auth,
     _get_headers,
     _is_admin,
     _make_api_request,
@@ -318,11 +314,12 @@ def client_transactions(request):
     transactions, error = _make_api_request(
         f"{API_BASE_URL}/transactions/", headers=headers
     )
+    page = Page(transactions)
 
     if error or not transactions:
         return error
 
-    for transaction in transactions:
+    for transaction in page.content:
         _set_status(transaction)
         if "itemsOrdered" in transaction.keys():
             if transaction["status"] == "FINAL":
@@ -343,7 +340,7 @@ def client_transactions(request):
                 "price": 0,
             }
 
-    return render(request, "transaction_list.html", {"transactions": transactions})
+    return render(request, "transaction_list.html", {"page": page})
 
 
 @require_auth
@@ -374,7 +371,8 @@ def admin_transactions(request):
                 "price": 0,
             }
 
-    return render(request, "transaction_list.html", {"transactions": transactions})
+    page = Page(transactions)
+    return render(request, "transaction_list.html", {"page": page})
 
 
 @require_auth
@@ -398,7 +396,9 @@ def admin_client_transactions(request, user_id):
                 "price": 0,
             }
 
-    return render(request, "transaction_list.html", {"transactions": transactions})
+    page = Page(transactions)
+
+    return render(request, "transaction_list.html", {"page": page})
 
 
 @require_auth

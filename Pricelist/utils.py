@@ -180,3 +180,18 @@ def require_group(allowed_groups):
         return _wrapped_view
 
     return decorator
+
+
+class Page:
+    def __init__(self, api_response):
+        self.content = getattr(api_response, "content", [])
+        self.page_no = getattr(api_response, "pageNo", 0)
+        self.page_size = getattr(api_response, "pageSize", 0)
+        self.total_elements = getattr(api_response, "totalElements", 0)
+        self.total_pages = getattr(api_response, "totalPages", 0)
+        self.last = getattr(api_response, "last", False)
+
+    def __str__(self):
+        return (
+            f"TransactionPageObject:{self.page_size}:{self.page_no}/{self.total_pages}"
+        )
