@@ -87,22 +87,22 @@ def _make_api_request(url, method=requests.get, headers=None, body=None):
 
 
 def _get_auth(token):
-    """helper func in authorization process, returns null when user
+    """helper func in authorization process, returns {} when user
     is not authenticated, and a dictiornary with user's data"""
     if not token:
-        return
+        return {}
     headers = {"Authorization": f"Bearer {token}"}
     response = requests.get(f"{API_BASE_URL}/auth/whoami/", headers=headers)
     try:
         if response.status_code != 200:
-            return
+            return {}
         auth = response.json()
         auth["token"] = token
         auth["headers"] = headers
         auth["group"] = auth["group"].rstrip("]").lstrip("[")
         return auth
     except:
-        return False
+        return {}
 
 
 def _group_to_roman(group_to_translate):
@@ -116,6 +116,7 @@ def _group_to_roman(group_to_translate):
 
 def _get_headers(request):
     try:
+        __import__("pdb").set_trace()
         return request.session["auth"]["headers"]
     except KeyError:
         return {}
@@ -145,7 +146,11 @@ def _is_client(request):
 def require_auth(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
-        token = request.session.get("token")
+        __import__("pdb").set_trace()
+        try:
+            token = request.session["token"]
+        except KeyError:
+            return redirect("login")
         auth = _get_auth(token)
         if not auth or auth["email"] == "anonymousUser":
             request.session.flush()

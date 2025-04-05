@@ -171,7 +171,7 @@ def item_detail(request, item_sku):
 @require_group(ADMIN_GROUPS)
 def admin_items(request):
     lang = request.LANGUAGE_CODE.upper()
-    headers = _get_headers(requests)
+    headers = _get_headers(request)
 
     if "search" in request.GET.keys():
         response = requests.get(
