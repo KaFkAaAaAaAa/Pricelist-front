@@ -116,7 +116,6 @@ def _group_to_roman(group_to_translate):
 
 def _get_headers(request):
     try:
-        __import__("pdb").set_trace()
         return request.session["auth"]["headers"]
     except KeyError:
         return {}
@@ -146,7 +145,6 @@ def _is_client(request):
 def require_auth(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
-        __import__("pdb").set_trace()
         try:
             token = request.session["token"]
         except KeyError:
