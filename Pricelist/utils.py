@@ -15,6 +15,10 @@ from django.utils.translation import gettext_lazy as _
 
 from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, GROUPS_ROMAN
 
+RESPONSE_FORBIDDEN = HttpResponseForbidden(
+    f"<h1>{_('You do not have access to that page')}<h1>".encode("utf-8")
+)
+
 
 def _price_to_float(price: int) -> float:
     return price / 100
@@ -138,13 +142,6 @@ def _is_client(request):
         return False
 
 
-def _is_activated(request):
-    try:
-        return request.session["auth"]["group"] != "UNASSIGNED"
-    except KeyError:
-        return False
-
-
 def require_auth(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
@@ -153,7 +150,7 @@ def require_auth(view_func):
         if not auth or auth["email"] == "anonymousUser":
             request.session.flush()
             return redirect("login")
-        if not _is_activated(request):
+        if auth["group"] == "UNASSIGNED":
             request.session.flush()
             messages.warning(
                 request, _("User not activated yet, wait for information on your email")
@@ -169,14 +166,12 @@ def require_group(allowed_groups):
     def decorator(view_func):
         @wraps(view_func)
         def _wrapped_view(request, *args, **kwargs):
-            auth = getattr(request["session"], "auth", {})
-
+            try:
+                auth = request.session["auth"]
+            except KeyError:
+                return RESPONSE_FORBIDDEN
             if auth.get("group") not in allowed_groups:
-                return HttpResponseForbidden(
-                    f"<h1>{_('You do not have access to that page')}<h1>".encode(
-                        "utf-8"
-                    )
-                )
+                return RESPONSE_FORBIDDEN
             return view_func(request, *args, **kwargs)
 
         return _wrapped_view
