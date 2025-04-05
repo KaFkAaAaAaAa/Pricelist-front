@@ -3,7 +3,7 @@ from django.conf.urls.i18n import set_language
 from django.conf.urls.static import static
 from django.urls import include, path
 
-from admin import admin_views
+from admin import views as admin_views
 from items import views as items_views
 from Pricelist import views
 
