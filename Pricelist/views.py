@@ -243,7 +243,7 @@ def verify_registration(request):
 def my_users(request, msg="", func="activate-user"):
     response = requests.get(
         f"{API_BASE_URL}/clients/admin/admin-list/sorted?sort=unassigned",
-        headers=_get_headers,
+        headers=_get_headers(request),
     )
     clients = response.json()
     if response.status_code == 200 and isinstance(clients, Iterable):
@@ -431,7 +431,7 @@ def client_add(request):
             response = requests.post(
                 f"{API_BASE_URL}/auth/register?as=admin",
                 json=payload,
-                headers=_get_headers,
+                headers=_get_headers(request),
             )
             if response.status_code == 200:
                 return redirect("client_list")
