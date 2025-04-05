@@ -145,7 +145,6 @@ def _is_client(request):
 def require_auth(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
-        __import__("pdb").set_trace()
         token = request.session.get("token")
         auth = _get_auth(token)
         if not auth or auth["email"] == "anonymousUser":
