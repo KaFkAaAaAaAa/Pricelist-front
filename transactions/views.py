@@ -1027,4 +1027,4 @@ def new_transaction_detail(request, transaction_uuid):
                     continue
         data["transactionDetails"] = transaction_details
 
-    return render(request, "new_transaction_detail.html", data)
+    return render(request, "transaction_detail_admin.html", data)
