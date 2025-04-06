@@ -24,14 +24,13 @@ urlpatterns = [
     ),
     path(
         "admin/<uuid:transaction_uuid>/",
-        views.new_transaction_detail,
+        views.admin_transaction_detail,
         name="admin_transaction_detail",
     ),
     path(
         "<uuid:transaction_uuid>/",
-        # views.admin_transaction_detail,
-        views.new_transaction_detail,
-        name="admin_transaction_detail",
+        views.client_transaction_detail,
+        name="client_transaction_detail",
     ),
     path(
         "admin/<uuid:transaction_uuid>/add-item/",

@@ -1,10 +1,162 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Transaction Detail" %}{% endblock %}
 
-</body>
-</html>
+{% block content %}
+    <div class="container mt-4">
+        <h1 class="mb-4 text-center">{% trans "Transaction Detail" %}</h1>
+        <div class="d-flex justify-content-start">
+            <button class="btn btn-outline-danger mb-4 mt-3" onclick="history.back()">Go back</button>
+        </div>
+        {% if transaction.status == 'PROGNOSE' or transaction.status == 'FINAL_K' %}
+            <div class="text-end mb-2 text-muted" style="font-size: 0.9rem;">
+                {% trans "Includes estimated transport information based on current logistics data." %}
+            </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle">
+                    <thead>
+                    <tr>
+                        <th>{% trans "SKU" %}</th>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Amount" %}</th>
+                        {% if transaction.status == 'FINAL_K' %}
+                            <th>{% trans "Alku" %}</th>
+                        {% endif %}
+                        <th>{% trans "Price" %}</th>
+                        <th>{% trans "Total" %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in transaction.items %}
+                        <tr>
+                            <td>
+                                <input type="text" name="sku_{{ forloop.counter }}" value="{{ item.sku }}"
+                                       pattern="^[a-zA-Z]{2}\d{2,3}$" maxlength="5" class="form-control" readonly>
+                            </td>
+                            <td>
+                                {% if transaction.status == 'PROPOSAL' %}
+                                    {% if item.sku|slice:":2" == "NA" %}
+                                        <input type="text" name="name_{{ forloop.counter }}" value="{{ item.name }}"
+                                               class="form-control">
+                                    {% else %}
+                                        <input type="hidden" name="name_{{ forloop.counter }}" value="{{ item.name }}">
+                                        {{ item.name }}
+                                    {% endif %}
+                                {% else %}
+                                    <input type="hidden" name="name_{{ forloop.counter }}" value="{{ item.name }}">
+                                    {{ item.name }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if transaction.status == 'PROPOSAL' %}
+                                    {% if item.sku|slice:":2" == "NA" %}
+                                        <input type="number" step="0.1" min="0.1" name="amount_{{ forloop.counter }}"
+                                               value="{{ item.amount }}" class="form-control">
+                                    {% else %}
+                                        <input type="hidden" name="amount_{{ forloop.counter }}"
+                                               value="{{ item.amount }}">
+                                        {{ item.amount }}
+                                    {% endif %}
+                                {% elif transaction.status == 'FINAL_K' %}
+                                    {% if item.sku|slice:":2" == "NA" %}
+                                        <input type="number" step="0.1" min="0.1" name="amount_{{ forloop.counter }}"
+                                               value="{{ item.amount }}" class="form-control">
+                                    {% else %}
+                                        <input type="hidden" name="amount_{{ forloop.counter }}"
+                                               value="{{ item.amount }}">
+                                        {{ item.amount }}
+                                    {% endif %}
+                                {% else %}
+                                    <input type="hidden" name="amount_{{ forloop.counter }}" value="{{ item.amount }}">
+                                    {{ item.amount }}
+                                {% endif %}
+                            </td>
+                            {% if transaction.status == 'FINAL_K' %}
+                                <td>
+                                    <input type="number" step="0.1" min="0.1" name="alku_{{ forloop.counter }}"
+                                           value="{{ item.alku }}" class="form-control">
+                                </td>
+                            {% endif %}
+                            <td>
+                                {% if transaction.status == 'PROPOSAL' %}
+                                    {% if item.sku|slice:":2" == "NA" %}
+                                        <input type="number" step="0.01" min="0.01" max="999.99"
+                                               name="price_{{ forloop.counter }}" value="{{ item.price }}"
+                                               class="form-control">
+                                    {% else %}
+                                        <input type="hidden" name="price_{{ forloop.counter }}"
+                                               value="{{ item.price }}">
+                                        {{ item.price }}
+                                    {% endif %}
+                                {% elif transaction.status == 'FINAL_K' %}
+                                    {% if item.sku|slice:":2" == "NA" %}
+                                        <input type="number" step="0.01" min="0.01" max="999.99"
+                                               name="price_{{ forloop.counter }}" value="{{ item.price }}"
+                                               class="form-control">
+                                    {% else %}
+                                        <input type="hidden" name="price_{{ forloop.counter }}"
+                                               value="{{ item.price }}">
+                                        {{ item.price }}
+                                    {% endif %}
+                                {% else %}
+                                    <input type="hidden" name="price_{{ forloop.counter }}" value="{{ item.price }}">
+                                    {{ item.price }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if transaction.status == 'FINAL_K' %}
+                                    {{ item.alku|floatformat:1|default:"0.0" }}
+                                {% else %}
+                                    {{ item.amount|floatformat:1|default:"0.0" }}
+                                {% endif %} × {{ item.price|floatformat:2 }} €
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                    <tfoot>
+                    <tr class="fw-bold">
+                        <td colspan="{% if transaction.status == 'FINAL_K' %}5{% else %}4{% endif %}"
+                            class="text-end">{% trans "Total from Client" %}:
+                        </td>
+                        <td>
+                            {{ transaction.totals.client_total|floatformat:2 }} €
+                        </td>
+                    </tr>
+                    {% if transaction.status == 'FINAL_K' %}
+                        <tr class="fw-bold">
+                            <td colspan="5" class="text-end">{% trans "Total from Alku" %}:</td>
+                            <td>
+                                {{ transaction.totals.alku_total|floatformat:2 }} €
+                            </td>
+                        </tr>
+                    {% endif %}
+                    </tfoot>
+                </table>
+            </div>
+
+            {% if transaction.status == 'PROPOSAL' %}
+                <input type="text" name="amount_{{ forloop.counter }}" value="{{ item.amount }}" class="form-control">
+            {% elif transaction.status == 'FINAL_K' %}
+                {% if item.sku|slice:":2" == "NA" %}
+                    <input type="number" name="amount_{{ forloop.counter }}" value="{{ item.amount }}"
+                           class="form-control">
+                {% else %}
+                    <input type="hidden" name="amount_{{ forloop.counter }}" value="{{ item.amount }}">
+                    {{ item.amount }}
+                {% endif %}
+            {% else %}
+                <input type="hidden" name="amount_{{ forloop.counter }}" value="{{ item.amount }}">
+                {{ item.amount }}
+            {% endif %}
+
+            <div class="text-end mt-3">
+                <button class="btn btn-primary" type="submit">{% trans "Save Changes" %}</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
