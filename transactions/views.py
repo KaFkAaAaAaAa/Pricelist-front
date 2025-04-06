@@ -317,6 +317,7 @@ def client_transactions(request):
         f"{API_BASE_URL}/transactions/", headers=headers
     )
     page = Page(transactions)
+    print(transactions)
 
     if error or not transactions:
         return error
@@ -872,10 +873,54 @@ def change_status(request, transaction_uuid):
         messages.error(request, _("Invalid status name"))
     return redirect("admin_transaction_detail", transaction_uuid)
 
+@require_auth
+@require_group(CLIENT_GROUPS)
+def client_transaction_detail(request, transaction_uuid):
+    lang = request.LANGUAGE_CODE.upper()
+    headers = _get_headers(request)
+    transaction, error = _make_api_request(
+        f"{API_BASE_URL}/transactions/{transaction_uuid}/?lang={lang}",
+        headers=headers,
+    )
+    if error:
+        return error
+
+    transaction = _set_status(transaction)
+    if "itemsOrdered" not in transaction.keys():
+        transaction["itemsOrdered"] = {}
+    transaction["totals"] = _get_stored_item_list_to_display(
+        transaction["itemsOrdered"],
+    )
+    data = {"transaction": transaction}
+    if transaction["status"] in ("PROGNOSE", "FINAL"):
+        transaction_details, error = _make_api_request(
+            f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
+            headers=headers,
+        )
+        if error:
+            return error
+
+        if not (
+                isinstance(transaction_details, dict)
+                and "alkuAmount" in transaction_details.keys()
+        ):
+            return _api_error_interpreter(INTERNAL_SERVER_ERROR)
+
+        if transaction["status"] == "FINAL" and transaction_details["alkuAmount"]:
+            for item in transaction["itemsOrdered"]:
+                try:
+                    item["alku"] = _amount_to_display(
+                        transaction_details["alkuAmount"][item["uuid"]]
+                    )
+                except KeyError:
+                    continue
+        data["transactionDetails"] = transaction_details
+    return render(request, "transaction_detail_client.html", data)
+
 
 @require_auth
-@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
-def new_transaction_detail(request, transaction_uuid):
+@require_group(ADMIN_GROUPS)
+def admin_transaction_detail(request, transaction_uuid):
 
     admin_url = "admin/" if _is_admin(request) else ""
     headers = _get_headers(request)
