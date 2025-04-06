@@ -22,3 +22,4 @@ eslint.config.js
 package-lock.json
 package.json
 file_manager/__pycache__
+transactions_docs/*

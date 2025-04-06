@@ -6,13 +6,23 @@
 {% block content %}
 <div class="container">
     <p>{{ transaction_uuid }}/</p>
-  {% if file_name %}
-    <a href={{ transaction_uuid }}/invoice/{{ file_name }}>{{ file_name }}</div>
-  {% endif %}
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="file" class="form-control" name="file" required />
-    <button type="submit" class="btn btn-outline-secondary">Upload</button>
-  </form>
+    {% for dir_name in dir_list  %}
+        <a href={{ transaction_uuid }}/{{ dir_name }}>{{ file_name }}</div>
+    {% endfor %}
+    {% for file_name in file_list %}
+        <a href={{ transaction_uuid }}/{{ file_name }}>{{ file_name }}</div>
+    {% endfor %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="path" value="{{ transaction_uuid }}/">
+        <input type="file" class="form-control" name="file" required />
+        <button type="submit" class="btn btn-outline-secondary">{% trans "Upload file" %}</button>
+    </form>
+    <form method="post" action="/files/?action=create-directory">
+        {% csrf_token %}
+        <input type="hidden" name="path" value="{{ transaction_uuid }}/">
+        <input type="text" class="form-control" name="dir_name" required />
+        <button type="submit" class="btn btn-outline-secondary">{% trans "Create directory" %}</button>
+    </form>
 </div>
 {% endblock %}

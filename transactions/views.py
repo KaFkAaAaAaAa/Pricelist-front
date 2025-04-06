@@ -353,7 +353,9 @@ def admin_transactions(request):
 
     response = requests.get(f"{API_BASE_URL}/transactions/admin/", headers=headers)
     transactions = response.json()
-    for transaction in transactions:
+    page = Page(transactions)
+
+    for transaction in page.content:
         _set_status(transaction)
         if "itemsOrdered" in transaction.keys():
             if transaction["status"] == "FINAL":
@@ -873,6 +875,7 @@ def change_status(request, transaction_uuid):
         messages.error(request, _("Invalid status name"))
     return redirect("admin_transaction_detail", transaction_uuid)
 
+
 @require_auth
 @require_group(CLIENT_GROUPS)
 def client_transaction_detail(request, transaction_uuid):
@@ -901,8 +904,8 @@ def client_transaction_detail(request, transaction_uuid):
             return error
 
         if not (
-                isinstance(transaction_details, dict)
-                and "alkuAmount" in transaction_details.keys()
+            isinstance(transaction_details, dict)
+            and "alkuAmount" in transaction_details.keys()
         ):
             return _api_error_interpreter(INTERNAL_SERVER_ERROR)
 

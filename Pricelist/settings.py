@@ -33,7 +33,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "images")
 STATIC_URL = "/static/"
 
 TRANSACTION_ROOT = os.getenv(
-    "TRANSACTION_ROOT", os.path.join(BASE_DIR, "transactions_docs")
+    "TRANSACTION_ROOT", os.path.join(BASE_DIR, "transactions_docs/")
 )
 TRANSACTION_URL = "/docs/"
 
