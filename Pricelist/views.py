@@ -1,120 +1,29 @@
 import re
-from http.client import INTERNAL_SERVER_ERROR
-from json import JSONDecodeError
-from math import floor
 from typing import Iterable
 from uuid import UUID
 
 import requests
 from django.contrib import messages
-from django.http import HttpResponseServerError
-from django.http.response import HttpResponseForbidden, HttpResponseNotFound
+from django.http.response import HttpResponseNotFound
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
 
 from .forms import LoginForm, NewAdminForm, PasswordResetForm, RegisterForm
 from .settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, GROUPS_ROMAN
+from .utils import (
+    _get_headers,
+    _group_to_roman,
+    _make_api_request,
+    require_auth,
+    require_group,
+)
 
 # TODO: JSON errors -> if json error then redirect(login)
-
-
-def _price_to_float(price: int) -> float:
-    return price / 100
-
-
-def _amount_to_float(amount: int) -> float:
-    return amount / 10
-
-
-def _price_to_display(price: float) -> str:
-    return f"{price / 100:.2f}"
-
-
-def _amount_to_display(amount: float) -> str:
-    return f"{amount / 10:.1f}"
-
-
-def _amount_to_store(amount: str) -> int:
-    if amount in ("", "0", False):
-        amount = "0"
-    return int(floor(float(amount) * 10)) if amount else 0
-
-
-def _price_to_store(price: str) -> int:
-    if price in ("", "0", False):
-        price = "0"
-    return int(floor(float(price) * 100)) if price else 0
-
-
-def _api_error_interpreter(status_code, msg_404=None, msg_401=None, msg_500=None):
-    """Interpreter for api error response status code. It renders error response pages.
-    If response code is not either 404 or 401, it uses HttpResponseServerError"""
-    output = False
-    if status_code == 404:
-        output = HttpResponseNotFound(msg_404) if msg_404 else HttpResponseNotFound(b"")
-    elif status_code in (401, 403):
-        output = (
-            HttpResponseForbidden(msg_401) if msg_401 else HttpResponseForbidden(b"")
-        )
-    elif status_code != 200:
-        output = (
-            HttpResponseServerError(msg_500)
-            if msg_500
-            else HttpResponseServerError(b"")
-        )
-    return output
-
-
-def _make_api_request(url, method=requests.get, headers=None, body=None):
-    """Function makes request for api and return json body of response, if
-    the response is an error or api response can't be parsed using .json()
-    function returns Error HTTP response as a second value"""
-    response = method(
-        url,
-        headers=headers,
-        json=body,
-    )
-    try:
-        if response:
-            return response.json(), _api_error_interpreter(response.status_code)
-    except JSONDecodeError:
-        return response.text, _api_error_interpreter(response.status_code)
-    except:
-        return False, _api_error_interpreter(INTERNAL_SERVER_ERROR)
-    return False, _api_error_interpreter(response.status_code)
 
 
 def favicon():
     """render 404 for favicon request"""
     return HttpResponseNotFound()
-
-
-def _get_auth(token):
-    """helper func in authorization process, returns null when user
-    is not authenticated, and a dictiornary with user's data"""
-    if not token:
-        return
-    headers = {"Authorization": f"Bearer {token}"}
-    response = requests.get(f"{API_BASE_URL}/auth/whoami/", headers=headers)
-    try:
-        if response.status_code != 200:
-            return
-        auth = response.json()
-        auth["token"] = token
-        auth["headers"] = headers
-        auth["group"] = auth["group"].rstrip("]").lstrip("[")
-        return auth
-    except:
-        return
-
-
-def _group_to_roman(group_to_translate):
-    """Return (str) roman group name, by full group name,
-    if group name invalid return null"""
-    for i, group_full in enumerate(CLIENT_GROUPS):
-        if group_to_translate == group_full:
-            return GROUPS_ROMAN[i]
-    return
 
 
 # Login View
@@ -188,23 +97,20 @@ def register_view(request):
     return render(request, "register.html", {"form": form})
 
 
+@require_auth
 def client_panel(request):
     # TODO: add some logic
     return render(request, "client_dashboard.html")
 
 
+@require_auth
 def profile(request):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
 
-    user_admin = True
+    user_admin = False
+    headers = _get_headers(request)
 
-    if auth["group"] not in ADMIN_GROUPS:
-        user_admin = False
+    if request.session.auth["group"] in ADMIN_GROUPS:
+        user_admin = True
 
     if request.method == "POST":
         err = ""
@@ -226,15 +132,16 @@ def profile(request):
                 f"{API_BASE_URL}/clients/self/", json=client_payload, headers=headers
             )
             if client_response.status_code != 200:
-                err = "500 Internal Server Error"
+                messages.error(
+                    request, _("Internal server error, user data didn't change")
+                )
         response = requests.post(
             f"{API_BASE_URL}/users/self/", json=payload, headers=headers
         )
         if response.status_code != 200 and not err:
-            err = "500 Internal Server Error"
+            messages.error(request, _("Internal server error, user data didn't change"))
         elif not err:
-            msg = "User data changed successfully"
-        # TODO: figure out how to redirect there correctly
+            messages.success(request, _("User data changed successfully"))
         response_auth = requests.get(
             f"{API_BASE_URL}/auth/whoami/",
             headers={"Authorization": f'Bearer {request.session["token"]}'},
@@ -272,28 +179,16 @@ def profile(request):
 # admin views
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def admin_dashboard(request):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-
-    if auth.get("group") not in ADMIN_GROUPS:
-        return HttpResponseForbidden(
-            "<h1>You do not have access to that page<h1>".encode("utf-8")
-        )
 
     return render(request, "admin_dashboard.html")
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def new_admin(request, msg=None):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
 
     if request.method == "POST":
         form = NewAdminForm(request.POST)
@@ -303,6 +198,7 @@ def new_admin(request, msg=None):
                 "firstName": form.cleaned_data["userFirstName"],
                 "lastName": form.cleaned_data["userLastName"],
             }
+            headers = _get_headers(request)
             response = requests.post(
                 f"{API_BASE_URL}/auth/admin/new-admin", headers=headers, json=payload
             )
@@ -342,43 +238,35 @@ def verify_registration(request):
     return render(request, "verify_registration.html")
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def my_users(request, msg="", func="activate-user"):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
     response = requests.get(
         f"{API_BASE_URL}/clients/admin/admin-list/sorted?sort=unassigned",
-        headers=headers,
+        headers=_get_headers(request),
     )
     clients = response.json()
     if response.status_code == 200 and isinstance(clients, Iterable):
-        msg += " No clients found"
+        msg += _(" No clients found")
         return render(
             request,
             "new_users.html",
             {"clients": clients, "msg": msg, "func": func},
         )
-    else:
-        return render(
-            request,
-            "new_users.html",
-            {"error": "API error!", "msg": msg, "func": func},
-        )
+    return render(
+        request,
+        "new_users.html",
+        {"error": _("API error!"), "msg": msg, "func": func},
+    )
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def new_users(request, msg="", func="assign-admin"):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
 
-    response = requests.get(f"{API_BASE_URL}/clients/admin/no-admin/", headers=headers)
+    response = requests.get(
+        f"{API_BASE_URL}/clients/admin/no-admin/", headers=_get_headers(request)
+    )
     clients = response.json()
     if response.status_code == 200 and isinstance(clients, Iterable):
         return render(
@@ -386,22 +274,17 @@ def new_users(request, msg="", func="assign-admin"):
             "new_users.html",
             {"clients": clients, "msg": msg, "func": func},
         )
-    else:
-        return render(
-            request,
-            "new_users.html",
-            {"error": "API error!", "msg": msg, "func": func},
-        )
+    return render(
+        request,
+        "new_users.html",
+        {"error": _("API error!"), "msg": msg, "func": func},
+    )
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def assign_admin(request, user_id):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
+    headers = _get_headers(request)
     user_response = requests.get(
         f"{API_BASE_URL}/users/admin/{user_id}", headers=headers
     )
@@ -422,9 +305,9 @@ def assign_admin(request, user_id):
 
     payload = False
     if request.method == "POST":
-        for name in admins:
-            if request.POST["admin"] == name:
-                payload = {"clientAdminId": admins[name]}
+        for admin_name, admin_uuid in admins.items():
+            if request.POST["admin"] == admin_name:
+                payload = {"clientAdminId": admin_uuid}
                 break
         if not payload:
             pass
@@ -438,20 +321,17 @@ def assign_admin(request, user_id):
         return render(
             request,
             "assign_admin.html",
-            {"email": user_email, "error": "API error!"},
+            {"email": user_email, "error": _("API error!")},
         )
     return render(
         request, "assign_admin.html", {"email": user_email, "admins": admins.keys()}
     )
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def activate_user(request, user_id):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
+    headers = _get_headers(request)
 
     response = requests.get(f"{API_BASE_URL}/users/admin/{user_id}", headers=headers)
     user_email = response.json()["userEmail"]
@@ -473,7 +353,7 @@ def activate_user(request, user_id):
         return render(
             request,
             "activate_user.html",
-            {"email": user_email, "error": "API error!"},
+            {"email": user_email, "error": _("API error!")},
         )
     return render(
         request,
@@ -486,18 +366,10 @@ def activate_user(request, user_id):
     )
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def client_list(request):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
-    if auth.get("group") not in ADMIN_GROUPS:
-        return HttpResponseForbidden(
-            "<h1>You do not have access to that page<h1>".encode("utf-8")
-        )
+    headers = _get_headers
 
     response = requests.get(f"{API_BASE_URL}/clients/admin/", headers=headers)
     try:
@@ -507,68 +379,41 @@ def client_list(request):
     return render(request, "client_list.html", {"clients": clients})
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def client_detail(request, client_id):
     if not isinstance(client_id, UUID):
-        raise HttpResponseNotFound
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
-    if auth.get("group") not in ADMIN_GROUPS:
-        return HttpResponseForbidden(
-            "<h1>You do not have access to that page<h1>".encode("utf-8")
-        )
+        return HttpResponseNotFound(_("User not found").encode("UTF-8"))
 
     response = requests.get(
-        f"{API_BASE_URL}/clients/admin/{client_id}", headers=headers
+        f"{API_BASE_URL}/clients/admin/{client_id}", headers=_get_headers(request)
     )
     if response.status_code == 200:
         client = response.json()
         return render(request, "client_detail.html", {"client": client})
-    else:
-        return render(request, "client_detail.html", {"error": "Item not found."})
+    return render(request, "client_detail.html", {"error": _("Client not found.")})
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def client_delete(request, client_id):
     if not isinstance(client_id, UUID):
-        raise HttpResponseNotFound
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
-    if auth.get("group") not in ADMIN_GROUPS:
-        return HttpResponseForbidden(
-            "<h1>You do not have access to that page<h1>".encode("utf-8")
-        )
+        return HttpResponseNotFound(_("User not found").encode("UTF-8"))
 
     response = requests.delete(
-        f"{API_BASE_URL}/clients/admin/{client_id}", headers=headers
+        f"{API_BASE_URL}/clients/admin/{client_id}", headers=_get_headers(request)
     )
     # TODO: Errors and success messages
-    # if response.status_code == 200:
-    #     return redirect("client_list")
+    if response.status_code == 200:
+        messages.success(request, _("Client deleted successfully"))
+        return redirect("client_list")
+    messages.error(request, _("Internal server error"))
     return redirect("client_list")
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def client_add(request):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
-    if auth.get("group") not in ADMIN_GROUPS:
-        return HttpResponseForbidden(
-            "<h1>You do not have access to that page<h1>".encode("utf-8")
-        )
-
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -584,7 +429,9 @@ def client_add(request):
                 "clientCountry": form.cleaned_data["clientCountry"],
             }
             response = requests.post(
-                f"{API_BASE_URL}/auth/register", json=payload, headers=headers
+                f"{API_BASE_URL}/auth/register?as=admin",
+                json=payload,
+                headers=_get_headers(request),
             )
             if response.status_code == 200:
                 return redirect("client_list")
@@ -606,19 +453,10 @@ def client_add(request):
     return render(request, "new_client.html", {"form": form})
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def edit_client(request, client_id):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    error = ""
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-
-    if auth.get("group") not in ADMIN_GROUPS:
-        return HttpResponseForbidden(
-            "<h1>You do not have access to that page<h1>".encode("utf-8")
-        )
-
+    headers = _get_headers(request)
     if request.method == "POST":
         payload_user = {
             "userLastName": request.POST["userLastName"],
@@ -636,25 +474,33 @@ def edit_client(request, client_id):
         }
 
         response_user = requests.put(
-            f"{API_BASE_URL}/users/admin/{client_id}", json=payload_user
+            f"{API_BASE_URL}/users/admin/{client_id}",
+            json=payload_user,
+            headers=headers,
         )
         response_client = requests.put(
-            f"{API_BASE_URL}/clients/admin/{client_id}", json=payload_client
+            f"{API_BASE_URL}/clients/admin/{client_id}",
+            json=payload_client,
+            headers=headers,
         )
         if response_user.status_code == 200 and response_client.status_code == 200:
-            render(request, "edit_client.html", {"error": error})
+            messages.success(request, _("Client edited successfully"))
+            return render(request, "edit_client.html")
+        messages.error(request, _("Internal server error!"))
 
-    client = requests.get(f"{API_BASE_URL}/clients/admin/{client_id}").json()
+    client, error = _make_api_request(
+        f"{API_BASE_URL}/clients/admin/{client_id}", headers=headers
+    )
+    if error:
+        return error
+
     return render(request, "edit_client.html", {"client": client})
 
 
+@require_auth
 def change_password(request):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
+    headers = _get_headers(request)
+
     form = PasswordResetForm()
     if request.method == "POST":
         form = PasswordResetForm(request.POST)

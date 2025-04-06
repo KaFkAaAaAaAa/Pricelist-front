@@ -1,22 +1,25 @@
+from uuid import UUID
+
 import requests
+from django.contrib import messages
+from django.http import HttpResponseNotFound
 from django.shortcuts import redirect, render
+from django.utils.translation import gettext_lazy as _
 
-from Pricelist.views import *
-from Pricelist.views import API_BASE_URL, _get_auth
+from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL
+from Pricelist.utils import _get_headers, _make_api_request, require_auth, require_group
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def admin_list(request, msg=None):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
 
     # GET REQ
     err = ""
     admins = []
-    response = requests.get(f"{API_BASE_URL}/users/admin/admins/", headers=headers)
+    response = requests.get(
+        f"{API_BASE_URL}/users/admin/admins/", headers=_get_headers(request)
+    )
     try:
         admins = response.json()
         if not admins:
@@ -29,16 +32,13 @@ def admin_list(request, msg=None):
     )
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def delete_admin(request, admin_id):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
     if not isinstance(admin_id, UUID):
-        raise Http404
+        return HttpResponseNotFound(_("Admin not found").encode("UTF-8"))
+
+    headers = _get_headers(request)
 
     response = requests.delete(
         f"{API_BASE_URL}/users/admin/{admin_id}", headers=headers
@@ -51,7 +51,7 @@ def delete_admin(request, admin_id):
             return redirect("admin_list")
 
     elif response.status_code == 404:
-        raise Http404
+        return HttpResponseNotFound(_("Admin not found").encode("UTF-8"))
     else:
         try:
             return redirect("admin_list", "API ERROR!")
@@ -59,18 +59,11 @@ def delete_admin(request, admin_id):
             return redirect("admin_list")
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def edit_admin(request, admin_id):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
 
-    if auth.get("group") not in ADMIN_GROUPS:
-        return HttpResponseForbidden(
-            "<h1>You do not have access to that page<h1>".encode("utf-8")
-        )
+    headers = _get_headers(request)
 
     if request.method == "POST":
         payload_admin = {
@@ -81,18 +74,20 @@ def edit_admin(request, admin_id):
         }
 
         response = requests.put(
-            f"{API_BASE_URL}/users/admin/{admin_id}", json=payload_admin
+            f"{API_BASE_URL}/users/admin/{admin_id}",
+            json=payload_admin,
+            headers=headers,
         )
 
         if response.status_code == 200:
             return redirect("admin_list")
         # TODO: user might want to know what went wrong
-        error = "Something went wrong!"
-        return render(request, "edit_admin.html", {"err": error})
+        messages.error(request, "{_('Internal Server Error')}!")
+        return render(request, "edit_admin.html")
 
-    try:
-        admin = requests.get(f"{API_BASE_URL}/users/admin/{admin_id}").json()
-    except:
-        return render(request, "edit_admin.html", {"err": "API ERROR!"})
-
+    admin, error = _make_api_request(
+        f"{API_BASE_URL}/users/admin/{admin_id}", headers=headers
+    )
+    if error:
+        return error
     return render(request, "edit_admin.html", {"admin": admin})

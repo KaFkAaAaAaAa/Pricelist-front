@@ -6,20 +6,28 @@ from math import floor
 
 import requests
 from django.contrib import messages
-from django.http import (HttpResponseBadRequest, HttpResponseNotFound,
-                         HttpResponseServerError)
-from django.http.response import HttpResponseForbidden
+from django.http import HttpResponseNotFound, HttpResponseServerError
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext_lazy as _
 
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
-from Pricelist.settings import (ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS,
-                                SKU_REGEX)
-from Pricelist.views import (_amount_to_display, _amount_to_float,
-                             _amount_to_store, _api_error_interpreter,
-                             _get_auth, _make_api_request, _price_to_display,
-                             _price_to_float, _price_to_store)
+from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, SKU_REGEX
+from Pricelist.utils import (
+    Page,
+    _amount_to_display,
+    _amount_to_float,
+    _amount_to_store,
+    _api_error_interpreter,
+    _get_headers,
+    _is_admin,
+    _make_api_request,
+    _price_to_display,
+    _price_to_float,
+    _price_to_store,
+    require_auth,
+    require_group,
+)
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
 
@@ -29,7 +37,7 @@ def _generate_doc_filename(transaction):
         transaction["status_time"] = _get_date_from_datetime(transaction["status_time"])
         return f'{transaction["status_time"]}_{transaction["client"]["clientCompanyName"]}_{transaction["status"]}.pdf'
     except KeyError:
-        return "document_er"
+        return "document_name_error"
 
 
 def _calculate_total_mass(item_list, key="amount") -> float:
@@ -117,9 +125,11 @@ def _set_status(transaction) -> dict:
         transaction["status_time"] = _parse_date(
             transaction["statusHistory"][-1]["time"]
         )
+        transaction["init_time"] = _parse_date(transaction["statusHistory"][0]["time"])
     else:
         transaction["status"] = "none"
         transaction["status_time"] = "none"
+        transaction["init_time"] = "none"
     return transaction
 
 
@@ -142,20 +152,16 @@ def _add_items_to_session(request):
     request.session["current_offer"], _ = _parse_transaction_edit_items(request)
 
 
+@require_auth
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def offer(request):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
+    headers = _get_headers(request)
     if "current_offer" not in request.session.keys():
         request.session["current_offer"] = []
 
     if request.method == "POST" and request.POST["action"] == "save":
         _add_items_to_session(request)
-    elif request.method == "POST" and auth["group"] not in ADMIN_GROUPS:
+    elif request.method == "POST" and not _is_admin(request):
         items, _ = _parse_transaction_edit_items(request)
         payload = {
             "description": request.POST["transaction_description"],
@@ -176,7 +182,7 @@ def offer(request):
     current_offer = request.session.get("current_offer")
     totals = _get_stored_item_list_to_display(current_offer)
     client_company_names = []  # here bc unbound
-    if auth["group"] in ADMIN_GROUPS:
+    if _is_admin(request):
         response = requests.get(
             f"{API_BASE_URL}/clients/admin/admin-list/groups/",
             headers=headers,
@@ -220,31 +226,18 @@ def offer(request):
     )
 
 
+@require_auth
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def offer_list(request):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
-    if auth["group"] not in ADMIN_GROUPS + CLIENT_GROUPS:
-        return HttpResponseForbidden(
-            "<h1>You do not have access to that page<h1>".encode("utf-8")
-        )
-
+    headers = _get_headers(request)
     if request.method == "POST":
         return _add_items_to_offer(request, headers)
-
     return _make_price_list(request, headers, pattern="offer_list.html")
 
 
+@require_auth
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def delete_from_offer(request, item_sku):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
 
     item_skus = [item.get("sku") for item in request.session["current_offer"]]
     index = item_skus.index(item_sku)
@@ -254,12 +247,9 @@ def delete_from_offer(request, item_sku):
     return redirect("offer")
 
 
+@require_auth
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def add_new_item_to_transaction(request, transaction_uuid):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
 
     if request.method == "POST":
         form = ItemForm(request.POST)
@@ -271,10 +261,10 @@ def add_new_item_to_transaction(request, transaction_uuid):
                 "amount": _amount_to_store(form.cleaned_data["amount"]),
                 "additionalInfo": form.cleaned_data["additionalInfo"],
             }
-            admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
+            admin_url = "admin/" if _is_admin(request) else ""
             response = requests.post(
                 f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/add-item/",
-                headers=auth["headers"],
+                headers=_get_headers(request),
                 json=payload,
             )
             if response.status_code == 200:
@@ -291,13 +281,9 @@ def add_new_item_to_transaction(request, transaction_uuid):
     )
 
 
+@require_auth
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def edit_item_offer(request, item_sku):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-
     item_skus = [item.get("sku") for item in request.session["current_offer"]]
     index = item_skus.index(item_sku)
     if index is None:
@@ -321,23 +307,21 @@ def edit_item_offer(request, item_sku):
     return render(request, "edit_item_offer.html", {"item": item})
 
 
+@require_auth
+@require_group(CLIENT_GROUPS)
 def client_transactions(request):
     # this is nearly the same func as the one below
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
+    headers = _get_headers(request)
 
     transactions, error = _make_api_request(
         f"{API_BASE_URL}/transactions/", headers=headers
     )
+    page = Page(transactions)
 
     if error or not transactions:
         return error
 
-    for transaction in transactions:
+    for transaction in page.content:
         _set_status(transaction)
         if "itemsOrdered" in transaction.keys():
             if transaction["status"] == "FINAL":
@@ -358,21 +342,13 @@ def client_transactions(request):
                 "price": 0,
             }
 
-    return render(request, "transaction_list.html", {"transactions": transactions})
+    return render(request, "transaction_list.html", {"page": page})
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def admin_transactions(request):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
-    if auth.get("group") not in ADMIN_GROUPS:
-        return HttpResponseForbidden(
-            "<h1>You do not have access to that page<h1>".encode("utf-8")
-        )
+    headers = _get_headers(request)
 
     response = requests.get(f"{API_BASE_URL}/transactions/admin/", headers=headers)
     transactions = response.json()
@@ -397,24 +373,17 @@ def admin_transactions(request):
                 "price": 0,
             }
 
-    return render(request, "transaction_list.html", {"transactions": transactions})
+    page = Page(transactions)
+    return render(request, "transaction_list.html", {"page": page})
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def admin_client_transactions(request, user_id):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
-    if auth.get("group") not in ADMIN_GROUPS:
-        return HttpResponseForbidden(
-            "<h1>You do not have access to that page<h1>".encode("utf-8")
-        )
 
     response = requests.get(
-        f"{API_BASE_URL}/transactions/admin/client/{user_id}/", headers=headers
+        f"{API_BASE_URL}/transactions/admin/client/{user_id}/",
+        headers=_get_headers(request),
     )
     transactions = response.json()
     for transaction in transactions:
@@ -429,26 +398,15 @@ def admin_client_transactions(request, user_id):
                 "price": 0,
             }
 
-    return render(request, "transaction_list.html", {"transactions": transactions})
+    page = Page(transactions)
+
+    return render(request, "transaction_list.html", {"page": page})
 
 
-def edit_details(request, transaction):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
-
+@require_auth
+@require_group(ADMIN_GROUPS)
 def admin_transaction_detail(request, transaction_uuid):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
+    headers = _get_headers(request)
     lang = request.LANGUAGE_CODE.upper()
     # if auth.get("group") not in ADMIN_GROUPS:
     #     return HttpResponseForbidden(
@@ -509,16 +467,13 @@ def admin_transaction_detail(request, transaction_uuid):
     )
 
 
+@require_auth
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def edit_transaction_item(request, transaction_uuid, item_uuid):
     """edit item in transaction for both admin and user, function chooses
     if it should behave as admin or client based on"""
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-
-    admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
+    admin_url = "admin/" if _is_admin(request) else ""
+    headers = _get_headers(request)
 
     lang = request.LANGUAGE_CODE.upper()
 
@@ -534,7 +489,7 @@ def edit_transaction_item(request, transaction_uuid, item_uuid):
             }
             response = requests.put(
                 f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/{item_uuid}",
-                headers=auth["headers"],
+                headers=headers,
                 json=payload,
             )
             if response.status_code == 200:
@@ -544,7 +499,7 @@ def edit_transaction_item(request, transaction_uuid, item_uuid):
 
     response = requests.get(
         f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/?lang={lang}",
-        headers=auth["headers"],
+        headers=headers,
     )
 
     error = _api_error_interpreter(response.status_code)
@@ -580,35 +535,28 @@ def edit_transaction_item(request, transaction_uuid, item_uuid):
     )
 
 
+@require_auth
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def delete_transaction_item(request, transaction_uuid, item_uuid):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-
-    admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
+    admin_url = "admin/" if _is_admin(request) else ""
 
     response = requests.delete(
         f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/{item_uuid}",
-        headers=auth["headers"],
+        headers=_get_headers(request),
     )
 
     if response.status_code != 200:
-        print("error in delete function")
+        messages.warning(request, _("Internal Server Error"))
 
     return redirect("admin_transaction_detail", transaction_uuid)
 
 
+@require_auth
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def print_transaciton(request, transaction_uuid):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
+    headers = _get_headers(request)
 
-    admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
+    admin_url = "admin/" if _is_admin(request) else ""
     lang = request.LANGUAGE_CODE.upper()
 
     response = requests.get(
@@ -725,15 +673,12 @@ def print_final_admin(request, data):
     )
 
 
+@require_auth
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def delete_transaction(request, transaction_uuid):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
+    headers = _get_headers(request)
 
-    if auth.get("group") not in ADMIN_GROUPS:
+    if not _is_admin(request):
         response = requests.delete(
             f"{API_BASE_URL}/transactions/{transaction_uuid}/", headers=headers
         )
@@ -742,15 +687,13 @@ def delete_transaction(request, transaction_uuid):
             f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/", headers=headers
         )
     redir_url = request.headers.get("referer")
-    err = ""
     if response.status_code != 200:
-        err = "Error!"
+        messages.error(request, _("Error during transaction delete"))
     return redirect(redir_url)
 
 
+@require_group(ADMIN_GROUPS)
 def create_offer(request, data, headers):
-    if "user" in request.session["logged_user"].keys():
-        return HttpResponseForbidden()
     uuid = data["transaction_uuid"]
     response = requests.get(
         f"{API_BASE_URL}/transactions/admin/{uuid}/update-status/?status=offer",
@@ -865,15 +808,12 @@ def create_final(request, data, headers):
     return render(request, "create_final.html", data)
 
 
+@require_auth
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def change_status(request, transaction_uuid):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
+    headers = _get_headers(request)
 
-    admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
+    admin_url = "admin/" if _is_admin(request) else ""
     lang = request.LANGUAGE_CODE.upper()
 
     response = requests.get(
@@ -927,20 +867,18 @@ def change_status(request, transaction_uuid):
     if status == "PROGNOSE":
         return create_final(request, data, headers)
     if status == "FINAL":
-        return HttpResponseBadRequest(b"Order has already been finalised")
+        messages.warning(request, _("Order has already been finalised"))
+    else:
+        messages.error(request, _("Invalid status name"))
+    return redirect("admin_transaction_detail", transaction_uuid)
 
 
+@require_auth
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def new_transaction_detail(request, transaction_uuid):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
 
-    msg = {}
-
-    admin_url = "admin/" if auth["group"] in ADMIN_GROUPS else ""
+    admin_url = "admin/" if _is_admin(request) else ""
+    headers = _get_headers(request)
 
     lang = request.LANGUAGE_CODE.upper()
 
@@ -1002,7 +940,7 @@ def new_transaction_detail(request, transaction_uuid):
         transaction["itemsOrdered"],
     )
     form = StatusForm(init_status=transaction["status"])
-    data = {"transaction": transaction, "msg": msg, "form": form}
+    data = {"transaction": transaction, "form": form}
     if transaction["status"] in ("PROGNOSE", "FINAL"):
         transaction_details, error = _make_api_request(
             f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",

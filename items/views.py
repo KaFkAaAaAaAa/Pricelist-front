@@ -16,11 +16,13 @@ from Pricelist.settings import (
     CLIENT_GROUPS,
     SKU_REGEX,
 )
-from Pricelist.views import (
+from Pricelist.utils import (
     _amount_to_store,
-    _get_auth,
+    _get_headers,
     _price_to_display,
     _price_to_store,
+    require_auth,
+    require_group,
 )
 
 
@@ -135,36 +137,22 @@ def _add_items_to_offer(request, headers):
     return redirect("offer")
 
 
+@require_auth
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def price_list(request):
-
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
-    if auth["group"] not in ADMIN_GROUPS + CLIENT_GROUPS:
-        return HttpResponseForbidden(
-            "<h1>You do not have access to that page<h1>".encode("utf-8")
-        )
-
-    return _make_price_list(request, headers)
+    return _make_price_list(request, _get_headers(request))
 
 
+@require_auth
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def item_detail(request, item_sku):
+
     if not re.match(SKU_REGEX, item_sku):
         raise Http404
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
 
     response = requests.get(
         f"{API_BASE_URL}/items/{item_sku}?lang={request.LANGUAGE_CODE.upper()}",
-        headers=headers,
+        headers=_get_headers(request),
     )
     if response.status_code == 200:
         item = response.json()
@@ -179,19 +167,11 @@ def item_detail(request, item_sku):
     return HttpResponseNotFound()
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def admin_items(request):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
-    if auth.get("group") not in ADMIN_GROUPS:
-        return HttpResponseForbidden(
-            "<h1>You do not have access to that page<h1>".encode("utf-8")
-        )
     lang = request.LANGUAGE_CODE.upper()
+    headers = _get_headers(request)
 
     if "search" in request.GET.keys():
         response = requests.get(
@@ -212,13 +192,10 @@ def admin_items(request):
     return render(request, "item_list.html", {"items": items_dict})
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def edit_item(request, item_sku):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
+    headers = _get_headers(request)
 
     if request.method == "POST":
         payload = {
@@ -251,7 +228,9 @@ def edit_item(request, item_sku):
             payload["itemImgPath"] = ""
             # TODO: delete the image XD
         response = requests.put(
-            f"{API_BASE_URL}/items/admin/{item_sku}", headers=headers, json=payload
+            f"{API_BASE_URL}/items/admin/{item_sku}",
+            headers=headers,
+            json=payload,
         )
         if response.status_code == 200:
             messages.success(request, _("Item edited successfully"))
@@ -280,23 +259,13 @@ def edit_item(request, item_sku):
     return render(request, "edit_item.html", {"error": "Item not found!"})
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def delete_item(request, item_sku):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
-    if auth.get("group") not in ADMIN_GROUPS:
-        return HttpResponseForbidden(
-            "<h1>You do not have access to that page<h1>".encode("utf-8")
-        )
 
     response = requests.delete(
-        f"{API_BASE_URL}/items/admin/{item_sku}", headers=headers
+        f"{API_BASE_URL}/items/admin/{item_sku}", headers=_get_headers(request)
     )
-    # TODO: Errors and success messages
     if response.status_code == 200:
         messages.success(request, _("Item deleted successfully!"))
         return redirect("item_list")
@@ -305,18 +274,9 @@ def delete_item(request, item_sku):
         return redirect("item_list")
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def upload_image(request, item_sku):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
-    if auth.get("group") not in ADMIN_GROUPS:
-        return HttpResponseForbidden(
-            "<h1>You do not have access to that page<h1>".encode("utf-8")
-        )
 
     uploaded_url = None
     if request.method == "POST" and "image" in request.FILES.keys():
@@ -341,19 +301,9 @@ def upload_image(request, item_sku):
     )
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def delete_image(request, image_path):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
-    if auth.get("group") not in ADMIN_GROUPS:
-        return HttpResponseForbidden(
-            "<h1>You do not have access to that page<h1>".encode("utf-8")
-        )
-
     redir_url = request.headers.get("referer")
     fs = FileSystemStorage()
     image_fs = image_path.split("/")[-1]
@@ -366,7 +316,7 @@ def delete_image(request, image_path):
             return redirect(redir_url)
         requests.post(
             f"{API_BASE_URL}/items/admin/{sku.group()}/img-path",
-            headers=headers,
+            headers=_get_headers(request),
             data={"path": ""},
         )
     fs.delete(image_path)
@@ -376,6 +326,8 @@ def delete_image(request, image_path):
     return redirect(redir_url)
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def null_delete(request):
     redir_url = request.headers.get("referer")
     if not redir_url:
@@ -384,19 +336,10 @@ def null_delete(request):
     return redirect(redir_url)
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def admin_images(request, item_sku):
     # TODO: Upload image restrictions!!!
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-
-    if auth.get("group") not in ADMIN_GROUPS:
-        return HttpResponseForbidden(
-            "<h1>You do not have access to that page<h1>".encode("utf-8")
-        )
-
     fs = FileSystemStorage()
     images_url = _list_items(item_sku)
     if request.method == "POST" and "image" in request.FILES.keys():
@@ -431,15 +374,10 @@ def admin_images(request, item_sku):
     )
 
 
+@require_auth
+@require_group(ADMIN_GROUPS)
 def add_item(request):
-    token = request.session.get("token")
-    auth = _get_auth(token)
-    if not auth or auth["email"] == "anonymousUser":
-        request.session.flush()
-        return redirect("login")
-    headers = auth["headers"]
-
-    # TODO: Errors and success messages
+    headers = _get_headers(request)
     if request.method == "POST":
         # image = request.FILES['image']
         # fs = FileSystemStorage()

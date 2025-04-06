@@ -3,7 +3,7 @@ from django.conf.urls.i18n import set_language
 from django.conf.urls.static import static
 from django.urls import include, path
 
-from admin import admin_views
+from admin import views as admin_views
 from items import views as items_views
 from Pricelist import views
 
@@ -12,6 +12,7 @@ urlpatterns = (
         path("admin/items/", include("items.urls")),
         path("transactions/", include("transactions.urls")),
         path("pdf/", include("pdfgenerator.urls")),
+        path("files/", include("file_manager.urls")),
         path("profile/", views.profile, name="profile"),
         path("login/", views.login_view, name="login"),
         path("reset-password/", views.reset_password, name="reset_password"),
