@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+<!---->
+{% load i18n %}
+<!---->
+{% block title %}
+<!---->
+{% trans "Upload file" %}
+<!---->
+{% endblock %}
+<!---->
+{% block content %}
+<!---->
+<div class="container">
+  {% if == file_name %}
+  <div>{{ file_name }}</div>
+  {% endif %}
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" class="form-control" name="file" required />
+    <button type="submit" class="btn btn-outline-secondary">Upload</button>
+  </form>
+</div>
+{% endblock %}

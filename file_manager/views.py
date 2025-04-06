@@ -1,8 +1,11 @@
 import os
+
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage
+from django.shortcuts import render
 
 from Pricelist.settings import MAX_FILE_SIZE, TRANSACTION_ROOT
+from Pricelist.utils import require_auth
 
 fs = FileSystemStorage(location=TRANSACTION_ROOT)
 
@@ -34,8 +37,9 @@ def _get_file_from_transaction(transaction_uuid, file_name):
     return False
 
 
-def _put_file_from_transaction(transaction_uuid, file_name, file_content,
-                         overwrite=False):
+def _put_file_from_transaction(
+    transaction_uuid, file_name, file_content, overwrite=False
+):
     transaction_path = os.path.join(fs.base_location, transaction_uuid)
     if not os.path.exists(transaction_path):
         os.makedirs(transaction_path, exist_ok=True)
@@ -52,3 +56,16 @@ def _put_file_from_transaction(transaction_uuid, file_name, file_content,
         return False
 
     return fs.save(path, file_content)
+
+
+@require_auth
+def upload_transactions_invoice(request, transaction_uuid):
+    if request.method == "POST" and request.FILES["file"]:
+        __import__("pdb").set_trace()
+        uploaded_file = request.FILES["file"]
+        _put_file_from_transaction(
+            transaction_uuid, uploaded_file.name, uploaded_file.content
+        )
+        # if file uploaded show file
+        return render(request, "upload_success.html", {"file_name": uploaded_file.name})
+    return render(request, "upload_file.html")
