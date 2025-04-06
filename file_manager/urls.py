@@ -4,8 +4,13 @@ from . import views
 
 urlpatterns = [
     path(
-        "<uuid: transaction_uuid>",
+        "<uuid:transaction_uuid>/invoice/",
         views.upload_transactions_invoice,
-        "upload_transaction",
+        name="transaction_invoice",
+    ),
+    path(
+        "<uuid:transaction_uuid>/",
+        views.transaction_files,
+        name="transaction_files",
     ),
 ]

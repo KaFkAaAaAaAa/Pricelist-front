@@ -71,19 +71,20 @@ def _make_api_request(url, method=requests.get, headers=None, body=None):
     """Function makes request for api and return json body of response, if
     the response is an error or api response can't be parsed using .json()
     function returns Error HTTP response as a second value"""
-    response = method(
-        url,
-        headers=headers,
-        json=body,
-    )
     try:
+        response = method(url, headers=headers, json=body, timeout=60)
         if response:
             return response.json(), _api_error_interpreter(response.status_code)
+        return False, _api_error_interpreter(INTERNAL_SERVER_ERROR)
     except JSONDecodeError:
-        return response.text, _api_error_interpreter(response.status_code)
+        return response.text, _api_error_interpreter(
+            response.status_code
+        )  # response cannot be unbound and throw JSONDecodeError
+    except requests.exceptions.Timeout:
+        print("ERROR: API request timeout")
+        return False, _api_error_interpreter(INTERNAL_SERVER_ERROR)
     except:
         return False, _api_error_interpreter(INTERNAL_SERVER_ERROR)
-    return False, _api_error_interpreter(response.status_code)
 
 
 def _get_auth(token):

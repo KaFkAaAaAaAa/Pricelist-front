@@ -125,9 +125,11 @@ def _set_status(transaction) -> dict:
         transaction["status_time"] = _parse_date(
             transaction["statusHistory"][-1]["time"]
         )
+        transaction["init_time"] = _parse_date(transaction["statusHistory"][0]["time"])
     else:
         transaction["status"] = "none"
         transaction["status_time"] = "none"
+        transaction["init_time"] = "none"
     return transaction
 
 
