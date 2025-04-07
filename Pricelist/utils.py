@@ -193,6 +193,4 @@ class Page:
         self.last = api_response["last"]
 
     def __str__(self):
-        return (
-            f"TransactionPageObject:{self.page_size}:{self.page_no}/{self.total_pages}"
-        )
+        return f"PageObject:{self.page_size}:{self.page_no}/{self.total_pages}"

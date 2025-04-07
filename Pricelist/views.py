@@ -246,6 +246,7 @@ def my_users(request, msg="", func="activate-user"):
         headers=_get_headers(request),
     )
     clients = response.json()
+
     if response.status_code == 200 and isinstance(clients, Iterable):
         msg += _(" No clients found")
         return render(
