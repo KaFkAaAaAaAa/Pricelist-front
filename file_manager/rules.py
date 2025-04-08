@@ -26,7 +26,6 @@ for rule in RULE_LIST:
 
 
 def is_readable(path, user_group):
-    __import__("pdb").set_trace()
     path = "/" + path.strip("/") + "/"
     for rule in RULE_LIST:
         if user_group in rule["group"] and rule["compiled_pattern"].match(path):

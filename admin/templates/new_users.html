@@ -20,15 +20,26 @@
             <th>{% trans "Company name" %}</th>
             <th>{% trans "First Name" %}</th>
             <th>{% trans "Last Name" %}</th>
+            {% if func != "assign-admin" %}
+            <th>{% trans "Group" %}</th>
+            {% endif %}
             <th></th>
         </tr>
         </thead>
         <tbody>
-        {% for client in clients %}
+        {% for client in page.content %}
             <tr onclick="window.location.href='/admin/clients/{{ client.id }}';" style="cursor: pointer">
+                {% if func == "assign-admin" %}
                 <td>{{ client.clientCompanyName }}</td>
                 <td>{{ client.user.userFirstName }}</td>
                 <td>{{ client.user.userLastName }}</td>
+                <td>{{ client.clientGroup }}</td>
+                {% else %}
+                <td>{{ client.client_company_name }}</td>
+                <td>{{ client.user_first_name }}</td>
+                <td>{{ client.user_last_name }}</td>
+                <td>{{ client.auth_group }}</td>
+                {% endif %}
                 <td>
                     <a class="btn btn-outline-primary" href="/admin/clients/{{ client.id }}/{{ func }}">
                         {% trans "Actions" %}

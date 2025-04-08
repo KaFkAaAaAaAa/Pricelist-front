@@ -887,6 +887,8 @@ def client_transaction_detail(request, transaction_uuid):
     )
     if error:
         return error
+    if request.method == "POST":
+        pass
 
     transaction = _set_status(transaction)
     if "itemsOrdered" not in transaction.keys():

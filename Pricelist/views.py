@@ -11,6 +11,7 @@ from django.utils.translation import gettext as _
 from .forms import LoginForm, NewAdminForm, PasswordResetForm, RegisterForm
 from .settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, GROUPS_ROMAN
 from .utils import (
+    Page,
     _get_headers,
     _group_to_roman,
     _make_api_request,
@@ -240,45 +241,39 @@ def verify_registration(request):
 
 @require_auth
 @require_group(ADMIN_GROUPS)
-def my_users(request, msg="", func="activate-user"):
-    response = requests.get(
-        f"{API_BASE_URL}/clients/admin/admin-list/sorted?sort=unassigned",
+def my_users(request, func="activate-user"):
+    clients, error = _make_api_request(
+        f"{API_BASE_URL}/clients/admin/admin-list/with-groups/",
         headers=_get_headers(request),
     )
-    clients = response.json()
+    if error:
+        return error
+    page = Page(clients)
 
-    if response.status_code == 200 and isinstance(clients, Iterable):
-        msg += _(" No clients found")
-        return render(
-            request,
-            "new_users.html",
-            {"clients": clients, "msg": msg, "func": func},
-        )
+    if page.total_elements == 0:
+        messages.warning(request, _("No clients found"))
+
     return render(
         request,
         "new_users.html",
-        {"error": _("API error!"), "msg": msg, "func": func},
+        {"page": page, "func": func},
     )
 
 
 @require_auth
 @require_group(ADMIN_GROUPS)
-def new_users(request, msg="", func="assign-admin"):
+def new_users(request, func="assign-admin"):
 
-    response = requests.get(
+    clients, error = _make_api_request(
         f"{API_BASE_URL}/clients/admin/no-admin/", headers=_get_headers(request)
     )
-    clients = response.json()
-    if response.status_code == 200 and isinstance(clients, Iterable):
-        return render(
-            request,
-            "new_users.html",
-            {"clients": clients, "msg": msg, "func": func},
-        )
+    if error:
+        return error
+    page = Page(clients)
     return render(
         request,
         "new_users.html",
-        {"error": _("API error!"), "msg": msg, "func": func},
+        {"page": page, "func": func},
     )
 
 
@@ -370,14 +365,16 @@ def activate_user(request, user_id):
 @require_auth
 @require_group(ADMIN_GROUPS)
 def client_list(request):
-    headers = _get_headers
+    headers = _get_headers(request)
 
-    response = requests.get(f"{API_BASE_URL}/clients/admin/", headers=headers)
-    try:
-        clients = response.json() if response.status_code == 200 else []
-    except:
-        clients = []
-    return render(request, "client_list.html", {"clients": clients})
+    clients, error = _make_api_request(
+        f"{API_BASE_URL}/clients/admin/with-groups/", headers=headers
+    )
+    if error:
+        return error
+    page = Page(clients)
+
+    return render(request, "client_list.html", {"page": page})
 
 
 @require_auth
