@@ -38,7 +38,7 @@
                     <a href="file/{{ file }}?download">{{ file }}</a>
 
         {% if is_writable %}
-            <button class="btn btn-outline-danger btn-sm ms-2" href="">{% trans "Delete" %} WIP</button>
+            <a class="btn btn-outline-danger btn-sm ms-2" href="file/{{ file }}?delete">{% trans "Delete" %}</a>
         {% else %}
           <span class="badge bg-light text-muted">read-only</span>
         {% endif %}

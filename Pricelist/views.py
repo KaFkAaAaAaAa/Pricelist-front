@@ -13,6 +13,7 @@ from .settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, GROUPS_ROMAN
 from .utils import (
     Page,
     _get_headers,
+    _get_page_param,
     _group_to_roman,
     _make_api_request,
     require_auth,
@@ -242,11 +243,13 @@ def verify_registration(request):
 @require_auth
 @require_group(ADMIN_GROUPS)
 def my_users(request, func="activate-user"):
+
+    page = _get_page_param(request)
     clients, error = _make_api_request(
-        f"{API_BASE_URL}/clients/admin/admin-list/with-groups/",
+        f"{API_BASE_URL}/clients/admin/admin-list/with-groups/{page}",
         headers=_get_headers(request),
     )
-    if error:
+    if error or not clients:
         return error
     page = Page(clients)
 
@@ -264,10 +267,11 @@ def my_users(request, func="activate-user"):
 @require_group(ADMIN_GROUPS)
 def new_users(request, func="assign-admin"):
 
+    page = _get_page_param(request)
     clients, error = _make_api_request(
-        f"{API_BASE_URL}/clients/admin/no-admin/", headers=_get_headers(request)
+        f"{API_BASE_URL}/clients/admin/no-admin/{page}", headers=_get_headers(request)
     )
-    if error:
+    if error or not clients:
         return error
     page = Page(clients)
     return render(
@@ -367,10 +371,11 @@ def activate_user(request, user_id):
 def client_list(request):
     headers = _get_headers(request)
 
+    page = _get_page_param(request)
     clients, error = _make_api_request(
-        f"{API_BASE_URL}/clients/admin/with-groups/", headers=headers
+        f"{API_BASE_URL}/clients/admin/with-groups/{page}", headers=headers
     )
-    if error:
+    if error or not clients:
         return error
     page = Page(clients)
 

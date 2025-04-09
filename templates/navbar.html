@@ -12,6 +12,11 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav text-center">
+                {% if request.session.token %}
+                    <li class="nav-item navbar-text my-auto mx-3">
+                    {% trans "Logged in: " %} {{ request.session.logged_user.user.userEmail }} {{ request.session.logged_user.userEmail }}
+                    </li>
+                {% endif %}
                     <li class="nav-item dropdown my-1 me-2">
                         <form action="{% url 'set_language' %}" method="post">
                             {% csrf_token %}
@@ -51,7 +56,6 @@
         </div>
     </nav>
 
-    <!-- Reszta kodu offcanvas pozostaje bez zmian -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="profileSidebar" aria-labelledby="profileSidebarLabel">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="profileSidebarLabel">{% trans "User Menu" %}</h5>

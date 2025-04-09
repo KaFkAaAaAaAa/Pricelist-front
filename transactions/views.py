@@ -12,22 +12,14 @@ from django.utils.translation import gettext_lazy as _
 
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
-from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, SKU_REGEX
-from Pricelist.utils import (
-    Page,
-    _amount_to_display,
-    _amount_to_float,
-    _amount_to_store,
-    _api_error_interpreter,
-    _get_headers,
-    _is_admin,
-    _make_api_request,
-    _price_to_display,
-    _price_to_float,
-    _price_to_store,
-    require_auth,
-    require_group,
-)
+from Pricelist.settings import (ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS,
+                                SKU_REGEX)
+from Pricelist.utils import (Page, _amount_to_display, _amount_to_float,
+                             _amount_to_store, _api_error_interpreter,
+                             _get_headers, _get_page_param, _is_admin,
+                             _make_api_request, _price_to_display,
+                             _price_to_float, _price_to_store, require_auth,
+                             require_group)
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
 
@@ -313,9 +305,11 @@ def client_transactions(request):
     # this is nearly the same func as the one below
     headers = _get_headers(request)
 
-    transactions, error = _make_api_request(
-        f"{API_BASE_URL}/transactions/", headers=headers
-    )
+    page = _get_page_param(request)
+    url = f"{API_BASE_URL}/transactions/{page}"
+
+    transactions, error = _make_api_request(url, headers=headers)
+
     if error or not transactions:
         return error
 
@@ -350,8 +344,11 @@ def client_transactions(request):
 def admin_transactions(request):
     headers = _get_headers(request)
 
-    response = requests.get(f"{API_BASE_URL}/transactions/admin/", headers=headers)
-    transactions = response.json()
+    page = _get_page_param(request)
+    url = f"{API_BASE_URL}/transactions/admin/{page}"
+    transactions, error = _make_api_request(url, headers=headers)
+    if error:
+        return error
     page = Page(transactions)
 
     for transaction in page.content:

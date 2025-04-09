@@ -201,14 +201,31 @@ class Page:
     total_elements: int
     total_pages: int
     last: bool
+    first: bool
+    prev: int
+    next: int
 
     def __init__(self, api_response: dict) -> None:
+        # pages in front 1-indexed, pages in back 0-indexed
         self.content = api_response["content"]
-        self.page_no = api_response["pageNo"]
+        self.page_no = api_response["pageNo"] + 1
         self.page_size = api_response["pageSize"]
         self.total_elements = api_response["totalElements"]
         self.total_pages = api_response["totalPages"]
-        self.last = api_response["last"]
+        self.last = self.page_no == self.total_pages
+        self.first = self.page_no == 1
+        self.prev = self.page_no - 1 if not self.first else 0
+        self.next = self.page_no + 1 if not self.first else self.total_pages
 
     def __str__(self) -> str:
         return f"PageObject:{self.page_size}:{self.page_no}/{self.total_pages}"
+
+
+def _get_page_param(request):
+    """return ?page_no=GET["page"] or empty str
+    if no page number was passed in the request"""
+    return (
+        ""
+        if "page" not in request.GET.keys()
+        else f"?pageNo={int(request.GET['page']) - 1}"
+    )
