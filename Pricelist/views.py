@@ -110,7 +110,7 @@ def profile(request):
     user_admin = False
     headers = _get_headers(request)
 
-    if request.session.auth["group"] in ADMIN_GROUPS:
+    if request.session["auth"]["group"] in ADMIN_GROUPS:
         user_admin = True
 
     if request.method == "POST":

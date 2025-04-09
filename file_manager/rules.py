@@ -1,41 +1,36 @@
 import re
+from dataclasses import dataclass
+
+from Pricelist.settings import ADMIN_GROUPS, CLIENT_GROUPS
+
+
+@dataclass
+class Rule:
+    """file permissions"""
+
+    pattern: re.Pattern
+    group: tuple
+    read: bool
+    write: bool
+
 
 RULE_LIST = [
-    {
-        "pattern": r"^/[a-f0-9\-]+/.*$",
-        "group": ("ADMIN", "OWNER"),
-        "read": True,
-        "write": True,
-    },
-    {
-        "pattern": r"^/[a-f0-9\-]+/.*/.*$",
-        "group": "ADMIN",
-        "read": True,
-        "write": True,
-    },
-    {
-        "pattern": r"^/[a-f0-9\-]+/transport/.*$",
-        "group": "CLIENT",
-        "read": True,
-        "write": False,
-    },
+    Rule(re.compile(r".*"), ADMIN_GROUPS + CLIENT_GROUPS, True, True),
+    Rule(re.compile(r"^/[a-f0-9\-]+/.*$"), ("ADMIN", "OWNER"), True, True),
 ]
-
-for rule in RULE_LIST:
-    rule["compiled_pattern"] = re.compile(rule["pattern"])
 
 
 def is_readable(path, user_group):
-    path = "/" + path.strip("/") + "/"
     for rule in RULE_LIST:
-        if user_group in rule["group"] and rule["compiled_pattern"].match(path):
-            return rule["read"]
+        if user_group in rule.group and rule.pattern.match(
+            path
+        ):  # it has match() member xD
+            return rule.read
     return False
 
 
 def is_writable(path, user_group):
-    path = "/" + path.strip("/") + "/"
     for rule in RULE_LIST:
-        if user_group in rule["group"] and rule["compiled_pattern"].match(path):
-            return rule["write"]
+        if user_group in rule.group and rule.pattern.match(path):
+            return rule.write
     return False

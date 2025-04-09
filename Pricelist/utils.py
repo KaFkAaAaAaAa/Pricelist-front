@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from functools import wraps
 from http.client import INTERNAL_SERVER_ERROR
 from json import JSONDecodeError
@@ -71,15 +72,18 @@ def _make_api_request(url, method=requests.get, headers=None, body=None):
     """Function makes request for api and return json body of response, if
     the response is an error or api response can't be parsed using .json()
     function returns Error HTTP response as a second value"""
+    response = None
     try:
         response = method(url, headers=headers, json=body, timeout=60)
         if response:
             return response.json(), _api_error_interpreter(response.status_code)
         return False, _api_error_interpreter(INTERNAL_SERVER_ERROR)
     except JSONDecodeError:
-        return response.text, _api_error_interpreter(
-            response.status_code
-        )  # response cannot be unbound and throw JSONDecodeError
+        if response:
+            return response.text, _api_error_interpreter(
+                response.status_code
+            )  # response cannot be unbound and throw JSONDecodeError but the warning is bugging me
+        return False, _api_error_interpreter(INTERNAL_SERVER_ERROR)
     except requests.exceptions.Timeout:
         print("ERROR: API request timeout")
         return False, _api_error_interpreter(INTERNAL_SERVER_ERROR)
@@ -144,6 +148,8 @@ def _is_client(request):
 
 
 def require_auth(view_func):
+    """Checks if user is authorizied and authenticated based on api request. It sets session["auth"]"""
+
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
         try:
@@ -166,7 +172,9 @@ def require_auth(view_func):
     return _wrapped_view
 
 
-def require_group(allowed_groups):
+def require_group(allowed_groups: list):
+    """Checks if user that requests an asset is a member of a group based on session["auth"]"""
+
     def decorator(view_func):
         @wraps(view_func)
         def _wrapped_view(request, *args, **kwargs):
@@ -183,8 +191,18 @@ def require_group(allowed_groups):
     return decorator
 
 
+@dataclass
 class Page:
-    def __init__(self, api_response):
+    """Spring/JPA page serializer for better readability"""
+
+    content: list
+    page_no: int
+    page_size: int
+    total_elements: int
+    total_pages: int
+    last: bool
+
+    def __init__(self, api_response: dict) -> None:
         self.content = api_response["content"]
         self.page_no = api_response["pageNo"]
         self.page_size = api_response["pageSize"]
@@ -192,5 +210,5 @@ class Page:
         self.total_pages = api_response["totalPages"]
         self.last = api_response["last"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"PageObject:{self.page_size}:{self.page_no}/{self.total_pages}"

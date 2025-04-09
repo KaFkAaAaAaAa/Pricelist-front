@@ -198,7 +198,7 @@ def browse_transaction_dir(request, transaction_uuid, directory_name=None):
             "directory_name": directory_name,
             "dir_list": dir_list,
             "file_list": file_list,
-            "can_upload": is_writable(rel_path, user_group),
+            "is_writable": is_writable(rel_path, user_group),
         },
     )
 
@@ -209,7 +209,7 @@ def file_interaction(request, transaction_uuid, file_name, directory_name=None):
     directory_name = directory_name or ""
     user_group = request.session["auth"]["group"]
 
-    relative_path = f"/{transaction_uuid}/{directory_name}/{file_name}"
+    relative_path = f"{transaction_uuid}/{directory_name}/{file_name}"
     file_abs_path = fs.path(relative_path)
 
     if not is_readable(relative_path, user_group):

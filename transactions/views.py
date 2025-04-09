@@ -34,8 +34,8 @@ from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 def _generate_doc_filename(transaction):
     """generates a file name for a transaction with keys client, status and status time"""
     try:
-        transaction["status_time"] = _get_date_from_datetime(transaction["status_time"])
-        return f'{transaction["status_time"]}_{transaction["client"]["clientCompanyName"]}_{transaction["status"]}.pdf'
+        transaction["init_time"] = _get_date_from_datetime(transaction["init_time"])
+        return f'{transaction["init_time"]}_{transaction["client"]["clientCompanyName"]}_{transaction["status"]}.pdf'
     except KeyError:
         return "document_name_error"
 
@@ -316,11 +316,10 @@ def client_transactions(request):
     transactions, error = _make_api_request(
         f"{API_BASE_URL}/transactions/", headers=headers
     )
-    page = Page(transactions)
-    print(transactions)
-
     if error or not transactions:
         return error
+
+    page = Page(transactions)
 
     for transaction in page.content:
         _set_status(transaction)

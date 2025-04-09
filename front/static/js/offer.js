@@ -46,7 +46,6 @@ function getNextSku() {
       }
     }
   });
-
   let nextNumber = (maxNumber + 1).toString().padStart(2, '0'); // Ensure 2-digit format
   return `${prefix}${nextNumber}`;
 }
