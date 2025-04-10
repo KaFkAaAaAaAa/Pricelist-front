@@ -226,7 +226,8 @@ def file_interaction(request, transaction_uuid, file_name, directory_name=None):
             response["Content-Disposition"] = f'attachment; filename="{file_name}"'
             return response
 
-    elif request.method == "POST" and "delete" in request.POST:
+    elif request.method == "GET" and "delete" in request.GET:
+        __import__("pdb").set_trace()
         if not is_writable(relative_path, user_group):
             return HttpResponseForbidden(
                 "You don't have permission to delete this file.".encode("utf-8")
@@ -242,3 +243,9 @@ def file_interaction(request, transaction_uuid, file_name, directory_name=None):
             transaction_uuid=transaction_uuid,
             directory_name=directory_name,
         )
+    messages.warning(request, _("Invalid request"))
+    return redirect(
+        "browse_transaction_folder",
+        transaction_uuid=transaction_uuid,
+        directory_name=directory_name,
+    )
