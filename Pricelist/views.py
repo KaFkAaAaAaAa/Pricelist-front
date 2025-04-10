@@ -8,6 +8,8 @@ from django.http.response import HttpResponseNotFound
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
 
+from transactions.views import _set_status
+
 from .forms import LoginForm, NewAdminForm, PasswordResetForm, RegisterForm
 from .settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, GROUPS_ROMAN
 from .utils import (
@@ -185,7 +187,32 @@ def profile(request):
 @require_group(ADMIN_GROUPS)
 def admin_dashboard(request):
 
-    return render(request, "admin_dashboard.html")
+    transactions, error = _make_api_request(
+        f"{API_BASE_URL}/transactions/admin/?pageNo=0&pageSize=10"
+    )
+
+    users_page = None
+    transactions_page = None
+    if error or not transactions:
+        messages.error(request, _("Error! Could not fetch transactions"))
+    else:
+        for transaction in transactions["content"]:
+            transaction = _set_status(transaction)
+        transactions_page = Page(transactions)
+
+    users, error = _make_api_request(
+        f"{API_BASE_URL}/users/admin/by-group/?group=UNASSIGNED?&pageNo=0&pageSize=10"
+    )
+    if error or not users:
+        messages.error(request, _("Error! Could not fetch users"))
+    else:
+        users_page = Page(users)
+
+    return render(
+        request,
+        "admin_dashboard.html",
+        {"users_page": users_page, "transactions_page": transactions_page},
+    )
 
 
 @require_auth

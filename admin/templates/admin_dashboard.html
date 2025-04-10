@@ -19,7 +19,25 @@
                 <div class="card mb-3">
                 <div class="card-header text-bg-secondary"><h3 class="fw-bold">{% trans "New users" %}</h3></div>
                   <div class="card-body">
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <table class="table table-striped table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">{% trans "Surname" %}</th>
+                                <th scope="col">{% trans "E-mail" %}</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for user in users_page.content %}
+                            <tr style="cursor: pointer" onclick="window.location.href='/users/admin/{{ user.userId }}/';">
+                                <td>{{ user.userLastName }}</td>
+                                <td>{{ user.userEmail }}</td>
+                                <td><a href="" class="btn btn-sm btn-outline-success">{% trans "Activate" %}</a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                            
+                    </table>
                   </div>
                 </div>
             </div>
@@ -27,7 +45,26 @@
                 <div class="card mb-3">
                 <div class="card-header text-bg-secondary"><h3 class="fw-bold">{% trans "Last transactions" %}</h3></div>
                   <div class="card-body">
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <table class="table table-striped table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">{% trans "Company Name" %}</th>
+                                <th scope="col">{% trans "Initialization date" %}</th>
+                                <th scope="col">{% trans "Last change" %}</th>
+                                <th scope="col">{% trans "Status" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for transaction in transactions_page.content %}
+                            <tr style="cursor: pointer" onclick="window.location.href='{% if request.session.logged_user.user %}/transactions/{% else %}/transactions/admin/{% endif %}{{ transaction.uuid }}/';">
+                                <td>{{ transaction.client.clientCompanyName }}</td>
+                                <td>{{ transaction.init_time }}</td>
+                                <td>{{ transaction.status_time }}</td>
+                                <td>{{ transaction.status }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                   </div>
                 </div>
             </div>

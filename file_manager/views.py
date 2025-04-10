@@ -227,7 +227,6 @@ def file_interaction(request, transaction_uuid, file_name, directory_name=None):
             return response
 
     elif request.method == "GET" and "delete" in request.GET:
-        __import__("pdb").set_trace()
         if not is_writable(relative_path, user_group):
             return HttpResponseForbidden(
                 "You don't have permission to delete this file.".encode("utf-8")
