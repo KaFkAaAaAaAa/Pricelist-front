@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass
 from functools import wraps
 from http.client import INTERNAL_SERVER_ERROR
@@ -19,6 +20,7 @@ from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, GROUPS
 RESPONSE_FORBIDDEN = HttpResponseForbidden(
     f"<h1>{_('You do not have access to that page')}<h1>".encode("utf-8")
 )
+logger = logging.getLogger(__name__)
 
 
 def _price_to_float(price: int) -> float:
@@ -78,6 +80,11 @@ def _make_api_request(url, method=requests.get, headers=None, body=None):
         if response:
             return response.json(), _api_error_interpreter(response.status_code)
         return False, _api_error_interpreter(INTERNAL_SERVER_ERROR)
+    except ConnectionRefusedError:
+        logger.error(
+            "Connection error, API is unreachable; %s %s", method.__name__.upper(), url
+        )
+        return HttpResponseServerError(b"Internal server error")
     except JSONDecodeError:
         if response:
             return response.text, _api_error_interpreter(
@@ -85,9 +92,10 @@ def _make_api_request(url, method=requests.get, headers=None, body=None):
             )  # response cannot be unbound and throw JSONDecodeError but the warning is bugging me
         return False, _api_error_interpreter(INTERNAL_SERVER_ERROR)
     except requests.exceptions.Timeout:
-        print("ERROR: API request timeout")
+        logger.error("API request timeout; %s %s", method.__name__.upper(), url)
         return False, _api_error_interpreter(INTERNAL_SERVER_ERROR)
     except:
+        logger.error("Unknown error request %s %s", method.__name__.upper(), url)
         return False, _api_error_interpreter(INTERNAL_SERVER_ERROR)
 
 
@@ -107,6 +115,11 @@ def _get_auth(token):
         auth["group"] = auth["group"].rstrip("]").lstrip("[")
         return auth
     except:
+        logger.error(
+            "Api response on /auth/whoami/: [%s] %s",
+            response.status_code,
+            response.text,
+        )
         return {}
 
 

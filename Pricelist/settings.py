@@ -1,5 +1,7 @@
 import json
 import locale
+import logging
+import logging.config
 import os
 import sys
 from pathlib import Path
@@ -9,6 +11,8 @@ from django.contrib import messages
 from django.core.management.utils import get_random_secret_key
 from django.utils.translation import gettext_lazy as _
 from dotenv import load_dotenv
+
+from Pricelist.logging import LOGGING
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent  # Używamy Path z pathlib
@@ -26,6 +30,10 @@ ALLOWED_HOSTS = json.loads(os.getenv("ALLOWED_HOSTS", '["localhost"]'))
 CSRF_TRUSTED_ORIGINS = json.loads(
     os.getenv("CSRF_TRUSTED_ORIGINS", '["http://localhost:8000"]')
 )
+
+LOGGING_CONFIG = None
+logging.getLogger("requests").setLevel(logging.ERROR)
+logging.config.dictConfig(LOGGING)
 
 MEDIA_URL = "/images/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "images")

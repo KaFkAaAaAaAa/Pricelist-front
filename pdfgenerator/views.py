@@ -1,3 +1,4 @@
+import logging
 import os
 import tempfile
 
@@ -9,7 +10,7 @@ from weasyprint.text.fonts import FontConfiguration
 
 from Pricelist.settings import BASE_DIR, STATICFILES_DIRS
 
-# Create your views here.
+logger = logging.getLogger(__name__)
 
 
 def example_offer(request):

@@ -1,3 +1,4 @@
+import logging
 import re
 from math import floor
 
@@ -24,6 +25,8 @@ from Pricelist.utils import (
     require_auth,
     require_group,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def _get_pln_exr():

@@ -1,3 +1,4 @@
+import logging
 from uuid import UUID
 
 import requests
@@ -8,6 +9,8 @@ from django.utils.translation import gettext_lazy as _
 
 from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL
 from Pricelist.utils import _get_headers, _make_api_request, require_auth, require_group
+
+logger = logging.getLogger(__name__)
 
 
 @require_auth

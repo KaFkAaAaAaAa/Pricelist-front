@@ -1,10 +1,12 @@
+import logging
 import re
+from asyncio import timeout
 from typing import Iterable
 from uuid import UUID
 
 import requests
 from django.contrib import messages
-from django.http.response import HttpResponseNotFound
+from django.http.response import HttpResponseNotFound, HttpResponseServerError
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
 
@@ -12,17 +14,12 @@ from transactions.views import _set_status
 
 from .forms import LoginForm, NewAdminForm, PasswordResetForm, RegisterForm
 from .settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, GROUPS_ROMAN
-from .utils import (
-    Page,
-    _get_headers,
-    _get_page_param,
-    _group_to_roman,
-    _make_api_request,
-    require_auth,
-    require_group,
-)
+from .utils import (Page, _get_headers, _get_page_param, _group_to_roman,
+                    _make_api_request, require_auth, require_group)
 
 # TODO: JSON errors -> if json error then redirect(login)
+
+logger = logging.getLogger(__name__)
 
 
 def favicon():
@@ -39,7 +36,12 @@ def login_view(request):
                 "email": form.cleaned_data["email"],
                 "password": form.cleaned_data["password"],
             }
-            response = requests.post(f"{API_BASE_URL}/auth/login", json=payload)
+            try:
+                response = requests.post(f"{API_BASE_URL}/auth/login", json=payload, timeout=10)
+            except ConnectionRefusedError:
+                logger.error("Connection error, API is unreachable")
+                return HttpResponseServerError(_("Internal server error").encode("utf-8"))
+
             if response.status_code == 200:
                 request.session["token"] = response.json().get("token")
                 response_auth = requests.get(
@@ -48,6 +50,7 @@ def login_view(request):
                 )
                 request.session["logged_user"] = response_auth.json().get("currentUser")
                 return redirect("price_list")
+            logger.warning("Invalid credentials for email: %s", payload["email"])
             return render(
                 request,
                 "login.html",

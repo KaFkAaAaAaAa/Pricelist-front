@@ -1,3 +1,4 @@
+import logging
 import os
 
 from django.contrib import messages
@@ -19,8 +20,10 @@ from Pricelist.settings import (
 )
 from Pricelist.utils import _get_headers, _is_admin, _make_api_request, require_auth
 
+logger = logging.getLogger(__name__)
 fs = FileSystemStorage(location=TRANSACTION_ROOT)
-DIRECTORIES = ["invoice", "annexes", "transport", "MBR"]
+# TODO: move to env
+DIRECTORIES = ["finance", "transport"]
 
 
 def _sanitize_path(path):
