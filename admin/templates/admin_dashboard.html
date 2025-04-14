@@ -29,7 +29,7 @@
                         </thead>
                         <tbody>
                         {% for user in users_page.content %}
-                            <tr style="cursor: pointer" onclick="window.location.href='/users/admin/{{ user.userId }}/';">
+                            <tr style="cursor: pointer" onclick="window.location.href='/admin/clients/{{ user.userId }}';">
                                 <td>{{ user.userLastName }}</td>
                                 <td>{{ user.userEmail }}</td>
                                 <td><a href="" class="btn btn-sm btn-outline-success">{% trans "Activate" %}</a></td>

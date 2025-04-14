@@ -1024,3 +1024,20 @@ def admin_transaction_detail(request, transaction_uuid):
         data["transactionDetails"] = transaction_details
 
     return render(request, "transaction_detail_admin.html", data)
+
+
+@require_auth
+@require_group(["LOGISTICS"])
+def prognose_list(request):
+    headers = _get_headers(request)
+    page = _get_page_param(request)
+
+    prognoses, error = _make_api_request(
+        f"{API_BASE_URL}/transactions/by-status?status=prognose&{page.strip('?')}",
+        headers=headers,
+    )
+    if error or not prognoses:
+        return error
+    page = Page(prognoses)
+
+    return render(request, "transaction_status_list.html", {"page": page})

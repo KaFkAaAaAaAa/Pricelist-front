@@ -84,4 +84,5 @@ urlpatterns = [
     ),
     path("", views.client_transactions, name="client_transactions"),
     path("admin/", views.admin_transactions, name="admin_transactions"),
+    path("prognose/", views.prognose_list, name="prognose_list"),
 ]

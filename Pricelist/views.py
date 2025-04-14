@@ -12,10 +12,17 @@ from django.utils.translation import gettext as _
 
 from transactions.views import _set_status
 
-from .forms import LoginForm, NewAdminForm, PasswordResetForm, RegisterForm
+from .forms import LoginForm, NewUserForm, PasswordResetForm, RegisterForm
 from .settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, GROUPS_ROMAN
-from .utils import (Page, _get_headers, _get_page_param, _group_to_roman,
-                    _make_api_request, require_auth, require_group)
+from .utils import (
+    Page,
+    _get_headers,
+    _get_page_param,
+    _group_to_roman,
+    _make_api_request,
+    require_auth,
+    require_group,
+)
 
 # TODO: JSON errors -> if json error then redirect(login)
 
@@ -37,10 +44,14 @@ def login_view(request):
                 "password": form.cleaned_data["password"],
             }
             try:
-                response = requests.post(f"{API_BASE_URL}/auth/login", json=payload, timeout=10)
+                response = requests.post(
+                    f"{API_BASE_URL}/auth/login", json=payload, timeout=10
+                )
             except ConnectionRefusedError:
                 logger.error("Connection error, API is unreachable")
-                return HttpResponseServerError(_("Internal server error").encode("utf-8"))
+                return HttpResponseServerError(
+                    _("Internal server error").encode("utf-8")
+                )
 
             if response.status_code == 200:
                 request.session["token"] = response.json().get("token")
@@ -49,6 +60,8 @@ def login_view(request):
                     headers={"Authorization": f'Bearer {request.session["token"]}'},
                 )
                 request.session["logged_user"] = response_auth.json().get("currentUser")
+                if response_auth.json()["group"] in ["LOGISTICS"]:
+                    return redirect("prognose_list")
                 return redirect("price_list")
             logger.warning("Invalid credentials for email: %s", payload["email"])
             return render(
@@ -223,12 +236,13 @@ def admin_dashboard(request):
 def new_admin(request, msg=None):
 
     if request.method == "POST":
-        form = NewAdminForm(request.POST)
+        form = NewUserForm(request.POST)
         if form.is_valid():
             payload = {
                 "email": form.cleaned_data["userEmail"],
                 "firstName": form.cleaned_data["userFirstName"],
                 "lastName": form.cleaned_data["userLastName"],
+                "group": form.cleaned_data["userGroup"],
             }
             headers = _get_headers(request)
             response = requests.post(
@@ -240,12 +254,11 @@ def new_admin(request, msg=None):
                     "new_admin.html",
                     {"form": form, "msg": "Admin successfully added!"},
                 )
-            else:
-                return render(
-                    request, "new_admin.html", {"form": form, "error": "Invalid email"}
-                )
+            return render(
+                request, "new_admin.html", {"form": form, "error": "Invalid email"}
+            )
     else:
-        form = NewAdminForm()
+        form = NewUserForm()
     return render(request, "new_admin.html", {"form": form, "msg": msg})
 
 
@@ -369,7 +382,8 @@ def activate_user(request, user_id):
         f"{API_BASE_URL}/auth/admin/{user_id}/group", headers=headers
     )
     user_group = response_group.json()["group"]
-
+    if user_group in CLIENT_GROUPS:
+        user_group = _group_to_roman(user_group)
     if request.method == "POST":
         group = request.POST["group"]
         index = GROUPS_ROMAN.index(group)
@@ -391,7 +405,7 @@ def activate_user(request, user_id):
         {
             "email": user_email,
             "groups": GROUPS_ROMAN,
-            "user_group": _group_to_roman(user_group),
+            "user_group": user_group,
         },
     )
 

@@ -28,18 +28,12 @@
         </thead>
         <tbody>
         {% for client in page.content %}
-            <tr onclick="window.location.href='/admin/clients/{{ client.id }}';" style="cursor: pointer">
+            <tr onclick="window.location.href='/admin/clients/{{ client.user_id }}';" style="cursor: pointer">
                 {% if func == "assign-admin" %}
                 <td>{{ client.clientCompanyName }}</td>
                 <td>{{ client.user.userFirstName }}</td>
                 <td>{{ client.user.userLastName }}</td>
                 <td>{{ client.clientGroup }}</td>
-                {% else %}
-                <td>{{ client.client_company_name }}</td>
-                <td>{{ client.user_first_name }}</td>
-                <td>{{ client.user_last_name }}</td>
-                <td>{{ client.auth_group }}</td>
-                {% endif %}
                 <td>
                     <a class="btn btn-outline-primary" href="/admin/clients/{{ client.id }}/{{ func }}">
                         {% trans "Actions" %}
@@ -48,6 +42,20 @@
                         {% trans "Edit" %}
                     </a>
                 </td>
+                {% else %}
+                <td>{{ client.client_company_name }}</td>
+                <td>{{ client.user_first_name }}</td>
+                <td>{{ client.user_last_name }}</td>
+                <td>{{ client.auth_group }}</td>
+                <td>
+                    <a class="btn btn-outline-primary" href="/admin/clients/{{ client.user_id }}/{{ func }}">
+                        {% trans "Actions" %}
+                    </a>
+                    <a class="btn btn-primary" href="/admin/clients/{{ client.user_id }}/edit">
+                        {% trans "Edit" %}
+                    </a>
+                </td>
+                {% endif %}
             </tr>
         {% endfor %}
         </tbody>
