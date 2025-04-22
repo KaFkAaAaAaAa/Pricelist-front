@@ -15,19 +15,20 @@
                     <th scope="col">{% trans "Transaction initialization" %}</th>
                     <th scope="col">{% trans "Transaction last change" %}</th>
                     <th scope="col">{% trans "Transaction status" %}</th>
-                    <th scope="col">{% trans "Total" %}</th>
                     <th scope="col">{% trans "Actions" %}</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for transaction in page.content %}
                 <tr style="cursor: pointer" onclick="window.location.href='{% if request.session.logged_user.user %}/transactions/{% else %}/transactions/admin/{% endif %}{{ transaction.uuid }}/';">
-                    <!-- debug {{transaction}}-->
-                    <td>{{ transaction.client.clientCompanyName }}</td>
+                    {% for key, value in transaction.items %}
+                    <!-- "{{key}}": {{value}} -->
+                    
+                    {% endfor %}
+                    <td>{{ transaction.client_company_name }}</td>
                     <td>{{ transaction.init_time|date:"d-m-Y H:i" }}</td>
-                    <td>{{ transaction.status_time|date:"d-m-Y H:i" }}</td>
+                    <td>{{ transaction.status_time |date:"d-m-Y H:i" }}</td>
                     <td>{{ transaction.status }}</td>
-                    <td class="text-end">{{ transaction.totals.price }} €</td>
                     <td>
                         <a class="btn btn-outline-danger btn-sm" onclick="event.stopPropagation(); return confirm('{% trans "Are you sure you want to delete this transaction?" %}');" href="/transactions/delete/{{transaction.uuid}}/">{% trans "Delete" %}</a>
                     </td>

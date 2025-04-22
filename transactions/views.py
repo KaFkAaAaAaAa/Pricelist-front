@@ -932,10 +932,9 @@ def client_transaction_detail(request, transaction_uuid):
 
 
 @require_auth
-@require_group(ADMIN_GROUPS)
+@require_group(ADMIN_GROUPS + ["LOGISTICS"])
 def admin_transaction_detail(request, transaction_uuid):
 
-    admin_url = "admin/" if _is_admin(request) else ""
     headers = _get_headers(request)
 
     lang = request.LANGUAGE_CODE.upper()
@@ -953,7 +952,7 @@ def admin_transaction_detail(request, transaction_uuid):
                 "plates": request.POST["plates_list"].split(","),
             }
             _, error = _make_api_request(
-                f"{API_BASE_URL}/transaction-details/{admin_url}{transaction_uuid}/",
+                f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
                 method=requests.put,
                 headers=headers,
                 body=payload,
@@ -969,7 +968,7 @@ def admin_transaction_detail(request, transaction_uuid):
                 },
             }
             _, error = _make_api_request(
-                f"{API_BASE_URL}/transaction-details/{admin_url}{transaction_uuid}/",
+                f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
                 method=requests.put,
                 headers=headers,
                 body=payload,
@@ -978,14 +977,14 @@ def admin_transaction_detail(request, transaction_uuid):
                 return error
         payload_transaction["description"] = request.POST["description"]
         _, error = _make_api_request(
-            f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
+            f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/",
             method=requests.put,
             headers=headers,
             body=payload_transaction,
         )
 
     transaction, error = _make_api_request(
-        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/?lang={lang}",
+        f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/?lang={lang}",
         headers=headers,
     )
     if error:
@@ -1032,12 +1031,16 @@ def prognose_list(request):
     headers = _get_headers(request)
     page = _get_page_param(request)
 
+    # IDK why status=FINAL returns list of prognose, some enum stuff in data base
     prognoses, error = _make_api_request(
-        f"{API_BASE_URL}/transactions/by-status?status=prognose&{page.strip('?')}",
+        f"{API_BASE_URL}/transactions/by-status?status=FINAL&{page.strip('?')}",
         headers=headers,
     )
     if error or not prognoses:
         return error
     page = Page(prognoses)
+    for prognose in page.content:
+        prognose["init_time"] = _parse_date(prognose["init_time"])
+        prognose["status_time"] = _parse_date(prognose["status_time"])
 
     return render(request, "transaction_status_list.html", {"page": page})

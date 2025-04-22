@@ -16,6 +16,7 @@ from Pricelist.settings import (
     CATEGORIES,
     CLIENT_GROUPS,
     SKU_REGEX,
+    SUPPORT_GROUPS,
 )
 from Pricelist.utils import (
     _amount_to_store,
@@ -141,8 +142,10 @@ def _add_items_to_offer(request, headers):
 
 
 @require_auth
-@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS + SUPPORT_GROUPS)
 def price_list(request):
+    if request.session["logged_user"] in SUPPORT_GROUPS:
+        return redirect("prognose_list")
     return _make_price_list(request, _get_headers(request))
 
 

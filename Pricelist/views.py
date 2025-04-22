@@ -60,7 +60,7 @@ def login_view(request):
                     headers={"Authorization": f'Bearer {request.session["token"]}'},
                 )
                 request.session["logged_user"] = response_auth.json().get("currentUser")
-                if response_auth.json()["group"] in ["LOGISTICS"]:
+                if response_auth.json()["group"].strip("[]") in ["LOGISTICS"]:
                     return redirect("prognose_list")
                 return redirect("price_list")
             logger.warning("Invalid credentials for email: %s", payload["email"])
