@@ -14,7 +14,7 @@
                 <ul class="navbar-nav text-center">
                 {% if request.session.token %}
                     <li class="nav-item navbar-text my-auto mx-3">
-                    {% trans "Logged in: " %} {{ request.session.logged_user.user.userEmail }} {{ request.session.logged_user.userEmail }}
+                    {% trans "Logged in:" %} {{ request.session.logged_user.user.userEmail }} {{ request.session.logged_user.userEmail }}
                     </li>
                 {% endif %}
                     <li class="nav-item dropdown my-1 me-2">
@@ -70,7 +70,7 @@
                 {% endif %}
                 <li><a class="btn btn-outline-secondary w-100 mb-2" href="/">{% trans "Price List" %}</a></li>
                 <li><a class="btn btn-outline-secondary w-100 mb-2" href="/profile/">{% trans "Profile" %}</a></li>
-                <li><a class="btn btn-outline-secondary w-100 mb-2" href="/change-password/">{% trans "Change Password" %}</a></li>
+                <li><a class="btn btn-outline-secondary w-100 mb-2" href="/change-password/">{% trans "Change password" %}</a></li>
                 <li><hr></li>
                 <li><a class="btn btn-danger w-100" href="/logout">{% trans "Logout" %}</a></li>
             </ul>
