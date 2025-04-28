@@ -204,7 +204,7 @@ def profile(request):
 def admin_dashboard(request):
 
     transactions, error = _make_api_request(
-        f"{API_BASE_URL}/transactions/admin/?pageNo=0&pageSize=10"
+        f"{API_BASE_URL}/transactions/admin/?pageNo=0&pageSize=30"
     )
 
     users_page = None
@@ -217,7 +217,7 @@ def admin_dashboard(request):
         transactions_page = Page(transactions)
 
     users, error = _make_api_request(
-        f"{API_BASE_URL}/users/admin/by-group/?group=UNASSIGNED?&pageNo=0&pageSize=10"
+        f"{API_BASE_URL}/users/admin/by-group/?group=UNASSIGNED?&pageNo=0&pageSize=30"
     )
     if error or not users:
         messages.error(request, _("Error! Could not fetch users"))

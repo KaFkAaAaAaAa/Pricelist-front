@@ -200,6 +200,7 @@
                       rows="3">{{ transaction.description }}</textarea>
             <div class="text-end mt-3">
                 <button class="btn btn-primary" type="submit">{% trans "Save Changes" %}</button>
+                <a class="btn btn-outline-secondary" href="/files/{{ transaction.uuid }}/">{% trans "Files" %}</a>
             </div>
         </form>
     </div>

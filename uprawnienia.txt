@@ -1,0 +1,30 @@
+| | MBS -> dokumenty; z kim, data; cena transportu; suma wagi
+
+| | DISPO -> odczyt na prognozy; dokumenty
+
+| | MAGAZYN -> prognoza do finał (edycja: wagi i komentarze); bez dokumentów
+
+|x| files przycisk -> duża litera
+
+|x| zmaina_nazwy_transakcji -> FIRMA-DATA
+
+|x| powrót z plików do tra_det
+
+|x| usuń transakcję nie działa (działa xD)
+
+|x| więcej niż 5
+
+| | szukanie po nazwie firmy
+
+| | mail gdy:
+| | dodanie plików 
+| | zmiana danych klienta
+| | nowa propozycja
+
+|x| model klienta przy zmianie konta nie rozpoznawany (nazwa firmy nie zmienia się)
+
+| | klient widzi prognozy i finały
+
+| | dostawa od klienta i do alku (dwie daty) + dodać godziny (string)
+
+
