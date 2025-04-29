@@ -2,15 +2,16 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "json": {
-            "datefmt": "%Y-%m-%dT%H:%M:%SZ",
-            "class": "pythonjsonlogger.jsonlogger.JsonFormatter",
-        },
-        "base": {
-            "format": "%(asctime)s [%(levelname)s] :: %(message)s - at %(name)s",
-            "datefmt": "%Y-%m-%dT%H:%M:%SZ",
-        },
+    "json": {
+        "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
+        "datefmt": "%Y-%m-%dT%H:%M:%SZ",
     },
+    "base": {
+        "format": "%(asctime)s [%(levelname)s] :: %(message)s - at %(name)s",
+        "datefmt": "%Y-%m-%dT%H:%M:%SZ",
+    },
+},
+
     "handlers": {
         "stdout": {
             "class": "logging.StreamHandler",
