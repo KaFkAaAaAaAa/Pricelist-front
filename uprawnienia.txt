@@ -4,6 +4,18 @@
 
 | | MAGAZYN -> prognoza do finał (edycja: wagi i komentarze); bez dokumentów
 
+| | klient widzi prognozy i finały
+    | | lista
+    | | detal
+
+| | dostawa od klienta i do alku (dwie daty) + dodać godziny (string):
+    | | back
+    | | front
+
+| | szukanie po nazwie firmy
+    |x| back
+    | | front
+
 |x| files przycisk -> duża litera
 
 |x| zmaina_nazwy_transakcji -> FIRMA-DATA
@@ -14,17 +26,12 @@
 
 |x| więcej niż 5
 
-| | szukanie po nazwie firmy
+|x| mail gdy:
+|x| dodanie plików 
+|x| zmiana danych klienta
+|x| nowa propozycja
 
-| | mail gdy:
-| | dodanie plików 
-| | zmiana danych klienta
-| | nowa propozycja
+|x| mail sprawdzony - działa
 
 |x| model klienta przy zmianie konta nie rozpoznawany (nazwa firmy nie zmienia się)
-
-| | klient widzi prognozy i finały
-
-| | dostawa od klienta i do alku (dwie daty) + dodać godziny (string)
-
 

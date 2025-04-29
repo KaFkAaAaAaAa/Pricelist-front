@@ -1,6 +1,7 @@
 import logging
 import os
 
+import requests
 from django.contrib import messages
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage
@@ -160,6 +161,17 @@ def browse_transaction_dir(request, transaction_uuid, directory_name=None):
             messages.error(request, "Failed to upload.")
         else:
             messages.success(request, "Upload successful.")
+            payload = {
+                "time": "",
+                "dirName": "",
+                "path": "",
+            }
+            _make_api_request(
+                f"{API_BASE_URL}/{transaction_uuid}/upload-event",
+                method=requests.post,
+                headers=_get_headers(request),
+                body=payload,
+            )
         return redirect(request.path)
     transaction_uuid = str(transaction_uuid)
     directory_name = directory_name or ""
