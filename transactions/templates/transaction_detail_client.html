@@ -14,8 +14,15 @@
                 <div class="row text-start">{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</div>
                 <div class="row text-start">{{ transaction.client.clientCountry }}</div>
                 <div class="row text-start"><b class="text-start p-0">{% trans "Status" %}:</b>
-                    {% if transaction.status %}{{ transaction.status }}
-                        {{ transaction.status_time|date:"d-m-Y H:i" }}{% else %}{% trans "No transaction.status" %}
+                    {% if transaction.status %}
+                        {% if transaction.status in statuses %}
+                        {{ transaction.status }}
+                        {% elif transaction.status == "FINAL_K" %}
+                        FINAL
+                        {% else %}
+                        OFFER
+                        {% endif %}
+                        {{ transaction.status_time|date:"d-m-Y H:i" }}{% else %}{% trans "No transaction status" %}
                         {% now "d-m-Y H:i" %}{% endif %}</div>
                 <div class="row text-start ">
                     <div class="col float-start ps-0">
@@ -33,6 +40,8 @@
                                        value="{{ transactionDetails.informations.delivery_date }}"/>
                                 {% if transaction.status == "PROGNOSE" %}
                                     <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Price" %}: </strong>
+                                        <input type="hidden" name="transport" id="transport"
+                                               value="{{ transactionDetails.transportCost }}">
                                         <span class="input-group-text">{{ transactionDetails.transportCost }} €</span>
                                     <div class="mt-2">
                                         <h6 class="fw-semibold">{% trans "Plates:" %}</h6>
@@ -112,6 +121,8 @@
                                         <span class="input-group-text">kg</span>
                                     </div>
                                 {% else %}
+                                        <input type="hidden" name="amount-{{ item.uuid }}" id="amount-{{ item.uuid }}"
+                                               value="{{ item.amount }}">
                                         {{ item.amount }}
                                 {% endif %}
                             </td>
@@ -131,6 +142,8 @@
                                         {{ item.price }}
                                     {% endif %}
                                 {% else %}
+                                        <input type="hidden" name="price-{{ item.uuid }}" id="price-{{ item.uuid }}"
+                                               value="{{ item.price }}">
                                     {{ item.price }}
                                 {% endif %}
                             </td>
@@ -511,7 +524,7 @@
                 document.getElementById(`totalAlku`).textContent = allTotalAlku.toFixed(1);
             {% endif %}
             {% if transaction.status == "PROGNOSE" %}
-            const transport = document.getElementById("transport").value();
+            let transport = parseFloat(document.getElementById("transport").value());
             document.getElementById("totalTransportIncluded").textContent = allTotalPrice.toFixed(2);
             {% endif %}
         }

@@ -355,7 +355,11 @@ def client_transactions(request):
                 "price": 0,
             }
 
-    return render(request, "transaction_list.html", {"page": page})
+    return render(
+        request,
+        "transaction_list.html",
+        {"page": page, "statuses": ["PROPOSITION", "OFFER"]},
+    )
 
 
 @require_auth
@@ -392,7 +396,11 @@ def admin_transactions(request):
             }
 
     page = Page(transactions)
-    return render(request, "transaction_list.html", {"page": page})
+    return render(
+        request,
+        "transaction_list.html",
+        {"page": page, "statuses": ["PROPOSITION", "OFFER"]},
+    )
 
 
 @require_auth
@@ -418,7 +426,11 @@ def admin_client_transactions(request, user_id):
 
     page = Page(transactions)
 
-    return render(request, "transaction_list.html", {"page": page})
+    return render(
+        request,
+        "transaction_list.html",
+        {"page": page, "statuses": ["PROPOSITION", "OFFER"]},
+    )
 
 
 @require_auth
@@ -937,6 +949,7 @@ def client_transaction_detail(request, transaction_uuid):
                 except KeyError:
                     continue
         data["transactionDetails"] = transaction_details
+        data["statuses"] = ["PROPOSITION", "OFFER"]
     return render(request, "transaction_detail_client.html", data)
 
 

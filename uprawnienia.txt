@@ -4,10 +4,6 @@
 
 | | MAGAZYN -> prognoza do finał (edycja: wagi i komentarze); bez dokumentów
 
-| | klient widzi prognozy i finały
-    | | lista
-    | | detal
-
 | | dostawa od klienta i do alku (dwie daty) + dodać godziny (string):
     | | back
     | | front
@@ -15,6 +11,10 @@
 | | szukanie po nazwie firmy
     |x| back
     | | front
+
+|x| klient widzi prognozy i finały
+    |x| lista
+    |x| detal
 
 |x| files przycisk -> duża litera
 
