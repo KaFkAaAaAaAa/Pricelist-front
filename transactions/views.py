@@ -370,9 +370,10 @@ def admin_transactions(request):
     page = _get_page_param(request)
     query = ""
     if "search" in request.GET.keys():
-        query = "?query=" + request.GET["search"]
+        query = "query=" + request.GET["search"]
+    endpoint = "search" if query else ""
 
-    url = f"{API_BASE_URL}/transactions/admin/{page}{query}"
+    url = f"{API_BASE_URL}/transactions/admin/{endpoint}{page}{'&' if page else '?'}{query}"
     transactions, error = _make_api_request(url, headers=headers)
     if error:
         return error
@@ -760,6 +761,7 @@ def create_prognose(request, data, headers):
                 "informations": {
                     "delivery_info": form.cleaned_data["delivery_info"],
                     "delivery_date": str(form.cleaned_data["delivery_date"]),
+                    "client_date": str(form.cleaned_data["client_date"]),
                 },
             }
             uuid = data["transaction_uuid"]
@@ -886,7 +888,6 @@ def change_status(request, transaction_uuid):
     else:
         response_client = request.session["logged_user"]
 
-    # TODO: cleanup
     data = {
         "transaction": transaction,
         "items": transaction["itemsOrdered"],
@@ -902,10 +903,7 @@ def change_status(request, transaction_uuid):
         return create_prognose(request, data, headers)
     if status == "PROGNOSE":
         return create_final(request, data, headers)
-    if status == "FINAL":
-        messages.warning(request, _("Order has already been finalised"))
-    else:
-        messages.error(request, _("Invalid status name"))
+    messages.error(request, _("Invalid status name"))
     return redirect("admin_transaction_detail", transaction_uuid)
 
 
@@ -972,6 +970,7 @@ def admin_transaction_detail(request, transaction_uuid):
             payload = {
                 "informations": {
                     "delivery_date": request.POST["delivery_date"],
+                    "client_date": request.POST["client_date"],
                     "delivery_info": request.POST["delivery_info"],
                 },
                 "transportCost": request.POST["transport"],

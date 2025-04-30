@@ -48,8 +48,12 @@
                         <div class="col-md-4 float-end text-end">
                             <h5 class="fw-bold">{% trans "Delivery" %}</h5>
                             <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Date" %}: </strong>
+                                <label for="delivery_date">{% trans "Client" %}</label>
                                 <input class="form-control" name="delivery_date" id="delivery_date" type="date"
                                        value="{{ transactionDetails.informations.delivery_date }}"/>
+                                <label for="delivery_date">{% trans "Alku" %}</label>
+                                <input class="form-control" name="client_date" id="client_date" type="date"
+                                       value="{{ transactionDetails.informations.client_date }}"/>
                                 {% if transaction.status == "PROGNOSE" %}
                                     <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Price" %}: </strong>
                                     <div class="input-group">
@@ -225,7 +229,7 @@
                     class="btn btn-outline-primary">{% trans "Change status" %}</button>
             <a class="btn btn-outline-secondary" href="/transactions/{{ transaction.uuid }}/print/"
                target="_blank">{% trans "Print" %}</a>
-            {% if transaction.status == "FINAL" %}
+            {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" or transaction.status == "FINAL_K" %}
                 <a class="btn btn-outline-secondary" href="/transactions/{{ transaction.uuid }}/print/?client=1"
                    target="_blank">{% trans "Print client version" %}</a>
             {% endif %}
