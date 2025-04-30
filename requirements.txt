@@ -2,4 +2,4 @@ django
 python-dotenv
 requests
 weasyprint
-python-json-decoder
+python-json-logger

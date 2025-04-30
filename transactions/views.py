@@ -368,7 +368,11 @@ def admin_transactions(request):
     headers = _get_headers(request)
 
     page = _get_page_param(request)
-    url = f"{API_BASE_URL}/transactions/admin/{page}"
+    query = ""
+    if "search" in request.GET.keys():
+        query = "?query=" + request.GET["search"]
+
+    url = f"{API_BASE_URL}/transactions/admin/{page}{query}"
     transactions, error = _make_api_request(url, headers=headers)
     if error:
         return error

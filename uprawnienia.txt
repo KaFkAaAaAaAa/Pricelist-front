@@ -8,9 +8,9 @@
     | | back
     | | front
 
-| | szukanie po nazwie firmy
+|x| szukanie po nazwie firmy
     |x| back
-    | | front
+    |x| front
 
 |x| klient widzi prognozy i finały
     |x| lista
