@@ -1,8 +1,12 @@
-| | MBS -> dokumenty; z kim, data; cena transportu; suma wagi
+|x| MBS -> dokumenty; z kim, data; cena transportu; suma wagi
+    |x| back
+    |x| tabelka
 
 | | DISPO -> odczyt na prognozy; dokumenty
+    | | zakaz
+    |x| mozliwość
 
-| | MAGAZYN -> prognoza do finał (edycja: wagi i komentarze); bez dokumentów
+|x| MAGAZYN -> prognoza do finał (edycja: wagi i komentarze); bez dokumentów
 
 |x| dostawa od klienta i do alku (dwie daty) + dodać godziny (string):
     |x| back

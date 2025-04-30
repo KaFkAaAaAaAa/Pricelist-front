@@ -1,0 +1,42 @@
+{% extends 'base.html' %} {% load i18n %} {% block title %}Transaction List{%
+endblock %} {% block content %}
+<div class="container text-center">
+  <h1 class="text-center">{% trans 'Transaction list' %}</h1>
+  <div class="d-flex justify-content-start">
+    <button class="btn btn-outline-danger mb-4 mt-3" onclick="history.back()">
+      Go back
+    </button>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover table-striped">
+      <thead>
+        <tr>
+          <th scope="col">{% trans "Company name" %}</th>
+          <th scope="col">{% trans "Transaction initialization" %}</th>
+          <th scope="col">{% trans "Transport cost" %}</th>
+          <th scope="col">{% trans "Total mass" %}</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for transaction in page.content %}
+        <tr>
+          <td>{{ transaction.client.clientCompanyName }}</td>
+          <td>{{ transaction.init_time|date:"d-m-Y H:i" }}</td>
+          <td class="text-end">{{ transaction.transport }} €</td>
+          <td class="text-end">{{ transaction.total_amount }} kg</td>
+          <td>
+            <a
+              class="btn btn-outline-danger btn-sm"
+              href="/files/{{transaction.uuid}}/"
+              >{% trans "Files" %}</a
+            >
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "pagination.html" %}
+</div>
+{% endblock %}

@@ -49,15 +49,15 @@
                             <h5 class="fw-bold">{% trans "Delivery" %}</h5>
                             <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Date" %}: </strong>
                                 <label for="delivery_date">{% trans "Client" %}</label>
-                                <input class="form-control" name="delivery_date" id="delivery_date" type="date"
+                                <input {% if request.session.auth.group == "LOGISTICS" %}read-only{% endif %} class="form-control" name="delivery_date" id="delivery_date" type="date"
                                        value="{{ transactionDetails.informations.delivery_date }}"/>
                                 <label for="delivery_date">{% trans "Alku" %}</label>
-                                <input class="form-control" name="client_date" id="client_date" type="date"
+                                <input {% if request.session.auth.group == "LOGISTICS" %}read-only{% endif %} class="form-control" name="client_date" id="client_date" type="date"
                                        value="{{ transactionDetails.informations.client_date }}"/>
                                 {% if transaction.status == "PROGNOSE" %}
                                     <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Price" %}: </strong>
                                     <div class="input-group">
-                                        <input name="transport" id="transport" class="form-control separator-input"
+                                        <input {% if request.session.auth.group == "LOGISTICS" %}read-only{% endif %} name="transport" id="transport" class="form-control separator-input"
                                                type="number" value="{{ transactionDetails.transportCost }}"
                                                onchange="uuids.forEach(uuid => calculateTotal(uuid));"/>
                                         <span class="input-group-text">€</span>
@@ -68,7 +68,7 @@
                                         </div>
                                         <input type="hidden" name="plates_list" id="id_plates_list"/>
                                         <div class="d-flex gap-2">
-                                            <input type="text" class="form-control flex-grow-1" id="plate-input"
+                                            <input {% if request.session.auth.group == "LOGISTICS" %}read-only{% endif %} type="text" class="form-control flex-grow-1" id="plate-input"
                                                    placeholder="Enter a plate"/>
                                             <button class="btn btn-outline-secondary" type="button" id="add-btn">{% trans "Add" %}</button>
                                         </div>
@@ -116,14 +116,14 @@
                                              src="/images/{{ item.sku }}.M.jpg">
                                     {% endif %}
                                 </td>
-                                <td class="w-auto w-sku"><input name="sku-{{ item.uuid }}" id="sku-{{ item.uuid }}"
+                                <td class="w-auto w-sku"><input {% if request.session.auth.group == "LOGISTICS" %}read-only{% endif %} name="sku-{{ item.uuid }}" id="sku-{{ item.uuid }}"
                                                                 class="form-control w-sku" type="text"
                                                                 value="{{ item.sku }}"/></td>
-                                <td><input name="name-{{ item.uuid }}" id="name-{{ item.uuid }}" class="form-control"
+                                <td><input {% if request.session.auth.group == "LOGISTICS" %}read-only{% endif %} name="name-{{ item.uuid }}" id="name-{{ item.uuid }}" class="form-control"
                                            type="text" value="{{ item.name }}"/></td>
                                 <td>
                                     <div class="input-group">
-                                        <input name="amount-{{ item.uuid }}" id="amount-{{ item.uuid }}"
+                                        <input {% if request.session.auth.group == "LOGISTICS" %}read-only{% endif %} name="amount-{{ item.uuid }}" id="amount-{{ item.uuid }}"
                                                class="form-control separator-input w-amount"
                                                type="number" min="0.1" max="99999.9" step="0.1" value="{{ item.amount|floatformat:1 }}"
                                                onchange="calculateTotal('{{ item.uuid }}')"/>
@@ -143,7 +143,7 @@
                                 {% endif %}
                                 <td>
                                     <div class="input-group">
-                                        <input name="price-{{ item.uuid }}" id="price-{{ item.uuid }}"
+                                        <input {% if request.session.auth.group == "LOGISTICS" %}read-only{% endif %} name="price-{{ item.uuid }}" id="price-{{ item.uuid }}"
                                                class="form-control w-price separator-input"
                                                type="number" min="0.01" step="0.01" value="{{ item.price }}"
                                                onchange="calculateTotal('{{ item.uuid }}')"/>
@@ -167,8 +167,10 @@
                                         <button class="btn btn-outline-secondary btn-sm" type="button"
                                                 data-bs-target="#commentModal" data-bs-toggle="modal"
                                                 data-bs-uuid="{{ item.uuid }}">{% trans "Add comment" %}</button>
+                                     {% if request.session.auth.group != "LOGISTICS" %}
                                         <button class="btn btn-outline-danger btn-sm" type="button"
                                                 onclick="deleteItem(event, '{{ item.uuid }}')">{% trans "Delete" %}</button>
+                                     {% endif %}
                                     </div>
                                 </td>
                             </tr>
@@ -233,7 +235,9 @@
                 <a class="btn btn-outline-secondary" href="/transactions/{{ transaction.uuid }}/print/?client=1"
                    target="_blank">{% trans "Print client version" %}</a>
             {% endif %}
+            {% if request.session.auth.group == "LOGISTICS" %}
             <a class="btn btn-outline-secondary" href="/files/{{ transaction.uuid }}/">{% trans "Files" %}</a>
+            {% endif %}
         </form>
     </div>
     <div class="modal" id="commentModal" tabindex="-1" aria-hidden="true">

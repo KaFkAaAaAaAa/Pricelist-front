@@ -2,7 +2,7 @@ import copy
 import logging
 import re
 from datetime import date, datetime
-from http.client import INTERNAL_SERVER_ERROR
+from http.client import INTERNAL_SERVER_ERROR, UNAUTHORIZED
 from math import floor
 
 import requests
@@ -13,30 +13,14 @@ from django.utils.translation import gettext_lazy as _
 
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
-from Pricelist.settings import (
-    ADMIN_GROUPS,
-    API_BASE_URL,
-    CLIENT_GROUPS,
-    SKU_REGEX,
-    SUPPORT_GROUPS,
-)
-from Pricelist.utils import (
-    Page,
-    _amount_to_display,
-    _amount_to_float,
-    _amount_to_store,
-    _api_error_interpreter,
-    _get_group,
-    _get_headers,
-    _get_page_param,
-    _is_admin,
-    _make_api_request,
-    _price_to_display,
-    _price_to_float,
-    _price_to_store,
-    require_auth,
-    require_group,
-)
+from Pricelist.settings import (ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS,
+                                SKU_REGEX, SUPPORT_GROUPS, TRANSACTION_FINAL)
+from Pricelist.utils import (Page, _amount_to_display, _amount_to_float,
+                             _amount_to_store, _api_error_interpreter,
+                             _get_group, _get_headers, _get_page_param,
+                             _is_admin, _make_api_request, _price_to_display,
+                             _price_to_float, _price_to_store, require_auth,
+                             require_group)
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
 logger = logging.getLogger(__name__)
@@ -438,8 +422,27 @@ def admin_client_transactions(request, user_id):
     )
 
 
+def support_transaction_detail(request, transaction_uuid):
+    headers = _get_headers(request)
+    group = _get_group(request)
+
+    transaction, error = _make_api_request(f"{API_BASE_URL}/transactions/admin/{transaction_uuid}", headers=headers)
+    if error:
+        return error
+
+    transaction_details, error = _make_api_request(f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}", headers=headers)
+    if error:
+        return error
+
+    data = {
+            "transaction": transaction,
+            "transaction_details": transaction_details
+            }
+    return render(request, data)
+
+
 @require_auth
-@require_group(ADMIN_GROUPS)
+@require_group(ADMIN_GROUPS + SUPPORT_GROUPS)
 def admin_transaction_detail(request, transaction_uuid):
     headers = _get_headers(request)
     lang = request.LANGUAGE_CODE.upper()
@@ -450,8 +453,23 @@ def admin_transaction_detail(request, transaction_uuid):
 
     msg = {}
 
+    is_logistics = request.session["group"] != "LOGISTICS"
+
+    if request.session["group"] in SUPPORT_GROUPS:
+        if not is_logistics:
+            return support_transaction_detail(request, transaction_uuid)
+
     if request.method == "POST":
-        # TODO: Payload
+        transaction, error = _make_api_request(
+            f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/?lang={lang}",
+            headers=headers,
+        )
+        if error or not transaction:
+            return error
+
+        # NOT FINAL_K
+        if not (is_logistics and transaction["status"] in TRANSACTION_FINAL[0:1]):
+            return _api_error_interpreter(401)
         payload = {}
         response = requests.post(
             f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/",
@@ -845,12 +863,12 @@ def create_final(request, data, headers):
 
 
 @require_auth
-@require_group(ADMIN_GROUPS + CLIENT_GROUPS + SUPPORT_GROUPS)
+@require_group(ADMIN_GROUPS + ["LOGISTICS"])
 def change_status(request, transaction_uuid):
     headers = _get_headers(request)
 
     admin_url = (
-        "admin/" if _is_admin(request) or _get_group(request) in SUPPORT_GROUPS else ""
+        "admin/" if _is_admin(request) or _get_group(request) in ("LOGISTICS") else ""
     )
     lang = request.LANGUAGE_CODE.upper()
 
@@ -1051,7 +1069,7 @@ def admin_transaction_detail(request, transaction_uuid):
 
 
 @require_auth
-@require_group(["LOGISTICS"])
+@require_group(["LOGISTICS", "DISPO"])
 def prognose_list(request):
     headers = _get_headers(request)
     page = _get_page_param(request)
@@ -1064,8 +1082,32 @@ def prognose_list(request):
     if error or not prognoses:
         return error
     page = Page(prognoses)
+    # TODO: TEST
     for prognose in page.content:
         prognose["init_time"] = _parse_date(prognose["init_time"])
         prognose["status_time"] = _parse_date(prognose["status_time"])
 
     return render(request, "transaction_status_list.html", {"page": page})
+
+
+@require_auth
+@require_group(["MBS"])
+def mbs_list(request):
+    headers = _get_headers(request)
+    page = _get_page_param(request)
+
+    # IDK why status=FINAL returns list of prognose, some enum stuff in data base
+    transactions, error = _make_api_request(
+        f"{API_BASE_URL}/transactions/admin/{page}",
+        headers=headers,
+    )
+    page = Page(transactions)
+    for transaction in page.content:
+        transaction_detail, error = _make_api_request(
+            f"{API_BASE_URL}/transaction-details/admin/{transaction['uuid']}",
+            headers=headers,
+        )
+        if error or not transactions:
+            return error
+        transaction["transport"] = transaction_detail
+        transaction["total_amount"] = _calculate_total_mass(transaction["itemsOrdered"])/10
