@@ -1,0 +1,24 @@
+    {% load i18n %}
+    <div class="text-start text-secondary">{% trans "Prices in €/kg" %}</div>
+<footer>
+  <hr/>
+  <div class="row">
+    <div class="col-12">
+      <p class="text-center">
+        ALKU GmbH Hans-Böckler-Straße 6 93142 Maxhütte-Haidhof Deutschland
+      </p>
+    </div>
+  </div>
+  <div class="row text-center">
+    <p>
+      <strong>e-mail:</strong>
+      {% if transaction.client.clientAdmin.userEmail %}
+      {{transaction.client.clientAdmin.userEmail}} {% else %}
+      pawel.zubrzycki@alku-gmbh.de {% endif %}
+      <strong>tel:</strong>
+      {% if transaction.client.clientAdmin.userEmail %}
+      {{transaction.client.clientAdmin.userTelephoneNumber}} {% else %}
+      +4915121402684 {% endif %}
+    </p>
+  </div>
+</footer>

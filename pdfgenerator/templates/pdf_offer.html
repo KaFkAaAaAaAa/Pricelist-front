@@ -1,0 +1,93 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{% block title %}{{ filename }}{% endblock %}</title>
+    {% load i18n %}
+    <style>
+        .watermark {
+            background-image: url("{{ images_root }}/images/logo-alku-hires.png"); /* Absolute path */
+        }
+    </style>
+</head>
+<body>
+<div class="watermark"></div>
+<div class="container-fluid">
+    <div class="row my-2 d-flex">
+        <div class="col-6 align-items-start">
+            <img src="{{ images_root }}/images/alku-logo-2013-10-17.jpg" alt="ALKU-GMBH" class="img"/>
+        </div>
+        <div class="col-6 align-items-end">
+            <h4 class="text-end opacity-75">Recycling and reclamation as the basic principle of the company</h4>
+        </div>
+    </div>
+
+</div>
+<hr>
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-6">
+            {% include "pdf_client.html" %}
+        </div>
+    </div>
+    <div class="text-end">
+        <h4>{% trans "Offer of" %} {{ date|date:"d-m-Y H:i" }}</h4>
+    </div>
+
+    <table class="table table-bordered mt-2 mb-6 table-striped text-center">
+        <thead>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">{% trans "SKU" %}</th>
+            <th scope="col">{% trans "Product" %}</th>
+            <th scope="col">{% trans "Amount" %}</th>
+            <th scope="col">{% trans "Price" %}</th>
+            <th scope="col">{% trans "Sum" %}</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody class="tbody-text">
+        {% for item in transaction.itemsOrdered %}
+            <tr>
+                <td>
+                    <img class="py-1 img" src="{{ images_root }}/images/{{ item.sku }}.M.jpg" alt=""
+                        style="width: 50px; height: auto; vertical-align: middle;"/>
+                </td>
+                <td class="px-1">{{ item.sku }}</td>
+                <td class="text-start px-1">{{ item.name }}</td>
+                <td class="unit text-end px-1">{{ item.amount|floatformat:1 }}</td>
+                <td class="unit text-end px-1">{{ item.price|floatformat:2 }}</td>
+                <td class="unit text-end px-1">{{ item.total|floatformat:2 }} €</td>
+                <td class="px-1 text-start">
+                {% if item.additionalInfo and item.additionalInfo|length < 15 %}
+                    {{ item.additionalInfo }}
+                {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="row my-2 fs-6">
+        <div class="d-flex justify-content-end">
+            <p class="unit"><strong>{% trans "Total price" %}:</strong> {{ total.price|floatformat:2 }} €</p>
+        </div>
+        <div class="d-flex justify-content-end">
+            <p class="unit"><strong>{% trans "Total amount" %}:</strong> {{ total.mass|floatformat:1 }} kg</p>
+        </div>
+    </div>
+    {% if transaction.description %}
+        {# the description has to stay formatted as such #}
+        <hr />
+        <div class="mt-5 paragraph">{{ transaction.description }}</div>
+    {% endif %}
+    {% for item in transaction.itemsOrdered %}
+            {% if item.additionalInfo|length >= 15 %}
+            <p class="text-start">{{ item.sku }}: {{ item.additionalInfo }}</p>
+            {% endif %}
+    {% endfor %}
+    {% include "pdf_footer.html" %}
+</div>
+</body>
+</html>

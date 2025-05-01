@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block title %}{% trans "Login" %}{% endblock %}
 {% block content %}
-    <div class="container">
+    <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card">
@@ -27,6 +27,7 @@
                             </div>
                         </form>
                         <div class="mt-3 text-center">
+                            <a href="/reset-password/" style="text-decoration: none">{% trans "Reset password" %}</a><br/>
                             <a href="/register/" style="text-decoration: none">{% trans "No account? Register" %}</a>
                         </div>
                         {% if error %}

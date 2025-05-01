@@ -1,0 +1,535 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Transaction Detail" %}{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="d-flex justify-content-start">
+            <button class="btn btn-outline-danger mb-4 mt-3" onclick="history.back()">Go back</button>
+        </div>
+            <div class="text-end mb-2 text-muted" style="font-size: 0.9rem;">
+                <div class="clearfix"></div>
+                <div class="row text-start">{{ transaction.client.clientCompanyName }}</div>
+                <div class="row text-start">{{ transaction.client.clientStreet }}</div>
+                <div class="row text-start">{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</div>
+                <div class="row text-start">{{ transaction.client.clientCountry }}</div>
+                <div class="row text-start"><b class="text-start p-0">{% trans "Status" %}:</b>
+                    {% if transaction.status %}
+                        {% if transaction.status in statuses %}
+                        {{ transaction.status }}
+                        {% elif transaction.status == "FINAL_K" %}
+                        FINAL
+                        {% else %}
+                        OFFER
+                        {% endif %}
+                        {{ transaction.status_time|date:"d-m-Y H:i" }}{% else %}{% trans "No transaction status" %}
+                        {% now "d-m-Y H:i" %}{% endif %}</div>
+                <div class="row text-start ">
+                    <div class="col float-start ps-0">
+                        {% if transaction.status == "PROGNOSE" %}
+                            <p class="mb-2" style="white-space: nowrap;">
+                                <strong>{% trans "Total price with transport included" %}: </strong><span
+                                    class="separator" id="totalTransportIncluded"></span> €</p>
+                        {% endif %}
+                    </div>
+                    {% if transaction.status == "PROGNOSE" or transaction.status == "FINAL" or transaction.status == "FINAL_C" or transaction.status == "FINAL_K" %}
+                        <div class="col-md-4 float-end text-end">
+                            <h5 class="fw-bold">{% trans "Delivery" %}</h5>
+                            <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Date" %}: </strong>
+                                       <p class="mb-2">{% trans "Client" %}: {{ transactionDetails.informations.delivery_date }}</p>
+                                       <p class="mb-2">{% trans "Alku" %}: {{ transactionDetails.informations.client_date }}</p>
+                                {% if transaction.status == "PROGNOSE" %}
+                                    <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Price" %}: </strong>
+                                        <input type="hidden" name="transport" id="transport"
+                                               value="{{ transactionDetails.transportCost }}">
+                                        <span class="input-group-text">{{ transactionDetails.transportCost }} €</span>
+                                    <div class="mt-2">
+                                        <h6 class="fw-semibold">{% trans "Plates:" %}</h6>
+                                        <div id="plate-list" class="mb-3">
+                                            {% for plate in transactionDetails.plates %}
+                                                <p>{{ plate }}</p>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                        </div>
+                                        <label for="delivery_info"
+                                               class="form-label mt-3">{% trans "Delivery info" %}:</label>
+                                        <textarea name="delivery_info" id="delivery_info"
+                                                  class="form-control">{{ transactionDetails.informations.delivery_info }}</textarea>
+                                    </div>
+                                {% endif %}
+                        </div>
+                    {% endif %}
+
+            </div>
+
+        <button type="button" data-bs-toggle="modal" data-bs-target="#searchModal"
+                class="btn btn-sm btn-outline-success mt-2 mb-2">
+            {% trans "Add item" %}
+        </button>
+        <form method="post" id="edit-form">
+            {% csrf_token %}
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle text-center">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>{% trans "SKU" %}</th>
+                        <th class="text-start">{% trans "Name" %}</th>
+                        <th class="text-center">{% trans "Amount" %}</th>
+                        {% if transaction.status == 'FINAL_K' %}
+                            <th class="text-end" >{% trans "Alku" %}</th>
+                        {% endif %}
+                        <th class="text-center">{% trans "Price" %}</th>
+                        <th class="text-end">{% trans "Total" %}</th>
+                        {% if transaction.status == "PROPOSITION" %}
+                        <th></th>
+                        {% endif %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in transaction.itemsOrdered %}
+                        <tr id="{{ item.uuid }}">
+                            <td id="img-field">
+                                {% if item.sku|slice:":2" != "NA" %}
+                                <img style="width: 80px; height: auto; vertical-align: middle;"
+                                         src="/images/{{ item.sku }}.M.jpg">
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                <input type="hidden" name="sku-{{ item.uuid }}" value="{{ item.sku }}"
+                                       pattern="^[a-zA-Z]{2}\d{2,3}$" maxlength="5" class="form-control w-sku">
+                                {{ item.sku }}
+                            </td>
+
+                            <td class="text-start">
+                                {% if transaction.status == 'PROPOSITION' %}
+                                <input type={% if item.sku|slice:":2" == "NA" %}"text"{% else %}"hidden"{% endif %}
+                                    name="name-{{ item.uuid }}" value="{{ item.name }}" class="form-control">
+                                {% endif %}
+                                {% if transaction.status != 'PROPOSITION' or item.sku|slice:":2" != "NA" %}
+                                    {{ item.name }}
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if transaction.status == 'PROPOSITION' %}
+                                    <div class="input-group">
+                                        <input type="number" step="0.1" min="0.1" max="99999.9" name="amount-{{ item.uuid }}" id="amount-{{ item.uuid }}"
+                                               value="{{ item.amount }}" class="form-control w-amount text-end" onchange="calculateTotal('{{ item.uuid }}')">
+                                        <span class="input-group-text">kg</span>
+                                    </div>
+                                {% else %}
+                                        <input type="hidden" name="amount-{{ item.uuid }}" id="amount-{{ item.uuid }}"
+                                               value="{{ item.amount }}">
+                                        {{ item.amount }}
+                                {% endif %}
+                            </td>
+
+                            <td class="">
+                                {% if transaction.status == 'PROPOSITION' %}
+                                    {% if item.sku|slice:":2" == "NA" %}
+                                    <div class="input-group">
+                                        <input type="number" step="0.01" min="0.01" max="999.99" id="price-{{ item.uuid }}"
+                                                       name="price-{{ item.uuid }}" value="{{ item.price|floatformat:2 }}"
+                                            class="form-control w-price text-end" onchange="calculateTotal('{{ item.uuid }}')">
+                                        <span class="input-group-text">€</span>
+                                    </div>
+                                    {% else %}
+                                        <input type="hidden" name="price-{{ item.uuid }}" id="price-{{ item.uuid }}"
+                                               value="{{ item.price }}">
+                                        {{ item.price }}
+                                    {% endif %}
+                                {% else %}
+                                        <input type="hidden" name="price-{{ item.uuid }}" id="price-{{ item.uuid }}"
+                                               value="{{ item.price }}">
+                                    {{ item.price }}
+                                {% endif %}
+                            </td>
+                            <td style="white-space: nowrap;" class="text-end">
+                                <span class="separator" id="total-{{ item.uuid }}">
+                                {{ item.total }}
+                                </span> €
+                            </td>
+                            <td></td>
+                            {% if transaction.status == "PROPOSITION" %}
+                            <td>
+                                <div class="d-grid gap-1 w-100">
+                                    <button class="btn btn-outline-secondary btn-sm" type="button"
+                                            data-bs-target="#commentModal" data-bs-toggle="modal"
+                                            data-bs-uuid="{{ item.uuid }}">{% trans "Add comment" %}</button>
+                                    <button class="btn btn-outline-danger btn-sm" type="button"
+                                            onclick="deleteItem(event, '{{ item.uuid }}')">{% trans "Delete" %}</button>
+                                </div>
+                            </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="fw-bold" style="white-space: nowrap;">
+                                <span class="separator" id="totalAmount"></span> kg
+                            </td>
+                            {% if transaction.status == "FINAL_K" %}
+                                <td class="fw-bold" style="white-space: nowrap;">
+                                <span class="separator" id="totalAlku"></span> kg
+                                </td>
+                            {% endif %}
+                            <td></td>
+                            <td class="fw-bold text-end" style="white-space: nowrap;">
+                                <span class="separator" id="totalPrice"></span> €
+                            </td>
+                            <td></td>
+                            {% if transaction.status == "PROPOSITION" %}
+                            <td></td>
+                            {% endif %}
+                        </tr>
+                        {% if transaction.status == "FINAL_K" %}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td> </td>
+                            <td> </td>
+                            <td></td>
+                            <td class="fw-bold text-end" style="white-space: nowrap;">
+                                <span class="separator" id="totalClientPrice"></span> €
+                            </td>
+                            <td></td>
+                            {% if transaction.status == "PROPOSITION" %}
+                            <td></td>
+                            {% endif %}
+                        </tr>
+                        {% endif %}
+                    </tfoot>
+                </table>
+            </div>
+            <textarea class="form-control mb-3" id="description" name="description"
+                      rows="3">{{ transaction.description }}</textarea>
+            <div class="text-end mt-3">
+                {% if transaction == "PROPOSITION" %}
+                <button class="btn btn-primary" type="submit">{% trans "Save Changes" %}</button>
+                {% endif %}
+                <a class="btn btn-outline-secondary" href="/files/{{ transaction.uuid }}/">{% trans "Files" %}</a>
+            </div>
+        </form>
+    </div>
+    <div class="modal" id="commentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Add comment" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="comment">{% trans "Comment" %}:</label>
+                    <input type="text" class="form-control" id="comment"/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+                    <button type="button" class="btn btn-primary"
+                            id="modalSaveButton">{% trans "Save changes" %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="searchModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Add item" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="comment">{% trans "Search" %}:</label>
+                    <input type="text" class="form-control" id="searchQuery"/>
+                    <p class="text-body-secondary mb-2">{% trans "Empty search query returns all items" %}</p>
+                    <div id="searchResults"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal"
+                            onclick="addItemToTransaction('', '', 0)">{% trans "Create new item" %}</button>
+                    <button type="button" class="btn btn-primary" id="searchBtn">{% trans "Search" %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let uuids = [{% for item in transaction.itemsOrdered %}"{{ item.uuid }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+        let skus = [{% for item in transaction.itemsOrdered %}"{{ item.sku }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+
+        function showSuccessAlert() {
+            successAlert.style.display = "block";
+            setTimeout(() => {
+                successAlert.style.display = "none";
+            }, 3000);
+        }
+        const successAlert = document.getElementById("successAlert");
+
+        const commentModal = document.getElementById('commentModal');
+        let uuid = null;
+        if (commentModal) {
+            commentModal.addEventListener('show.bs.modal', event => {
+                const button = event.relatedTarget;
+                uuid = button.getAttribute('data-bs-uuid');
+
+                const inputComment = document.getElementById(`additionalInfo-${uuid}`);
+                const commentInput = document.getElementById('comment');
+                if (inputComment) {
+                    commentInput.value = inputComment.value;
+                }
+            });
+        }
+        const modalSaveButton = document.getElementById('modalSaveButton');
+
+        modalSaveButton.addEventListener("click", event => {
+            event.preventDefault();
+            if (!uuid) return;
+            const inputComment = document.getElementById(`additionalInfo-${uuid}`);
+            if (inputComment) {
+                inputComment.value = document.getElementById('comment').value;
+                comment = document.getElementById(`comment-${uuid}`)
+                // TODO: add the link
+                if (comment) comment.textContent = inputComment.value;
+                saveButton.style.display = "inline-block";
+            }
+            const modal = bootstrap.Modal.getInstance(commentModal);
+            modal.hide();
+        });
+
+
+        const form = document.getElementById("edit-form");
+        const inputs = form.querySelectorAll("input, textarea");
+        const saveButton = document.getElementById("saveButton");
+
+        inputs.forEach(input => {
+            input.addEventListener("input", () => {
+                saveButton.style.display = "inline-block";
+            });
+        });
+
+        form.addEventListener("submit", function (event) {
+            const submitButton = document.activeElement;
+            {% if transaction.status == "PROGNOSE" %}
+                if (inputField && inputField.value)
+                    addPlate(inputField.value);
+            {% endif %}
+            if (submitButton && submitButton.type === "submit") {
+                if (!confirm("{% trans "Are you sure you want to save changes?" %}")) {
+                    event.preventDefault();
+                }
+            }
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                let searchModal = document.getElementById("searchModal");
+                if (searchModal.classList.contains("show")) {
+                    event.preventDefault();
+                    document.getElementById("searchBtn").click();
+                }
+            }
+        });
+        document.getElementById("searchBtn").addEventListener("click", function (event) {
+            event.preventDefault();
+
+            let query = document.getElementById("searchQuery").value.trim();
+
+            if (!query)
+                url = "/?f=json";
+            else
+                url = `/?search=${query}&f=json`
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    let resultsContainer = document.getElementById("searchResults");
+                    resultsContainer.innerHTML = "";
+
+                    if (data.items.length === 0) {
+                        resultsContainer.innerHTML = "<p>No items found.</p>";
+                        return;
+                    }
+
+                    let resultList = document.createElement("ul");
+                    resultList.classList.add("list-group");
+
+
+                    Object.entries(data.items).forEach(([category, categoryItems]) => {
+                        if (categoryItems.length === 0) {
+                            return;
+                        }
+                        let listItem = document.createElement("li");
+                        listItem.innerHTML = `<strong>${category}</strong>`;
+                        listItem.classList.add("list-group-item", "text-left", "text-light", "fw-semibold", "text-uppercase", "align-middle");
+                        listItem.style.backgroundColor = "#9E0F06";
+                        resultList.appendChild(listItem);
+                        categoryItems.forEach(item => {
+                            let listItem = document.createElement("li");
+                            listItem.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
+
+                            listItem.innerHTML = `
+                                <span><strong>${item.sku}</strong> - ${item.name} (€${item.price}/kg)</span>
+                                <button class="btn btn-sm btn-outline-success" data-bs-dismiss="modal" onclick="addItemToTransaction('${item.sku}', '${item.name}', ${item.price})">{% trans "Add" %}</button>
+                            `;
+
+                            resultList.appendChild(listItem);
+                        });
+
+                    });
+
+                    resultsContainer.appendChild(resultList)
+                })
+                .catch(error => console.error("Error fetching items: " + error));
+        });
+
+    function getNextSku() {
+      let prefix = 'NA'; // Fixed prefix
+      let maxNumber = 0;
+
+      skus.forEach((sku) => {
+        let match = sku.match(/^NA(\d\d)$/);
+        if (match) {
+          let num = parseInt(match[1], 10);
+          if (num > maxNumber) {
+            maxNumber = num;
+          }
+        }
+      });
+      let nextNumber = (maxNumber + 1).toString().padStart(2, '0'); // Ensure 2-digit format
+      return `${prefix}${nextNumber}`;
+    }
+    function addItemToTransaction(sku, name, price) {
+      const deleteLabel = "{% trans "Delete" %}";
+      const commentLabel = "{% trans "Add comment" %}";
+
+      let newRow = document.createElement('tr');
+      let uuid = `new-${crypto.randomUUID()}`
+      newRow.id = uuid;
+      let image = "";
+      if (!sku) sku = getNextSku();
+
+      else image = `<img style="width: 80px; height: auto; vertical-align: middle;" src="/images/${sku}.M.jpg">`
+
+      let nameField, priceField;
+
+      if (!name) {
+        nameField = `
+            <input name="name-${uuid}" type="text" class="form-control text-start" required/>
+        `;
+      } else {
+        nameField = `
+            <input type="hidden" name="name-${uuid}" value="${name}" required maxlength="255"/>
+            <div class="ps-2 text-start">${name}</div>
+        `;
+      }
+      if (!price) {
+        priceField = `
+            ${image}
+            <div class="input-group">
+            <input id="price-${uuid}" name="price-${uuid}" 
+                    type="number"
+                value="${price}" min="0.1" step="0.01" required
+                class="form-control ms-auto separator-input" 
+                onchange="calculateTotal('${uuid}')"><span class="input-group-text me-auto">€<span>
+            </div>
+        `;
+      } else {
+        priceField = `
+            <input id="price-${uuid}" name="price-${uuid}" 
+                type="hidden" value="${price}" min="0.01" step="0.01"
+                onchange="calculateTotal('${uuid}')" required />
+            <div class="ps-2 text-start">${price} €</div>
+
+        `;
+      }
+      newRow.id = uuid;
+      newRow.innerHTML = `
+            <td></td>
+            <input type="hidden" name="sku-${uuid}" value="${sku}" />
+            <td>${sku}</td>
+            <td>${nameField}</td>
+            <td>
+                <div class="input-group text-center" style="margin: 0 auto;">
+                    <input id="amount-${uuid}" name="amount-${uuid}" type="number"
+                           value="0.0" min="0.1" step="0.1"
+                           class="form-control ms-auto separator-input"
+                           onchange="calculateTotal('${uuid}')">
+                    <span class="input-group-text me-auto">kg<span>
+                </div>
+            </td>
+            <td>${priceField}</td>
+            <td class="text-end" style="white-space: nowrap;"><span class="separator" id="total-${uuid}"></span> €</td>
+            <input type="hidden" name="additionalInfo-${uuid}" id="additionalInfo-${uuid}" />
+            <td class="removable" id="comment-${uuid}"></td>
+            <td>
+                <div class="d-grid gap-1 w-100">
+                    <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-target="#commentModal" data-bs-toggle="modal" data-bs-sku="${uuid}">${commentLabel}</button>
+                    <button class="btn btn-outline-danger btn-sm" type="button" onclick="deleteItem(event, '${uuid}');">${deleteLabel}</button>
+                </div>
+            </td>
+        `;
+      document.querySelector('table tbody').appendChild(newRow);
+      calculateTotal(uuid);
+      saveButton.style.display = 'inline-block';
+      showSuccessAlert();
+      commentColumnHandler();
+    }
+
+        function deleteItem(event, uuid) {
+            event.stopPropagation();
+
+            if (confirm('{% trans "Are you sure you want to delete this item" %}?')) {
+                let itemElement = document.getElementById(uuid);
+                if (itemElement) {
+                    itemElement.remove();
+                }
+                uuids = uuids.filter(itemUuid => itemUuid !== uuid);
+            }
+            saveButton.style.display = "inline-block";
+        }
+        function calculateTotal(uuidChanged) {
+            let allTotalPrice = 0.0, allTotalAmount = 0.0, allTotalAlku = 0.0;
+            let amount = parseFloat(document.getElementById(`amount-${uuidChanged}`).value) || 0;
+            let pricePerKg = parseFloat(document.getElementById(`price-${uuidChanged}`).value) || 0;
+            {% if transaction.status == "FINAL_K" %}
+                let alku = parseFloat(document.getElementById(`alku-${uuidChanged}`).value) || 0;
+                document.getElementById(`total-${uuidChanged}`).textContent = (alku * pricePerKg).toFixed(2);
+            {% else %}
+                document.getElementById(`total-${uuidChanged}`).textContent = (amount * pricePerKg).toFixed(2);
+            {% endif %}
+
+            uuids.forEach(uuid => {
+                let amount = parseFloat(document.getElementById(`amount-${uuid}`).value) || 0;
+                {% if transaction.status == "FINAL_K" %}
+                    let alku = parseFloat(document.getElementById(`alku-${uuid}`).value) || 0;
+                {% endif %}
+                let pricePerKg = parseFloat(document.getElementById(`price-${uuid}`).value) || 0;
+                {% if transaction.status == "FINAL_K" %}
+                    allTotalPrice += alku * pricePerKg;
+                    allTotalAlku += alku
+                {% else %}
+                    allTotalPrice += amount * pricePerKg;
+                {% endif %}
+                allTotalAmount += amount;
+            });
+
+            document.getElementById(`totalPrice`).textContent = allTotalPrice.toFixed(2);
+            document.getElementById(`totalAmount`).textContent = allTotalAmount.toFixed(1);
+            {% if transaction.status == "FINAL_K" %}
+                document.getElementById(`totalAlku`).textContent = allTotalAlku.toFixed(1);
+            {% endif %}
+            {% if transaction.status == "PROGNOSE" %}
+            let transport = parseFloat(document.getElementById("transport").value());
+            document.getElementById("totalTransportIncluded").textContent = allTotalPrice.toFixed(2);
+            {% endif %}
+        }
+        window.onload = () => uuids.forEach(uuid => calculateTotal(uuid));
+    </script>
+{% endblock %}

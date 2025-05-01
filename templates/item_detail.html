@@ -4,24 +4,31 @@
 {% block content %}
     <div class="container my-5">
         <div class="card shadow-lg p-4" style="max-width: 900px; margin: 0 auto;">
-            <div class="d-flex align-items-center mb-4">
+            <div class="d-flex mb-4">
                 <div class="me-3">
                     <img src="/images/{{ item.sku }}.M.jpg" alt="{% trans "Item Thumbnail" %}" class="img-thumbnail"
                          style="width: 120px; height: auto; border-radius: 10px;"/>
+
                 </div>
                 <h2 class="mb-0">{{ item.name }}</h2>
             </div>
 
-            <dl class="row mb-4">
-                <dt class="col-sm-3 fw-bold">{% trans "SKU" %}</dt>
-                <dd class="col-sm-9">{{ item.sku }}</dd>
-                <dt class="col-sm-3 fw-bold">{% trans "Price" %}</dt>
-                <dd class="col-sm-9">{{ item.price }} €</dd>
-                {% if item.price_pln %}
-                    <dt class="col-sm-3 fw-bold">Cena PLN</dt>
-                    <dd class="col-sm-9">{{ item.price_pln }} zł</dd>
-                {% endif %} 
-            </dl>
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <dl class="row mb-4">
+                            <dt class="col-sm-3 fw-bold">{% trans "SKU" %}</dt>
+                            <dd class="col-sm-9">{{ item.sku }}</dd>
+                            <dt class="col-sm-3 fw-bold">{% trans "Price" %}</dt>
+                            <dd class="col-sm-9">{{ item.price }} €/kg</dd>
+                            {% if item.price_pln %}
+                                <dt class="col-sm-3 fw-bold">Cena PLN</dt>
+                                <dd class="col-sm-9">{{ item.price_pln }} zł/kg</dd>
+                            {% endif %}
+                        </dl>
+                    </div>
+                </div>
+            </div>
 
             <h3 class="mb-3 text-center">{% trans "Gallery" %}</h3>
             <div id="galleryCarousel" class="carousel slide">
@@ -45,39 +52,18 @@
                 </button>
             </div>
 
-            <div class="row g-3 mt-4 justify-content-center">
-                {% for image in images %}
-                    <div class="col-md-3 col-sm-6 text-center">
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal{{ forloop.counter }}">
-                            <img src="{{ image }}" alt="{% trans "Gallery Image" %}" class="img-thumbnail"
-                                 style="height: 200px; object-fit: cover;"/>
-                        </a>
-                    </div>
-
-                    <div class="modal fade" id="imageModal{{ forloop.counter }}">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-body text-center">
-                                    <img src="{{ image }}" alt="{% trans "Full Size Image" %}" class="img-thumbnail"
-                                         style="width: 100%; height: auto;"/>
-                                </div>
-                                <div class="modal-footer justify-content-center">
-                                    <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">{% trans "Close" %}</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-
             <div class="mt-4">
                 <h4>{% trans "Description" %}</h4>
                 <p>{{ item.description }}</p>
             </div>
 
             <div class="mt-4 text-center">
-                <a class="btn btn-secondary" href="/">{% trans "Back to Price List" %}</a>
+              <button
+                class="btn btn-outline-danger mb-4"
+                onclick="history.back()"
+              >
+                    {% trans "Go back" %}
+              </button>
             </div>
         </div>
     </div>

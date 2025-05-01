@@ -1,0 +1,5 @@
+django
+python-dotenv
+requests
+weasyprint
+python-json-logger

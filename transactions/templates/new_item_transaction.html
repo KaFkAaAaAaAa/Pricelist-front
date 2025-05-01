@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+
+
+    <button
+            class="btn btn-outline-danger mx-2"
+            onclick="history.back()"
+    >
+        {% trans "Go back" %}
+    </button>
+    <div class="container w-50">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group mb-3">
+                <h5>{{ form.sku.label_tag }}</h5>
+                {{ form.sku }}
+            </div>
+            <div class="form-group mb-3">
+                <h5>{{ form.name.label_tag }}</h5>
+                {{ form.name }}
+            </div>
+            <div class="form-group mb-3">
+                <h5>{{ form.price.label_tag }}</h5>
+                {{ form.price }}
+            </div>
+            <div class="form-group mb-3">
+                <h5>{{ form.amount.label_tag }}</h5>
+                {{ form.amount }}
+            </div>
+            <div class="form-group mb-3">
+                <h5>{{ form.additionalInfo.label_tag }}</h5>
+                {{ form.additionalInfo }}
+            </div>
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-outline-primary mx-2">
+                    {% trans "Save item" %}
+                </button>
+            </div>
+        </form>
+        <div><b>{% trans "Total" %}</b>: <span id="total">0</span></div>
+    </div>
+
+    <script>
+        function updateTotal() {
+            let amount = parseFloat(document.getElementById("amount").value) || 0;
+            let price = parseFloat(document.getElementById("price").value) || 0;
+            document.getElementById("total").textContent = (amount * price).toFixed(2);
+        }
+
+        document.getElementById("amount").addEventListener("input", updateTotal);
+        window.onload = updateTotal;
+    </script>
+
+{% endblock %}

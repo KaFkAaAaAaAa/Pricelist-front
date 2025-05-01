@@ -1,42 +1,48 @@
-{% extends 'base.html' %} {% block title %}New Clients{% endblock %} 
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}New Clients{% endblock %}
 {% block content %}
-<h2>New User List</h2>
-{% if err %}
-<div class="alert alert-danger mt-3">{{ err }}</div>
-{% endif %}
-<a class="btn btn-primary" href="/admin/new-admin/"
-  >Add admin</a
->
-<table class="table">
-  <thead>
-    <tr>
-      <th>First Name</th>
-      <th>Last Name</th>
-      <th>Email</th>
-      <th>User Telephone Number</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for user in admins %}
-    <tr>
-      <td>{{ user.userFirstName }}</td>
-      <td>{{ user.userLastName }}</td>
-      <td>{{ user.userEmail }}</td>
-      <td>{{ user.userTelephoneNumber }}</td>
-      <td>
-        <a class="btn btn-primary" href="/admin/admins/{{ user.userId }}/edit"
-          >Edit</a
-        >
-        <a
-          class="btn btn-danger"
-          href="/admin/admins/{{ user.userId }}/delete"
-          onclick="return confirm('Are you sure you want to delete this admin?');"
-          >Delete</a
-        >
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="container mt-4">
+    <h1 class="text-center">New User List</h1>
+
+    {% if err %}
+        <div class="alert alert-danger text-center mt-3">{{ err }}</div>
+    {% endif %}
+
+    <div class="d-flex flex-wrap gap-2 mt-3">
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-danger">{% trans "Go back" %}</a>
+        <a class="btn btn-primary" href="/admin/new-admin/">Add admin</a>
+    </div>
+
+    <div class="table-responsive mt-4">
+        <table class="table mt-3">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>User Telephone Number</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for user in admins %}
+                <tr>
+                    <td>{{ user.userFirstName }}</td>
+                    <td>{{ user.userLastName }}</td>
+                    <td class="text-break">{{ user.userEmail }}</td>
+                    <td>{{ user.userTelephoneNumber }}</td>
+                    <td>
+                        <div class="d-flex flex-column flex-md-row gap-2">
+                            <a class="btn btn-primary btn-sm" href="/admin/admins/{{ user.userId }}/edit">Edit</a>
+                            <a class="btn btn-danger btn-sm" href="/admin/admins/{{ user.userId }}/delete"
+                               onclick="return confirm('Are you sure you want to delete this admin?');">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

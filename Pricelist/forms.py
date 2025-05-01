@@ -1,6 +1,8 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
+from Pricelist.settings import ADMIN_GROUPS, SUPPORT_GROUPS
+
 
 class LoginForm(forms.Form):
     email = forms.EmailField(
@@ -89,7 +91,7 @@ class RegisterForm(forms.Form):
         ),
     )
     clientCity = forms.CharField(
-        label=_("City:"),
+        label=_("City") + ":",
         max_length=100,
         widget=forms.TextInput(
             attrs={
@@ -99,7 +101,7 @@ class RegisterForm(forms.Form):
         ),
     )
     clientCountry = forms.CharField(
-        label=_("Country:"),
+        label=_("Country") + ":",
         max_length=100,
         widget=forms.TextInput(
             attrs={
@@ -110,9 +112,9 @@ class RegisterForm(forms.Form):
     )
 
 
-class NewAdminForm(forms.Form):
+class NewUserForm(forms.Form):
     userFirstName = forms.CharField(
-        label="First Name:",
+        label=_("First Name") + ":",
         max_length=30,
         widget=forms.TextInput(
             attrs={
@@ -122,7 +124,7 @@ class NewAdminForm(forms.Form):
         ),
     )
     userLastName = forms.CharField(
-        label="Last Name:",
+        label=_("Last Name") + ":",
         max_length=30,
         widget=forms.TextInput(
             attrs={
@@ -132,13 +134,17 @@ class NewAdminForm(forms.Form):
         ),
     )
     userEmail = forms.EmailField(
-        label="Email:",
+        label=_("Email") + ":",
         max_length=100,
         widget=forms.EmailInput(
             attrs={"class": "form-control", "placeholder": "Enter your email"}
         ),
     )
-    # TODO: validate
+    userGroup = forms.ChoiceField(
+        choices=[(group, group) for group in (SUPPORT_GROUPS + ADMIN_GROUPS)],
+        label=_("Group") + ":",
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
 
 
 class UserActivateForm(forms.Form):
@@ -153,14 +159,14 @@ class UserActivateForm(forms.Form):
 
 class PasswordResetForm(forms.Form):
     password = forms.CharField(
-        label="Password",
+        label=_("Password"),
         max_length=100,
         widget=forms.PasswordInput(
             attrs={"class": "form-control", "placeholder": "Password"}
         ),
     )
     confirmPassword = forms.CharField(
-        label="Confirm Password",
+        label=_("Confirm Password"),
         max_length=100,
         widget=forms.PasswordInput(
             attrs={"class": "form-control", "placeholder": "Confirm Password"}
@@ -168,9 +174,7 @@ class PasswordResetForm(forms.Form):
     )
 
 
-class EditProfileForm(
-    forms.Form,
-):
+class EditProfileForm(forms.Form):
     userFirstName = forms.CharField(
         label="First Name:",
         max_length=30,

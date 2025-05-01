@@ -1,45 +1,48 @@
-{% extends 'base.html' %} {% block title %}Item List{% endblock %}
-<!---->
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}Item List{% endblock %}
 {% block content %}
-<h2>Client List</h2>
-<table class="table">
-  <thead>
-    <tr>
-      <th>Email</th>
-      <th>Telephone Number</th>
-      <th>Company Name</th>
-      <th>Admin Email</th>
-        <th></th>
-      <th>
+    <h1 class="text-center">Client List</h1>
+    <div class="my-2">
+        <button class="btn btn-outline-danger me-2" onclick="history.back()">
+            {% trans "Go back" %}
+        </button>
         <a class="btn btn-primary" href="/admin/clients/add">Add new</a>
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr></tr>
-    {% for client in clients %}
-    <tr
-      onclick="window.location.href='/admin/clients/{{ client.id }}';"
-      style="cursor: pointer"
-    >
-      <td>{{ client.user.userEmail }}</td>
-      <td>{{ client.user.userTelephoneNumber }}</td>
-      <td>{{ client.clientCompanyName }}</td>
-      <td>{{ client.clientAdmin.userEmail }}</td>
-            <td></td>
-      <td>
-        <a class="btn btn-primary" href="/admin/clients/{{ client.id }}/edit"
-          >Edit</a
-        >
-        <a
-          class="btn btn-danger"
-          href="/admin/clients/{{ client.id }}/delete"
-          onclick="return confirm('Are you sure you want to delete this client?');"
-          >Delete</a
-        >
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover table-striped mt-3">
+            <thead>
+            <tr>
+                <th>{% trans "Email" %}</th>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Surname" %}</th>
+                <th>{% trans "Telephone Number" %}</th>
+                <th>{% trans "Company Name" %}</th>
+                <th>{% trans "Group" %}</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr></tr>
+            {% for client in page.content %}
+                <tr
+                        onclick="window.location.href='/admin/clients/{{ client.user_id }}';"
+                        style="cursor: pointer"
+                >
+                    <td>{{ client.user_email }}</td>
+                    <td>{{ client.user_first_name }}</td>
+                    <td>{{ client.user_last_name }}</td>
+                    <td>{{ client.user_telephone_number }}</td>
+                    <td>{{ client.client_company_name }}</td>
+                    <td>{{ client.auth_group }}</td>
+                    <td>
+                        <a class="btn btn-primary" href="/admin/clients/{{ client.user_id }}/edit">Edit</a>
+                        <a class="btn btn-danger" href="/admin/clients/{{ client.user_id }}/delete" onclick="return confirm('Are you sure you want to delete this client?');">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% include "pagination.html" %}
+    </div>
 {% endblock %}

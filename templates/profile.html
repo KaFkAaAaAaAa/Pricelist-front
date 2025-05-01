@@ -1,110 +1,124 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block title %}{% trans "Profile" %}{% endblock %}
-{% block content %}
 
-    <div class="container d-flex justify-content-center">
-        <div class="w-50">
-            <h2 class="text-center">{% trans "Profile" %}</h2>
-            <form method="post">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="userFirstName" class="form-label h5">{% trans "First Name" %}</label>
-                    <input
-                            type="text"
-                            class="form-control"
-                            id="userFirstName"
-                            name="userFirstName"
-                            value="{{ initial.userFirstName }}"
-                    />
-                </div>
-                <div class="mb-3">
-                    <label for="userLastName" class="form-label h5">{% trans "Last Name" %}</label>
-                    <input
-                            type="text"
-                            class="form-control"
-                            id="userLastName"
-                            name="userLastName"
-                            value="{{ initial.userLastName }}"
-                    />
-                </div>
-                <div class="mb-3">
-                    <label for="userEmail" class="form-label h5">{% trans "Email" %}</label>
-                    <input
-                            type="text"
-                            class="form-control"
-                            id="userEmail"
-                            name="userEmail"
-                            value="{{ initial.userEmail }}"
-                    />
-                </div>
-                <div class="mb-3">
-                    <label for="userTelephoneNumber" class="form-label h5">{% trans "Telephone number" %}</label>
-                    <input
-                            type="text"
-                            class="form-control"
-                            id="userTelephoneNumber"
-                            name="userTelephoneNumber"
-                            value="{{ initial.userTelephoneNumber }}"
-                    />
-                </div>
-                {% if request.session.logged_user.user %}
+{% block content %}
+    <style>
+        @media (max-width: 576px) {
+            .btn {
+                font-size: 0.9rem;
+                padding: 0.4rem 0.6rem;
+            }
+        }
+    </style>
+    <div class="container mt-5">
+        <div class="card mx-auto" style="max-width: 600px;">
+            <div class="card-header">
+                <h1 class="card-title text-center">{% trans "Profile" %}</h1>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
                     <div class="mb-3">
-                        <label for="clientCompanyName" class="form-label h5">{% trans "Company Name" %}</label>
+                        <label for="userFirstName" class="form-label h5">{% trans "First Name" %}</label>
                         <input
                                 type="text"
                                 class="form-control"
-                                id="clientCompanyName"
-                                name="clientCompanyName"
-                                value="{{ initial.clientCompanyName }}"
+                                id="userFirstName"
+                                name="userFirstName"
+                                value="{{ initial.userFirstName }}"
                         />
                     </div>
                     <div class="mb-3">
-                        <label for="clientStreet" class="form-label h5">{% trans "Street" %}</label>
+                        <label for="userLastName" class="form-label h5">{% trans "Last Name" %}</label>
                         <input
                                 type="text"
                                 class="form-control"
-                                id="clientStreet"
-                                name="clientStreet"
-                                value="{{ initial.clientStreet }}"
+                                id="userLastName"
+                                name="userLastName"
+                                value="{{ initial.userLastName }}"
                         />
                     </div>
                     <div class="mb-3">
-                        <label for="clientCode" class="form-label h5">{% trans "Code" %}</label>
+                        <label for="userEmail" class="form-label h5">{% trans "Email" %}</label>
                         <input
-                                type="text"
+                                type="email"
                                 class="form-control"
-                                id="clientCode"
-                                name="clientCode"
-                                value="{{ initial.clientCode }}"
+                                id="userEmail"
+                                name="userEmail"
+                                value="{{ initial.userEmail }}"
                         />
                     </div>
                     <div class="mb-3">
-                        <label for="clientCity" class="form-label h5">{% trans "City" %}</label>
+                        <label for="userTelephoneNumber" class="form-label h5">{% trans "Telephone number" %}</label>
                         <input
-                                type="text"
+                                type="tel"
                                 class="form-control"
-                                id="clientCity"
-                                name="clientCity"
-                                value="{{ initial.clientCity }}"
+                                id="userTelephoneNumber"
+                                name="userTelephoneNumber"
+                                value="{{ initial.userTelephoneNumber }}"
                         />
                     </div>
-                    <div class="mb-3">
-                        <label for="clientCountry" class="form-label h5">Country</label>
-                        <input
-                                type="text"
-                                class="form-control"
-                                id="clientCountry"
-                                name="clientCountry"
-                                value="{{ initial.clientCountry }}"
-                        />
-                    </div>
+                    {% if request.session.logged_user.user %}
+                        <div class="mb-3">
+                            <label for="clientCompanyName" class="form-label h5">{% trans "Company Name" %}</label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="clientCompanyName"
+                                    name="clientCompanyName"
+                                    value="{{ initial.clientCompanyName }}"
+                            />
+                        </div>
+                        <div class="mb-3">
+                            <label for="clientStreet" class="form-label h5">{% trans "Street" %}</label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="clientStreet"
+                                    name="clientStreet"
+                                    value="{{ initial.clientStreet }}"
+                            />
+                        </div>
+                        <div class="mb-3">
+                            <label for="clientCode" class="form-label h5">{% trans "Code" %}</label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="clientCode"
+                                    name="clientCode"
+                                    value="{{ initial.clientCode }}"
+                            />
+                        </div>
+                        <div class="mb-3">
+                            <label for="clientCity" class="form-label h5">{% trans "City" %}</label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="clientCity"
+                                    name="clientCity"
+                                    value="{{ initial.clientCity }}"
+                            />
+                        </div>
+                        <div class="mb-3">
+                            <label for="clientCountry" class="form-label h5">{% trans "Country" %}</label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="clientCountry"
+                                    name="clientCountry"
+                                    value="{{ initial.clientCountry }}"
+                            />
+                        </div>
                     {% endif %}
-                <div class="d-flex justify-content-center">
-                    <a class="btn btn-secondary mx-2" href="{% url 'change_password' %}">{% trans "Change password" %}</a>
-                    <button class="btn btn-outline-primary mx-2">{% trans "Save changes" %}</button>
-                </div>
-            </form>
+                    <div class="text-center">
+                        <a href="{% url 'price_list' %}" class="btn btn-outline-danger mb-2">{% trans "Go back" %}</a>
+                        <a class="btn btn-secondary mb-2 mx-2"
+                           href="{% url 'change_password' %}">{% trans "Change password" %}</a>
+                        <button class="btn btn-outline-primary mb-2">{% trans "Save changes" %}</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 {% endblock %}

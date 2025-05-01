@@ -73,9 +73,12 @@
                             <button class="btn btn-primary">{% trans "Register" %}</button>
                         </div>
                     </form>
-                    {% if error %}
+                    {% if error and not form.userEmail.errors %}
                         <div class="alert alert-danger mt-3">{{ error }}</div>
                     {% endif %}
+                    {% for error in form.userEmail.errors %}
+                        <div class="alert alert-danger mt-3">{{ error }}</div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

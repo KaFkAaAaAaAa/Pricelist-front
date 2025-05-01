@@ -1,0 +1,29 @@
+@import url("/static/css/bootstrap.css");
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "roboto", sans-serif;
+}
+
+h1 {
+  color: #9d1006;
+  font-weight: 700;
+}
+
+.recycle {
+  color: #9d1006;
+  font-weight: 650;
+}
+
+.paragraph {
+  color: #9d1006;
+}
+
+.head strong {
+  color: #9d1006;
+}
+

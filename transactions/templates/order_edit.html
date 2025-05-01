@@ -1,0 +1,84 @@
+{% extends 'base.html' %} {% load i18n %}
+{% block title %}Transaction{% endblock %}
+{% block content %}
+<button
+  class="btn btn-sm btn-outline-danger float-start mb-4"
+  onclick="history.back()"
+>
+  {% trans "Go back" %}
+</button>
+<div class="container text-center">
+  <div class="container">
+    <div class="row text-left">{{transaction.client.clientCompanyName}}</div>
+    <div class="row text-left">{{transaction.client.clientStreet}}</div>
+    <div class="row text-left">
+      {{transaction.client.clientCode}} {{ transaction.client.clientCity }}
+    </div>
+    <div class="row text-left">{{transaction.client.clientCountry}}</div>
+    <div class="row text-right">
+      {% if transaction.status %}{{ transaction.status_time }}{% else %}data{% endif %}
+    </div>
+  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">{% trans "SKU" %}</th>
+        <th scope="col">{% trans "Product" %}</th>
+        <th scope="col">{% trans "Amount" %}</th>
+        <th scope="col">{% trans "Price" %}</th>
+        <th scope="col">{% trans "Total" %}</th>
+        <th scope="col">{% trans "Comment" %}</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if transaction %} {% for item in transaction.itemsOrdered %}
+      <tr>
+        <form>
+          <td>{{ item.sku }}</td>
+          <td>
+            <input
+              name="{{ item.sku }}-name"
+              value="{{ item.name }}"
+            />
+          </td>
+          <td>
+            <input
+              name="{{ item.sku }}-amount"
+              value="{{ item.amount }}"
+            />
+          </td>
+          <td>
+            <input
+              name="{{ item.sku }}-price"
+              value="{{ item.price }}"
+            />
+          </td>
+          <td>{{ item.total }}</td>
+          <td>
+            <input
+              name="{{ item.sku }}-additionalInfo"
+              value="{{ item.additionalInfo }}"
+            />
+          </td>
+          <td>
+            <a
+              class="btn btn-outline-secondary"
+              href="/transactions/admin/{{item.sku}}/edit/"
+              >Edit</a
+            >
+            <a
+              class="btn btn-outline-danger"
+              href="/transactions/admin/{{item.sku}}/delete/"
+              >Delete</a
+            >
+          </td>
+        </form>
+      </tr>
+      {% endfor %} {% else %}
+      <div class="alert alert-danger">{% trans "Error" %}</div>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

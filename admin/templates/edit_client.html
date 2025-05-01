@@ -1,116 +1,114 @@
 {% extends 'base.html' %}
 {% block title %}Edit Client{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-center align-items-center flex-column mb-5">
+<div class="d-flex justify-content-center align-items-center flex-column mb-3">
     <h1>Edit Client</h1>
     {% if client %}
-        <form method="post" class="w-50">
+        <form method="post" class="w-50 w-sm-75 w-md-50 mt-3">
             {% csrf_token %}
             <div class="mb-3">
-                    <label for="userFirstName" class="form-label h5">First Name</label>
-                    <input
-                            type="text"
-                            class="form-control"
-                            id="userFirstName"
-                            name="userFirstName"
-                            value="{{ client.user.userFirstName }}"
-                    />
+                <label for="userFirstName" class="form-label h5">First Name</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="userFirstName"
+                    name="userFirstName"
+                    value="{{ client.user.userFirstName }}"
+                />
             </div>
             <div class="mb-3">
                 <label for="userLastName" class="form-label h5">Last Name</label>
                 <input
-                        type="text"
-                        class="form-control"
-                        id="userLastName"
-                        name="userLastName"
-                        value="{{ client.user.userLastName }}"
+                    type="text"
+                    class="form-control"
+                    id="userLastName"
+                    name="userLastName"
+                    value="{{ client.user.userLastName }}"
                 />
             </div>
             <div class="mb-3">
-                    <label for="userEmail" class="form-label h5">Email</label>
-                    <input
-                            type="text"
-                            class="form-control"
-                            id="userEmail"
-                            name="userEmail"
-                            value="{{ client.user.userEmail }}"
-                    />
+                <label for="userEmail" class="form-label h5">Email</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="userEmail"
+                    name="userEmail"
+                    value="{{ client.user.userEmail }}"
+                />
             </div>
             <div class="mb-3">
                 <label for="userTelephoneNumber" class="form-label h5">Telephone number</label>
                 <input
-                        type="text"
-                        class="form-control"
-                        id="userTelephoneNumber"
-                        name="userTelephoneNumber"
-                        value="{{ client.user.userTelephoneNumber }}"
+                    type="text"
+                    class="form-control"
+                    id="userTelephoneNumber"
+                    name="userTelephoneNumber"
+                    value="{{ client.user.userTelephoneNumber }}"
                 />
             </div>
             <div class="mb-3">
                 <label for="clientCompanyName" class="form-label h5">Company Name</label>
                 <input
-                        type="text"
-                        class="form-control"
-                        id="clientCompanyName"
-                        name="clientCompanyName"
-                        value="{{ client.clientCompanyName }}"
+                    type="text"
+                    class="form-control"
+                    id="clientCompanyName"
+                    name="clientCompanyName"
+                    value="{{ client.clientCompanyName }}"
                 />
             </div>
             <div class="mb-3">
                 <label for="clientStreet" class="form-label h5">Street</label>
                 <input
-                        type="text"
-                        class="form-control"
-                        id="clientStreet"
-                        name="clientStreet"
-                        value="{{ client.clientStreet }}"
+                    type="text"
+                    class="form-control"
+                    id="clientStreet"
+                    name="clientStreet"
+                    value="{{ client.clientStreet }}"
                 />
             </div>
             <div class="mb-3">
                 <label for="clientCode" class="form-label h5">Code</label>
                 <input
-                        type="text"
-                        class="form-control"
-                        id="clientCode"
-                        name="clientCode"
-                        value="{{ client.clientCode }}"
+                    type="text"
+                    class="form-control"
+                    id="clientCode"
+                    name="clientCode"
+                    value="{{ client.clientCode }}"
                 />
             </div>
             <div class="mb-3">
                 <label for="clientCity" class="form-label h5">City</label>
                 <input
-                        type="text"
-                        class="form-control"
-                        id="clientCity"
-                        name="clientCity"
-                        value="{{ client.clientCity }}"
+                    type="text"
+                    class="form-control"
+                    id="clientCity"
+                    name="clientCity"
+                    value="{{ client.clientCity }}"
                 />
             </div>
             <div class="mb-3">
                 <label for="clientCountry" class="form-label h5">Country</label>
                 <input
-                        type="text"
-                        class="form-control"
-                        id="clientCountry"
-                        name="clientCountry"
-                        value="{{ client.clientCountry }}"
+                    type="text"
+                    class="form-control"
+                    id="clientCountry"
+                    name="clientCountry"
+                    value="{{ client.clientCountry }}"
                 />
             </div>
-        {# TODO: ok here we should have an option to throw the client away 
-            or choose an admin (as the owner) for that client#}
             <div class="mb-3">
-            <label for="clientAdmin" class="form-label h5">Client Admin WIP</label>
+                <label for="clientAdmin" class="form-label h5">Client Admin WIP</label>
                 <input
-                        type="text"
-                        class="form-control"
-                        id="clientAdmin"
-                        name="clientAdmin"
-                        value="{{ client.clientAdmin }}"
+                    type="text"
+                    class="form-control"
+                    id="clientAdmin"
+                    name="clientAdmin"
+                    value="{{ client.clientAdmin }}"
                 />
             </div>
-            <div class="d-flex">
-                <a class="btn btn-outline-secondary" href="/admin/clients/">Back to List</a>
-                <button class="btn btn-success ms-2">Save Changes</button>
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
+                <a class="btn btn-outline-secondary mb-2 mb-sm-0" href="/admin/clients/">Back to List</a>
+                <button class="btn btn-success ms-0 ms-sm-2">Save Changes</button>
             </div>
         </form>
     {% else %}

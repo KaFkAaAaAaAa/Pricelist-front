@@ -13,13 +13,18 @@
             <div class="mb-3">{{ email }}</div>
             <div class="form-group mb-3">
                 <label for="group">Group:</label>
-                <select name="group" id="group" class="form-select">
+                <select name="group" id="group" class="form-select mb-2">
                 {% if user_group %}
-                    <option selected>{{ user_group }}</option>
+                    <option value="{{ user_group }}" selected>{{ user_group }}</option>
                 {% endif %}
-                  {% for group in groups %}
-                  <option value="{{ group }}">{{ group }}</option>
-                  {% endfor %}
+                {% if user_group != "UNASSIGNED" %}
+                        <option value="UNASSIGNED">UNASSIGNED</option>
+                {% endif %}
+                {% for group in groups %}
+                    {% if group != user_group %}
+                        <option value="{{ group }}">{{ group }}</option>
+                    {% endif %}
+                {% endfor %}
                 </select>
                 <div class="d-flex justify-content-center">
                   <button type="submit" class="btn btn-outline-primary">Activate</button>

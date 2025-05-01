@@ -1,44 +1,79 @@
 {% load static %}
 {% load i18n %}
 {% block navbar %}
-    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: white">
+    <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
             <a class="navbar-brand ms-2" href="/">
-                <img src="/images/alku-logo-2013-10-17.jpg" alt="ALKU-GMBH" class="img"/>
+                <img src="/images/alku-logo-2013-10-17.jpg" alt="ALKU-GMBH" class="img-fluid" style="max-height: 40px;">
             </a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto me-2">
-                    {% load i18n %}
-                    <form action="{% url 'set_language' %}" method="post" class="text-center me-4">
-                        {% csrf_token %}
-                        <input name="next" type="hidden" value="{{ request.path }}">
-                        <button type="submit" name="language" value="en" class="btn btn-outline-primary">English
-                        </button>
-                        <button type="submit" name="language" value="pl" class="btn btn-outline-primary">Polski</button>
-                    </form>
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav text-center">
+                {% if request.session.token %}
+                    <li class="nav-item navbar-text my-auto mx-3">
+                    {% trans "Logged in:" %} {{ request.session.logged_user.user.userEmail }} {{ request.session.logged_user.userEmail }}
+                    </li>
+                {% endif %}
+                    <li class="nav-item dropdown my-1 me-2">
+                        <form action="{% url 'set_language' %}" method="post">
+                            {% csrf_token %}
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                {% trans "Choose language" %}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><button type="submit" name="language" value="en" class="dropdown-item">English</button></li>
+                                <li><button type="submit" name="language" value="pl" class="dropdown-item">Polski</button></li>
+                            </ul>
+                            <input name="next" type="hidden" value="{{ request.path }}">
+                        </form>
+                    </li>
+
                     {% if request.session.token %}
-                        {#                    <li class="nav-item">#}
-                        {#                        <a class="nav-link" href="{% url 'client_dashboard' %}">Client dashboard</a>#}
-                        {#                    </li>#}
-                        {% if not request.session.logged_user.user %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="/admin/dashboard/">Admin Dashboard</a>
-                            </li>
-                            <li>
-                                <a class="nav-link" href="/profile/">{{ request.session.logged_user.userEmail }}</a>
-                            </li>
-                        {% else %}
-                        <li>
-                            <a class="nav-link" href="/profile/">{{ request.session.logged_user.clientCompanyName }}</a>
-                            <a class="nav-link" href="/profile/">{{ request.session.logged_user.user.userEmail }}</a>
+                        <li class="nav-item my-1 mx-2">
+                            <a class="btn btn-danger" href="{% url 'offer' %}">
+                                {% if request.session.logged_user.user %}
+                                    {% trans "Proposition" %}
+                                {% else %}
+                                    {% trans "Offer" %}
+                                {% endif %}
+                            </a>
                         </li>
-                        {% endif %}
-                        <li class="nav-item ms-3">
-                            <a class="btn btn-outline-secondary" href="/logout">{% trans "Logout" %}</a>
+                    {% endif %}
+
+                    {% if request.session.token %}
+                        <li class="nav-item mx-2">
+                            <a class="nav-link d-flex align-items-center justify-content-center" href="#" data-bs-toggle="offcanvas"
+                               data-bs-target="#profileSidebar" aria-controls="profileSidebar">
+                                <img src="{% static 'media/user-icon.png' %}" alt="User" class="rounded-circle" width="30" height="30">
+                            </a>
                         </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="profileSidebar" aria-labelledby="profileSidebarLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="profileSidebarLabel">{% trans "User Menu" %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="list-unstyled">
+                {% if not request.session.logged_user.user %}
+                    <li><a class="btn btn-outline-primary w-100 mb-2" href="/admin/dashboard/">{% trans "Admin Dashboard" %}</a></li>
+                {% else %}
+                    <li><a class="btn btn-outline-primary w-100 mb-2" href="/transactions/">{% trans "My Transactions" %}</a></li>
+                {% endif %}
+                <li><a class="btn btn-outline-secondary w-100 mb-2" href="/">{% trans "Price List" %}</a></li>
+                <li><a class="btn btn-outline-secondary w-100 mb-2" href="/profile/">{% trans "Profile" %}</a></li>
+                <li><a class="btn btn-outline-secondary w-100 mb-2" href="/change-password/">{% trans "Change password" %}</a></li>
+                <li><hr></li>
+                <li><a class="btn btn-danger w-100" href="/logout">{% trans "Logout" %}</a></li>
+            </ul>
+        </div>
+    </div>
 {% endblock %}
