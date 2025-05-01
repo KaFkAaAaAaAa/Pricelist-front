@@ -116,7 +116,7 @@ msgstr "Nazwisko"
 #: .\Pricelist\forms.py:145 .\admin\templates\client_list.html:21
 #: .\admin\templates\new_users.html:24
 msgid "Group"
-msgstr ""
+msgstr "Grupa"
 
 #: .\Pricelist\forms.py:169
 msgid "Confirm Password"
@@ -136,7 +136,7 @@ msgstr "Niemiecki"
 
 #: .\Pricelist\utils.py:21
 msgid "You do not have access to that page"
-msgstr ""
+msgstr "Nie masz dostępu do tej strony"
 
 #: .\Pricelist\utils.py:179
 msgid "User not activated yet, wait for information on your email"
@@ -408,7 +408,7 @@ msgstr "Edytuj"
 
 #: .\admin\views.py:42 .\admin\views.py:57
 msgid "Admin not found"
-msgstr ""
+msgstr "Nie znaleziono administratora"
 
 #: .\file_manager\templates\file_browser.html:41
 #: .\transactions\templates\create_final.html:89
@@ -428,19 +428,19 @@ msgstr "Usuń"
 #: .\file_manager\templates\transaction_files.html:19
 #: .\file_manager\templates\upload_file.html:4
 msgid "Upload file"
-msgstr ""
+msgstr "Prześlij plik"
 
 #: .\file_manager\templates\transaction_files.html:25
 msgid "Create directory"
-msgstr ""
+msgstr "Utwórz katalog"
 
 #: .\file_manager\views.py:90
 msgid "You don't have permission to upload files here."
-msgstr ""
+msgstr "Nie masz uprawnień do przesyłania plików tutaj."
 
 #: .\file_manager\views.py:100
 msgid "Failed to upload file."
-msgstr ""
+msgstr "Nie udało się przesłać pliku."
 
 #: .\file_manager\views.py:102
 #, fuzzy
@@ -456,23 +456,23 @@ msgstr "Przedmiot dodany pomyślnie!"
 
 #: .\file_manager\views.py:248
 msgid "Invalid request"
-msgstr ""
+msgstr "Nieprawidłowe żądanie"
 
 #: .\items\views.py:239
 msgid "Item edited successfully"
-msgstr ""
+msgstr "Przedmiot zedytowany pomyślnie"
 
 #: .\items\views.py:242 .\items\views.py:429
 msgid "Error, SKU already exists"
-msgstr ""
+msgstr "Błąd, SKU już istnieje"
 
 #: .\items\views.py:244
 msgid "Error, item has not been edited"
-msgstr ""
+msgstr "Błąd, przedmiot nie został edytowany"
 
 #: .\items\views.py:273
 msgid "Item deleted successfully!"
-msgstr ""
+msgstr "Przedmiot został usunięty pomyślnie!"
 
 #: .\pdfgenerator\templates\pdf_final.html:32 .\transactions\forms.py:86
 #: .\transactions\templates\create_final.html:31
@@ -597,7 +597,7 @@ msgstr "Wartość dostawy"
 
 #: .\pdfgenerator\templates\pdf_final.html:101
 msgid "Thank you for your cooperation!"
-msgstr ""
+msgstr "Dziękujemy za współpracę!"
 
 #: .\pdfgenerator\templates\pdf_final_admin.html:39
 #: .\pdfgenerator\templates\pdf_prognose.html:52
@@ -624,13 +624,13 @@ msgstr "Z transportem"
 #, fuzzy
 #| msgid "With transport"
 msgid "Total w/transport"
-msgstr "Z transportem"
+msgstr "Całkowity koszt z transportem"
 
 #: .\pdfgenerator\templates\pdf_final_admin.html:112
 #, fuzzy
 #| msgid "Transport cost"
 msgid "incl. transport costs"
-msgstr "Koszt transportu"
+msgstr "W tym koszty transportu"
 
 #: .\pdfgenerator\templates\pdf_final_admin.html:133
 #: .\pdfgenerator\templates\pdf_prognose.html:123
@@ -648,7 +648,7 @@ msgstr "Koszty transportu jako procent wartości dostawy"
 
 #: .\pdfgenerator\templates\pdf_footer.html:2
 msgid "Prices in €/kg"
-msgstr ""
+msgstr "Ceny w €/kg"
 
 #: .\pdfgenerator\templates\pdf_offer.html:36
 #, fuzzy
@@ -861,7 +861,7 @@ msgstr "Zapisz"
 
 #: .\templates\verify_registration.html:3
 msgid "Verify account"
-msgstr ""
+msgstr "Zweryfikuj konto"
 
 #: .\transactions\forms.py:69
 msgid "Additional info"
@@ -892,7 +892,7 @@ msgstr "Informacje o dostawie"
 #, fuzzy
 #| msgid "no status"
 msgid "No status"
-msgstr "brak statusu"
+msgstr "Brak statusu"
 
 #: .\transactions\templates\create_final.html:21
 msgid "changing to FINAL"
@@ -1124,8 +1124,8 @@ msgstr ""
 #: .\transactions\templates\transaction_detail_admin.html:232
 #, fuzzy
 #| msgid "Profile"
-msgid "files"
-msgstr "Profil"
+msgid "Files"
+msgstr "Pliki"
 
 #: .\transactions\templates\transaction_detail_admin.html:285
 #, fuzzy
@@ -1307,6 +1307,24 @@ msgstr ""
 
 #~ msgid "Delivery price including transport"
 #~ msgstr "Cena dostawy włączając transport"
+
+msgid "Activate user"
+msgstr "Aktywuj użytkownika"
+
+msgid "New user list"
+msgstr "Lista nowych użytkowników"
+
+msgid "Add admin"
+msgstr "Dodaj admina"
+
+msgid "User telephone number"
+msgstr "Numer telefonu użytkownika"
+
+msgid "Add User to Admin"
+msgstr "Dodaj użytkownika jako administratora"
+
+msgid "New Admin"
+msgstr "Nowy administrator"
 
 #~ msgid "You do not have access to that page"
 #~ msgstr "Nie masz dostępu do tej strony"

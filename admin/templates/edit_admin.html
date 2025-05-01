@@ -1,21 +1,24 @@
 {% extends 'base.html' %}
-{% load i18n %} {% block title %}New Admin{% endblock %}
+{% load i18n %} 
+{% block title %}
+    {% trans "New Admin" %}
+{% endblock %}
 {% block content %}
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="card-title text-center">New Admin</h2>
+                        <h2 class="card-title text-center">{% trans "New Admin" %}</h2>
                     </div>
                     <div class="card-body">
                         {% if admin %}
                             <form method="post">
                                 {% csrf_token %}
                                 <div class="form-group mb-3">
-                                    <label for="userFirstName" class="form-label h5"
-                                    >First Name</label
-                                    >
+                                    <label for="userFirstName" class="form-label h5">
+                                        {% trans "First Name" %}
+                                    </label>
                                     <input
                                             type="text"
                                             class="form-control"
@@ -25,7 +28,9 @@
                                     />
                                 </div>
                                 <div class="form-group mb-3">
-                                    <label for="userLastName" class="form-label h5">Last Name</label>
+                                    <label for="userLastName" class="form-label h5">
+                                        {% trans "Last Name" %}
+                                    </label>
                                     <input
                                             type="text"
                                             class="form-control"
@@ -45,9 +50,9 @@
                                     />
                                 </div>
                                 <div class="form-group mb-3">
-                                    <label for="userTelephoneNumber" class="form-label h5"
-                                    >Telephone number</label
-                                    >
+                                    <label for="userTelephoneNumber" class="form-label h5">
+                                        {% trans "Telephone number" %}
+                                    </label>
                                     <input
                                             type="text"
                                             class="form-control"
@@ -60,7 +65,7 @@
                                     <button class="btn btn-outline-danger mx-2" onclick="history.back()">
                                         {% trans "Go back" %}
                                     </button>
-                                    <button class="btn btn-outline-primary">Save Changes</button>
+                                    <button class="btn btn-outline-primary">{% trans "Save changes" %}</button>
                                 </div>
                             </form>
                         {% endif %} {% if error %}

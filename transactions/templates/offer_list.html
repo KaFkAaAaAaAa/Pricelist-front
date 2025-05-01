@@ -21,7 +21,8 @@
     {#     </div> #}
     {# </form> #}
     <div class="pt-4">
-        <button class="btn btn-outline-success" onclick="submit()">{% trans "Make offer" %}</button>
+        <a href="{% url 'price_list' %}" class="btn btn-secondary">{% trans "Back" %}</a>
+        <button class="btn btn-outline-success ms-2" onclick="submit()">{% trans "Make offer" %}</button>
     </div>
     <div class="font-weight-light text-end">{% now "m-Y" %}</div>
     <table class="table table-bordered mt-1 align-middle" style="font-family: Calibri, sans-serif">
