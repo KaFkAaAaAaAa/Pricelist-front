@@ -1,6 +1,7 @@
-{% extends 'base.html' %} {% block title %}Clients{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Clients{% endblock %}
 {% block content %}
-    {% load i18n %}
+{% load i18n %}
     <style>
     @media (max-width: 576px) {
     .table .btn {
@@ -60,5 +61,5 @@
         {% endfor %}
         </tbody>
     </table>
-    {% include "pagination.html" %}
+{% include "pagination.html" %}
 {% endblock %}

@@ -1307,3 +1307,7 @@ msgstr ""
 
 #~ msgid "Delivery price including transport"
 #~ msgstr "Cena dostawy włączając transport"
+
+#~ msgid "You do not have access to that page"
+#~ msgstr "Nie masz dostępu do tej strony"
+
