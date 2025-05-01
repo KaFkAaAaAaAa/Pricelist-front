@@ -401,7 +401,8 @@ def admin_client_transactions(request, user_id):
         headers=_get_headers(request),
     )
     transactions = response.json()
-    for transaction in transactions:
+    page = Page(transactions)
+    for transaction in page.content:
         _set_status(transaction)
         if "itemsOrdered" in transaction.keys():
             transaction["totals"] = _get_stored_item_list_to_display(
