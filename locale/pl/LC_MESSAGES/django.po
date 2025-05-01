@@ -1307,6 +1307,7 @@ msgstr ""
 
 #~ msgid "Delivery price including transport"
 #~ msgstr "Cena dostawy włączając transport"
+
 msgid "Activate user"
 msgstr "Aktywuj użytkownika"
 
@@ -1324,3 +1325,7 @@ msgstr "Dodaj użytkownika jako administratora"
 
 msgid "New Admin"
 msgstr "Nowy administrator"
+
+#~ msgid "You do not have access to that page"
+#~ msgstr "Nie masz dostępu do tej strony"
+

@@ -49,6 +49,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "front/static",
 ]
 
+
 # CONST
 # warnings about str | none - the app should not start when the values are null,
 # and it is hard to create default values for them
@@ -58,6 +59,7 @@ CLIENT_GROUPS = json.loads(os.getenv("CLIENT_GROUPS"))
 GROUPS_ROMAN = json.loads(os.getenv("GROUPS_ROMAN"))
 LANGS = json.loads(os.getenv("LANGS"))
 CATEGORIES = json.loads(os.getenv("CATEGORIES"))
+TRANSACTION_FINAL = ["FINAL", "FINAL_C", "FINAL_K"]
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8888")
 # 512 MB
 MAX_FILE_SIZE = int(os.getenv("MAX_FILE_SIZE", "536870912"))

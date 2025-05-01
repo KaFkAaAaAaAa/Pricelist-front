@@ -2,7 +2,8 @@
 {% load i18n %}
 {% block content %}
 <div class="container mt-4">
-  <h2 class="mb-3">Transaction <code>{{ transaction_uuid }}</code></h2>
+    <h2 class="mb-3">{% trans "Transaction" %} <a href="/transactions/{%if not request.session.logged_user.user%}admin/{%endif%}{{transaction_uuid}}" class="text-primary">{{transaction_root}}</a></h2>
+    <code class="text-muted">{{transaction_uuid}}</code>
 
   {% if directory_name %}
   <h5>subdirectory: <span class="badge bg-secondary">{{ directory_name }}</span></h5>
@@ -14,6 +15,16 @@
     <div class="col-md-6">
       <h4>Directories</h4>
       <ul class="list-group">
+        {% if directory_name %}
+        <li
+            class="list-group-item dir-flex justify-content-between align-items-center">
+            <a
+                href="{% url 'browse_transaction_root' transaction_uuid %}"
+            >
+                ../ ({% trans "go back" %})
+            </a>
+        </li>
+        {% endif %}
         {% for dir in dir_list %}
         <li
           class="list-group-item dir-flex justify-content-between align-items-center"
@@ -23,7 +34,7 @@
           </a>
         </li>
         {% empty %}
-        <li class="list-group-item text-muted">No subdirectories found.</li>
+        <li class="list-group-item text-muted">{% trans "No subdirectories found." %}</li>
         {% endfor %}
       </ul>
     </div>
@@ -40,11 +51,11 @@
         {% if is_writable %}
             <a class="btn btn-outline-danger btn-sm ms-2" href="file/{{ file }}?delete">{% trans "Delete" %}</a>
         {% else %}
-          <span class="badge bg-light text-muted">read-only</span>
+          <span class="badge bg-light text-muted">{% trans "read-only" %}</span>
         {% endif %}
         </li>
         {% empty %}
-        <li class="list-group-item text-muted">No files in this directory.</li>
+        <li class="list-group-item text-muted">{% trans "No files in this directory." %}</li>
         {% endfor %}
       </ul>
     </div>
@@ -53,25 +64,16 @@
   {% if is_writable %}
   <div class="card mt-5">
     <div class="card-body">
-      <h5 class="card-title">Upload a File</h5>
+      <h5 class="card-title">{% trans "Upload a File" %}</h5>
       <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="mb-3">
           <input type="file" name="file" class="form-control" required />
         </div>
-        <button type="submit" class="btn btn-primary">Upload</button>
+        <button type="submit" class="btn btn-primary">{% trans "Upload" %}</button>
       </form>
     </div>
   </div>
   {% endif %}
-
-  <div class="mt-4">
-    <a
-      href="{% url 'browse_transaction_root' transaction_uuid %}"
-      class="btn btn-link"
-    >
-      Back to transaction root
-    </a>
-  </div>
 </div>
 {% endblock %}

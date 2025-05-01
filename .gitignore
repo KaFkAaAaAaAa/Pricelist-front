@@ -23,5 +23,5 @@ package-lock.json
 package.json
 file_manager/__pycache__
 transactions_docs/*
-
 pricelist-front.log
+*/__pycache__
