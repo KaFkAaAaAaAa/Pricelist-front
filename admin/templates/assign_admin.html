@@ -1,38 +1,42 @@
-{% extends 'base.html' %} {% block title %}Add User to an Admin{% endblock %}
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}
+    {% trans "Add User to Admin" %}
+{% endblock %}
 {% block content %}
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <h2 class="card-title text-center">Login</h2>
-        </div>
-        <div class="card-body">
-          <form method="post">
-            {% csrf_token %}
-            <div class="mb-3">{{ email }}</div>
-            <div class="form-admin mb-3">
-                <label for="admin">Admin:</label>
-                <select name="admin" id="admin" class="form-select">
-                  {% for admin in admins %}
-                  <option value="{{ admin }}">{{ admin }}</option>
-                  {% endfor %}
-                </select>
-            </div>
-                <div class="d-flex justify-content-center">
-                  <button type="submit" class="btn btn-outline-primary">Add</button>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title text-center">Login</h2>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">{{ email }}</div>
+                            <div class="form-admin mb-3">
+                                <label for="admin">Admin:</label>
+                                <select name="admin" id="admin" class="form-select">
+                                    {% for admin in admins %}
+                                        <option value="{{ admin }}">{{ admin }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <button type="submit" class="btn btn-outline-primary">{% trans "Add" %}</button>
+                            </div>
+                        </form>
+                    </div>
+                    </form>
+                    {% if error %}
+                        <div class="alert alert-danger mt-3">{{ error }}</div>
+                    {% endif %} {% if msg %}
+                    <div class="alert alert-success mt-3">{{ msg }}</div>
+                {% endif %}
                 </div>
-              </form>
             </div>
-          </form>
-          {% if error %}
-          <div class="alert alert-danger mt-3">{{ error }}</div>
-          {% endif %} {% if msg %}
-          <div class="alert alert-success mt-3">{{ msg }}</div>
-          {% endif %}
         </div>
-      </div>
     </div>
-  </div>
-</div>
+    </div>
 {% endblock %}

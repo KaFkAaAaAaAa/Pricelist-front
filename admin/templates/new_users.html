@@ -2,15 +2,15 @@
 {% block content %}
     {% load i18n %}
     <style>
-    @media (max-width: 576px) {
-    .table .btn {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.875rem;
-        display: block;
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-}
+        @media (max-width: 576px) {
+            .table .btn {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.875rem;
+                display: block;
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+        }
     </style>
     <h1 class="text-center">Clients</h1>
     <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-danger float-start mb-4 mt-3">{% trans "Go back" %}</a>
@@ -21,7 +21,7 @@
             <th>{% trans "First Name" %}</th>
             <th>{% trans "Last Name" %}</th>
             {% if func != "assign-admin" %}
-            <th>{% trans "Group" %}</th>
+                <th>{% trans "Group" %}</th>
             {% endif %}
             <th></th>
         </tr>
@@ -30,31 +30,31 @@
         {% for client in page.content %}
             <tr onclick="window.location.href='/admin/clients/{{ client.user_id }}';" style="cursor: pointer">
                 {% if func == "assign-admin" %}
-                <td>{{ client.clientCompanyName }}</td>
-                <td>{{ client.user.userFirstName }}</td>
-                <td>{{ client.user.userLastName }}</td>
-                <td>{{ client.clientGroup }}</td>
-                <td>
-                    <a class="btn btn-outline-primary" href="/admin/clients/{{ client.id }}/{{ func }}">
-                        {% trans "Actions" %}
-                    </a>
-                    <a class="btn btn-primary" href="/admin/clients/{{ client.id }}/edit">
-                        {% trans "Edit" %}
-                    </a>
-                </td>
+                    <td>{{ client.clientCompanyName }}</td>
+                    <td>{{ client.user.userFirstName }}</td>
+                    <td>{{ client.user.userLastName }}</td>
+                    <td>{{ client.clientGroup }}</td>
+                    <td>
+                        <a class="btn btn-outline-primary" href="/admin/clients/{{ client.id }}/{{ func }}">
+                            {% trans "Actions" %}
+                        </a>
+                        <a class="btn btn-primary" href="/admin/clients/{{ client.id }}/edit">
+                            {% trans "Edit" %}
+                        </a>
+                    </td>
                 {% else %}
-                <td>{{ client.client_company_name }}</td>
-                <td>{{ client.user_first_name }}</td>
-                <td>{{ client.user_last_name }}</td>
-                <td>{{ client.auth_group }}</td>
-                <td>
-                    <a class="btn btn-outline-primary" href="/admin/clients/{{ client.user_id }}/{{ func }}">
-                        {% trans "Actions" %}
-                    </a>
-                    <a class="btn btn-primary" href="/admin/clients/{{ client.user_id }}/edit">
-                        {% trans "Edit" %}
-                    </a>
-                </td>
+                    <td>{{ client.client_company_name }}</td>
+                    <td>{{ client.user_first_name }}</td>
+                    <td>{{ client.user_last_name }}</td>
+                    <td>{{ client.auth_group }}</td>
+                    <td>
+                        <a class="btn btn-outline-primary" href="/admin/clients/{{ client.user_id }}/{{ func }}">
+                            {% trans "Actions" %}
+                        </a>
+                        <a class="btn btn-primary" href="/admin/clients/{{ client.user_id }}/edit">
+                            {% trans "Edit" %}
+                        </a>
+                    </td>
                 {% endif %}
             </tr>
         {% endfor %}

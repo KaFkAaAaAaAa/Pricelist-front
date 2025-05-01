@@ -162,14 +162,20 @@ class PasswordResetForm(forms.Form):
         label=_("Password"),
         max_length=100,
         widget=forms.PasswordInput(
-            attrs={"class": "form-control", "placeholder": "Password"}
+            attrs={
+                "class": "form-control",
+                "placeholder": _("Password"),
+            }
         ),
     )
     confirmPassword = forms.CharField(
         label=_("Confirm Password"),
         max_length=100,
         widget=forms.PasswordInput(
-            attrs={"class": "form-control", "placeholder": "Confirm Password"}
+            attrs={
+                "class": "form-control",
+                "placeholder": _("Confirm Password"),
+            }
         ),
     )
 
