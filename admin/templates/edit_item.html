@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
-{% block title %}Edit Item{% endblock %}
+{% load i18n %}
+{% block title %}
+    {% trans "Edit item" %}
+{% endblock %}
 {% block content %}
 <div class="container mt-4 mb-4">
     <div class="text-center mb-4">
@@ -15,17 +18,17 @@
         {% csrf_token %}
 
         <div class="d-flex justify-content-between mb-4">
-            <a class="btn btn-outline-secondary" href="/admin/items">Back to List</a>
-            <button class="btn btn-success">Save Changes</button>
+            <a class="btn btn-outline-secondary" href="/admin/items">{% trans "Back to List" %}</a>
+            <button class="btn btn-success">{% trans "Save changes" %}</button>
         </div>
 
         <div class="mb-4">
-            <h4>Item Details</h4>
+            <h4>{% trans "Item Details" %}</h4>
             <hr>
             <label for="itemSku" class="form-label fw-bold">SKU</label>
             <input type="text" class="form-control mb-3" id="itemSku" name="itemSku" value="{{ item.itemSku }}">
 
-            <label for="itemGroup" class="form-label fw-bold">Group</label>
+            <label for="itemGroup" class="form-label fw-bold">{% trans "Group" %}</label>
             <select name="itemGroup" id="itemGroup" class="form-select">
                 <option selected>{{ item.itemGroup }}</option>
                 {% for category in categories %}
@@ -35,11 +38,11 @@
         </div>
     
         <div class="mb-4">
-            <h4>Thumbnail</h4>
+            <h4>{% trans "Thumbnail" %}</h4>
             <hr>
-            <a class="btn btn-outline-primary me-2" href="/admin/items/{{ item.itemSku }}/upload-image/">Upload Thumbnail</a>
+            <a class="btn btn-outline-primary me-2" href="/admin/items/{{ item.itemSku }}/upload-image/">{% trans "Upload Thumbnail" %}</a>
             {% if item.itemImgPath %}
-            <a class="btn btn-danger" href="/admin/items/delete{{ item.itemImgPath }}" onclick="return confirm('Are you sure?');">Delete</a>
+            <a class="btn btn-danger" href="/admin/items/delete{{ item.itemImgPath }}" onclick="return confirm('{% trans "Are you sure?" %}');">{% trans "Delete" %}</a>
             <div class="mt-3">
                 <img src="{{ item.itemImgPath }}" alt="Thumbnail" class="img-thumbnail" style="max-width: 150px;">
             </div>
@@ -47,13 +50,13 @@
         </div>
     
         <div class="mb-4">
-            <h4>Additional Images</h4>
+            <h4>{% trans "Additional Images" %}</h4>
             <hr>
-            <a class="btn btn-outline-primary" href="/admin/items/{{ item.itemSku }}/images/">Edit Images</a>
+            <a class="btn btn-outline-primary" href="/admin/items/{{ item.itemSku }}/images/">{% trans "Edit Images" %}</a>
         </div>
 
         <div class="mb-4">
-            <h4>Prices</h4>
+            <h4>{% trans "Prices" %}</h4>
             <hr>
             <div class="row row-cols-1 row-cols-md-2 g-3">
                 {% for price in item.itemPrice %}
@@ -66,7 +69,7 @@
         </div>
 
         <div class="mb-4">
-            <h4>Item Name</h4>
+            <h4>{% trans "Item Name" %}</h4>
             <hr>
             {% for lang, name in item.itemName.items %}
             <div class="mb-2">
@@ -77,7 +80,7 @@
         </div>
 
         <div class="mb-4">
-            <h4>Description</h4>
+            <h4>{% trans "Description" %}</h4>
             <hr>
             {% for lang, desc in item.itemDescription.items %}
             <div class="mb-2">
@@ -88,12 +91,12 @@
         </div>
 
         <div class="d-flex justify-content-between">
-            <a class="btn btn-outline-secondary" href="/admin/items">Back to List</a>
-            <button class="btn btn-success">Save Changes</button>
+            <a class="btn btn-outline-secondary" href="/admin/items">{% trans "Back to List" %}</a>
+            <button class="btn btn-success">{% trans "Save changes" %}</button>
         </div>
     </form>
     {% else %}
-    <div class="alert alert-danger text-center">Item not found.</div>
+    <div class="alert alert-danger text-center">{% trans "Item not found" %}</div>
     {% endif %}
 </div>
 {% endblock %}

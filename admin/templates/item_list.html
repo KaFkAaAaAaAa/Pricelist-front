@@ -1,6 +1,8 @@
-{% extends 'base.html' %} 
-{% block title %}Item List{% endblock %}
+{% extends 'base.html' %}
 {% load i18n %}
+{% block title %}
+    {% trans "Item list" %}
+{% endblock %}
 {% block content %}
     <form method="GET" id="search" class="container-fluid">
         <div class="row justify-content-center">
@@ -19,15 +21,15 @@
         <table class="table mt-4">
             <thead>
             <tr>
-                <th>Image</th>
+                <th>{% trans "Image" %}</th>
                 <th>SKU</th>
-                <th>Name</th>
-                <th>Category</th>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Category" %}</th>
                 <th class="price">I</th>
                 <th class="price d-none d-sm-table-cell">II</th>
                 <th class="price d-none d-md-table-cell">III</th>
                 <th class="price d-none d-lg-table-cell">IV</th>
-                <th>Actions</th>
+                <th>{% trans "Actions" %}</th>
             </tr>
             </thead>
             <tbody>
@@ -56,8 +58,11 @@
                             {% endfor %}
                             <td>
                                 <div class="d-flex flex-column flex-sm-row gap-1">
-                                    <a class="btn btn-primary btn-sm" href="/admin/items/{{ item.itemSku }}/edit">Edit</a>
-                                    <a class="btn btn-danger btn-sm" href="/admin/items/{{ item.itemSku }}/delete" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+                                    <a class="btn btn-primary btn-sm" href="/admin/items/{{ item.itemSku }}/edit">{% trans "Edit" %}</a>
+                                    <a class="btn btn-danger btn-sm" href="/admin/items/{{ item.itemSku }}/delete"
+                                       onclick="return confirm('{% trans 'Are you sure you want to delete this item?' %}');">
+                                        {% trans "Delete" %}
+                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -67,7 +72,7 @@
             <tr>
                 <td colspan="9">
                     <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-danger mt-2 mx-2">{% trans "Go back" %}</a>
-                    <a class="btn btn-primary mt-2" href="/admin/items/add">Add new</a>
+                    <a class="btn btn-primary mt-2" href="/admin/items/add">{% trans "Add new" %}</a>
                 </td>
             </tr>
             </tbody>
