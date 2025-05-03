@@ -12,13 +12,12 @@
             {% csrf_token %}
             <div class="container">
                 <div class="row text-start float-start">
-                    <button
+                    <a
+                            href="{% url 'admin_dashboard' %}"
                             class="btn btn-sm btn-outline-danger mb-4"
-                            onclick="history.back()"
-                            type="button"
                     >
                         {% trans "Go back" %}
-                    </button>
+                    </a>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row text-start">{{ transaction.client.clientCompanyName }}</div>
@@ -235,9 +234,11 @@
                 <a class="btn btn-outline-secondary" href="/transactions/{{ transaction.uuid }}/print/?client=1"
                    target="_blank">{% trans "Print client version" %}</a>
             {% endif %}
+
             {% if request.session.auth.group == "LOGISTICS" %}
             <a class="btn btn-outline-secondary" href="/files/{{ transaction.uuid }}/">{% trans "Files" %}</a>
             {% endif %}
+
         </form>
     </div>
     <div class="modal" id="commentModal" tabindex="-1" aria-hidden="true">

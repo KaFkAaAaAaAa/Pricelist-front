@@ -128,7 +128,7 @@
             <hr>
             <h3 class="mt-4">{% trans "Comment" %}</h3>
             <textarea name="transaction_description" class="form-control" rows="3" style="max-width: 100%;"></textarea>
-
+            <a href="{% url 'price_list' %}" class="btn btn-secondary mt-3">{% trans "Back" %}</a>
             <button type="submit" name="action" value="make" class="btn btn-success mt-3 float-end">
                 {% if request.session.logged_user.user %}{% trans "Make proposition" %}{% else %}
                     {% trans "Make offer" %}{% endif %}

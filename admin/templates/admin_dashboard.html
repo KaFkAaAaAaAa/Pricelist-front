@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}Admin Dashboard{% endblock %}
+{% block title %}
+    {% trans 'Admin Dashboard' %}
+{% endblock %}
 {% block content %}
     <div class="text-center">
         <a class="btn btn-outline-danger mt-5" href="{% url 'price_list' %}">{% trans 'Back' %}</a>
