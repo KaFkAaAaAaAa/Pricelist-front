@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-22 19:20+0200\n"
+"POT-Creation-Date: 2025-05-01 21:34+0200\n"
 "PO-Revision-Date: 2025-02-05 00:32+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -20,13 +20,15 @@ msgstr ""
 "X-Generator: Poedit 3.5\n"
 
 #: .\Pricelist\forms.py:9 .\Pricelist\forms.py:12 .\Pricelist\forms.py:137
-#: .\admin\templates\client_list.html:16 .\templates\login.html:16
-#: .\templates\profile.html:43 .\templates\reset_password.html:16
+#: .\admin\templates\admin_list.html:25 .\admin\templates\client_list.html:16
+#: .\templates\login.html:16 .\templates\profile.html:45
+#: .\templates\reset_password.html:16
 msgid "Email"
 msgstr "Email"
 
 #: .\Pricelist\forms.py:16 .\Pricelist\forms.py:19 .\Pricelist\forms.py:162
-#: .\templates\login.html:21 .\templates\reset_password_form.html:16
+#: .\Pricelist\forms.py:167 .\templates\login.html:21
+#: .\templates\reset_password_form.html:16
 #: .\templates\verify_registration.html:16
 msgid "Password"
 msgstr "Hasło"
@@ -87,7 +89,7 @@ msgstr "Kod:"
 msgid "Enter your code"
 msgstr "Wprowadź swój kod"
 
-#: .\Pricelist\forms.py:94 .\templates\profile.html:94
+#: .\Pricelist\forms.py:94 .\templates\profile.html:96
 msgid "City"
 msgstr "Miasto"
 
@@ -95,7 +97,7 @@ msgstr "Miasto"
 msgid "Enter your city"
 msgstr "Wprowadź swoje miasto"
 
-#: .\Pricelist\forms.py:104 .\templates\profile.html:104
+#: .\Pricelist\forms.py:104 .\templates\profile.html:106
 msgid "Country"
 msgstr "Kraj"
 
@@ -103,22 +105,24 @@ msgstr "Kraj"
 msgid "Enter your country"
 msgstr "Wprowadź swój kraj"
 
-#: .\Pricelist\forms.py:117 .\admin\templates\new_users.html:21
-#: .\templates\profile.html:23
+#: .\Pricelist\forms.py:117 .\admin\templates\admin_list.html:23
+#: .\admin\templates\edit_admin.html:20 .\admin\templates\new_users.html:21
+#: .\templates\profile.html:25
 msgid "First Name"
 msgstr "Imię"
 
-#: .\Pricelist\forms.py:127 .\admin\templates\new_users.html:22
-#: .\templates\profile.html:33
+#: .\Pricelist\forms.py:127 .\admin\templates\admin_list.html:24
+#: .\admin\templates\edit_admin.html:32 .\admin\templates\new_users.html:22
+#: .\templates\profile.html:35
 msgid "Last Name"
 msgstr "Nazwisko"
 
 #: .\Pricelist\forms.py:145 .\admin\templates\client_list.html:21
-#: .\admin\templates\new_users.html:24
+#: .\admin\templates\edit_item.html:31 .\admin\templates\new_users.html:24
 msgid "Group"
 msgstr "Grupa"
 
-#: .\Pricelist\forms.py:169
+#: .\Pricelist\forms.py:172 .\Pricelist\forms.py:177
 msgid "Confirm Password"
 msgstr "Zmień hasło"
 
@@ -141,14 +145,16 @@ msgstr "Nie masz dostępu do tej strony"
 #: .\Pricelist\utils.py:179
 msgid "User not activated yet, wait for information on your email"
 msgstr ""
+"Użytkownik nie został jeszcze aktywowany, poczekaj na informacje na swoim e-"
+"mailu"
 
 #: .\Pricelist\views.py:53 .\Pricelist\views.py:457
 msgid "Internal server error"
-msgstr ""
+msgstr "Wewnętrzny błąd serwera"
 
 #: .\Pricelist\views.py:108
 msgid "Email is already used"
-msgstr ""
+msgstr "Adres e-mail jest już używany"
 
 #: .\Pricelist\views.py:110
 #, fuzzy
@@ -158,7 +164,7 @@ msgstr "Rejestracja powiodła się"
 
 #: .\Pricelist\views.py:156 .\Pricelist\views.py:162
 msgid "Internal server error, user data didn't change"
-msgstr ""
+msgstr "Wewnętrzny błąd serwera, dane użytkownika nie zostały zmienione"
 
 #: .\Pricelist\views.py:164
 #, fuzzy
@@ -174,7 +180,7 @@ msgstr "Brak artykułów w zamówieniu"
 
 #: .\Pricelist\views.py:223
 msgid "Error! Could not fetch users"
-msgstr ""
+msgstr "Błąd! Nie udało się pobrać użytkowników"
 
 #: .\Pricelist\views.py:277 .\Pricelist\views.py:590
 #, fuzzy
@@ -182,14 +188,14 @@ msgstr ""
 msgid "Password change successful"
 msgstr "Rejestracja powiodła się"
 
-#: .\Pricelist\views.py:279 .\Pricelist\views.py:593 .\items\views.py:276
-#: .\items\views.py:431
+#: .\Pricelist\views.py:279 .\Pricelist\views.py:593 .\items\views.py:279
+#: .\items\views.py:434
 msgid "API error"
-msgstr ""
+msgstr "Błąd API"
 
 #: .\Pricelist\views.py:281 .\Pricelist\views.py:568 .\Pricelist\views.py:595
 msgid "Passwords are invalid"
-msgstr ""
+msgstr "Hasła są nieprawidłowe"
 
 #: .\Pricelist\views.py:300
 #, fuzzy
@@ -199,7 +205,7 @@ msgstr "Nie odnaleziono artykułu..."
 
 #: .\Pricelist\views.py:367 .\Pricelist\views.py:400
 msgid "API error!"
-msgstr ""
+msgstr "Błąd API!"
 
 #: .\Pricelist\views.py:433 .\Pricelist\views.py:448
 #, fuzzy
@@ -209,7 +215,7 @@ msgstr "Menu użytkownika"
 
 #: .\Pricelist\views.py:441
 msgid "Client not found."
-msgstr ""
+msgstr "Nie odnaleziono klienta."
 
 #: .\Pricelist\views.py:455
 #, fuzzy
@@ -229,7 +235,7 @@ msgstr "Przedmiot dodany pomyślnie!"
 
 #: .\Pricelist\views.py:536
 msgid "Internal server error!"
-msgstr ""
+msgstr "Wewnętrzny błąd serwera!"
 
 #: .\Pricelist\views.py:566
 #, fuzzy
@@ -239,15 +245,19 @@ msgstr "Rejestracja powiodła się"
 
 #: .\Pricelist\views.py:604
 msgid "Invalid email"
-msgstr ""
+msgstr "Nieprawidłowy adres e-mail"
 
 #: .\Pricelist\views.py:606
 msgid "Message sent, check your spam folder"
-msgstr ""
+msgstr "Wiadomość została wysłana, sprawdź folder ze spamem"
 
 #: .\Pricelist\views.py:608
 msgid "Unknown error"
-msgstr ""
+msgstr "Nieznany błąd"
+
+#: .\admin\templates\activate_user.html:4
+msgid "Activate user"
+msgstr "Aktywuj użytkownika"
 
 #: .\admin\templates\add_item.html:6
 #, fuzzy
@@ -255,82 +265,89 @@ msgstr ""
 msgid "Add Item"
 msgstr "Dodaj artykuł"
 
-#: .\admin\templates\admin_dashboard.html:6 .\templates\change_password.html:33
+#: .\admin\templates\admin_dashboard.html:4 .\templates\navbar.html:67
+msgid "Admin Dashboard"
+msgstr "Panel Administracyjny"
+
+#: .\admin\templates\admin_dashboard.html:8 .\templates\change_password.html:33
 #: .\templates\register.html:72 .\templates\reset_password.html:20
 #: .\transactions\templates\edit_item_offer.html:53
+#: .\transactions\templates\offer.html:131
+#: .\transactions\templates\offer_list.html:26
 msgid "Back"
 msgstr "Wstecz"
 
-#: .\admin\templates\admin_dashboard.html:9
+#: .\admin\templates\admin_dashboard.html:11
 msgid "Items"
 msgstr "Artykuły"
 
-#: .\admin\templates\admin_dashboard.html:10
+#: .\admin\templates\admin_dashboard.html:12
 msgid "Admins"
 msgstr "Administratorzy"
 
-#: .\admin\templates\admin_dashboard.html:11
+#: .\admin\templates\admin_dashboard.html:13
+#: .\admin\templates\admin_list.html:4
 msgid "New clients"
 msgstr "Nowi klienci"
 
-#: .\admin\templates\admin_dashboard.html:12
+#: .\admin\templates\admin_dashboard.html:14
 msgid "Clients"
 msgstr "Lista klientów"
 
-#: .\admin\templates\admin_dashboard.html:13
+#: .\admin\templates\admin_dashboard.html:15
 msgid "My Clients"
 msgstr "Moi klienci"
 
-#: .\admin\templates\admin_dashboard.html:14
+#: .\admin\templates\admin_dashboard.html:16
 msgid "Transactions"
 msgstr "Lista transakcji"
 
-#: .\admin\templates\admin_dashboard.html:20
+#: .\admin\templates\admin_dashboard.html:22
 #, fuzzy
 #| msgid "New offer"
 msgid "New users"
 msgstr "Nowa oferta"
 
-#: .\admin\templates\admin_dashboard.html:25
+#: .\admin\templates\admin_dashboard.html:27
 #: .\admin\templates\client_list.html:18
 msgid "Surname"
-msgstr ""
+msgstr "Nazwisko"
 
-#: .\admin\templates\admin_dashboard.html:26
+#: .\admin\templates\admin_dashboard.html:28
 #, fuzzy
 #| msgid "Email"
 msgid "E-mail"
 msgstr "Email"
 
-#: .\admin\templates\admin_dashboard.html:35
+#: .\admin\templates\admin_dashboard.html:37
 msgid "Activate"
-msgstr ""
+msgstr "Aktywuj"
 
-#: .\admin\templates\admin_dashboard.html:46
+#: .\admin\templates\admin_dashboard.html:48
 #, fuzzy
 #| msgid "Transactions"
 msgid "Last transactions"
 msgstr "Lista transakcji"
 
-#: .\admin\templates\admin_dashboard.html:51
-#: .\admin\templates\client_list.html:20 .\templates\profile.html:64
+#: .\admin\templates\admin_dashboard.html:53
+#: .\admin\templates\client_list.html:20 .\templates\profile.html:66
 msgid "Company Name"
 msgstr "Nazwa firmy"
 
-#: .\admin\templates\admin_dashboard.html:52
+#: .\admin\templates\admin_dashboard.html:54
 msgid "Initialization date"
 msgstr ""
 
-#: .\admin\templates\admin_dashboard.html:53
+#: .\admin\templates\admin_dashboard.html:55
 #, fuzzy
 #| msgid "Last Name"
 msgid "Last change"
 msgstr "Nazwisko"
 
-#: .\admin\templates\admin_dashboard.html:54
+#: .\admin\templates\admin_dashboard.html:56
 #: .\transactions\templates\create_final.html:21
 #: .\transactions\templates\prognose.html:17
-#: .\transactions\templates\transaction_detail_admin.html:28
+#: .\transactions\templates\transaction_detail_admin.html:30
 #: .\transactions\templates\transaction_detail_client.html:16
 msgid "Status"
 msgstr "Status"
@@ -339,20 +356,66 @@ msgstr "Status"
 msgid "Choose an image to upload:"
 msgstr "Wybierz zdjęcie do wgrania:"
 
-#: .\admin\templates\admin_list.html:13 .\admin\templates\client_list.html:8
-#: .\admin\templates\edit_admin.html:61 .\admin\templates\item_list.html:69
-#: .\admin\templates\new_admin.html:32 .\admin\templates\new_users.html:16
-#: .\templates\item_detail.html:65 .\templates\profile.html:115
+#: .\admin\templates\admin_list.html:8
+msgid "New user list"
+msgstr "Lista nowych użytkowników"
+
+#: .\admin\templates\admin_list.html:15 .\admin\templates\client_list.html:8
+#: .\admin\templates\edit_admin.html:66 .\admin\templates\item_list.html:74
+#: .\admin\templates\new_admin.html:35 .\admin\templates\new_users.html:16
+#: .\templates\item_detail.html:65 .\templates\profile.html:117
 #: .\transactions\templates\create_final.html:13
 #: .\transactions\templates\new_item_transaction.html:11
 #: .\transactions\templates\order_edit.html:8
 #: .\transactions\templates\prognose.html:13
-#: .\transactions\templates\transaction_detail_admin.html:20
+#: .\transactions\templates\transaction_detail_admin.html:22
+#: .\transactions\templates\transaction_list.html:10
 msgid "Go back"
 msgstr "Powrót"
 
-#: .\admin\templates\client_list.html:17 .\transactions\forms.py:36
-#: .\transactions\forms.py:39 .\transactions\templates\edit_item_offer.html:16
+#: .\admin\templates\admin_list.html:16
+msgid "Add admin"
+msgstr "Dodaj admina"
+
+#: .\admin\templates\admin_list.html:26
+msgid "User telephone number"
+msgstr "Numer telefonu użytkownika"
+
+#: .\admin\templates\admin_list.html:39 .\admin\templates\item_list.html:61
+#: .\admin\templates\new_users.html:42 .\admin\templates\new_users.html:55
+msgid "Edit"
+msgstr "Edytuj"
+
+#: .\admin\templates\admin_list.html:41 .\admin\templates\edit_item.html:45
+#: .\admin\templates\item_list.html:64
+#: .\file_manager\templates\file_browser.html:41
+#: .\transactions\templates\create_final.html:89
+#: .\transactions\templates\offer.html:106
+#: .\transactions\templates\offer.html:204
+#: .\transactions\templates\prognose.html:76
+#: .\transactions\templates\transaction_detail_admin.html:171
+#: .\transactions\templates\transaction_detail_admin.html:360
+#: .\transactions\templates\transaction_detail_client.html:150
+#: .\transactions\templates\transaction_detail_client.html:393
+#: .\transactions\templates\transaction_list.html:33
+#: .\transactions\templates\transaction_status_list.html:33
+msgid "Delete"
+msgstr "Usuń"
+
+#: .\admin\templates\assign_admin.html:4
+msgid "Add User to Admin"
+msgstr "Dodaj użytkownika jako administratora"
+
+#: .\admin\templates\assign_admin.html:27 .\admin\templates\new_admin.html:37
+#: .\transactions\templates\transaction_detail_admin.html:72
+#: .\transactions\templates\transaction_detail_admin.html:597
+#: .\transactions\templates\transaction_detail_client.html:363
+msgid "Add"
+msgstr "Dodaj"
+
+#: .\admin\templates\client_list.html:17 .\admin\templates\item_list.html:26
+#: .\transactions\forms.py:36 .\transactions\forms.py:39
+#: .\transactions\templates\edit_item_offer.html:16
 #: .\transactions\templates\transaction_detail_client.html:69
 msgid "Name"
 msgstr "Nazwa"
@@ -363,66 +426,138 @@ msgstr "Nazwa"
 msgid "Telephone Number"
 msgstr "Numer telefonu"
 
-#: .\admin\templates\item_list.html:9 .\templates\price_list.html:14
+#: .\admin\templates\edit_admin.html:4 .\admin\templates\edit_admin.html:12
+msgid "New Admin"
+msgstr "Nowy administrator"
+
+#: .\admin\templates\edit_admin.html:54 .\templates\profile.html:55
+msgid "Telephone number"
+msgstr "Numer telefonu"
+
+#: .\admin\templates\edit_admin.html:68 .\admin\templates\edit_item.html:22
+#: .\admin\templates\edit_item.html:95 .\templates\profile.html:120
+#: .\transactions\templates\offer.html:137
+#: .\transactions\templates\offer.html:173
+#: .\transactions\templates\transaction_detail_admin.html:227
+#: .\transactions\templates\transaction_detail_admin.html:253
+#: .\transactions\templates\transaction_detail_client.html:220
+msgid "Save changes"
+msgstr "Zapisz zmiany"
+
+#: .\admin\templates\edit_item.html:4
+msgid "Edit item"
+msgstr "Edytuj przedmiot"
+
+#: .\admin\templates\edit_item.html:21 .\admin\templates\edit_item.html:94
+msgid "Back to List"
+msgstr "Powrót do listy"
+
+#: .\admin\templates\edit_item.html:26 .\templates\item_detail.html:3
+msgid "Item Details"
+msgstr "Szczegóły artykułu"
+
+#: .\admin\templates\edit_item.html:41
+msgid "Thumbnail"
+msgstr "Miniatura"
+
+#: .\admin\templates\edit_item.html:43
+msgid "Upload Thumbnail"
+msgstr "Prześlij miniaturę"
+
+#: .\admin\templates\edit_item.html:45
+msgid "Are you sure?"
+msgstr "Jesteś pewien?"
+
+#: .\admin\templates\edit_item.html:53
+msgid "Additional Images"
+msgstr "Dodatkowe obrazy"
+
+#: .\admin\templates\edit_item.html:55
+#, fuzzy
+#| msgid "Additional Images"
+msgid "Edit Images"
+msgstr "Edytuj obrazy"
+
+#: .\admin\templates\edit_item.html:59
+#, fuzzy
+#| msgid "Price"
+msgid "Prices"
+msgstr "Cena"
+
+#: .\admin\templates\edit_item.html:72
+#, fuzzy
+#| msgid "Last Name"
+msgid "Item Name"
+msgstr "Nazwa przedmiotu"
+
+#: .\admin\templates\edit_item.html:83 .\templates\item_detail.html:56
+msgid "Description"
+msgstr "Opis"
+
+#: .\admin\templates\edit_item.html:99
+#, fuzzy
+#| msgid "User Menu"
+msgid "Item not found"
+msgstr "Menu użytkownika"
+
+#: .\admin\templates\item_list.html:4
+msgid "Item list"
+msgstr "Lista przedmiotów"
+
+#: .\admin\templates\item_list.html:11 .\templates\price_list.html:14
 #: .\transactions\templates\offer.html:186
 #: .\transactions\templates\offer.html:195
-#: .\transactions\templates\transaction_detail_admin.html:262
-#: .\transactions\templates\transaction_detail_admin.html:271
+#: .\transactions\templates\transaction_detail_admin.html:266
+#: .\transactions\templates\transaction_detail_admin.html:275
 #: .\transactions\templates\transaction_detail_client.html:233
 #: .\transactions\templates\transaction_detail_client.html:242
 msgid "Search"
 msgstr "Szukaj"
 
-#: .\admin\templates\item_list.html:13 .\templates\price_list.html:18
+#: .\admin\templates\item_list.html:15 .\templates\price_list.html:18
 msgid "Clear"
 msgstr "Wyczyść"
 
-#: .\admin\templates\new_admin.html:2 .\admin\templates\new_admin.html:9
+#: .\admin\templates\item_list.html:24
+msgid "Image"
+msgstr ""
+
+#: .\admin\templates\item_list.html:27
+msgid "Category"
+msgstr "Kategoria"
+
+#: .\admin\templates\item_list.html:32 .\admin\templates\new_users.html:39
+#: .\admin\templates\new_users.html:52
+#: .\transactions\templates\transaction_list.html:21
+#: .\transactions\templates\transaction_status_list.html:18
+msgid "Actions"
+msgstr "Czynności"
+
+#: .\admin\templates\item_list.html:63
+#: .\transactions\templates\create_final.html:89
+#: .\transactions\templates\prognose.html:76
+msgid "Are you sure you want to delete this item?"
+msgstr "Czy na pewno chcesz usunąć ten artykuł?"
+
+#: .\admin\templates\item_list.html:75
+msgid "Add new"
+msgstr "Dodaj"
+
+#: .\admin\templates\new_admin.html:4 .\admin\templates\new_admin.html:12
 #, fuzzy
 #| msgid "New offer"
 msgid "New user"
 msgstr "Nowa oferta"
 
-#: .\admin\templates\new_admin.html:34
-#: .\transactions\templates\transaction_detail_admin.html:69
-#: .\transactions\templates\transaction_detail_admin.html:593
-#: .\transactions\templates\transaction_detail_client.html:363
-msgid "Add"
-msgstr "Dodaj"
-
 #: .\admin\templates\new_users.html:20
-#: .\transactions\templates\transaction_list.html:14
+#: .\transactions\templates\transaction_list.html:16
 #: .\transactions\templates\transaction_status_list.html:14
 msgid "Company name"
 msgstr "Nazwa firmy:"
 
-#: .\admin\templates\new_users.html:39 .\admin\templates\new_users.html:52
-#: .\transactions\templates\transaction_list.html:19
-#: .\transactions\templates\transaction_status_list.html:19
-msgid "Actions"
-msgstr "Czynności"
-
-#: .\admin\templates\new_users.html:42 .\admin\templates\new_users.html:55
-msgid "Edit"
-msgstr "Edytuj"
-
 #: .\admin\views.py:42 .\admin\views.py:57
 msgid "Admin not found"
 msgstr "Nie znaleziono administratora"
-
-#: .\file_manager\templates\file_browser.html:41
-#: .\transactions\templates\create_final.html:89
-#: .\transactions\templates\offer.html:106
-#: .\transactions\templates\offer.html:204
-#: .\transactions\templates\prognose.html:76
-#: .\transactions\templates\transaction_detail_admin.html:167
-#: .\transactions\templates\transaction_detail_admin.html:356
-#: .\transactions\templates\transaction_detail_client.html:150
-#: .\transactions\templates\transaction_detail_client.html:393
-#: .\transactions\templates\transaction_list.html:31
-#: .\transactions\templates\transaction_status_list.html:32
-msgid "Delete"
-msgstr "Usuń"
 
 #: .\file_manager\templates\transaction_files.html:4
 #: .\file_manager\templates\transaction_files.html:19
@@ -458,19 +593,19 @@ msgstr "Przedmiot dodany pomyślnie!"
 msgid "Invalid request"
 msgstr "Nieprawidłowe żądanie"
 
-#: .\items\views.py:239
+#: .\items\views.py:242
 msgid "Item edited successfully"
 msgstr "Przedmiot zedytowany pomyślnie"
 
-#: .\items\views.py:242 .\items\views.py:429
+#: .\items\views.py:245 .\items\views.py:432
 msgid "Error, SKU already exists"
 msgstr "Błąd, SKU już istnieje"
 
-#: .\items\views.py:244
+#: .\items\views.py:247
 msgid "Error, item has not been edited"
 msgstr "Błąd, przedmiot nie został edytowany"
 
-#: .\items\views.py:273
+#: .\items\views.py:276
 msgid "Item deleted successfully!"
 msgstr "Przedmiot został usunięty pomyślnie!"
 
@@ -501,7 +636,7 @@ msgstr "Prognoza z dnia "
 #: .\transactions\templates\offer.html:45
 #: .\transactions\templates\order_edit.html:25
 #: .\transactions\templates\prognose.html:46
-#: .\transactions\templates\transaction_detail_admin.html:90
+#: .\transactions\templates\transaction_detail_admin.html:93
 #: .\transactions\templates\transaction_detail_client.html:68
 msgid "SKU"
 msgstr "SKU"
@@ -514,7 +649,7 @@ msgstr "SKU"
 #: .\transactions\templates\offer.html:46
 #: .\transactions\templates\order_edit.html:26
 #: .\transactions\templates\prognose.html:47
-#: .\transactions\templates\transaction_detail_admin.html:91
+#: .\transactions\templates\transaction_detail_admin.html:94
 msgid "Product"
 msgstr "Produkt"
 
@@ -526,7 +661,7 @@ msgstr "Produkt"
 #: .\transactions\templates\offer.html:47
 #: .\transactions\templates\order_edit.html:27
 #: .\transactions\templates\prognose.html:48
-#: .\transactions\templates\transaction_detail_admin.html:92
+#: .\transactions\templates\transaction_detail_admin.html:95
 #: .\transactions\templates\transaction_detail_client.html:70
 msgid "Amount"
 msgstr "Ilość"
@@ -534,7 +669,7 @@ msgstr "Ilość"
 #: .\pdfgenerator\templates\pdf_final.html:47
 #: .\pdfgenerator\templates\pdf_final_admin.html:71
 #: .\transactions\templates\create_final.html:42
-#: .\transactions\templates\transaction_detail_admin.html:94
+#: .\transactions\templates\transaction_detail_admin.html:97
 #: .\transactions\templates\transaction_detail_client.html:72
 msgid "Alku"
 msgstr "Alku"
@@ -549,8 +684,8 @@ msgstr "Alku"
 #: .\transactions\templates\offer.html:48
 #: .\transactions\templates\order_edit.html:28
 #: .\transactions\templates\prognose.html:50
-#: .\transactions\templates\transaction_detail_admin.html:54
-#: .\transactions\templates\transaction_detail_admin.html:96
+#: .\transactions\templates\transaction_detail_admin.html:56
+#: .\transactions\templates\transaction_detail_admin.html:99
 #: .\transactions\templates\transaction_detail_client.html:35
 #: .\transactions\templates\transaction_detail_client.html:74
 msgid "Price"
@@ -565,10 +700,9 @@ msgstr "Cena"
 #: .\transactions\templates\offer.html:49
 #: .\transactions\templates\order_edit.html:29
 #: .\transactions\templates\prognose.html:52
-#: .\transactions\templates\transaction_detail_admin.html:100
+#: .\transactions\templates\transaction_detail_admin.html:103
 #: .\transactions\templates\transaction_detail_client.html:75
-#: .\transactions\templates\transaction_list.html:18
-#: .\transactions\templates\transaction_status_list.html:18
+#: .\transactions\templates\transaction_list.html:20
 msgid "Total"
 msgstr "Suma"
 
@@ -682,13 +816,9 @@ msgid "Delivery value incl. transport costs"
 msgstr "Cena dostawy wliczając cenę transportu"
 
 #: .\templates\change_password.html:17 .\templates\change_password.html:34
-#: .\templates\navbar.html:73 .\templates\profile.html:117
+#: .\templates\navbar.html:73 .\templates\profile.html:119
 msgid "Change password"
 msgstr "Zmień hasło"
-
-#: .\templates\item_detail.html:3
-msgid "Item Details"
-msgstr "Szczegóły artykułu"
 
 #: .\templates\item_detail.html:9
 msgid "Item Thumbnail"
@@ -709,10 +839,6 @@ msgstr "Poprzedni"
 #: .\templates\item_detail.html:51
 msgid "Next"
 msgstr "Następny"
-
-#: .\templates\item_detail.html:56
-msgid "Description"
-msgstr "Opis"
 
 #: .\templates\login.html:3 .\templates\login.html:10 .\templates\login.html:26
 msgid "Login"
@@ -750,21 +876,17 @@ msgstr "Oferta"
 msgid "User Menu"
 msgstr "Menu użytkownika"
 
-#: .\templates\navbar.html:67
-msgid "Admin Dashboard"
-msgstr "Panel Administracyjny"
-
 #: .\templates\navbar.html:69
 msgid "My Transactions"
 msgstr "Moje transakcje"
 
 #: .\templates\navbar.html:71 .\templates\price_list.html:4
-#: .\transactions\templates\offer_list.html:3
+#: .\transactions\templates\offer_list.html:4
 msgid "Price List"
 msgstr "Cennik"
 
-#: .\templates\navbar.html:72 .\templates\profile.html:3
-#: .\templates\profile.html:17
+#: .\templates\navbar.html:72 .\templates\profile.html:4
+#: .\templates\profile.html:19
 msgid "Profile"
 msgstr "Profil"
 
@@ -777,8 +899,8 @@ msgid "Make proposition"
 msgstr "Złóż zamówienie"
 
 #: .\templates\price_list.html:23 .\transactions\templates\offer.html:134
-#: .\transactions\templates\offer_list.html:24
-#: .\transactions\templates\offer_list.html:87
+#: .\transactions\templates\offer_list.html:27
+#: .\transactions\templates\offer_list.html:90
 msgid "Make offer"
 msgstr "Złóż ofertę"
 
@@ -788,11 +910,11 @@ msgstr "Złóż ofertę"
 msgid "Select items"
 msgstr "Zapisz artykuł"
 
-#: .\templates\price_list.html:96 .\transactions\templates\offer_list.html:80
+#: .\templates\price_list.html:96 .\transactions\templates\offer_list.html:83
 msgid "No items found..."
 msgstr "Nie odnaleziono artykułu..."
 
-#: .\templates\price_list.html:104 .\transactions\templates\offer_list.html:89
+#: .\templates\price_list.html:104 .\transactions\templates\offer_list.html:92
 msgid ""
 "Prices per 1 kg. The price list is for information purposes only. Prices are "
 "subject to change. Prices are not binding. Typographical errors excepted. "
@@ -802,25 +924,13 @@ msgstr ""
 "nie są wiążące. Zastrzegamy sobie prawo do błędów typograficznych. Prosimy o "
 "kontakt w sprawie cen dla większych ilości lub specjalnych materiałów."
 
-#: .\templates\profile.html:53
-msgid "Telephone number"
-msgstr "Numer telefonu"
-
-#: .\templates\profile.html:74
+#: .\templates\profile.html:76
 msgid "Street"
 msgstr "Ulica"
 
-#: .\templates\profile.html:84
+#: .\templates\profile.html:86
 msgid "Code"
 msgstr "Kod"
-
-#: .\templates\profile.html:118 .\transactions\templates\offer.html:137
-#: .\transactions\templates\offer.html:173
-#: .\transactions\templates\transaction_detail_admin.html:223
-#: .\transactions\templates\transaction_detail_admin.html:249
-#: .\transactions\templates\transaction_detail_client.html:220
-msgid "Save changes"
-msgstr "Zapisz zmiany"
 
 #: .\templates\register.html:3 .\templates\register.html:10
 #: .\templates\register.html:73 .\templates\register_success.html:3
@@ -855,9 +965,9 @@ msgstr "Zmień hasło"
 #: .\templates\reset_password_form.html:20
 #: .\templates\verify_registration.html:20
 #: .\transactions\templates\edit_item_offer.html:54
-#: .\transactions\templates\transaction_detail_admin.html:291
+#: .\transactions\templates\transaction_detail_admin.html:295
 msgid "Submit"
-msgstr "Zapisz"
+msgstr "Prześlij"
 
 #: .\templates\verify_registration.html:3
 msgid "Verify account"
@@ -882,13 +992,13 @@ msgid "Additional info about transaction"
 msgstr "Dodatkowe informacje"
 
 #: .\transactions\forms.py:109
-#: .\transactions\templates\transaction_detail_admin.html:72
+#: .\transactions\templates\transaction_detail_admin.html:75
 #: .\transactions\templates\transaction_detail_client.html:47
 msgid "Delivery info"
 msgstr "Informacje o dostawie"
 
 #: .\transactions\templates\create_final.html:21
-#: .\transactions\templates\transaction_detail_admin.html:30
+#: .\transactions\templates\transaction_detail_admin.html:32
 #, fuzzy
 #| msgid "no status"
 msgid "No status"
@@ -902,8 +1012,8 @@ msgstr "zamiana na FINAL"
 #: .\transactions\templates\offer.html:39
 #: .\transactions\templates\offer.html:182
 #: .\transactions\templates\prognose.html:26
-#: .\transactions\templates\transaction_detail_admin.html:82
-#: .\transactions\templates\transaction_detail_admin.html:258
+#: .\transactions\templates\transaction_detail_admin.html:85
+#: .\transactions\templates\transaction_detail_admin.html:262
 #: .\transactions\templates\transaction_detail_client.html:59
 #: .\transactions\templates\transaction_detail_client.html:229
 msgid "Add item"
@@ -914,26 +1024,21 @@ msgstr "Dodaj artykuł"
 #: .\transactions\templates\offer.html:167
 #: .\transactions\templates\order_edit.html:30
 #: .\transactions\templates\prognose.html:53
-#: .\transactions\templates\transaction_detail_admin.html:101
-#: .\transactions\templates\transaction_detail_admin.html:243
+#: .\transactions\templates\transaction_detail_admin.html:104
+#: .\transactions\templates\transaction_detail_admin.html:247
 #: .\transactions\templates\transaction_detail_client.html:214
 msgid "Comment"
 msgstr "Komentarz"
 
-#: .\transactions\templates\create_final.html:89
-#: .\transactions\templates\prognose.html:76
-msgid "Are you sure you want to delete this item?"
-msgstr "Czy na pewno chcesz usunąć ten artykoł?"
-
 #: .\transactions\templates\create_final.html:95
 #: .\transactions\templates\prognose.html:82
-#: .\transactions\templates\transaction_detail_admin.html:174
+#: .\transactions\templates\transaction_detail_admin.html:178
 msgid "No items in the transaction"
 msgstr "Brak artykułów w zamówieniu"
 
 #: .\transactions\templates\create_final.html:110
 #: .\transactions\templates\edit_item_offer.html:45
-#: .\transactions\templates\transaction_detail_admin.html:207
+#: .\transactions\templates\transaction_detail_admin.html:211
 msgid "Additional informations"
 msgstr "Dodatkowe informacje"
 
@@ -954,7 +1059,7 @@ msgid "Save item"
 msgstr "Zapisz artykuł"
 
 #: .\transactions\templates\offer.html:10
-#: .\transactions\templates\transaction_detail_admin.html:8
+#: .\transactions\templates\transaction_detail_admin.html:10
 msgid "Item added successfully!"
 msgstr "Przedmiot dodany pomyślnie!"
 
@@ -973,9 +1078,9 @@ msgstr "Klient"
 #: .\transactions\templates\offer.html:104
 #: .\transactions\templates\offer.html:163
 #: .\transactions\templates\offer.html:205
-#: .\transactions\templates\transaction_detail_admin.html:165
-#: .\transactions\templates\transaction_detail_admin.html:239
-#: .\transactions\templates\transaction_detail_admin.html:355
+#: .\transactions\templates\transaction_detail_admin.html:169
+#: .\transactions\templates\transaction_detail_admin.html:243
+#: .\transactions\templates\transaction_detail_admin.html:359
 #: .\transactions\templates\transaction_detail_client.html:148
 #: .\transactions\templates\transaction_detail_client.html:210
 #: .\transactions\templates\transaction_detail_client.html:394
@@ -1003,28 +1108,28 @@ msgstr "Nie możesz wysłać pustej oferty/transakcji"
 #: .\transactions\templates\offer.html:153
 #: .\transactions\templates\offer.html:171
 #: .\transactions\templates\offer.html:192
-#: .\transactions\templates\transaction_detail_admin.html:247
-#: .\transactions\templates\transaction_detail_admin.html:268
-#: .\transactions\templates\transaction_detail_admin.html:290
+#: .\transactions\templates\transaction_detail_admin.html:251
+#: .\transactions\templates\transaction_detail_admin.html:272
+#: .\transactions\templates\transaction_detail_admin.html:294
 #: .\transactions\templates\transaction_detail_client.html:218
 #: .\transactions\templates\transaction_detail_client.html:239
 msgid "Close"
 msgstr "Zamknij"
 
 #: .\transactions\templates\offer.html:188
-#: .\transactions\templates\transaction_detail_admin.html:264
+#: .\transactions\templates\transaction_detail_admin.html:268
 #: .\transactions\templates\transaction_detail_client.html:235
 msgid "Empty search query returns all items"
 msgstr "Puste pole wyszukiwania zwraca wszystkie produkty"
 
 #: .\transactions\templates\offer.html:194
-#: .\transactions\templates\transaction_detail_admin.html:270
+#: .\transactions\templates\transaction_detail_admin.html:274
 #: .\transactions\templates\transaction_detail_client.html:241
 msgid "Create new item"
 msgstr "Dodaj nowy artykuł"
 
 #: .\transactions\templates\offer.html:203
-#: .\transactions\templates\transaction_detail_admin.html:371
+#: .\transactions\templates\transaction_detail_admin.html:375
 #: .\transactions\templates\transaction_detail_client.html:472
 #, fuzzy
 #| msgid "Are you sure you want to delete this item?"
@@ -1075,82 +1180,90 @@ msgid "incl. transport"
 msgstr "Z transportem"
 
 #: .\transactions\templates\prognose.html:108
-#: .\transactions\templates\transaction_detail_admin.html:225
-#: .\transactions\templates\transaction_detail_admin.html:281
+#: .\transactions\templates\transaction_detail_admin.html:229
+#: .\transactions\templates\transaction_detail_admin.html:285
 msgid "Change status"
 msgstr "Status transakcji"
 
 #: .\transactions\templates\prognose.html:109
-#: .\transactions\templates\transaction_detail_admin.html:227
+#: .\transactions\templates\transaction_detail_admin.html:231
 msgid "Print"
 msgstr "Drukuj"
 
-#: .\transactions\templates\transaction_detail_admin.html:36
+#: .\transactions\templates\transaction_detail_admin.html:4
+msgid "Transaction"
+msgstr "Transakcje"
+
+#: .\transactions\templates\transaction_detail_admin.html:38
 #: .\transactions\templates\transaction_detail_client.html:24
 msgid "Total price with transport included"
 msgstr "Wartość dostawy włączając transport"
 
-#: .\transactions\templates\transaction_detail_admin.html:39
+#: .\transactions\templates\transaction_detail_admin.html:41
 msgid "Transport cost per 1 kg"
 msgstr "Koszt transportu na kilogram"
 
-#: .\transactions\templates\transaction_detail_admin.html:43
+#: .\transactions\templates\transaction_detail_admin.html:45
 msgid "Transport cost as a part of total price"
 msgstr "Koszt transportu jako część wartości dostawy"
 
-#: .\transactions\templates\transaction_detail_admin.html:49
+#: .\transactions\templates\transaction_detail_admin.html:51
 #: .\transactions\templates\transaction_detail_client.html:30
 msgid "Delivery"
 msgstr "Dostawa"
 
-#: .\transactions\templates\transaction_detail_admin.html:50
+#: .\transactions\templates\transaction_detail_admin.html:52
 #: .\transactions\templates\transaction_detail_client.html:31
 msgid "Date"
 msgstr "Data"
 
-#: .\transactions\templates\transaction_detail_admin.html:62
+#: .\transactions\templates\transaction_detail_admin.html:64
 #: .\transactions\templates\transaction_detail_client.html:38
 msgid "Plates:"
 msgstr "Tablice rejestracyjne"
 
-#: .\transactions\templates\transaction_detail_admin.html:98
+#: .\transactions\templates\transaction_detail_admin.html:101
 msgid "With transport"
 msgstr "Z transportem"
 
-#: .\transactions\templates\transaction_detail_admin.html:230
+#: .\transactions\templates\transaction_detail_admin.html:234
 msgid "Print client version"
-msgstr ""
+msgstr "Wydrukuj wersję klienta"
 
-#: .\transactions\templates\transaction_detail_admin.html:232
+#: .\transactions\templates\transaction_detail_admin.html:236
 #, fuzzy
 #| msgid "Profile"
 msgid "Files"
 msgstr "Pliki"
 
-#: .\transactions\templates\transaction_detail_admin.html:285
+#: .\transactions\templates\transaction_detail_admin.html:289
 #, fuzzy
 #| msgid "Change status"
 msgid "Change status to"
 msgstr "Status transakcji"
 
-#: .\transactions\templates\transaction_detail_admin.html:538
+#: .\transactions\templates\transaction_detail_admin.html:542
 #: .\transactions\templates\transaction_detail_client.html:308
 #, fuzzy
 msgid "Are you sure you want to save changes?"
 msgstr "Czy na pewno chcesz zapisać zmiany?"
 
-#: .\transactions\templates\transaction_detail_admin.html:608
+#: .\transactions\templates\transaction_detail_admin.html:612
+#, fuzzy
+#| msgid "- Shipping costs are covered by the buyer."
 msgid "- Shipping costs are covered by the buyer.\\n"
-msgstr ""
+msgstr "– Koszty wysyłki pokrywa kupujący."
 
-#: .\transactions\templates\transaction_detail_admin.html:608
-#: .\transactions\templates\transaction_detail_admin.html:613
+#: .\transactions\templates\transaction_detail_admin.html:612
+#: .\transactions\templates\transaction_detail_admin.html:617
 msgid "- Payment deadline - 7 business days from delivery."
-msgstr ""
+msgstr "– Termin płatności – 7 dni roboczych od daty dostawy."
 
-#: .\transactions\templates\transaction_detail_admin.html:613
+#: .\transactions\templates\transaction_detail_admin.html:617
+#, fuzzy
+#| msgid "- Delivered to Alku."
 msgid "- Delivered to Alku.\\n"
-msgstr ""
+msgstr "– Dostarczone do Alku."
 
 #: .\transactions\templates\transaction_detail_client.html:3
 #, fuzzy
@@ -1170,162 +1283,52 @@ msgstr "Status transakcji"
 msgid "Save Changes"
 msgstr "Zapisz zmiany"
 
-#: .\transactions\templates\transaction_list.html:6
+#: .\transactions\templates\transaction_list.html:4
+#: .\transactions\templates\transaction_list.html:8
 #: .\transactions\templates\transaction_status_list.html:6
 #, fuzzy
 #| msgid "Transactions"
 msgid "Transaction list"
 msgstr "Lista transakcji"
 
-#: .\transactions\templates\transaction_list.html:15
+#: .\transactions\templates\transaction_list.html:17
 #: .\transactions\templates\transaction_status_list.html:15
 #, fuzzy
 #| msgid "Transactions"
 msgid "Transaction initialization"
-msgstr "Lista transakcji"
+msgstr "Inicjalizacja transakcji"
 
-#: .\transactions\templates\transaction_list.html:16
+#: .\transactions\templates\transaction_list.html:18
 #: .\transactions\templates\transaction_status_list.html:16
 msgid "Transaction last change"
-msgstr "Status transakcji"
+msgstr "Ostatnia zmiana transakcji"
 
-#: .\transactions\templates\transaction_list.html:17
+#: .\transactions\templates\transaction_list.html:19
 #: .\transactions\templates\transaction_status_list.html:17
 msgid "Transaction status"
 msgstr "Status transakcji"
 
-#: .\transactions\templates\transaction_list.html:31
-#: .\transactions\templates\transaction_status_list.html:32
+#: .\transactions\templates\transaction_list.html:33
+#: .\transactions\templates\transaction_status_list.html:33
 msgid "Are you sure you want to delete this transaction?"
 msgstr "Czy na pewno chcesz usunąć tę transakcję?"
 
-#: .\transactions\views.py:560
+#: .\transactions\views.py:567
 msgid "Internal Server Error"
-msgstr ""
+msgstr "Wewnętrzny błąd serwera"
 
-#: .\transactions\views.py:597
+#: .\transactions\views.py:604
 msgid "Proposition cannot be printed"
-msgstr ""
+msgstr "Oferta nie może zostać wydrukowana"
 
-#: .\transactions\views.py:702
+#: .\transactions\views.py:709
 msgid "Error during transaction delete"
-msgstr ""
+msgstr "Wystąpił błąd podczas usuwania transakcji"
 
-#: .\transactions\views.py:881
+#: .\transactions\views.py:890
 msgid "Order has already been finalised"
-msgstr ""
+msgstr "Zamówienie zostało już sfinalizowane"
 
-#: .\transactions\views.py:883
+#: .\transactions\views.py:892
 msgid "Invalid status name"
-msgstr ""
-
-#, fuzzy
-#~| msgid "Change password"
-#~ msgid "Change Password"
-#~ msgstr "Zmień hasło"
-
-#, fuzzy
-#~| msgid "Enter your company name"
-#~ msgid "Enter a valid domain name."
-#~ msgstr "Wprowadź nazwę swojej firmy"
-
-#, fuzzy
-#~| msgid "Enter your last name"
-#~ msgid "Enter a number."
-#~ msgstr "Wprowadź swoje nazwisko"
-
-#, fuzzy
-#~| msgid "Telephone number"
-#~ msgid "Decimal number"
-#~ msgstr "Numer telefonu"
-
-#, fuzzy
-#~| msgid "Description"
-#~ msgid "Duration"
-#~ msgstr "Opis"
-
-#, fuzzy
-#~| msgid "Enter your telephone number"
-#~ msgid "Enter a whole number."
-#~ msgstr "Wprowadź swój numer telefonu"
-
-#, fuzzy
-#~| msgid "Enter your last name"
-#~ msgid "Enter a list of values."
-#~ msgstr "Wprowadź swoje nazwisko"
-
-#, fuzzy
-#~| msgid "Enter your company name"
-#~ msgid "Enter a complete value."
-#~ msgstr "Wprowadź nazwę swojej firmy"
-
-#, fuzzy
-#~| msgid "Change status"
-#~ msgid "Change"
-#~ msgstr "Status transakcji"
-
-#, fuzzy
-#~| msgid "Status"
-#~ msgid "Sat"
-#~ msgstr "Status"
-
-#, fuzzy
-#~| msgid "Sum"
-#~ msgid "Sun"
-#~ msgstr "Suma"
-
-#, fuzzy
-#~| msgid "Search"
-#~ msgid "March"
-#~ msgstr "Szukaj"
-
-#, fuzzy
-#~| msgid "Product"
-#~ msgid "oct"
-#~ msgstr "Produkt"
-
-#, fuzzy
-#~| msgid "Search"
-#~ msgctxt "abbrev. month"
-#~ msgid "March"
-#~ msgstr "Szukaj"
-
-#, fuzzy
-#~| msgid "Search"
-#~ msgctxt "alt. month"
-#~ msgid "March"
-#~ msgstr "Szukaj"
-
-#~ msgid "City:"
-#~ msgstr "Miasto:"
-
-#~ msgid "Country:"
-#~ msgstr "Kraj:"
-
-#~ msgid "Thank you!"
-#~ msgstr "Dziękujemy za współpracę"
-
-#~ msgid "Delivery price including transport"
-#~ msgstr "Cena dostawy włączając transport"
-
-msgid "Activate user"
-msgstr "Aktywuj użytkownika"
-
-msgid "New user list"
-msgstr "Lista nowych użytkowników"
-
-msgid "Add admin"
-msgstr "Dodaj admina"
-
-msgid "User telephone number"
-msgstr "Numer telefonu użytkownika"
-
-msgid "Add User to Admin"
-msgstr "Dodaj użytkownika jako administratora"
-
-msgid "New Admin"
-msgstr "Nowy administrator"
-
-#~ msgid "You do not have access to that page"
-#~ msgstr "Nie masz dostępu do tej strony"
-
+msgstr "Nieprawidłowa nazwa statusu"
