@@ -1102,7 +1102,7 @@ def prognose_list(request):
 
     # IDK why status=FINAL returns list of prognose, some enum stuff in data base
     prognoses, error = _make_api_request(
-        f"{API_BASE_URL}/transactions/by-status?status=FINAL&{page.strip('?')}",
+        f"{API_BASE_URL}/transactions/by-status?status=PROGNOSE&{page.strip('?')}",
         headers=headers,
     )
     if error or not prognoses:
@@ -1122,7 +1122,6 @@ def mbs_list(request):
     headers = _get_headers(request)
     page = _get_page_param(request)
 
-    # IDK why status=FINAL returns list of prognose, some enum stuff in data base
     transactions, error = _make_api_request(
         f"{API_BASE_URL}/transactions/admin/{page}",
         headers=headers,
