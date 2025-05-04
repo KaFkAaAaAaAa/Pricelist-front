@@ -1,27 +1,28 @@
+{% load i18n %}
 <nav>
-  <ul class="pagination">
-    {% if not page.first %}
-    <li class="page-item">
-      <a class="page-link" href="?page=1">&laquo; first</a>
-    </li>
-    <li class="page-item">
-      <a class="page-link" href="?page={{ page.prev }}">previous</a>
-    </li>
-    {% endif %}
+    <ul class="pagination">
+        {% if not page.first %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1">&laquo; {% trans "first" %}</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page.prev }}">{% trans "previous" %}</a>
+            </li>
+        {% endif %}
 
-    <li class="page-item active">
-      <a class="page-link" href="#"
-        >{{ page.page_no }}/{{ page.total_pages }}</a
-      >
-    </li>
+        <li class="page-item active">
+            <a class="page-link" href="#"
+            >{{ page.page_no }}/{{ page.total_pages }}</a
+            >
+        </li>
 
-    {% if not page.last %}
-    <li class="page-item">
-      <a class="page-link" href="?page={{ page.next }}">next</a>
-    </li>
-    <li class="page-item">
-      <a class="page-link" href="?page={{ page.total_pages }}">last &raquo;</a>
-    </li>
-    {% endif %}
-  </ul>
+        {% if not page.last %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page.next }}">{% trans "next" %}</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page.total_pages }}">{% trans "last" %} &raquo;</a>
+            </li>
+        {% endif %}
+    </ul>
 </nav>

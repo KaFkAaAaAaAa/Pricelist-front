@@ -1,26 +1,28 @@
 {% extends 'base.html' %}
-{% block title %}Client Details{% endblock %}
+{% load i18n %}
+{% block title %}
+    {% trans "Client Details" %}
+{% endblock %}
 {% block content %}
-    <h2>Client Details</h2>
+    <h2>{% trans "Client Details" %}</h2>
     {% if client %}
-        <dl class="row">
+        <dl class="row my-3">
             <dt class="col-sm-3">Email</dt>
             <dd class="col-sm-9">{{ client.user.userEmail }}</dd>
-            <dt class="col-sm-3">Telephone number</dt>
+            <dt class="col-sm-3">{% trans "Telephone number" %}</dt>
             <dd class="col-sm-9">{{ client.user.userTelephoneNumber }}</dd>
-            <dt class="col-sm-3">Company Name</dt>
+            <dt class="col-sm-3">{% trans "Company Name" %}</dt>
             <dd class="col-sm-9">{{ client.clientCompanyName }}</dd>
-            <dt class="col-sm-3">Street</dt>
+            <dt class="col-sm-3">{% trans "Street" %}</dt>
             <dd class="col-sm-9">{{ client.clientStreet }}</dd>
-            <dt class="col-sm-3">Code</dt>
+            <dt class="col-sm-3">{% trans "Code" %}</dt>
             <dd class="col-sm-9">{{ client.clientCode }}</dd>
-            <dt class="col-sm-3">City</dt>
+            <dt class="col-sm-3">{% trans "City" %}</dt>
             <dd class="col-sm-9">{{ client.clientCity }}</dd>
-            <dt class="col-sm-3">Country</dt>
+            <dt class="col-sm-3">{% trans "Country" %}</dt>
             <dd class="col-sm-9">{{ client.clientCountry }}</dd>
-            <dt class="col-sm-3">Client's Transactions</dt>
-            <dd class="col-sm-9"><a href="/transactions/admin/client/{{ client.id }}/" class="btn btn-secondary">Transactions</a>
-            </dd>
+            <dt class="col-sm-3">{% trans "Client's Transactions" %}</dt>
+            <dd class="col-sm-9"><a href="/transactions/admin/client/{{ client.id }}/" class="btn btn-secondary">{% trans "Transactions" %}</a></dd>
 
             {# TODO: if owner display admin #}
 
@@ -32,5 +34,6 @@
     {% elif error %}
         <div class="alert alert-danger">{{ error }}</div>
     {% endif %}
-    <a class="btn btn-secondary" href="/admin/clients">Back to Client List</a>
+    <a class="btn btn-secondary" href="/admin/clients">{% trans "Back to Client List" %}</a>
+    
 {% endblock %}
