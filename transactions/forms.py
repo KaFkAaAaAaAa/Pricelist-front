@@ -89,6 +89,15 @@ class PrognoseFrom(forms.Form):
             },
         ),
     )
+    client_date = forms.DateField(
+        label=_("Client date") + ":",
+        widget=forms.DateInput(
+            attrs={
+                "type": "date",
+                "class": "form-control",
+            },
+        ),
+    )
     delivery_price = forms.DecimalField(
         label=_("Delivery price") + ":",
         widget=forms.NumberInput(
