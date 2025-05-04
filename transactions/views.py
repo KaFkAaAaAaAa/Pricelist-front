@@ -171,7 +171,7 @@ def offer(request):
     if "current_offer" not in request.session.keys():
         request.session["current_offer"] = []
 
-    if request.method == "POST" and request.POST["action"] == "save":
+    if request.method == "POST":
         _add_items_to_session(request)
     elif request.method == "POST" and not _is_admin(request):
         items, _ = _parse_transaction_edit_items(request)
@@ -210,7 +210,6 @@ def offer(request):
         if request.method == "POST":
             client_uuid = ""
             for client in Page(clients_auths["clients"]).content:
-                __import__("pdb").set_trace()
                 if client["clientCompanyName"] == request.POST["client"]:
                     client_uuid = client["id"]
             if not client_uuid:
