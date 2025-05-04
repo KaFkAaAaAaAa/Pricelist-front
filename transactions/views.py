@@ -832,7 +832,11 @@ def create_prognose(request, data, headers):
                 return error
             return redirect("admin_transaction_detail", data["transaction_uuid"])
     else:
-        form = PrognoseFrom(initial={"description": data["transaction"]["description"]})
+        if "description" in data["transaction"].keys():
+            description = data["transaction"]["description"]
+        else:
+            description = ""
+        form = PrognoseFrom(initial={"description": description})
 
     return render(request, "create_prognose.html", {"form": form, "plates": plates})
 
