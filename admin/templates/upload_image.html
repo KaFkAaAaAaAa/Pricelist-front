@@ -1,12 +1,16 @@
-{% extends 'base.html' %} {% block title %}Upload Image{% endblock %}
+{% extends 'base.html' %} 
+{% load i18n %}
+{% block title %}
+    {% trans "Upload image" %}
+{% endblock %}
 {% block content %}
     <div class="container mt-5">
-        <h1>Upload Image</h1>
+        <h1>{% trans "Upload image" %}</h1>
         <h2 class="mt-4">{{ item_sku }}</h2>
         <form method="post" enctype="multipart/form-data" class="mt-3">
             {% csrf_token %}
             <div class="my-3">
-                <label for="image" class="form-label">Choose an image to upload:</label>
+                <label for="image" class="form-label">{% trans "Choose an image to upload:" %}</label>
                 <input
                         type="file"
                         class="form-control"
@@ -15,8 +19,8 @@
                         accept="image/*"
                 />
             </div>
-            <a class="btn btn-primary mt-3" href="/admin/items/{{ item_sku }}/edit">Back to Edit</a>
-            <button type="submit" class="btn btn-primary mt-3">Upload</button>
+            <a class="btn btn-primary mt-3" href="/admin/items/{{ item_sku }}/edit">{% trans "Back to Edit" %}</a>
+            <button type="submit" class="btn btn-primary mt-3">{% trans "Upload" %}</button>
         </form>
     </div>
 {% endblock %}
