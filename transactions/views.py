@@ -179,13 +179,13 @@ def offer(request):
     client_company_names = []  # here bc unbound
     if _is_admin(request):
         response = requests.get(
-            f"{API_BASE_URL}/clients/admin/admin-list/groups/",
+            f"{API_BASE_URL}/clients/admin/admin-list/groups/?pageSize=200",
             headers=headers,
         )
         clients_auths = response.json()
 
         for client, client_auth in zip(
-            clients_auths["clients"], clients_auths["auths"]
+            Page(clients_auths["clients"]).content, clients_auths["auths"]
         ):
             if client_auth["authGroup"] in CLIENT_GROUPS:
                 # TODO: two clients same company
@@ -427,18 +427,19 @@ def support_transaction_detail(request, transaction_uuid):
     headers = _get_headers(request)
     group = _get_group(request)
 
-    transaction, error = _make_api_request(f"{API_BASE_URL}/transactions/admin/{transaction_uuid}", headers=headers)
+    transaction, error = _make_api_request(
+        f"{API_BASE_URL}/transactions/admin/{transaction_uuid}", headers=headers
+    )
     if error:
         return error
 
-    transaction_details, error = _make_api_request(f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}", headers=headers)
+    transaction_details, error = _make_api_request(
+        f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}", headers=headers
+    )
     if error:
         return error
 
-    data = {
-            "transaction": transaction,
-            "transaction_details": transaction_details
-            }
+    data = {"transaction": transaction, "transaction_details": transaction_details}
     return render(request, data)
 
 
@@ -1111,4 +1112,6 @@ def mbs_list(request):
         if error or not transactions:
             return error
         transaction["transport"] = transaction_detail
-        transaction["total_amount"] = _calculate_total_mass(transaction["itemsOrdered"])/10
+        transaction["total_amount"] = (
+            _calculate_total_mass(transaction["itemsOrdered"]) / 10
+        )
