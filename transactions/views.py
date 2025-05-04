@@ -13,31 +13,14 @@ from django.utils.translation import gettext_lazy as _
 
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
-from Pricelist.settings import (
-    ADMIN_GROUPS,
-    API_BASE_URL,
-    CLIENT_GROUPS,
-    SKU_REGEX,
-    SUPPORT_GROUPS,
-    TRANSACTION_FINAL,
-)
-from Pricelist.utils import (
-    Page,
-    _amount_to_display,
-    _amount_to_float,
-    _amount_to_store,
-    _api_error_interpreter,
-    _get_group,
-    _get_headers,
-    _get_page_param,
-    _is_admin,
-    _make_api_request,
-    _price_to_display,
-    _price_to_float,
-    _price_to_store,
-    require_auth,
-    require_group,
-)
+from Pricelist.settings import (ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS,
+                                SKU_REGEX, SUPPORT_GROUPS, TRANSACTION_FINAL)
+from Pricelist.utils import (Page, _amount_to_display, _amount_to_float,
+                             _amount_to_store, _api_error_interpreter,
+                             _get_group, _get_headers, _get_page_param,
+                             _is_admin, _make_api_request, _price_to_display,
+                             _price_to_float, _price_to_store, require_auth,
+                             require_group)
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
 logger = logging.getLogger(__name__)
@@ -666,7 +649,7 @@ def print_transaciton(request, transaction_uuid):
     if status == "PROGNOSE":
         return print_prognose(request, data)
     if status == "FINAL":
-        if admin_url and request.GET["client"] != "1":
+        if admin_url and "client" in request.GET.keys() and request.GET["client"] != "1":
             return print_final_admin(request, data)
         return print_final(request, data)
 
@@ -719,6 +702,7 @@ def print_final_admin(request, data):
     data["prognose_date"] = _parse_date(
         data["transaction"]["statusHistory"][-2]["time"]
     )
+    
     transport = data["transactionDetails"]["transportCost"]
     data["total"]["amount"], data["total"]["price"] = 0, 0
     for item in data["transaction"]["itemsOrdered"]:
