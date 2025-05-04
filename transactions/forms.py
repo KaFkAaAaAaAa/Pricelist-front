@@ -2,7 +2,7 @@ from django import forms
 from django.forms.widgets import Widget
 from django.utils.translation import gettext_lazy as _
 
-STATUSES = ["PROPOSITION", "OFFER", "PROGNOSE", "FINAL"]
+STATUSES = ["PROPOSITION", "OFFER", "PROGNOSE", "FINAL", "FINAL_C", "FINAL_K"]
 
 
 class StatusForm(forms.Form):
@@ -11,8 +11,6 @@ class StatusForm(forms.Form):
         super().__init__(*args, **kwargs)
         if init_status.upper() not in STATUSES:
             raise ValueError
-        if init_status == "FINAL":
-            return
         self.fields["select_status"].choices = [
             (s, s.lower())
             for s in STATUSES
