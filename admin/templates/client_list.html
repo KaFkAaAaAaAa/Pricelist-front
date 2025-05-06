@@ -1,15 +1,21 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}
-    {% trans "Client List" %}
-{% endblock %}
+{% block title %}Client List{% endblock %}
 {% block content %}
     <h1 class="text-center">{% trans "Client List" %}</h1>
     <div class="my-2">
-        <button class="btn btn-outline-danger me-2" onclick="history.back()">
+        <a class="btn btn-outline-danger me-2" href="{% url admin_dashboard %}">
             {% trans "Go back" %}
-        </button>
-        <a class="btn btn-primary" href="/admin/clients/add">{% trans "Add new" %}</a>
+        </a>
+        <a class="btn btn-primary" href="/admin/clients/add">Add new</a>
+        <div class="input-group">
+            <form method="GET">
+            <input type="text" class="form-control" name="search" placeholder="{% trans "Search" %}...">
+            <button type="submit" class="btn btn-outline-secondary">
+                <i class="fa fa-search"></i>
+            </button>
+            </form>
+        </div>
     </div>
     <div class="table-responsive">
         <table class="table table-hover table-striped mt-3">
@@ -19,7 +25,7 @@
                 <th>{% trans "Name" %}</th>
                 <th>{% trans "Surname" %}</th>
                 <th>{% trans "Telephone Number" %}</th>
-                <th scope=col style="max-width:400px">{% trans "Company Name" %}</th>
+                <th scope="col" class="text-start" style="max-width=400px">{% trans "Company Name" %}</th>
                 <th>{% trans "Group" %}</th>
                 <th></th>
             </tr>

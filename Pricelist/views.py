@@ -14,15 +14,8 @@ from transactions.views import _set_status
 
 from .forms import LoginForm, NewUserForm, PasswordResetForm, RegisterForm
 from .settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, GROUPS_ROMAN
-from .utils import (
-    Page,
-    _get_headers,
-    _get_page_param,
-    _group_to_roman,
-    _make_api_request,
-    require_auth,
-    require_group,
-)
+from .utils import (Page, _get_headers, _get_page_param, _group_to_roman,
+                    _make_api_request, require_auth, require_group)
 
 # TODO: JSON errors -> if json error then redirect(login)
 
@@ -415,9 +408,11 @@ def activate_user(request, user_id):
 def client_list(request):
     headers = _get_headers(request)
 
-    page = _get_page_param(request)
+    if "search" in reqeust.GET.keys()
+        page = _get_page_param(request, False)
+        url = f"{API_BASE_URL}/clients/admin/with-groups/{page}"
     clients, error = _make_api_request(
-        f"{API_BASE_URL}/clients/admin/with-groups/{page}", headers=headers
+        url, headers=headers
     )
     if error or not clients:
         return error
