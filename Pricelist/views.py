@@ -1,5 +1,6 @@
 import logging
 import re
+import urllib.parse
 from asyncio import timeout
 from typing import Iterable
 from uuid import UUID
@@ -14,8 +15,15 @@ from transactions.views import _set_status
 
 from .forms import LoginForm, NewUserForm, PasswordResetForm, RegisterForm
 from .settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, GROUPS_ROMAN
-from .utils import (Page, _get_headers, _get_page_param, _group_to_roman,
-                    _make_api_request, require_auth, require_group)
+from .utils import (
+    Page,
+    _get_headers,
+    _get_page_param,
+    _group_to_roman,
+    _make_api_request,
+    require_auth,
+    require_group,
+)
 
 # TODO: JSON errors -> if json error then redirect(login)
 
@@ -408,12 +416,14 @@ def activate_user(request, user_id):
 def client_list(request):
     headers = _get_headers(request)
 
-    if "search" in reqeust.GET.keys()
+    if "search" in request.GET.keys():
         page = _get_page_param(request, False)
+        search_param = "?cname=" + request.GET["search"]
+        url = f"{API_BASE_URL}/clients/admin/with-groups/search{search_param}{page}"
+    else:
+        page = _get_page_param(request)
         url = f"{API_BASE_URL}/clients/admin/with-groups/{page}"
-    clients, error = _make_api_request(
-        url, headers=headers
-    )
+    clients, error = _make_api_request(url, headers=headers)
     if error or not clients:
         return error
     page = Page(clients)

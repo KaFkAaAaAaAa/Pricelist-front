@@ -234,7 +234,7 @@ class Page:
         return f"PageObject:{self.page_size}:{self.page_no}/{self.total_pages}"
 
 
-def _get_page_param(request, first=true):
+def _get_page_param(request, first=True):
     """return ?page_no=GET["page"] or empty str
     if no page number was passed in the request"""
     if "page" not in request.GET.keys():

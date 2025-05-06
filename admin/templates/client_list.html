@@ -3,19 +3,20 @@
 {% block title %}Client List{% endblock %}
 {% block content %}
     <h1 class="text-center">{% trans "Client List" %}</h1>
-    <div class="my-2">
-        <a class="btn btn-outline-danger me-2" href="{% url admin_dashboard %}">
+    <div class="my-2 d-flex align-items-center">
+        <a class="btn btn-outline-danger me-2" href="{% url 'admin_dashboard' %}">
             {% trans "Go back" %}
         </a>
-        <a class="btn btn-primary" href="/admin/clients/add">Add new</a>
-        <div class="input-group">
-            <form method="GET">
-            <input type="text" class="form-control" name="search" placeholder="{% trans "Search" %}...">
-            <button type="submit" class="btn btn-outline-secondary">
-                <i class="fa fa-search"></i>
-            </button>
-            </form>
-        </div>
+        <a class="btn btn-primary me-3" href="/admin/clients/add">Add new</a>
+        
+        <form method="GET" class="mb-0">
+            <div class="input-group">
+                <input type="text" class="form-control" name="search" placeholder="{% trans "Search" %}...">
+                <button type="submit" class="btn btn-outline-secondary">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </form>
     </div>
     <div class="table-responsive">
         <table class="table table-hover table-striped mt-3">
