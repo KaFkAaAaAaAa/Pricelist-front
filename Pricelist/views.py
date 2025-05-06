@@ -289,10 +289,15 @@ def verify_registration(request):
 def my_users(request, func="activate-user"):
 
     page = _get_page_param(request)
-    clients, error = _make_api_request(
-        f"{API_BASE_URL}/clients/admin/admin-list/with-groups/{page}",
-        headers=_get_headers(request),
-    )
+    headers = _get_headers(request)
+    if "search" in request.GET.keys():
+        page = _get_page_param(request, False)
+        search_param = "?cname=" + request.GET["search"]
+        url = f"{API_BASE_URL}/clients/admin/admin-list/with-groups/search{search_param}{page}"
+    else:
+        page = _get_page_param(request)
+        url = f"{API_BASE_URL}/clients/admin/admin-list/with-groups/{page}"
+    clients, error = _make_api_request(url, headers=headers)
     if error or not clients:
         return error
     page = Page(clients)

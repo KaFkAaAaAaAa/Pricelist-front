@@ -14,7 +14,21 @@
         }
     </style>
     <h1 class="text-center">Clients</h1>
-    <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-danger float-start mb-4 mt-3">{% trans "Go back" %}</a>
+    <div class="my-2 d-flex align-items-center">
+        <a class="btn btn-outline-danger me-2" href="{% url 'admin_dashboard' %}">
+            {% trans "Go back" %}
+        </a>
+        <a class="btn btn-primary me-3" href="/admin/clients/add">Add new</a>
+        
+        <form method="GET" class="mb-0">
+            <div class="input-group">
+                <input type="text" class="form-control" name="search" placeholder="{% trans "Search" %}...">
+                <button type="submit" class="btn btn-outline-secondary">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
     <table class="table table-hover table-striped text-center">
         <thead>
         <tr>
