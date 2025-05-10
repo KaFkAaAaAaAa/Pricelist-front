@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block title %}
-{% trans "Upload file" %}
+    {% trans "Upload file" %}
 {% endblock %}
 {% block content %}
-<div class="container">
-    <p>{{ transaction_uuid }}/invoice</p>
-  {% if file_name %}
-    <a href={{ transaction_uuid }}/invoice/{{ file_name }}>{{ file_name }}</div>
-  {% endif %}
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="file" class="form-control" name="file" required />
-    <button type="submit" class="btn btn-outline-secondary">Upload</button>
-  </form>
-</div>
+    <div class="container">
+        <p>{{ transaction_uuid }}/invoice</p>
+        {% if file_name %}
+            <div><a href={{ transaction_uuid }}/invoice/{{ file_name }}>{{ file_name }}</a></div>
+        {% endif %}
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" class="form-control" name="file" required/>
+            <button type="submit" class="btn btn-outline-secondary">{% trans "Upload" %}</button>
+        </form>
+    </div>
 {% endblock %}

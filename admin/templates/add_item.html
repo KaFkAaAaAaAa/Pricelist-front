@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
-{% block title %}Add Item{% endblock %}
 {% load i18n %}
+{% block title %}
+    {% trans "Add item" %}
+{% endblock %}
 {% block content %}
     <div class="d-flex justify-content-center align-items-center flex-column mb-5">
-        <h1>{% trans "Add Item" %}</h1>
+        <h1>{% trans "Add item" %}</h1>
         {% if error %}
             <div class="alert alert-danger mt-3">{{ error }}</div>
         {% endif %}
@@ -20,17 +22,21 @@
                 />
             </div>
             <div class="mb-3">
-                <label for="itemGroup" class="form-label h5">Group</label>
+                <label for="itemGroup" class="form-label h5">
+                    {% trans "Group" %}
+                </label>
                 <select name="itemGroup" id="itemGroup" class="form-select">
                     {% for category in categories %}
                         <option value="{{ category }}">{{ category }}</option>
                     {% endfor %}
                 </select>
             </div>
-            <div class="mb-3"><h5>Prices:</h5></div>
+            <div class="mb-3">
+                <h5>{% trans "Prices:" %}</h5>
+            </div>
             <div class="row mb-3">
                 <div class="col">
-                    <label for="itemPrice-1" class="form-label">Price 1</label>
+                    <label for="itemPrice-1" class="form-label">{% trans "Price" %} 1</label>
                     <input
                             type="number"
                             step="0.01"
@@ -41,7 +47,7 @@
                     />
                 </div>
                 <div class="col">
-                    <label for="itemPrice-2" class="form-label">Price 2</label>
+                    <label for="itemPrice-2" class="form-label">{% trans "Price" %} 2</label>
                     <input
                             type="number"
                             step="0.01"
@@ -52,7 +58,7 @@
                     />
                 </div>
                 <div class="col">
-                    <label for="itemPrice-3" class="form-label">Price 3</label>
+                    <label for="itemPrice-3" class="form-label">{% trans "Price" %} 3</label>
                     <input
                             type="number"
                             step="0.01"
@@ -63,7 +69,7 @@
                     />
                 </div>
                 <div class="col">
-                    <label for="itemPrice-4" class="form-label">Price 4</label>
+                    <label for="itemPrice-4" class="form-label">{% trans "Price" %} 4</label>
                     <input
                             type="number"
                             step="0.01"
@@ -74,7 +80,9 @@
                     />
                 </div>
             </div>
-            <div class="mb-3"><h5>Name:</h5></div>
+            <div class="mb-3">
+                <h5>{% trans "Name:" %}</h5>
+            </div>
             <div class="mb-3">
                 <label for="EN-n" class="form-label">EN</label>
                 <input
@@ -125,7 +133,9 @@
                         value=""
                 />
             </div>
-            <div class="mb-3"><h5>Description:</h5></div>
+            <div class="mb-3">
+                <h5>{% trans "Description" %}:</h5>
+            </div>
             <div class="mb-3">
                 <label for="EN-d" class="form-label">EN</label>
                 <textarea
@@ -167,8 +177,8 @@
                         rows="3">{{ item.itemDescription.PL }}</textarea>
             </div>
             <div class="d-flex mt-2">
-                <a class="btn btn-outline-secondary" href="/admin/items">Back to List</a>
-                <button class="btn btn-success ms-2">Add Image and Save Item</button>
+                <a class="btn btn-outline-secondary" href="/admin/items">{% trans "Back to List" %}</a>
+                <button class="btn btn-success ms-2">{% trans "Add Image and Save Item" %}</button>
             </div>
         </form>
     </div>

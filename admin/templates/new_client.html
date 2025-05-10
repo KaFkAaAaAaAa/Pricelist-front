@@ -1,83 +1,86 @@
 {% extends 'base.html' %}
-{% block title %}New Client{% endblock %}
+{% load i18n %}
+{% block title %}
+    {% trans "New Client" %}
+{% endblock %}
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title text-center">New Client</h2>
-                </div>
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
+    <div class="container mt-1 mb-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title text-center">{% trans "New Client" %}</h2>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
 
-                        <!-- First Name -->
-                        <div class="form-group mb-3">
-                            {{ form.userFirstName.label_tag }}
-                            {{ form.userFirstName }}
-                        </div>
+                            <!-- First Name -->
+                            <div class="form-group mb-3">
+                                {{ form.userFirstName.label_tag }}
+                                {{ form.userFirstName }}
+                            </div>
 
-                        <!-- Last Name -->
-                        <div class="form-group mb-3">
-                            {{ form.userLastName.label_tag }}
-                            {{ form.userLastName }}
-                        </div>
+                            <!-- Last Name -->
+                            <div class="form-group mb-3">
+                                {{ form.userLastName.label_tag }}
+                                {{ form.userLastName }}
+                            </div>
 
-                        <!-- Email -->
-                        <div class="form-group mb-3">
-                            {{ form.userEmail.label_tag }}
-                            {{ form.userEmail }}
-                        </div>
+                            <!-- Email -->
+                            <div class="form-group mb-3">
+                                {{ form.userEmail.label_tag }}
+                                {{ form.userEmail }}
+                            </div>
 
-                        <!-- Telephone Number -->
-                        <div class="form-group mb-3">
-                            {{ form.userTelephoneNumber.label_tag }}
-                            {{ form.userTelephoneNumber }}
-                        </div>
+                            <!-- Telephone Number -->
+                            <div class="form-group mb-3">
+                                {{ form.userTelephoneNumber.label_tag }}
+                                {{ form.userTelephoneNumber }}
+                            </div>
 
-                        <!-- Company Name -->
-                        <div class="form-group mb-3">
-                            {{ form.clientCompanyName.label_tag }}
-                            {{ form.clientCompanyName }}
-                        </div>
+                            <!-- Company Name -->
+                            <div class="form-group mb-3">
+                                {{ form.clientCompanyName.label_tag }}
+                                {{ form.clientCompanyName }}
+                            </div>
 
-                        <!-- Street -->
-                        <div class="form-group mb-3">
-                            {{ form.clientStreet.label_tag }}
-                            {{ form.clientStreet }}
-                        </div>
+                            <!-- Street -->
+                            <div class="form-group mb-3">
+                                {{ form.clientStreet.label_tag }}
+                                {{ form.clientStreet }}
+                            </div>
 
-                        <!-- Code -->
-                        <div class="form-group mb-3">
-                            {{ form.clientCode.label_tag }}
-                            {{ form.clientCode }}
-                        </div>
+                            <!-- Code -->
+                            <div class="form-group mb-3">
+                                {{ form.clientCode.label_tag }}
+                                {{ form.clientCode }}
+                            </div>
 
-                        <!-- City -->
-                        <div class="form-group mb-3">
-                            {{ form.clientCity.label_tag }}
-                            {{ form.clientCity }}
-                        </div>
+                            <!-- City -->
+                            <div class="form-group mb-3">
+                                {{ form.clientCity.label_tag }}
+                                {{ form.clientCity }}
+                            </div>
 
-                        <!-- Country -->
-                        <div class="form-group mb-3">
-                            {{ form.clientCountry.label_tag }}
-                            {{ form.clientCountry }}
-                        </div>
+                            <!-- Country -->
+                            <div class="form-group mb-3">
+                                {{ form.clientCountry.label_tag }}
+                                {{ form.clientCountry }}
+                            </div>
 
-                        <!-- Buttons -->
-                        <div class="text-center">
-                            <a class="btn btn-secondary" href="{% url 'login' %}">Back</a>
-                            <button class="btn btn-primary">New Client</button>
-                        </div>
-                    </form>
-                    {% if error %}
-                        <div class="alert alert-danger mt-3">{{ error }}</div>
-                    {% endif %}
+                            <!-- Buttons -->
+                            <div class="text-center">
+                                <a class="btn btn-secondary" href="{% url 'login' %}">{% trans "Back" %}</a>
+                                <button class="btn btn-primary">{% trans "New Client" %}</button>
+                            </div>
+                        </form>
+                        {% if error %}
+                            <div class="alert alert-danger mt-3">{{ error }}</div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
