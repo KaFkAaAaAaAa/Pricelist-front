@@ -1,43 +1,36 @@
-|x| MBS -> dokumenty; z kim, data; cena transportu; suma wagi
-    |x| back
-    |x| tabelka
-
+|x| zxrobić checklistę
+| | dodatkowe role:
+    | | zweryfikuj admin
+    | | zweryfikuj owner
+    | | zweryfikuj dispo
+    | | zweryfikuj logistics
+    | | zweryfikuj mbs
 | | DISPO -> odczyt na prognozy; dokumenty
     | | zakaz
     |x| mozliwość
-
-|x| MAGAZYN -> prognoza do finał (edycja: wagi i komentarze); bez dokumentów
-
-|x| dostawa od klienta i do alku (dwie daty) + dodać godziny (string):
-    |x| back
-    |x| front
-
-|x| szukanie po nazwie firmy
-    |x| back
-    |x| front
-    |x| text
-
-|x| klient widzi prognozy i finały
-    |x| lista
-    |x| detal
-    |x| test
-
-|x| files przycisk -> duża litera
-
-|x| zmaina_nazwy_transakcji -> FIRMA-DATA
-
-|x| powrót z plików do tra_det
-
-|x| usuń transakcję nie działa (działa xD)
-
-|x| więcej niż 5
-
-|x| mail gdy:
-|x| dodanie plików 
-|x| zmiana danych klienta
-|x| nowa propozycja
-
-|x| mail sprawdzony - działa
-
-|x| model klienta przy zmianie konta nie rozpoznawany (nazwa firmy nie zmienia się)
-
+| | Make offer
+    | | H collumn header - comment
+    | | L add comment -> edit comment
+    | | L comment modal - flush input
+    | | M kolejność po sku artykułów
+    | | proposition/transaction weird stuff with editable fields
+| | List Clients
+    | | L equal lenght of buttons
+    |x| Wyszukiwanie ;>
+    | | Który handlowiec
+| | Change password:
+    | | alert po wysłaniu nie prawidłowego
+| | My client list:
+    | | delete button
+    | | not every one in my clients
+    | | company name text-start
+| | Transaction:
+    | | zmiana clienta w podczas transakcji
+    | | M kolejność po sku artykułów
+| | final print
+| | login:
+    | | nie pamiętasz hasła
+| | make prognose:
+    | | transport cost >= 0
+| | edit client
+    | | po proprawnej edycji alert ze client not found
