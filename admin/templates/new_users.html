@@ -42,6 +42,9 @@
                         <a class="btn btn-primary" href="/admin/clients/{{ client.id }}/edit">
                             {% trans "Edit" %}
                         </a>
+                        <a class="btn btn-danger" href="/admin/clients/{{ client.user_id }}/delete">
+                            {% trans "Delete" %}
+                        </a>
                     </td>
                 {% else %}
                     <td>{{ client.client_company_name }}</td>
@@ -54,6 +57,9 @@
                         </a>
                         <a class="btn btn-primary" href="/admin/clients/{{ client.user_id }}/edit">
                             {% trans "Edit" %}
+                        </a>
+                        <a class="btn btn-danger" href="/admin/clients/{{ client.user_id }}/delete">
+                            {% trans "Delete" %}
                         </a>
                     </td>
                 {% endif %}
