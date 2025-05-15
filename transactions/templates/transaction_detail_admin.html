@@ -82,10 +82,10 @@
                                 {% endif %}
                         </div>
                     {% endif %}
-                <div class="container mt-4">
-                  <label for="selectClient" class="form-label">{% trans "Choose an option" %}</label>
-                  <select name="client_uuid" id="selectClient" class="form-select" style="width: 100%"></select>
                 </div>
+                <div class="row mt-4 text-start pb-1 px-0 mx-0">
+                  <label for="selectClient" class="form-label">{% trans "Change the client" %}:</label><br>
+                  <select name="client_uuid" id="selectClient" class="form-select" style="width: 50%"></select>
                 </div>
                 <button type="button" data-bs-toggle="modal" data-bs-target="#searchModal"
                         class="btn btn-sm btn-outline-success mt-2 mb-2">
