@@ -24,9 +24,9 @@
     | | delete button
     | | not every one in my clients
     | | company name text-start
-| | Transaction:
-    | | zmiana clienta w podczas transakcji
-    | | M kolejność po sku artykułów
+|x| Transaction:
+    |x| zmiana clienta w podczas transakcji
+    |x| M kolejność po sku artykułów
 | | final print
 | | login:
     | | nie pamiętasz hasła
