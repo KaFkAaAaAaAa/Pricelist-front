@@ -17,9 +17,16 @@ from Pricelist.settings import (
     API_BASE_URL,
     CLIENT_GROUPS,
     MAX_FILE_SIZE,
+    SUPPORT_GROUPS,
     TRANSACTION_ROOT,
 )
-from Pricelist.utils import _get_headers, _is_admin, _make_api_request, require_auth
+from Pricelist.utils import (
+    _get_headers,
+    _is_admin,
+    _is_support,
+    _make_api_request,
+    require_auth,
+)
 
 logger = logging.getLogger(__name__)
 fs = FileSystemStorage(location=TRANSACTION_ROOT)
@@ -125,9 +132,9 @@ def transaction_files(request, transaction_uuid):
             "You don't have permission to view these files.".encode("utf-8")
         )
 
-    admin_url = "admin/" if _is_admin(request) else ""
+    admin_url = "admin/" if _is_admin(request) or _is_support(request) else ""
 
-    if user_group in (CLIENT_GROUPS + ADMIN_GROUPS):
+    if user_group in (CLIENT_GROUPS + ADMIN_GROUPS + SUPPORT_GROUPS):
         _, error = _make_api_request(
             f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
             headers=_get_headers(request),
@@ -200,7 +207,7 @@ def browse_transaction_dir(request, transaction_uuid, directory_name=None):
         if directory_name
         else transaction_uuid
     )
-    if transaction_uuid not in fs.listdir("")[0]:
+    if transaction_uuid not in fs.listdir(".")[0]:
         os.makedirs(os.path.join(fs.base_location, transaction_uuid), exist_ok=True)
         for directory in DIRECTORIES:
             os.makedirs(

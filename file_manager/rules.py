@@ -1,7 +1,7 @@
 import re
 from dataclasses import dataclass
 
-from Pricelist.settings import ADMIN_GROUPS, CLIENT_GROUPS
+from Pricelist.settings import ADMIN_GROUPS, CLIENT_GROUPS, SUPPORT_GROUPS
 
 
 @dataclass
@@ -15,7 +15,7 @@ class Rule:
 
 
 RULE_LIST = [
-    Rule(re.compile(r".*"), ADMIN_GROUPS + CLIENT_GROUPS, True, True),
+    Rule(re.compile(r".*"), ADMIN_GROUPS + CLIENT_GROUPS + SUPPORT_GROUPS, True, True),
     Rule(re.compile(r"^/[a-f0-9\-]+/.*$"), ("ADMIN", "OWNER"), True, True),
 ]
 
