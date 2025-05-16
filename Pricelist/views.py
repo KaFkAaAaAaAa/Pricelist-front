@@ -2,6 +2,7 @@ import logging
 import re
 import urllib.parse
 from asyncio import timeout
+from http.client import NOT_FOUND
 from typing import Iterable
 from uuid import UUID
 
@@ -18,6 +19,7 @@ from .forms import LoginForm, NewUserForm, PasswordResetForm, RegisterForm
 from .settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, GROUPS_ROMAN
 from .utils import (
     Page,
+    _api_error_interpreter,
     _get_headers,
     _get_page_param,
     _group_to_roman,
@@ -265,6 +267,7 @@ def new_admin(request, msg=None):
 
 
 def verify_registration(request):
+    __import__("pdb").set_trace()
     if request.method == "POST":
         payload = {
             "password": request.POST["password"],
@@ -498,7 +501,7 @@ def client_add(request):
                 headers=_get_headers(request),
             )
             if response.status_code == 200:
-                return redirect("client_list")
+                return redirect("new_users")
             return render(
                 request,
                 "new_client.html",
@@ -521,6 +524,16 @@ def client_add(request):
 @require_group(ADMIN_GROUPS)
 def edit_client(request, client_id):
     headers = _get_headers(request)
+    last_name_to_id = {}
+    admins, error = _make_api_request(
+        f"{API_BASE_URL}/users/admin/admins/", headers=headers
+    )
+    if error:
+        return error
+    if not admins:
+        return _api_error_interpreter(NOT_FOUND)
+    for admin in admins:
+        last_name_to_id[admin["userLastName"]] = admin["userId"]
     if request.method == "POST":
         payload_user = {
             "userLastName": request.POST["userLastName"],
@@ -535,6 +548,7 @@ def edit_client(request, client_id):
             "clientCode": request.POST["clientCode"],
             "clientCity": request.POST["clientCity"],
             "clientCountry": request.POST["clientCountry"],
+            "clientAdminId": last_name_to_id[request.POST["clientAdminLastName"]],
         }
 
         response_user = requests.put(
@@ -549,7 +563,7 @@ def edit_client(request, client_id):
         )
         if response_user.status_code == 200 and response_client.status_code == 200:
             messages.success(request, _("Client edited successfully"))
-            return render(request, "edit_client.html")
+            return redirect("edit_client", client_id)
         messages.error(request, _("Internal server error!"))
 
     client, error = _make_api_request(
@@ -558,7 +572,7 @@ def edit_client(request, client_id):
     if error:
         return error
 
-    return render(request, "edit_client.html", {"client": client})
+    return render(request, "edit_client.html", {"client": client, "admins": admins})
 
 
 @require_auth
@@ -576,10 +590,7 @@ def change_password(request):
             response = requests.post(
                 f"{API_BASE_URL}/auth/change-password", headers=headers, json=payload
             )
-            if (
-                response.status_code == 200
-                and response.text == "Password Change Successful"
-            ):
+            if response.status_code == 200 and re.match(".*uccess.*", response.text):
                 messages.info(request, _("Password change successful!"))
                 return redirect("/profile/")
         messages.error(request, _("Passwords are invalid"))
@@ -592,6 +603,7 @@ def change_password(request):
 
 
 def reset_password(request):
+    __import__("pdb").set_trace()
     if request.method == "POST":
         if "token" in request.GET and request.GET["token"]:
             payload = {
@@ -606,6 +618,9 @@ def reset_password(request):
             if isinstance(response, str) and re.match(".*uccess.*", response):
                 messages.success(request, _("Password change successful"))
                 return redirect("login")
+            if isinstance(response, str) and re.match(".*invalid.*", response.lower()):
+                messages.error(request, _("Invalid token"))
+                return redirect("login")
             if error:
                 messages.error(request, _("API error"))
                 return redirect("login")
@@ -617,9 +632,10 @@ def reset_password(request):
             requests.post,
             body=payload,
         )
+        __import__("pdb").set_trace()
         if error:
             messages.error(request, _("Invalid email"))
-        elif isinstance(text, str) and re.match("success", text.lower()):
+        elif isinstance(text, str) and re.match("^.*success.*", text.lower()):
             messages.success(request, _("Message sent, check your spam folder"))
         else:
             messages.error(request, _("Unknown error"))
