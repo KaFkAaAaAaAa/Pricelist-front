@@ -24,6 +24,10 @@
             <input type="hidden" name="mode" id="mode"/>
 
             {% if not request.session.logged_user.user %}
+                <div class="container mt-4">
+                  <label for="select-client" class="form-label">{% trans "Select client" %}</label>
+                  <select id="select-client" class="form-select" style="width: 100%"></select>
+                </div>
                 <div class="mb-3 text-center">
                     <label for="client" class="form-label h5">{% trans "Client" %}:</label>
                     <select name="client" class="form-select" style="max-width: 300px; margin: 0 auto;">
@@ -204,5 +208,9 @@
     <script id="delete-label">"{% trans "Delete" %}"</script>
     <script id="add-comment-label">"{% trans "Add comment" %}"</script>
     <script id="save-changes-confirm">"{% trans "Are you sure you want to save changes" %}"</script>
+    <script id="default-value">""</script>
     <script src={% static "js/offer.js" %}></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 {% endblock %}
