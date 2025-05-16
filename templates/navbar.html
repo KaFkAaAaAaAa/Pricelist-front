@@ -31,7 +31,7 @@
                         </form>
                     </li>
 
-                    {% if request.session.token %}
+                    {% if request.session.token and request.session.auth.group not in SUPPORT_GROUPS %}
                         <li class="nav-item my-1 mx-2">
                             <a class="btn btn-danger" href="{% url 'offer' %}">
                                 {% if request.session.logged_user.user %}
@@ -63,12 +63,14 @@
         </div>
         <div class="offcanvas-body">
             <ul class="list-unstyled">
-                {% if not request.session.logged_user.user %}
-                    <li><a class="btn btn-outline-primary w-100 mb-2" href="/admin/dashboard/">{% trans "Admin Dashboard" %}</a></li>
-                {% else %}
-                    <li><a class="btn btn-outline-primary w-100 mb-2" href="/transactions/">{% trans "My Transactions" %}</a></li>
-                {% endif %}
+                {% if request.session.auth.group not in SUPPORT_GROUPS %}
+                    {% if not request.session.logged_user.user %}
+                        <li><a class="btn btn-outline-primary w-100 mb-2" href="/admin/dashboard/">{% trans "Admin Dashboard" %}</a></li>
+                    {% else %}
+                        <li><a class="btn btn-outline-primary w-100 mb-2" href="/transactions/">{% trans "My Transactions" %}</a></li>
+                    {% endif %}
                 <li><a class="btn btn-outline-secondary w-100 mb-2" href="/">{% trans "Price List" %}</a></li>
+                {% endif %}
                 <li><a class="btn btn-outline-secondary w-100 mb-2" href="/profile/">{% trans "Profile" %}</a></li>
                 <li><a class="btn btn-outline-secondary w-100 mb-2" href="/change-password/">{% trans "Change password" %}</a></li>
                 <li><hr></li>
