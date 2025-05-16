@@ -83,6 +83,10 @@
                         </div>
                     {% endif %}
                 </div>
+                <div class="row mt-4 text-start pb-1 px-0 mx-0">
+                  <label for="selectClient" class="form-label">{% trans "Change the client" %}:</label><br>
+                  <select name="client_uuid" id="selectClient" class="form-select" style="width: 50%"></select>
+                </div>
                 <button type="button" data-bs-toggle="modal" data-bs-target="#searchModal"
                         class="btn btn-sm btn-outline-success mt-2 mb-2">
                     {% trans "Add item" %}
@@ -307,7 +311,39 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
+          $(document).ready(function() {
+          $('#selectClient').select2({
+              placeholder: 'Search for an option',
+              ajax: {
+                url: '/admin/clients/',  // Django URL for your API
+                dataType: 'json',
+                delay: 250,
+                processResults: function (data) {
+                  return {
+                    results: data.map(function(item) {
+                      return {
+                          id: item.user_id,  // or any unique ID you want to use
+                          text: item.client_company_name  // this is what will be shown
+                      };
+                    })
+                  };
+                },
+                cache: true
+              }
+          });
+
+            const defaultOption = { id: "{{ transaction.client.id }}", text: "{{ transaction.client.clientCompanyName }}" };
+            const option = new Option(defaultOption.text, defaultOption.id, true, true);
+            $('#selectClient').append(option).trigger('change');
+              $('#selectClient').on('change', function (e) {
+                saveButton.style.display = "inline-block";
+              });
+          });
+
         function showSuccessAlert() {
             successAlert.style.display = "block";  // Show alert
             setTimeout(() => {
@@ -580,7 +616,7 @@
                     resultsContainer.innerHTML = "";
 
                     if (data.items.length === 0) {
-                        resultsContainer.innerHTML = "<p>No items found.</p>";
+                        resultsContainer.innerHTML = "<p>{% trans "No items found" %}.</p>";
                         return;
                     }
 

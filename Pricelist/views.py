@@ -8,6 +8,7 @@ from uuid import UUID
 
 import requests
 from django.contrib import messages
+from django.http import JsonResponse
 from django.http.response import HttpResponseNotFound, HttpResponseServerError
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
@@ -423,10 +424,13 @@ def activate_user(request, user_id):
 @require_group(ADMIN_GROUPS)
 def client_list(request):
     headers = _get_headers(request)
-
     if "search" in request.GET.keys():
         page = _get_page_param(request, False)
         search_param = "?cname=" + request.GET["search"]
+        url = f"{API_BASE_URL}/clients/admin/with-groups/search{search_param}{page}"
+    elif "term" in request.GET.keys():
+        page = _get_page_param(request, False)
+        search_param = "?cname=" + request.GET["term"]
         url = f"{API_BASE_URL}/clients/admin/with-groups/search{search_param}{page}"
     else:
         page = _get_page_param(request)
@@ -435,6 +439,9 @@ def client_list(request):
     if error or not clients:
         return error
     page = Page(clients)
+    if "_type" in request.GET.keys():
+        if request.GET["_type"]:
+            return JsonResponse(page.content, safe=False)
 
     return render(request, "client_list.html", {"page": page})
 
