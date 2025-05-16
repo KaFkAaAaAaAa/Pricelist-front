@@ -15,7 +15,13 @@ from django.http.response import (
 from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
 
-from Pricelist.settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, GROUPS_ROMAN
+from Pricelist.settings import (
+    ADMIN_GROUPS,
+    API_BASE_URL,
+    CLIENT_GROUPS,
+    GROUPS_ROMAN,
+    SUPPORT_GROUPS,
+)
 
 RESPONSE_FORBIDDEN = HttpResponseForbidden(
     f"<h1>{_('You do not have access to that page')}<h1>".encode("utf-8")
@@ -149,6 +155,13 @@ def _get_group(request):
 def _is_admin(request):
     try:
         return request.session["auth"]["group"] in ADMIN_GROUPS
+    except KeyError:
+        return False
+
+
+def _is_support(request):
+    try:
+        return request.session["auth"]["group"] in SUPPORT_GROUPS
     except KeyError:
         return False
 

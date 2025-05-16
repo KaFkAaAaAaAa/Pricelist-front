@@ -26,7 +26,7 @@
                     <td>{{ transaction.status_time |date:"d-m-Y H:i" }}</td>
                     <td>{{ transaction.status }}</td>
                     <td>
-                        <a class="btn btn-outline-danger btn-sm" onclick="event.stopPropagation(); return confirm('{% trans "Are you sure you want to delete this transaction?" %}');" href="/transactions/delete/{{transaction.uuid}}/">{% trans "Delete" %}</a>
+                        <a class="btn btn-primary btn-sm" href="/files/{{ transaction.uuid }}/">{% trans "Files" %}</a>
                     </td>
                 </tr>
                 {% endfor %}
