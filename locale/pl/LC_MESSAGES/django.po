@@ -438,7 +438,7 @@ msgstr "Lista nowych użytkowników"
 #: .\admin\templates\new_admin.html:35 .\admin\templates\new_users.html:17
 #: .\templates\item_detail.html:67 .\templates\profile.html:117
 #: .\transactions\templates\create_final.html:13
-#: .\transactions\templates\mbs_list.html:11
+#: .\transactions\templates\msb_list.html:11
 #: .\transactions\templates\new_item_transaction.html:11
 #: .\transactions\templates\order_edit.html:8
 #: .\transactions\templates\prognose.html:13
@@ -620,7 +620,7 @@ msgid "New admin"
 msgstr "Nowy administrator"
 
 #: .\admin\templates\new_users.html:21
-#: .\transactions\templates\mbs_list.html:18
+#: .\transactions\templates\msb_list.html:18
 #: .\transactions\templates\transaction_list.html:32
 #: .\transactions\templates\transaction_status_list.html:14
 msgid "Company name"
@@ -1134,32 +1134,32 @@ msgstr "Zapisz zmiany"
 msgid "Change status to prognose"
 msgstr "Status transakcji"
 
-#: .\transactions\templates\mbs_list.html:4
-#: .\transactions\templates\mbs_list.html:8
+#: .\transactions\templates\msb_list.html:4
+#: .\transactions\templates\msb_list.html:8
 #: .\transactions\templates\transaction_list.html:4
 #: .\transactions\templates\transaction_list.html:23
 #: .\transactions\templates\transaction_status_list.html:6
 msgid "Transaction list"
 msgstr "Lista transakcji"
 
-#: .\transactions\templates\mbs_list.html:19
+#: .\transactions\templates\msb_list.html:19
 #: .\transactions\templates\transaction_list.html:33
 #: .\transactions\templates\transaction_status_list.html:15
 msgid "Transaction initialization"
 msgstr "Inicjalizacja transakcji"
 
-#: .\transactions\templates\mbs_list.html:20
+#: .\transactions\templates\msb_list.html:20
 #: .\transactions\templates\prognose.html:30
 msgid "Transport cost"
 msgstr "Koszt transportu"
 
-#: .\transactions\templates\mbs_list.html:21
+#: .\transactions\templates\msb_list.html:21
 #, fuzzy
 #| msgid "Total"
 msgid "Total mass"
 msgstr "Suma"
 
-#: .\transactions\templates\mbs_list.html:33
+#: .\transactions\templates\msb_list.html:33
 #: .\transactions\templates\transaction_detail_admin.html:243
 #: .\transactions\templates\transaction_detail_client.html:218
 #, fuzzy

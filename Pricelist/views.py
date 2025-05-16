@@ -267,7 +267,6 @@ def new_admin(request, msg=None):
 
 
 def verify_registration(request):
-    __import__("pdb").set_trace()
     if request.method == "POST":
         payload = {
             "password": request.POST["password"],
@@ -603,7 +602,6 @@ def change_password(request):
 
 
 def reset_password(request):
-    __import__("pdb").set_trace()
     if request.method == "POST":
         if "token" in request.GET and request.GET["token"]:
             payload = {
@@ -632,7 +630,6 @@ def reset_password(request):
             requests.post,
             body=payload,
         )
-        __import__("pdb").set_trace()
         if error:
             messages.error(request, _("Invalid email"))
         elif isinstance(text, str) and re.match("^.*success.*", text.lower()):
