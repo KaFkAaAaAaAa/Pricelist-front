@@ -102,7 +102,7 @@ class PrognoseFrom(forms.Form):
         label=_("Delivery price") + ":",
         widget=forms.NumberInput(
             attrs={
-                "min": "0.1",
+                "min": "0",
                 "class": "form-control",
             }
         ),

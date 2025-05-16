@@ -1,4 +1,4 @@
-|x| zxrobić checklistę
+|x| zrobić checklistę
 | | dodatkowe role:
     | | zweryfikuj admin
     | | zweryfikuj owner
@@ -14,23 +14,25 @@
     | | L comment modal - flush input
     | | M kolejność po sku artykułów
     | | proposition/transaction weird stuff with editable fields
-| | List Clients
-    | | L equal lenght of buttons
-    |x| Wyszukiwanie ;>
-    | | Który handlowiec
-| | Change password:
-    | | alert po wysłaniu nie prawidłowego
-| | My client list:
-    | | delete button
-    | | not every one in my clients
-    | | company name text-start
 | | Transaction:
     | | zmiana clienta w podczas transakcji
     | | M kolejność po sku artykułów
 | | final print
-| | login:
-    | | nie pamiętasz hasła
-| | make prognose:
-    | | transport cost >= 0
-| | edit client
-    | | po proprawnej edycji alert ze client not found
+|x| make prognose:
+    |x| transport cost >= 0
+|x| edit client
+    |x| po proprawnej edycji alert ze client not found
+    |x| select admin
+|x| List Clients
+    |x| L equal lenght of buttons
+    |x| Wyszukiwanie ;>
+    |x| Który handlowiec
+|x| Change password:
+    |x| alert po wysłaniu nie prawidłowego
+|x| login:
+    |x| nie pamiętasz hasła
+|x| My client list:
+    |x| delete button
+        |x| tested
+    |x| not every one in my clients
+    |x| company name text-start

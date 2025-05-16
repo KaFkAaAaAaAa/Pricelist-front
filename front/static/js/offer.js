@@ -316,6 +316,32 @@ document
       .catch((error) => console.error('Error fetching items: ' + error));
   });
 
+$(document).ready(function () {
+  $('#select-client').select2({
+    ajax: {
+      url: '/clients/admin?format=json&query=query',
+      dataType: 'json',
+      delay: 250,
+      processResults: function (data) {
+        return {
+          results: data.map(function (item) {
+            return {
+              id: item.id,
+              text: item.name,
+            };
+          }),
+        };
+      },
+      cache: true,
+    },
+  });
+});
+
+const defaultValue = document.getElementById('defaultValue');
+const defaultOption = { id: 1, text: defaultValue };
+const option = new Option(defaultOption.text, defaultOption.id, true, true);
+$('#select-client').append(option).trigger('change');
+
 window.onload = () => {
   skus.forEach((sku) => calculateTotal(sku));
   checkSkuList();
