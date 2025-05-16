@@ -1102,8 +1102,8 @@ def prognose_list(request):
 
 
 @require_auth
-@require_group(["MBS"])
-def mbs_list(request):
+@require_group(["MSB"])
+def msb_list(request):
     headers = _get_headers(request)
     page = _get_page_param(request)
 
