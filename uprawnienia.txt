@@ -14,9 +14,19 @@
     | | L comment modal - flush input
     | | M kolejność po sku artykułów
     | | proposition/transaction weird stuff with editable fields
-| | Transaction:
-    | | zmiana clienta w podczas transakcji
-    | | M kolejność po sku artykułów
+| | List Clients
+    | | L equal lenght of buttons
+    |x| Wyszukiwanie ;>
+    | | Który handlowiec
+| | Change password:
+    | | alert po wysłaniu nie prawidłowego
+| | My client list:
+    | | delete button
+    | | not every one in my clients
+    | | company name text-start
+|x| Transaction:
+    |x| zmiana clienta w podczas transakcji
+    |x| M kolejność po sku artykułów
 | | final print
 |x| make prognose:
     |x| transport cost >= 0

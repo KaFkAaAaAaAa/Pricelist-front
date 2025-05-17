@@ -1009,7 +1009,10 @@ def admin_transaction_detail(request, transaction_uuid):
 
     if request.method == "POST":
         items, alku = _parse_transaction_edit_items(request)
-        payload_transaction = {"itemsOrdered": items}
+        payload_transaction = {
+            "itemsOrdered": items,
+            "clientId": request.POST["client_uuid"],
+        }
         if "plates_list" in request.POST.keys():
             payload = {
                 "informations": {
