@@ -15,8 +15,8 @@
                 <div class="row text-start">{{ transaction.client.clientCountry }}</div>
                 <div class="row text-start"><b class="text-start p-0">{% trans "Status" %}:</b>
                     {% if transaction.status %}
-                        {% if transaction.status in statuses %}
-                        {{ transaction.status }}
+                        {% if transaction.status == "OFFER" or transaction.status == "PROPOSITION" %}
+                            {{ transaction.status }}
                         {% elif transaction.status == "FINAL_K" %}
                         FINAL
                         {% else %}
@@ -24,25 +24,24 @@
                         {% endif %}
                         {{ transaction.status_time|date:"d-m-Y H:i" }}{% else %}{% trans "No transaction status" %}
                         {% now "d-m-Y H:i" %}{% endif %}</div>
-                <div class="row text-start ">
-                    <div class="col float-start ps-0">
-                        {% if transaction.status == "PROGNOSE" %}
-                            <p class="mb-2" style="white-space: nowrap;">
-                                <strong>{% trans "Total price with transport included" %}: </strong><span
-                                    class="separator" id="totalTransportIncluded"></span> €</p>
-                        {% endif %}
-                    </div>
+                    {# <div class="col float-start ps-0"> #}
+                    {#     {% if transaction.status == "PROGNOSE" %} #}
+                    {#         <p class="mb-2" style="white-space: nowrap;"> #}
+                    {#             <strong>{% trans "Total price with transport included" %}: </strong><span #}
+                    {#                 class="" id="totalTransportIncluded"></span> €</p> #}
+                    {#     {% endif %} #}
+                    {# </div> #}
                     {% if transaction.status == "PROGNOSE" or transaction.status == "FINAL" or transaction.status == "FINAL_C" or transaction.status == "FINAL_K" %}
-                        <div class="col-md-4 float-end text-end">
+                        <div class="row justify-content-end text-end">
                             <h5 class="fw-bold">{% trans "Delivery" %}</h5>
                             <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Date" %}: </strong>
-                                       <p class="mb-2">{% trans "Client" %}: {{ transactionDetails.informations.delivery_date }}</p>
-                                       <p class="mb-2">{% trans "Alku" %}: {{ transactionDetails.informations.client_date }}</p>
+                                       {{ transactionDetails.informations.delivery_date }}</p>
+                                       {# <p class="mb-2">{% trans "Alku" %}: {{ transactionDetails.informations.client_date }}</p> #}
                                 {% if transaction.status == "PROGNOSE" %}
-                                    <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Price" %}: </strong>
-                                        <input type="hidden" name="transport" id="transport"
-                                               value="{{ transactionDetails.transportCost }}">
-                                        <span class="input-group-text">{{ transactionDetails.transportCost }} €</span>
+                                    {# <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Price" %}: </strong> #}
+                                        {# <input type="hidden" name="transport" id="transport" #}
+                                               {# value="{{ transactionDetails.transportCost }}"> #}
+                                        {# <span class="input-group-text">{{ transactionDetails.transportCost }} €</span> #}
                                     <div class="mt-2">
                                         <h6 class="fw-semibold">{% trans "Plates:" %}</h6>
                                         <div id="plate-list" class="mb-3">
@@ -54,15 +53,16 @@
                                         </div>
                                         <label for="delivery_info"
                                                class="form-label mt-3">{% trans "Delivery info" %}:</label>
-                                        <textarea name="delivery_info" id="delivery_info"
-                                                  class="form-control">{{ transactionDetails.informations.delivery_info }}</textarea>
+                                        <input type="hidden" name="delivery_info" id="delivery_info" class="" value="{{ transactionDetails.informations.delivery_info }}"/>
+                                        <p>{{ transactionDetails.informations.delivery_info }}</p>
                                     </div>
                                 {% endif %}
                         </div>
                     {% endif %}
 
+            <div class="row"></div>
             </div>
-
+        <div>
         <button type="button" data-bs-toggle="modal" data-bs-target="#searchModal"
                 class="btn btn-sm btn-outline-success mt-2 mb-2">
             {% trans "Add item" %}
@@ -133,7 +133,7 @@
                                     {% if item.sku|slice:":2" == "NA" %}
                                     <div class="input-group">
                                         <input type="number" step="0.01" min="0.01" max="999.99" id="price-{{ item.uuid }}"
-                                                       name="price-{{ item.uuid }}" value="{{ item.price|floatformat:2 }}"
+                                                       name="price-{{ item.uuid }}" value="{{ item.price }}"
                                             class="form-control w-price text-end" onchange="calculateTotal('{{ item.uuid }}')">
                                         <span class="input-group-text">€</span>
                                     </div>
@@ -149,7 +149,7 @@
                                 {% endif %}
                             </td>
                             <td style="white-space: nowrap;" class="text-end">
-                                <span class="separator" id="total-{{ item.uuid }}">
+                                <span class="" id="total-{{ item.uuid }}">
                                 {{ item.total }}
                                 </span> €
                             </td>
@@ -174,16 +174,16 @@
                             <td></td>
                             <td></td>
                             <td class="fw-bold" style="white-space: nowrap;">
-                                <span class="separator" id="totalAmount"></span> kg
+                                <span class="" id="totalAmount"></span> kg
                             </td>
                             {% if transaction.status == "FINAL_K" %}
                                 <td class="fw-bold" style="white-space: nowrap;">
-                                <span class="separator" id="totalAlku"></span> kg
+                                <span class="" id="totalAlku"></span> kg
                                 </td>
                             {% endif %}
                             <td></td>
                             <td class="fw-bold text-end" style="white-space: nowrap;">
-                                <span class="separator" id="totalPrice"></span> €
+                                <span class="" id="totalPrice"></span> €
                             </td>
                             <td></td>
                             {% if transaction.status == "PROPOSITION" %}
@@ -199,7 +199,7 @@
                             <td> </td>
                             <td></td>
                             <td class="fw-bold text-end" style="white-space: nowrap;">
-                                <span class="separator" id="totalClientPrice"></span> €
+                                <span class="" id="totalClientPrice"></span> €
                             </td>
                             <td></td>
                             {% if transaction.status == "PROPOSITION" %}
@@ -219,6 +219,8 @@
                 <a class="btn btn-outline-secondary" href="/files/{{ transaction.uuid }}/">{% trans "Files" %}</a>
             </div>
         </form>
+
+        </div>
     </div>
     <div class="modal" id="commentModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
@@ -437,7 +439,7 @@
             <input id="price-${uuid}" name="price-${uuid}" 
                     type="number"
                 value="${price}" min="0.1" step="0.01" required
-                class="form-control ms-auto separator-input" 
+                class="form-control ms-auto" 
                 onchange="calculateTotal('${uuid}')"><span class="input-group-text me-auto">€<span>
             </div>
         `;
@@ -460,13 +462,13 @@
                 <div class="input-group text-center" style="margin: 0 auto;">
                     <input id="amount-${uuid}" name="amount-${uuid}" type="number"
                            value="0.0" min="0.1" step="0.1"
-                           class="form-control ms-auto separator-input"
+                           class="form-control ms-auto"
                            onchange="calculateTotal('${uuid}')">
                     <span class="input-group-text me-auto">kg<span>
                 </div>
             </td>
             <td>${priceField}</td>
-            <td class="text-end" style="white-space: nowrap;"><span class="separator" id="total-${uuid}"></span> €</td>
+            <td class="text-end" style="white-space: nowrap;"><span class="" id="total-${uuid}"></span> €</td>
             <input type="hidden" name="additionalInfo-${uuid}" id="additionalInfo-${uuid}" />
             <td class="removable" id="comment-${uuid}"></td>
             <td>

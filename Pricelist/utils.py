@@ -32,11 +32,11 @@ def _amount_to_float(amount: int) -> float:
 
 
 def _price_to_display(price: float) -> str:
-    return f"{price / 100:.2f}"
+    return f"{price / 100:.2f}".replace(",", ".")
 
 
 def _amount_to_display(amount: float) -> str:
-    return f"{amount / 10:.1f}"
+    return f"{amount / 10:.1f}".replace(",", ".")
 
 
 def _amount_to_store(amount: str) -> int:

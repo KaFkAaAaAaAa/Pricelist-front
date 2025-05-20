@@ -155,6 +155,6 @@ def generate_pdf(request, template, data, filename="document"):
 
     with open(pdf_file_path, "rb") as pdf_file:
         response = HttpResponse(pdf_file.read(), content_type="application/pdf")
-        response["Content-Disposition"] = f'inline; filename="{filename}"'
+        response["Content-Disposition"] = f'attachment; filename*="{filename}"'
     os.remove(pdf_file_path)
     return response
