@@ -13,31 +13,14 @@ from django.utils.translation import gettext_lazy as _
 
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
-from Pricelist.settings import (
-    ADMIN_GROUPS,
-    API_BASE_URL,
-    CLIENT_GROUPS,
-    SKU_REGEX,
-    SUPPORT_GROUPS,
-    TRANSACTION_FINAL,
-)
-from Pricelist.utils import (
-    Page,
-    _amount_to_display,
-    _amount_to_float,
-    _amount_to_store,
-    _api_error_interpreter,
-    _get_group,
-    _get_headers,
-    _get_page_param,
-    _is_admin,
-    _make_api_request,
-    _price_to_display,
-    _price_to_float,
-    _price_to_store,
-    require_auth,
-    require_group,
-)
+from Pricelist.settings import (ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS,
+                                SKU_REGEX, SUPPORT_GROUPS, TRANSACTION_FINAL)
+from Pricelist.utils import (Page, _amount_to_display, _amount_to_float,
+                             _amount_to_store, _api_error_interpreter,
+                             _get_group, _get_headers, _get_page_param,
+                             _is_admin, _make_api_request, _price_to_display,
+                             _price_to_float, _price_to_store, require_auth,
+                             require_group)
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
 logger = logging.getLogger(__name__)
@@ -115,6 +98,7 @@ def _parse_transaction_edit_items(request):
         if not (field and uuid):
             continue
         if uuid not in items:
+            __import__("pdb").set_trace()
             if re.match(r"^new.*", uuid) or re.match(SKU_REGEX, uuid):
                 items[uuid] = {}
             else:
@@ -168,17 +152,20 @@ def _add_items_to_session(request):
 @require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def offer(request):
     headers = _get_headers(request)
+    __import__("pdb").set_trace()
     if "current_offer" not in request.session.keys():
         request.session["current_offer"] = []
 
     if request.method == "POST":
         _add_items_to_session(request)
+    __import__('pdb').set_trace()
     elif request.method == "POST" and not _is_admin(request):
         items, _ = _parse_transaction_edit_items(request)
         payload = {
             "description": request.POST["transaction_description"],
             "itemsOrdered": items,
         }
+        __import__("pdb").set_trace()
         # items already converted to "store" values
         response = requests.post(
             f"{API_BASE_URL}/transactions/", headers=headers, json=payload
