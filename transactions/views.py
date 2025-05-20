@@ -115,7 +115,6 @@ def _parse_transaction_edit_items(request):
         if not (field and uuid):
             continue
         if uuid not in items:
-            __import__("pdb").set_trace()
             if re.match(r"^new.*", uuid) or re.match(SKU_REGEX, uuid):
                 items[uuid] = {}
             else:
@@ -169,20 +168,17 @@ def _add_items_to_session(request):
 @require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def offer(request):
     headers = _get_headers(request)
-    __import__("pdb").set_trace()
     if "current_offer" not in request.session.keys():
         request.session["current_offer"] = []
 
     if request.method == "POST":
         _add_items_to_session(request)
-    __import__("pdb").set_trace()
     if request.method == "POST" and not _is_admin(request):
         items, _ = _parse_transaction_edit_items(request)
         payload = {
             "description": request.POST["transaction_description"],
             "itemsOrdered": items,
         }
-        __import__("pdb").set_trace()
         # items already converted to "store" values
         response = requests.post(
             f"{API_BASE_URL}/transactions/", headers=headers, json=payload
