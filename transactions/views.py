@@ -13,14 +13,31 @@ from django.utils.translation import gettext_lazy as _
 
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
-from Pricelist.settings import (ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS,
-                                SKU_REGEX, SUPPORT_GROUPS, TRANSACTION_FINAL)
-from Pricelist.utils import (Page, _amount_to_display, _amount_to_float,
-                             _amount_to_store, _api_error_interpreter,
-                             _get_group, _get_headers, _get_page_param,
-                             _is_admin, _make_api_request, _price_to_display,
-                             _price_to_float, _price_to_store, require_auth,
-                             require_group)
+from Pricelist.settings import (
+    ADMIN_GROUPS,
+    API_BASE_URL,
+    CLIENT_GROUPS,
+    SKU_REGEX,
+    SUPPORT_GROUPS,
+    TRANSACTION_FINAL,
+)
+from Pricelist.utils import (
+    Page,
+    _amount_to_display,
+    _amount_to_float,
+    _amount_to_store,
+    _api_error_interpreter,
+    _get_group,
+    _get_headers,
+    _get_page_param,
+    _is_admin,
+    _make_api_request,
+    _price_to_display,
+    _price_to_float,
+    _price_to_store,
+    require_auth,
+    require_group,
+)
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
 logger = logging.getLogger(__name__)
@@ -156,7 +173,7 @@ def offer(request):
 
     if request.method == "POST":
         _add_items_to_session(request)
-    elif request.method == "POST" and not _is_admin(request):
+    if request.method == "POST" and not _is_admin(request):
         items, _ = _parse_transaction_edit_items(request)
         payload = {
             "description": request.POST["transaction_description"],
@@ -219,6 +236,7 @@ def offer(request):
         "offer.html",
         {"offer": current_offer, "totals": totals, "clients": client_company_names},
     )
+
 
 @require_auth
 @require_group(ADMIN_GROUPS + CLIENT_GROUPS)
@@ -623,7 +641,7 @@ def print_transaciton(request, transaction_uuid):
         return error
 
     transaction = response.json()
-    totals = _get_stored_item_list_to_display(transaction["itemsOrdered"])
+    totals = _get_stored_item_list_to_display(transaction.get("itemsOrdered", []))
     transaction = _set_status(transaction)
 
     data = {
