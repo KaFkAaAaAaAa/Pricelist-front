@@ -460,83 +460,83 @@ def support_transaction_detail(request, transaction_uuid):
     return render(request, data)
 
 
-@require_auth
-@require_group(ADMIN_GROUPS + SUPPORT_GROUPS)
-def admin_transaction_detail(request, transaction_uuid):
-    headers = _get_headers(request)
-    lang = request.LANGUAGE_CODE.upper()
-    # if auth.get("group") not in ADMIN_GROUPS:
-    #     return HttpResponseForbidden(
-    #         "<h1>You do not have access to that page<h1>".encode("utf-8")
-    #     )
-
-    msg = {}
-
-    is_logistics = request.session["group"] != "LOGISTICS"
-
-    if request.session["group"] in SUPPORT_GROUPS:
-        if not is_logistics:
-            return support_transaction_detail(request, transaction_uuid)
-
-    if request.method == "POST":
-        transaction, error = _make_api_request(
-            f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/?lang={lang}",
-            headers=headers,
-        )
-        if error or not transaction:
-            return error
-
-        # NOT FINAL_K
-        if not (is_logistics and transaction["status"] in TRANSACTION_FINAL[0:1]):
-            return _api_error_interpreter(401)
-        payload = {}
-        response = requests.post(
-            f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/",
-            headers=headers,
-            json=payload,
-        )
-        if response.status_code != 200:
-            msg["err"] = "Error! Something went wrong"
-        else:
-            msg["suc"] = "transaction data changed successfully"
-
-    response = requests.get(
-        f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/?lang={lang}",
-        headers=headers,
-    )
-    transaction = response.json()
-    transaction = _set_status(transaction)
-    transaction["totals"] = _get_stored_item_list_to_display(
-        transaction["itemsOrdered"],
-    )
-    if transaction["status"] in ("PROGNOSE", "FINAL"):
-        response = requests.get(
-            f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
-            headers=headers,
-        )
-        error = _api_error_interpreter(response.status_code)
-        if error:
-            return error
-
-        transaction_details = response.json()
-        return render(
-            request,
-            "transaction_detail_admin.html",
-            {
-                "transaction": transaction,
-                "transactionDetails": transaction_details,
-                "msg": msg,
-            },
-        )
-
-    return render(
-        request,
-        "transaction_detail_admin.html",
-        {
-            "transaction": transaction,
-            "msg": msg,
-        },
-    )
+# @require_auth
+# @require_group(ADMIN_GROUPS + SUPPORT_GROUPS)
+# def admin_transaction_detail(request, transaction_uuid):
+#     headers = _get_headers(request)
+#     lang = request.LANGUAGE_CODE.upper()
+#     # if auth.get("group") not in ADMIN_GROUPS:
+#     #     return HttpResponseForbidden(
+#     #         "<h1>You do not have access to that page<h1>".encode("utf-8")
+#     #     )
+#
+#     msg = {}
+#
+#     is_logistics = request.session["group"] != "LOGISTICS"
+#
+#     if request.session["group"] in SUPPORT_GROUPS:
+#         if not is_logistics:
+#             return support_transaction_detail(request, transaction_uuid)
+#
+#     if request.method == "POST":
+#         transaction, error = _make_api_request(
+#             f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/?lang={lang}",
+#             headers=headers,
+#         )
+#         if error or not transaction:
+#             return error
+#
+#         # NOT FINAL_K
+#         if not (is_logistics and transaction["status"] in TRANSACTION_FINAL[0:1]):
+#             return _api_error_interpreter(401)
+#         payload = {}
+#         response = requests.post(
+#             f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/",
+#             headers=headers,
+#             json=payload,
+#         )
+#         if response.status_code != 200:
+#             msg["err"] = "Error! Something went wrong"
+#         else:
+#             msg["suc"] = "transaction data changed successfully"
+#
+#     response = requests.get(
+#         f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/?lang={lang}",
+#         headers=headers,
+#     )
+#     transaction = response.json()
+#     transaction = _set_status(transaction)
+#     transaction["totals"] = _get_stored_item_list_to_display(
+#         transaction["itemsOrdered"],
+#     )
+#     if transaction["status"] in ("PROGNOSE", "FINAL"):
+#         response = requests.get(
+#             f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
+#             headers=headers,
+#         )
+#         error = _api_error_interpreter(response.status_code)
+#         if error:
+#             return error
+#
+#         transaction_details = response.json()
+#         return render(
+#             request,
+#             "transaction_detail_admin.html",
+#             {
+#                 "transaction": transaction,
+#                 "transactionDetails": transaction_details,
+#                 "msg": msg,
+#             },
+#         )
+#
+#     return render(
+#         request,
+#         "transaction_detail_admin.html",
+#         {
+#             "transaction": transaction,
+#             "msg": msg,
+#         },
+#     )
 
 
 @require_auth
@@ -995,7 +995,8 @@ def client_transaction_detail(request, transaction_uuid):
                 except KeyError:
                     continue
         data["transactionDetails"] = transaction_details
-        data["statuses"] = ["PROPOSITION", "OFFER"]
+        data["offer"] = "OFFER"
+        data["proposition"] = "PROPOSITION"
     return render(request, "transaction_detail_client.html", data)
 
 
@@ -1037,6 +1038,7 @@ def admin_transaction_detail(request, transaction_uuid):
                 "alkuAmount": alku,
                 "informations": {
                     "delivery_date": request.POST["delivery_date"],
+                    "client_date": request.POST["client_date"],
                 },
             }
             _, error = _make_api_request(
