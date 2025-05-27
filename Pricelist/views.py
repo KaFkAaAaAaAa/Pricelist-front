@@ -547,7 +547,7 @@ def edit_client(request, client_id):
             "clientCode": request.POST["clientCode"],
             "clientCity": request.POST["clientCity"],
             "clientCountry": request.POST["clientCountry"],
-            "clientAdminId": last_name_to_id[request.POST["clientAdminLastName"]],
+            "clientAdminId": last_name_to_id[request.POST["clientAdmin"]],
         }
 
         response_user = requests.put(
