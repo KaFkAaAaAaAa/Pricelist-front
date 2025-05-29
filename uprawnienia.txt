@@ -2,6 +2,7 @@
 | | bold email nazwa firmy, status
 | | poprawić nagłówki w listach klientów
 | | mail na rejestracji
+| | mail na rejestracji - sekw
 | | mail na weryfikacji
 | | mail na aktywacji klienta
 | | redirect na zmień hasło
