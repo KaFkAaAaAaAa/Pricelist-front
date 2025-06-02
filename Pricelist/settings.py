@@ -45,7 +45,7 @@ TRANSACTION_ROOT = os.getenv(
 )
 TRANSACTION_URL = "/docs/"
 
-LANGUAGE_CODE = 'pl'
+LANGUAGE_CODE = "pl"
 
 STATICFILES_DIRS = [
     BASE_DIR / "front/static",
@@ -108,6 +108,9 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "Pricelist.utils.admin_groups_context",
+                "Pricelist.utils.client_groups_context",
+                "Pricelist.utils.support_groups_context",
             ],
         },
     },

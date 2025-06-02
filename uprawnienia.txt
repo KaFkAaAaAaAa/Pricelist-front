@@ -15,11 +15,11 @@
 
 
 | | dodatkowe role:
-    | | zweryfikuj admin
-    | | zweryfikuj owner
+    |x| zweryfikuj admin
+    |x| zweryfikuj owner
     | | zweryfikuj dispo
     | | zweryfikuj logistics
-    | | zweryfikuj mbs
+    | | zweryfikuj msb
 | | DISPO -> odczyt na prognozy; dokumenty
     | | zakaz
     |x| mozliwość
