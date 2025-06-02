@@ -21,15 +21,14 @@
             <dd class="col-sm-9">{{ client.clientCity }}</dd>
             <dt class="col-sm-3">{% trans "Country" %}</dt>
             <dd class="col-sm-9">{{ client.clientCountry }}</dd>
+            {% if isOwner %}
+            <dt class="col-sm-3">{% trans "Trader" %}</dt>
+            <dd class="col-sm-9">{{ client.clientAdmin.userLastName }}</dd>
+            {% endif %}
             <dt class="col-sm-3">{% trans "Client's Transactions" %}</dt>
             <dd class="col-sm-9"><a href="/transactions/admin/client/{{ client.id }}/" class="btn btn-secondary">{% trans "Transactions" %}</a></dd>
-
-            {# TODO: if owner display admin #}
-
-            {# {% if isOwner %} #}
-            {#     <dt class="col-sm-3">Admin</dt> #}
-            {#     <dd class="col-sm-9">{{ client.clientAdmin.userEmail }}</dd> #}
-            {# {% endif %} #}
+            <!-- <dt class="col-sm-3">{% trans "Reset client's password" %}</dt> -->
+            <!-- <dd class="col-sm-9"><a href="/transactions/admin/client/{{ client.id }}/" class="btn btn-secondary">{% trans "Transactions" %}</a></dd> -->
         </dl>
     {% elif error %}
         <div class="alert alert-danger">{{ error }}</div>
