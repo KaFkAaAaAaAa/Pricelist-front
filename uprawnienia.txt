@@ -1,6 +1,6 @@
 |x| zrobić checklistę
 |x| bold email nazwa firmy, status
-|?| poprawić nagłówki w listach klientów
+|x| poprawić nagłówki w listach klientów
 |x| mail na rejestracji
 |x| mail na rejestracji - sekw
 |x| mail na weryfikacji
@@ -11,13 +11,21 @@
 |x| przy tworzeniu final dodawanie produktow z listy
 |x| w finale jak dodasz produkt to znika wszystko??
 |x| zero w alku i zero w amount w finale
-|?|haslo do 14mn008
-
+|x| haslo do 14mn008
+|x| file upload and dleete
+|x| client wydruk
+|x| redirect after dleete client
+|x| redirect after reset password
+| | bug delete file from root transaction dir
+| | bug client deletion - what to do with transactions ;<
+| | status changes (check online, bc email)
+| | client detail
+| | dodaj dispo na glownym
+| | zweryfikuj dispo
 
 | | dodatkowe role:
     |x| zweryfikuj admin
     |x| zweryfikuj owner
-    | | zweryfikuj dispo
     | | zweryfikuj logistics
     | | zweryfikuj msb
 | | DISPO -> odczyt na prognozy; dokumenty

@@ -2,7 +2,7 @@ from django import forms
 from django.forms.widgets import Widget
 from django.utils.translation import gettext_lazy as _
 
-STATUSES = ["PROPOSITION", "OFFER", "PROGNOSE", "FINAL", "FINAL_C", "FINAL_K"]
+STATUSES = ["PROPOSITION", "OFFER", "PROGNOSE", "FINAL", "FINAL_C"]
 
 
 class StatusForm(forms.Form):

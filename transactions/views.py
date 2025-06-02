@@ -13,24 +13,42 @@ from django.utils.translation import gettext_lazy as _
 
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
-from Pricelist.settings import (ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS,
-                                SKU_REGEX, SUPPORT_GROUPS, TRANSACTION_FINAL)
-from Pricelist.utils import (Page, _amount_to_display, _amount_to_float,
-                             _amount_to_store, _api_error_interpreter,
-                             _get_group, _get_headers, _get_page_param,
-                             _is_admin, _make_api_request, _price_to_display,
-                             _price_to_float, _price_to_store, require_auth,
-                             require_group)
+from Pricelist.settings import (
+    ADMIN_GROUPS,
+    API_BASE_URL,
+    CLIENT_GROUPS,
+    SKU_REGEX,
+    SUPPORT_GROUPS,
+    TRANSACTION_FINAL,
+)
+from Pricelist.utils import (
+    Page,
+    _amount_to_display,
+    _amount_to_float,
+    _amount_to_store,
+    _api_error_interpreter,
+    _get_group,
+    _get_headers,
+    _get_page_param,
+    _is_admin,
+    _make_api_request,
+    _price_to_display,
+    _price_to_float,
+    _price_to_store,
+    require_auth,
+    require_group,
+)
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
 logger = logging.getLogger(__name__)
 
 
-def _generate_doc_filename(transaction):
+def _generate_doc_filename(transaction, status=None):
     """generates a file name for a transaction with keys client, status and status time"""
     try:
         transaction["init_time"] = _get_date_from_datetime(transaction["init_time"])
-        return f'{transaction["init_time"]}_{transaction["client"]["clientCompanyName"]}_{transaction["status"]}.pdf'
+        status_name = status if status else transaction["status"]
+        return f'{transaction["init_time"]}_{transaction["client"]["clientCompanyName"]}_{status_name}.pdf'
     except KeyError:
         return "document_name_error"
 
@@ -67,12 +85,9 @@ def _get_stored_item_list_to_display(item_list, key_p="price", key_a="amount") -
     mass = 0
     for item in item_list:
         # TODO: bug, after changing the laguage, the values are stored in string
-        for possible_int in (item[key_p], item[key_a] ):
+        for possible_int in (item[key_p], item[key_a]):
             if not isinstance(possible_int, int):
-                return {
-                        "mass": 0,
-                        "price": 0
-                        }
+                return {"mass": 0, "price": 0}
         item["total"] = floor(item.get(key_p) * item.get(key_a) / 10)
         price += item.get("total")
         mass += item.get(key_a)
@@ -476,7 +491,6 @@ def support_transaction_detail(request, transaction_uuid):
 #         if error or not transaction:
 #             return error
 #
-#         # NOT FINAL_K
 #         if not (is_logistics and transaction["status"] in TRANSACTION_FINAL[0:1]):
 #             return _api_error_interpreter(401)
 #         payload = {}
@@ -642,6 +656,14 @@ def print_transaciton(request, transaction_uuid):
 
     status = transaction["status"]
 
+    if not _is_admin(request):
+        if status == "PROPOSITION":
+            messages.warning(request, _("Proposition cannot be printed"))
+        if status == "FINAL_C":
+            return print_final(request, data, "FINAL")
+        else:
+            return print_offer(request, data, "OFFER")
+
     if status == "OFFER":
         return print_offer(request, data)
     if status == "PROPOSITION":
@@ -665,13 +687,16 @@ def print_transaciton(request, transaction_uuid):
     return HttpResponseServerError()
 
 
-def print_offer(request, data):
+def print_offer(request, data, status=""):
     return generate_pdf(
-        request, "pdf_offer.html", data, _generate_doc_filename(data["transaction"])
+        request,
+        "pdf_offer.html",
+        data,
+        _generate_doc_filename(data["transaction"], status),
     )
 
 
-def print_prognose(request, data):
+def print_prognose(request, data, status=""):
     transport = data["transactionDetails"]["transportCost"]
     total_amount = float(data["total"]["mass"])
     total_price = float(data["total"]["price"])
@@ -683,11 +708,11 @@ def print_prognose(request, data):
         request,
         "pdf_prognose.html",
         data,
-        filename=_generate_doc_filename(data["transaction"]),
+        filename=_generate_doc_filename(data["transaction"], status),
     )
 
 
-def print_final(request, data):
+def print_final(request, data, status=""):
     data["prognose_date"] = _parse_date(
         data["transaction"]["statusHistory"][-2]["time"]
     )
@@ -703,7 +728,7 @@ def print_final(request, data):
         request,
         "pdf_final.html",
         data,
-        filename=_generate_doc_filename(data["transaction"]),
+        filename=_generate_doc_filename(data["transaction"], status),
     )
 
 
@@ -758,16 +783,9 @@ def delete_transaction(request, transaction_uuid):
 
 
 @require_group(ADMIN_GROUPS)
-def create_offer(request, data, headers):
+def create_offer(request, data):
     uuid = data["transaction_uuid"]
-    response = requests.get(
-        f"{API_BASE_URL}/transactions/admin/{uuid}/update-status/?status=offer",
-        headers=headers,
-    )
-    error = _api_error_interpreter(response.status_code)
-    if error:
-        return error
-    return redirect("admin_transaction_detail", data["transaction_uuid"])
+    return change_status_api(request, uuid, "offer")
 
 
 def create_prognose(request, data, headers):
@@ -816,14 +834,7 @@ def create_prognose(request, data, headers):
                 headers=headers,
                 body={"description": form.cleaned_data["description"]},
             )
-            response = requests.get(
-                f"{API_BASE_URL}/transactions/admin/{uuid}/update-status/?status=prognose",
-                headers=headers,
-            )
-            error = _api_error_interpreter(response.status_code)
-            if error:
-                return error
-            return redirect("admin_transaction_detail", data["transaction_uuid"])
+            return change_status_api(request, uuid, "prognose")
     else:
         if "description" in data["transaction"].keys():
             description = data["transaction"]["description"]
@@ -858,14 +869,7 @@ def create_final(request, data, headers):
     if error:
         return error
 
-    response = requests.get(
-        f"{API_BASE_URL}/transactions/admin/{uuid}/update-status/?status=final",
-        headers=headers,
-    )
-    error = _api_error_interpreter(response.status_code)
-    if error:
-        return error
-    return redirect("admin_transaction_detail", data["transaction_uuid"])
+    return change_status_api(request, uuid, "final")
 
     response = requests.get(
         f"{API_BASE_URL}/transaction-details/admin/{uuid}/?lang={lang}",
@@ -938,8 +942,22 @@ def change_status(request, transaction_uuid):
         return create_prognose(request, data, headers)
     if status == "PROGNOSE":
         return create_final(request, data, headers)
+    if status == "FINAL":
+        change_status_api(request, transaction_uuid, "FINAL_C")
+        redirect("transaction_admin_detail", transaction_uuid)
     messages.error(request, _("Invalid status name"))
     return redirect("admin_transaction_detail", transaction_uuid)
+
+
+def change_status_api(request, transaction_uuid, status):
+    _, error = _make_api_request(
+        f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/update-status/?status={status}",
+        headers=_get_headers(request),
+    )
+    if error:
+        return error
+    else:
+        return redirect("admin_transaction_detail", transaction_uuid)
 
 
 @require_auth

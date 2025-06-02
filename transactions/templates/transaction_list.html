@@ -45,7 +45,7 @@
                     {% if request.session.logged_user.user %}
                         {% if transaction.status in statuses %}
                         <td>{{ transaction.status }}</td>
-                        {% elif transaction.status == "FINAL_K" %}
+                        {% elif transaction.status == "FINAL_C" %}
                         <td>FINAL</td>
                         {% else %}
                         <td>OFFER</td>

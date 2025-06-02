@@ -311,7 +311,7 @@ def my_users(request, func="activate-user"):
     return render(
         request,
         "new_users.html",
-        {"page": page, "func": func},
+        {"page": page, "func": func, "header": _("My clients")},
     )
 
 
@@ -329,7 +329,7 @@ def new_users(request, func="assign-admin"):
     return render(
         request,
         "new_users.html",
-        {"page": page, "func": func},
+        {"page": page, "func": func, "header": _("New clients")},
     )
 
 
@@ -634,7 +634,7 @@ def reset_password(request):
             messages.error(request, _("Invalid email"))
         elif isinstance(text, str) and re.match("^.*success.*", text.lower()):
             messages.success(request, _("Message sent, check your spam folder"))
-            return redirect("login.html")
+            return redirect("login")
         else:
             messages.error(request, _("Unknown error"))
     if "token" in request.GET and request.GET["token"]:
