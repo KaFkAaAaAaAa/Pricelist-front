@@ -13,31 +13,14 @@ from django.utils.translation import gettext_lazy as _
 
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
-from Pricelist.settings import (
-    ADMIN_GROUPS,
-    API_BASE_URL,
-    CLIENT_GROUPS,
-    SKU_REGEX,
-    SUPPORT_GROUPS,
-    TRANSACTION_FINAL,
-)
-from Pricelist.utils import (
-    Page,
-    _amount_to_display,
-    _amount_to_float,
-    _amount_to_store,
-    _api_error_interpreter,
-    _get_group,
-    _get_headers,
-    _get_page_param,
-    _is_admin,
-    _make_api_request,
-    _price_to_display,
-    _price_to_float,
-    _price_to_store,
-    require_auth,
-    require_group,
-)
+from Pricelist.settings import (ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS,
+                                SKU_REGEX, SUPPORT_GROUPS, TRANSACTION_FINAL)
+from Pricelist.utils import (Page, _amount_to_display, _amount_to_float,
+                             _amount_to_store, _api_error_interpreter,
+                             _get_group, _get_headers, _get_page_param,
+                             _is_admin, _make_api_request, _price_to_display,
+                             _price_to_float, _price_to_store, require_auth,
+                             require_group)
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
 logger = logging.getLogger(__name__)
@@ -944,7 +927,7 @@ def change_status(request, transaction_uuid):
         return create_final(request, data, headers)
     if status == "FINAL":
         change_status_api(request, transaction_uuid, "FINAL_C")
-        redirect("transaction_admin_detail", transaction_uuid)
+        return redirect("admin_transaction_detail", transaction_uuid)
     messages.error(request, _("Invalid status name"))
     return redirect("admin_transaction_detail", transaction_uuid)
 
