@@ -283,7 +283,7 @@ def verify_registration(request):
             messages.error(request, _("API error"))
         else:
             messages.warning(request, _("Passwords are invalid"))
-        redirect("login")
+        return redirect("login")
     return render(request, "verify_registration.html")
 
 
