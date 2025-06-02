@@ -197,6 +197,7 @@
             </div>
         </div>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script id="skus">
         [{% for item in request.session.current_offer %}"{{ item.sku }}"{% if not forloop.last %}, {% endif %}{% endfor %}]
     </script>

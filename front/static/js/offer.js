@@ -26,7 +26,7 @@ function commentColumnHandler() {
 
 function checkSkuList() {
   const noItemsAlert = document.getElementById("alert-no-items");
-  if (skus.length === 0) {
+  if (skus.length !== 0) {
     noItemsAlert.style.display = "";
   } else {
     noItemsAlert.style.display = "none";

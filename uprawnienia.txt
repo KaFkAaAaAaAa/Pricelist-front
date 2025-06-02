@@ -16,15 +16,15 @@
 |x| client wydruk
 |x| redirect after dleete client
 |x| redirect after reset password
-| | bug delete file from root transaction dir
-| | bug client deletion - what to do with transactions ;<
-| | status changes (check online, bc email)
-| | client detail
-| | dodaj dispo na glownym
-| | zweryfikuj dispo
-| | verify registration redirect
-| | no items added from offer when there are items
 |x| 0.01 kg
+|x| verify registration redirect
+|x| status changes (check online, bc email)
+|x| client detail
+|x| bug delete file from root transaction dir
+| | bug client deletion - what to do with transactions ;< !!!
+|x| bug no items added from offer when there are items
+|x| dodaj dispo na glownym
+|x| zweryfikuj dispo
 
 | | dodatkowe role:
     |x| zweryfikuj admin

@@ -267,6 +267,12 @@ def file_interaction(request, transaction_uuid, file_name, directory_name=None):
 
         fs.delete(relative_path)
         messages.success(request, _("File deleted successfully"))
+        if not directory_name:
+            return redirect(
+                "browse_transaction_root",
+                transaction_uuid=transaction_uuid,
+            )
+
         return redirect(
             "browse_transaction_folder",
             transaction_uuid=transaction_uuid,

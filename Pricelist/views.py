@@ -16,7 +16,13 @@ from django.utils.translation import gettext as _
 from transactions.views import _set_status
 
 from .forms import LoginForm, NewUserForm, PasswordResetForm, RegisterForm
-from .settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, GROUPS_ROMAN
+from .settings import (
+    ADMIN_GROUPS,
+    API_BASE_URL,
+    CLIENT_GROUPS,
+    GROUPS_ROMAN,
+    SUPPORT_GROUPS,
+)
 from .utils import (
     Page,
     _api_error_interpreter,
@@ -133,7 +139,7 @@ def profile(request):
     user_admin = False
     headers = _get_headers(request)
 
-    if request.session["auth"]["group"] in ADMIN_GROUPS:
+    if request.session["auth"]["group"] in ADMIN_GROUPS + SUPPORT_GROUPS:
         user_admin = True
 
     if request.method == "POST":
