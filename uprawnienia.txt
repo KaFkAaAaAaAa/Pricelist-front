@@ -22,6 +22,9 @@
 | | client detail
 | | dodaj dispo na glownym
 | | zweryfikuj dispo
+| | verify registration redirect
+| | no items added from offer when there are items
+|x| 0.01 kg
 
 | | dodatkowe role:
     |x| zweryfikuj admin

@@ -57,8 +57,8 @@ class ItemForm(forms.Form):
             attrs={
                 "class": "form-control",
                 "id": "amount",
-                "min": "0.1",
-                "value": "0.1",
+                "min": "0.01",
+                "value": "0.01",
                 "onchange": "updateTotal();",
             },
         ),

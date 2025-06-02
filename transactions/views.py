@@ -937,7 +937,7 @@ def change_status(request, transaction_uuid):
     }
 
     if status == "PROPOSITION":
-        return create_offer(request, data, headers)
+        return create_offer(request, data)
     if status == "OFFER":
         return create_prognose(request, data, headers)
     if status == "PROGNOSE":
