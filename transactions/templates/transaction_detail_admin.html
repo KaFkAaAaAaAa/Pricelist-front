@@ -245,7 +245,7 @@
                     class="btn btn-outline-primary">{% trans "Change status" %}</button>
             <a class="btn btn-outline-secondary" href="/transactions/{{ transaction.uuid }}/print/"
                target="_blank">{% trans "Print" %}</a>
-            {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" or transaction.status == "FINAL_K" %}
+            {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
                 <a class="btn btn-outline-secondary" href="/transactions/{{ transaction.uuid }}/print/?client=1"
                    target="_blank">{% trans "Print client version" %}</a>
             {% endif %}

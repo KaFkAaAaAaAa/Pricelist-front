@@ -17,7 +17,7 @@
                     {% if transaction.status %}
                         {% if transaction.status == "OFFER" or transaction.status == "PROPOSITION" %}
                             {{ transaction.status }}
-                        {% elif transaction.status == "FINAL_K" %}
+                        {% elif transaction.status == "FINAL_C" %}
                         FINAL
                         {% else %}
                         OFFER
@@ -31,7 +31,7 @@
                     {#                 class="" id="totalTransportIncluded"></span> €</p> #}
                     {#     {% endif %} #}
                     {# </div> #}
-                    {% if transaction.status == "PROGNOSE" or transaction.status == "FINAL" or transaction.status == "FINAL_C" or transaction.status == "FINAL_K" %}
+                    {% if transaction.status == "PROGNOSE" or transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
                         <div class="row justify-content-end text-end">
                             <h5 class="fw-bold">{% trans "Delivery" %}</h5>
                             <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Date" %}: </strong>
@@ -77,7 +77,7 @@
                         <th>{% trans "SKU" %}</th>
                         <th class="text-start">{% trans "Name" %}</th>
                         <th class="text-center">{% trans "Amount" %}</th>
-                        {% if transaction.status == 'FINAL_K' %}
+                        {% if transaction.status == 'FINAL_C' %}
                             <th class="text-end" >{% trans "Alku" %}</th>
                         {% endif %}
                         <th class="text-center">{% trans "Price" %}</th>
@@ -176,7 +176,7 @@
                             <td class="fw-bold" style="white-space: nowrap;">
                                 <span class="" id="totalAmount"></span> kg
                             </td>
-                            {% if transaction.status == "FINAL_K" %}
+                            {% if transaction.status == "FINAL_C" %}
                                 <td class="fw-bold" style="white-space: nowrap;">
                                 <span class="" id="totalAlku"></span> kg
                                 </td>
@@ -190,7 +190,7 @@
                             <td></td>
                             {% endif %}
                         </tr>
-                        {% if transaction.status == "FINAL_K" %}
+                        {% if transaction.status == "FINAL_C" %}
                         <tr>
                             <td></td>
                             <td></td>
@@ -217,7 +217,9 @@
                 <button class="btn btn-primary" type="submit">{% trans "Save Changes" %}</button>
                 {% endif %}
                 <a class="btn btn-outline-secondary" href="/files/{{ transaction.uuid }}/">{% trans "Files" %}</a>
-            </div>
+                <a class="btn btn-outline-secondary" href="/transactions/{{ transaction.uuid }}/print/"
+                   target="_blank">{% trans "Print" %}</a>
+                </div>
         </form>
 
         </div>
@@ -501,7 +503,7 @@
             let allTotalPrice = 0.0, allTotalAmount = 0.0, allTotalAlku = 0.0;
             let amount = parseFloat(document.getElementById(`amount-${uuidChanged}`).value) || 0;
             let pricePerKg = parseFloat(document.getElementById(`price-${uuidChanged}`).value) || 0;
-            {% if transaction.status == "FINAL_K" %}
+            {% if transaction.status == "FINAL_C" %}
                 let alku = parseFloat(document.getElementById(`alku-${uuidChanged}`).value) || 0;
                 document.getElementById(`total-${uuidChanged}`).textContent = (alku * pricePerKg).toFixed(2);
             {% else %}
@@ -510,13 +512,13 @@
 
             uuids.forEach(uuid => {
                 let amount = parseFloat(document.getElementById(`amount-${uuid}`).value) || 0;
-                {% if transaction.status == "FINAL_K" %}
+                {% if transaction.status == "FINAL_C" %}
                     let alku = parseFloat(document.getElementById(`alku-${uuid}`).value) || 0;
                 {% endif %}
                 let pricePerKg = parseFloat(document.getElementById(`price-${uuid}`).value) || 0;
-                {% if transaction.status == "FINAL_K" %}
+                {% if transaction.status == "FINAL_C" %}
                     allTotalPrice += alku * pricePerKg;
-                    allTotalAlku += alku
+                    allTotalAlku += alku;
                 {% else %}
                     allTotalPrice += amount * pricePerKg;
                 {% endif %}
@@ -525,7 +527,7 @@
 
             document.getElementById(`totalPrice`).textContent = allTotalPrice.toFixed(2);
             document.getElementById(`totalAmount`).textContent = allTotalAmount.toFixed(1);
-            {% if transaction.status == "FINAL_K" %}
+            {% if transaction.status == "FINAL_C" %}
                 document.getElementById(`totalAlku`).textContent = allTotalAlku.toFixed(1);
             {% endif %}
             {% if transaction.status == "PROGNOSE" %}
