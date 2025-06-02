@@ -132,7 +132,6 @@ def final_offer(request):
 
 def generate_pdf(request, template, data, filename="document"):
     """generate pdf response"""
-    __import__("pdb").set_trace()
 
     data["images_root"] = "file://" + str(BASE_DIR)
     data["filename"] = filename

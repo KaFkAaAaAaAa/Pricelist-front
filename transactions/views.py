@@ -842,7 +842,6 @@ def create_final(request, data, headers):
     # return error
 
     alku = {item["uuid"]: _amount_to_store(item["amount"]) for item in data["items"]}
-    __import__("pdb").set_trace()
     response = requests.put(
         f"{API_BASE_URL}/transaction-details/admin/{uuid}/",
         json={"alkuAmount": alku},
