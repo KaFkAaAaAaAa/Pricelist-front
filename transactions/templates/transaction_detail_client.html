@@ -127,6 +127,13 @@
                                         {{ item.amount }}
                                 {% endif %}
                             </td>
+                            <td>
+                                <div>
+                                    <input type="hidden" name="alku-{{ item.uuid }}" id="alku-{{ item.uuid }}"
+                                           value="{{ item.alku }}">
+                                    {{ item.alku }}
+                                </div>
+                            </td>
 
                             <td class="">
                                 {% if transaction.status == 'PROPOSITION' %}
@@ -190,23 +197,6 @@
                             <td></td>
                             {% endif %}
                         </tr>
-                        {% if transaction.status == "FINAL_C" %}
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td> </td>
-                            <td> </td>
-                            <td></td>
-                            <td class="fw-bold text-end" style="white-space: nowrap;">
-                                <span class="" id="totalClientPrice"></span> €
-                            </td>
-                            <td></td>
-                            {% if transaction.status == "PROPOSITION" %}
-                            <td></td>
-                            {% endif %}
-                        </tr>
-                        {% endif %}
                     </tfoot>
                 </table>
             </div>

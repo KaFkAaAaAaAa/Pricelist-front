@@ -964,7 +964,7 @@ def client_transaction_detail(request, transaction_uuid):
         transaction["itemsOrdered"],
     )
     data = {"transaction": transaction}
-    if transaction["status"] in ("PROGNOSE", "FINAL"):
+    if transaction["status"] in ("PROGNOSE", "FINAL", "FINAL_C"):
         transaction_details, error = _make_api_request(
             f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
             headers=headers,
@@ -978,7 +978,7 @@ def client_transaction_detail(request, transaction_uuid):
         ):
             return _api_error_interpreter(INTERNAL_SERVER_ERROR)
 
-        if transaction["status"] == "FINAL" and transaction_details["alkuAmount"]:
+        if transaction["status"] in ("FINAL", "FINAL_C") and transaction_details["alkuAmount"]:
             for item in transaction["itemsOrdered"]:
                 try:
                     item["alku"] = _amount_to_display(
