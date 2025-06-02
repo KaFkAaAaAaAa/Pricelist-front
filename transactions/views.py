@@ -66,6 +66,13 @@ def _get_stored_item_list_to_display(item_list, key_p="price", key_a="amount") -
     price = 0
     mass = 0
     for item in item_list:
+        # TODO: bug, after changing the laguage, the values are stored in string
+        for possible_int in (item[key_p], item[key_a] ):
+            if not isinstance(possible_int, int):
+                return {
+                        "mass": 0,
+                        "price": 0
+                        }
         item["total"] = floor(item.get(key_p) * item.get(key_a) / 10)
         price += item.get("total")
         mass += item.get(key_a)
