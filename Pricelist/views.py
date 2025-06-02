@@ -634,6 +634,7 @@ def reset_password(request):
             messages.error(request, _("Invalid email"))
         elif isinstance(text, str) and re.match("^.*success.*", text.lower()):
             messages.success(request, _("Message sent, check your spam folder"))
+            return redirect("login.html")
         else:
             messages.error(request, _("Unknown error"))
     if "token" in request.GET and request.GET["token"]:

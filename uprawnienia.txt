@@ -1,11 +1,19 @@
 |x| zrobić checklistę
-| | bold email nazwa firmy, status
-| | poprawić nagłówki w listach klientów
-| | mail na rejestracji
-| | mail na rejestracji - sekw
-| | mail na weryfikacji
-| | mail na aktywacji klienta
-| | redirect na zmień hasło
+|x| bold email nazwa firmy, status
+|?| poprawić nagłówki w listach klientów
+|x| mail na rejestracji
+|x| mail na rejestracji - sekw
+|x| mail na weryfikacji
+|x| mail na aktywacji klienta
+|x| redirect na zmień hasło
+|x| usunać deklarowaną wartość z klienta
+|x| tworzenie final - za wąskie kolumy
+|x| przy tworzeniu final dodawanie produktow z listy
+|x| w finale jak dodasz produkt to znika wszystko??
+|x| zero w alku i zero w amount w finale
+|?|haslo do 14mn008
+
+
 | | dodatkowe role:
     | | zweryfikuj admin
     | | zweryfikuj owner
