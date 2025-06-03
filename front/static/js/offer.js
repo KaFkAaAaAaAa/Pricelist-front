@@ -1,4 +1,5 @@
 let skus = JSON.parse(document.getElementById("skus").textContent);
+let isAdmin = JSON.parse(document.getElementById("isAdmin").textContent);
 
 function isComments(commentColumn) {
   let out = false;
@@ -26,10 +27,12 @@ function commentColumnHandler() {
 
 function checkSkuList() {
   const noItemsAlert = document.getElementById("alert-no-items");
-  if (skus.length !== 0) {
+  if (skus.length === 0) {
     noItemsAlert.style.display = "";
+    console.log("dupa");
   } else {
     noItemsAlert.style.display = "none";
+    console.log("dupa2");
   }
 }
 
@@ -151,7 +154,7 @@ function addItemToTransaction(sku, name, price) {
         <div class="ps-2 text-start">${name}</div>
     `;
   }
-  if (!price) {
+  if (!price || isAdmin) {
     priceField = `
         <div class="input-group">
         <input id="price-${sku}" name="price-${sku}" 
@@ -336,6 +339,32 @@ $(document).ready(function () {
     },
   });
 });
+// $("#select-client").select({
+//   ajax: {
+//     url: "/clients/admin",
+//     dataType: "json",
+//     delay: 250,
+//     data: function (params) {
+//       return {
+//         format: "json",
+//         query: params.term, // user's input
+//       };
+//     },
+//     processResults: function (data) {
+//       return {
+//         results: data.map(function (item) {
+//           return {
+//             id: item.id,
+//             text: item.name,
+//           };
+//         }),
+//       };
+//     },
+//     cache: true,
+//   },
+//   placeholder: "Select a client",
+//   minimumInputLength: 1,
+// });
 
 const defaultValue = document.getElementById("defaultValue");
 const defaultOption = { id: 1, text: defaultValue };
