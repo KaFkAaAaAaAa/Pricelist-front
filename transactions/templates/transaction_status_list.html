@@ -8,7 +8,8 @@
             <button class="btn btn-outline-danger mb-4 mt-3" onclick="history.back()">Go back</button>
         </div>
         <div class="table-responsive">
-            <table class="table table-hover table-striped">
+            {#<table class="table table-hover table-striped">#}
+            <table class="table table-striped">
                 <thead>
                 <tr>
                     <th scope="col">{% trans "Company name" %}</th>
@@ -20,7 +21,8 @@
                 </thead>
                 <tbody>
                 {% for transaction in page.content %}
-                <tr style="cursor: pointer" onclick="window.location.href='{% if request.session.logged_user.user %}/transactions/{% else %}/transactions/admin/{% endif %}{{ transaction.uuid }}/';">
+                {# <tr style="cursor: pointer" onclick="window.location.href='{% if request.session.logged_user.user %}/transactions/{% else %}/transactions/admin/{% endif %}{{ transaction.uuid }}/';"> #}
+                <tr>
                     <td>{{ transaction.client_company_name }}</td>
                     <td>{{ transaction.init_time|date:"d-m-Y H:i" }}</td>
                     <td>{{ transaction.status_time |date:"d-m-Y H:i" }}</td>

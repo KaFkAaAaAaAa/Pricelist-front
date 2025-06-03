@@ -21,39 +21,41 @@
 |x| status changes (check online, bc email)
 |x| client detail
 |x| bug delete file from root transaction dir
-| | bug client deletion - what to do with transactions ;< !!!
 |x| bug no items added from offer when there are items
 |x| dodaj dispo na glownym
 |x| zweryfikuj dispo
+| | proposition/transaction weird stuff with editable fields
+
+| | bug client deletion - what to do with transactions ;< !!!
+| | Make offer
+    | | H collumn header - comment
+    | | L add comment -> edit comment
+    | | L comment modal - flush input
+| | change email accepts wrong email
 
 | | dodatkowe role:
     |x| zweryfikuj admin
     |x| zweryfikuj owner
     | | zweryfikuj logistics
     | | zweryfikuj msb
-| | DISPO -> odczyt na prognozy; dokumenty
-    | | zakaz
+|x| DISPO -> odczyt na prognozy; dokumenty
+    |x| zakaz
     |x| mozliwość
-| | Make offer
-    | | H collumn header - comment
-    | | L add comment -> edit comment
-    | | L comment modal - flush input
-    | | M kolejność po sku artykułów
-    | | proposition/transaction weird stuff with editable fields
-| | List Clients
-    | | L equal lenght of buttons
+|x| M kolejność po sku artykułów
+|x| List Clients
+    |x| L equal lenght of buttons
     |x| Wyszukiwanie ;>
-    | | Który handlowiec
+    |x| Który handlowiec
 | | Change password:
     | | alert po wysłaniu nie prawidłowego
-| | My client list:
-    | | delete button
-    | | not every one in my clients
-    | | company name text-start
+|x| My client list:
+    |x| delete button
+    |x| not every one in my clients
+    |x| company name text-start
 |x| Transaction:
     |x| zmiana clienta w podczas transakcji
     |x| M kolejność po sku artykułów
-| | final print
+|x| final print
 |x| make prognose:
     |x| transport cost >= 0
 |x| edit client

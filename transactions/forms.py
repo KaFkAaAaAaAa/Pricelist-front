@@ -88,6 +88,7 @@ class PrognoseFrom(forms.Form):
                 "class": "form-control",
             },
         ),
+        required=False,
     )
     client_date = forms.DateField(
         label=_("Client date") + ":",
@@ -97,6 +98,7 @@ class PrognoseFrom(forms.Form):
                 "class": "form-control",
             },
         ),
+        required=False,
     )
     delivery_price = forms.DecimalField(
         label=_("Delivery price") + ":",
@@ -106,6 +108,7 @@ class PrognoseFrom(forms.Form):
                 "class": "form-control",
             }
         ),
+        required=False,
     )
     description = forms.CharField(
         label=_("Additional info about transaction") + ":",
