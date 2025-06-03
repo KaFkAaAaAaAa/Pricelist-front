@@ -788,7 +788,7 @@ def create_prognose(request, data, headers):
                     if form.cleaned_data["plates_list"]
                     else []
                 ),
-                "transportCost": int(form.cleaned_data["delivery_price"]),
+                "transportCost": int(form.cleaned_data["delivery_price"] if form.cleaned_data["delivery_price"] else -1),
                 "informations": {
                     "delivery_info": form.cleaned_data["delivery_info"],
                     "delivery_date": str(form.cleaned_data["delivery_date"]),
@@ -978,7 +978,10 @@ def client_transaction_detail(request, transaction_uuid):
         ):
             return _api_error_interpreter(INTERNAL_SERVER_ERROR)
 
-        if transaction["status"] in ("FINAL", "FINAL_C") and transaction_details["alkuAmount"]:
+        if (
+            transaction["status"] in ("FINAL", "FINAL_C")
+            and transaction_details["alkuAmount"]
+        ):
             for item in transaction["itemsOrdered"]:
                 try:
                     item["alku"] = _amount_to_display(
