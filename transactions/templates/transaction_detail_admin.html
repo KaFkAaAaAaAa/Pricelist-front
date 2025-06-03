@@ -471,7 +471,7 @@
                 transportPerKg = transport / allTotalAmount
                 transportPercent = transport / allTotalPrice
                 uuids.forEach(uuid => {
-                    document.getElementById(`priceWithTransport-${uuidChanged}`).textContent = (pricePerKg + pricePerKg * transportPerKg).toFixed(2);
+                    document.getElementById(`priceWithTransport-${uuidChanged}`).textContent = (pricePerKg + pricePerKg * transportPercent).toFixed(2);
                 });
                 document.getElementById(`totalTransportIncluded`).textContent = (allTotalPrice + transport).toFixed(2);
                 document.getElementById(`transportPerKg`).textContent = transportPerKg.toFixed(2);
