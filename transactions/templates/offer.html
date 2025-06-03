@@ -26,7 +26,7 @@
             {% if not request.session.logged_user.user %}
                 <div class="mb-3 text-center">
                     <label for="client" class="form-label h5">{% trans "Client" %}:</label>
-                    <select name="client" class="form-select" style="max-width: 300px; margin: 0 auto;">
+                    <select name="client" class="form-select" id="client" style="max-width: 300px; margin: 0 auto;">
                         {% for client in clients %}
                             <option value="{{ client }}">{{ client }}</option>
                         {% endfor %}
@@ -198,6 +198,8 @@
         </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script id="skus">
         [{% for item in request.session.current_offer %}"{{ item.sku }}"{% if not forloop.last %}, {% endif %}{% endfor %}]
     </script>
@@ -206,5 +208,6 @@
     <script id="add-comment-label">"{% trans "Add comment" %}"</script>
     <script id="save-changes-confirm">"{% trans "Are you sure you want to save changes" %}"</script>
     <script id="default-value">""</script>
+    <script id="isAdmin">{% if request.session.logged_user.user %}false{% else %}true{% endif %}</script>
     <script src={% static "js/offer.js" %}></script>
 {% endblock %}
