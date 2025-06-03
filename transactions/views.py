@@ -644,8 +644,7 @@ def print_transaciton(request, transaction_uuid):
             messages.warning(request, _("Proposition cannot be printed"))
         if status == "FINAL_C":
             return print_final(request, data, "FINAL")
-        else:
-            return print_offer(request, data, "OFFER")
+        return print_offer(request, data, "OFFER")
 
     if status == "OFFER":
         return print_offer(request, data)
