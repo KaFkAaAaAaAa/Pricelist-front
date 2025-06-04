@@ -13,31 +13,14 @@ from django.utils.translation import gettext_lazy as _
 
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
-from Pricelist.settings import (
-    ADMIN_GROUPS,
-    API_BASE_URL,
-    CLIENT_GROUPS,
-    SKU_REGEX,
-    SUPPORT_GROUPS,
-    TRANSACTION_FINAL,
-)
-from Pricelist.utils import (
-    Page,
-    _amount_to_display,
-    _amount_to_float,
-    _amount_to_store,
-    _api_error_interpreter,
-    _get_group,
-    _get_headers,
-    _get_page_param,
-    _is_admin,
-    _make_api_request,
-    _price_to_display,
-    _price_to_float,
-    _price_to_store,
-    require_auth,
-    require_group,
-)
+from Pricelist.settings import (ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS,
+                                SKU_REGEX, SUPPORT_GROUPS, TRANSACTION_FINAL)
+from Pricelist.utils import (Page, _amount_to_display, _amount_to_float,
+                             _amount_to_store, _api_error_interpreter,
+                             _get_group, _get_headers, _get_page_param,
+                             _is_admin, _make_api_request, _price_to_display,
+                             _price_to_float, _price_to_store, require_auth,
+                             require_group)
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
 logger = logging.getLogger(__name__)
@@ -120,7 +103,7 @@ def _parse_transaction_edit_items(request):
         if not (field and uuid):
             continue
         if uuid not in items:
-            if re.match(r"^new.*", uuid) or re.match(SKU_REGEX, uuid):
+            if re.match(r"new.*", uuid) or re.match(SKU_REGEX, uuid):
                 items[uuid] = {}
             else:
                 items[uuid] = {"uuid": uuid}
@@ -130,7 +113,10 @@ def _parse_transaction_edit_items(request):
         if field == "price":
             value = _price_to_store(value)
         if field == "alku":
-            alku[uuid] = _amount_to_store(value)
+            if re.match(r"^new.*", uuid):
+                alku[items[uuid]["sku"]] = _amount_to_store(value)
+            else:
+                alku[uuid] = _amount_to_store(value)
         else:
             items[uuid][field] = value
     return list(items.values()), alku
@@ -343,7 +329,7 @@ def client_transactions(request):
     for transaction in page.content:
         _set_status(transaction)
         if "itemsOrdered" in transaction.keys():
-            if transaction["status"] == "FINAL":
+            if transaction["status"] in TRANSACTION_FINAL:
                 transaction_details, error = _make_api_request(
                     f"{API_BASE_URL}/transaction-details/{transaction['uuid']}/",
                     headers=headers,
@@ -388,7 +374,7 @@ def admin_transactions(request):
     for transaction in page.content:
         _set_status(transaction)
         if "itemsOrdered" in transaction.keys():
-            if transaction["status"] == "FINAL":
+            if transaction["status"] in TRANSACTION_FINAL:
                 transaction_details, error = _make_api_request(
                     f"{API_BASE_URL}/transaction-details/admin/{transaction['uuid']}/",
                     headers=headers,
@@ -808,7 +794,7 @@ def create_prognose(request, data, headers):
                 "transportCost": int(
                     form.cleaned_data["delivery_price"]
                     if form.cleaned_data["delivery_price"]
-                    else -1
+                    else 0
                 ),
                 "informations": {
                     "delivery_info": form.cleaned_data["delivery_info"],
@@ -1030,6 +1016,15 @@ def admin_transaction_detail(request, transaction_uuid):
             "itemsOrdered": items,
             "clientId": request.POST["client_uuid"],
         }
+        payload_transaction["description"] = request.POST["description"]
+        transaction, error = _make_api_request(
+            f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/",
+            method=requests.put,
+            headers=headers,
+            body=payload_transaction,
+        )
+        if error:
+            return error
         if "plates_list" in request.POST.keys():
             payload = {
                 "informations": {
@@ -1049,6 +1044,14 @@ def admin_transaction_detail(request, transaction_uuid):
             if error:
                 return error
         elif alku:
+            alku_copy = alku.copy()
+            for uuid, amount in alku_copy.items():
+                if re.match(SKU_REGEX, uuid):
+                    for item in transaction["itemsOrdered"]:
+                        if item["sku"] == uuid:
+                            alku[item["uuid"]] = amount
+                            break
+                    alku.pop(uuid)
 
             payload = {
                 "alkuAmount": alku,
@@ -1063,15 +1066,6 @@ def admin_transaction_detail(request, transaction_uuid):
                 headers=headers,
                 body=payload,
             )
-            if error:
-                return error
-        payload_transaction["description"] = request.POST["description"]
-        _, error = _make_api_request(
-            f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/",
-            method=requests.put,
-            headers=headers,
-            body=payload_transaction,
-        )
 
     transaction, error = _make_api_request(
         f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/?lang={lang}",
@@ -1088,7 +1082,7 @@ def admin_transaction_detail(request, transaction_uuid):
     )
     form = StatusForm(init_status=transaction["status"])
     data = {"transaction": transaction, "form": form}
-    if transaction["status"] in ("PROGNOSE", "FINAL"):
+    if transaction["status"] in ("PROGNOSE", "FINAL", "FINAL_C"):
         transaction_details, error = _make_api_request(
             f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
             headers=headers,
@@ -1102,7 +1096,10 @@ def admin_transaction_detail(request, transaction_uuid):
         ):
             return _api_error_interpreter(INTERNAL_SERVER_ERROR)
 
-        if transaction["status"] == "FINAL" and transaction_details["alkuAmount"]:
+        if (
+            transaction["status"] in TRANSACTION_FINAL
+            and transaction_details["alkuAmount"]
+        ):
             for item in transaction["itemsOrdered"]:
                 try:
                     item["alku"] = _amount_to_display(
