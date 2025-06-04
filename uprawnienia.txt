@@ -25,6 +25,7 @@
 |x| dodaj dispo na glownym
 |x| zweryfikuj dispo
 | | proposition/transaction weird stuff with editable fields
+| | search item in transaction
 
 | | bug client deletion - what to do with transactions ;< !!!
 | | Make offer
@@ -32,6 +33,20 @@
     | | L add comment -> edit comment
     | | L comment modal - flush input
 | | change email accepts wrong email
+| | ostatnia transakcja u klientów + sort po ostatniej transakcji (dodatkowy endpoint uuid-data)
+
+
+pomysly:
+| | wydruk cennika -> przycisk drukuj w tym wydruk częściowy - bez kategorii, ewentualnie obiektów, w zależności od zalogowanego handlowca/administratora-handlowca -> numer telefonu, email
+| | klient dodawanie zdjęć do zapytania i rozliczania - folder
+| | galeria - poprawić kontrolki - dodać strzałki
+| | 4/5 cyfrowy numer do księgowania - numer księgowania - może być jednakowy dla kilku pozycji, dodać wyszukiwanie po tym
+| | możliwość oferty bez klienta, opcja header do dopisania typu Sz. P.
+| | wgląd w logowania klientów - lista z admina - ostatnie zalogowanie klienta
+| | responsywność
+| | powrót do poprzedniej strony
+| | nierozwijane menu (możliwe)
+
 
 | | dodatkowe role:
     |x| zweryfikuj admin
