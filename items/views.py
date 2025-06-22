@@ -10,6 +10,7 @@ from django.http.response import Http404, HttpResponseForbidden, HttpResponseNot
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext_lazy as _
 
+from pdfgenerator.views import generate_pdf
 from Pricelist.settings import (
     ADMIN_GROUPS,
     API_BASE_URL,
@@ -86,6 +87,14 @@ def _make_price_list(request, headers, pattern="price_list.html"):
             is_results = True
     if "f" in request.GET.keys() and request.GET["f"] == "json":
         return JsonResponse({"items": items})
+    if "print" in request.GET.keys():
+        __import__("pdb").set_trace()
+        return generate_pdf(
+            request,
+            "pdf_pricelist.html",
+            {"items": items, "categories": CATEGORIES[lang]},
+            "pricelist",
+        )
     return render(
         request,
         pattern,

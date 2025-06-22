@@ -199,13 +199,11 @@ def offer(request):
                 # TODO: two clients same company
                 client_company_names.append(client["clientCompanyName"])
         if request.method == "POST":
-            client_uuid = ""
-            for client in Page(clients_auths["clients"]).content:
-                if client["clientCompanyName"] == request.POST["client"]:
-                    client_uuid = client["id"]
-            if not client_uuid:
-                return HttpResponseServerError(b"Internal Server Error")
-
+            client_uuid = None
+            if request.POST["client"] != "null":
+                for client in Page(clients_auths["clients"]).content:
+                    if client["clientCompanyName"] == request.POST["client"]:
+                        client_uuid = client["id"]
             payload = {
                 "description": request.POST["transaction_description"],
                 "itemsOrdered": _current_offer_to_payload(
@@ -217,10 +215,37 @@ def offer(request):
             response = requests.post(
                 f"{API_BASE_URL}/transactions/admin/", headers=headers, json=payload
             )
-            if response.status_code == 200:
-                request.session["current_offer"] = []
-                request.session.modified = True
-                return redirect("admin_transaction_detail", response.json()["uuid"])
+            transaction, error = _make_api_request(
+                requests.post,
+                f"{API_BASE_URL}/transactions/admin/",
+                headers=headers,
+                body=payload,
+            )
+            if error or not transaction:
+                messages.error(request, "Internal server error")
+                return render(
+                    request,
+                    "offer.html",
+                    {
+                        "offer": current_offer,
+                        "totals": totals,
+                        "clients": client_company_names,
+                    },
+                )
+            request.session["current_offer"] = []
+            request.session.modified = True
+            if not client_uuid:
+                payload_detail = {
+                    "clientHeader": request.POST.client,
+                }
+                response, error = _make_api_request(
+                    requests.post,
+                    f"{API_BASE_URL}/transaction-details/admin/{transaction['uuid']}/",
+                    headers=headers,
+                    body=payload_detail,
+                )
+
+                return redirect("admin_transaction_detail", transaction["uuid"])
 
     return render(
         request,
