@@ -24,8 +24,8 @@
 |x| bug no items added from offer when there are items
 |x| dodaj dispo na glownym
 |x| zweryfikuj dispo
-| | proposition/transaction weird stuff with editable fields
-| | search item in transaction
+|?| proposition/transaction weird stuff with editable fields
+|?| search item in transaction (idk what i meant)
 
 | | bug client deletion - what to do with transactions ;< !!!
 | | Make offer
