@@ -45,6 +45,8 @@ TRANSACTION_ROOT = os.getenv(
 )
 TRANSACTION_URL = "/docs/"
 
+LANGUAGE_CODE = "pl"
+
 STATICFILES_DIRS = [
     BASE_DIR / "front/static",
 ]
@@ -59,7 +61,7 @@ CLIENT_GROUPS = json.loads(os.getenv("CLIENT_GROUPS"))
 GROUPS_ROMAN = json.loads(os.getenv("GROUPS_ROMAN"))
 LANGS = json.loads(os.getenv("LANGS"))
 CATEGORIES = json.loads(os.getenv("CATEGORIES"))
-TRANSACTION_FINAL = ["FINAL", "FINAL_C", "FINAL_K"]
+TRANSACTION_FINAL = ["FINAL", "FINAL_C"]
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8888")
 # 512 MB
 MAX_FILE_SIZE = int(os.getenv("MAX_FILE_SIZE", "536870912"))
@@ -106,6 +108,9 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "Pricelist.utils.admin_groups_context",
+                "Pricelist.utils.client_groups_context",
+                "Pricelist.utils.support_groups_context",
             ],
         },
     },

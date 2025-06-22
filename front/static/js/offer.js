@@ -1,9 +1,10 @@
-let skus = JSON.parse(document.getElementById('skus').textContent);
+let skus = JSON.parse(document.getElementById("skus").textContent);
+let isAdmin = JSON.parse(document.getElementById("isAdmin").textContent);
 
 function isComments(commentColumn) {
   let out = false;
   commentColumn.forEach((field) => {
-    if (field.textContent != '') out = true;
+    if (field.textContent != "") out = true;
     return;
   });
   if (out) return true;
@@ -11,30 +12,32 @@ function isComments(commentColumn) {
 }
 
 function commentColumnHandler() {
-  const commentColumn = document.querySelectorAll('.removable');
+  const commentColumn = document.querySelectorAll(".removable");
   test = isComments(commentColumn);
   if (test) {
     commentColumn.forEach((field) => {
-      field.style.display = '';
+      field.style.display = "";
     });
   } else {
     commentColumn.forEach((field) => {
-      field.style.display = 'none';
+      field.style.display = "none";
     });
   }
 }
 
 function checkSkuList() {
-  const noItemsAlert = document.getElementById('alert-no-items');
+  const noItemsAlert = document.getElementById("alert-no-items");
   if (skus.length === 0) {
-    noItemsAlert.style.display = '';
+    noItemsAlert.style.display = "";
+    console.log("dupa");
   } else {
-    noItemsAlert.style.display = 'none';
+    noItemsAlert.style.display = "none";
+    console.log("dupa2");
   }
 }
 
 function getNextSku() {
-  let prefix = 'NA'; // Fixed prefix
+  let prefix = "NA"; // Fixed prefix
   let maxNumber = 0;
 
   skus.forEach((sku) => {
@@ -46,38 +49,38 @@ function getNextSku() {
       }
     }
   });
-  let nextNumber = (maxNumber + 1).toString().padStart(2, '0'); // Ensure 2-digit format
+  let nextNumber = (maxNumber + 1).toString().padStart(2, "0"); // Ensure 2-digit format
   return `${prefix}${nextNumber}`;
 }
 
-const commentModal = document.getElementById('commentModal');
+const commentModal = document.getElementById("commentModal");
 let skuComment = null;
 
 if (commentModal) {
-  commentModal.addEventListener('show.bs.modal', (event) => {
+  commentModal.addEventListener("show.bs.modal", (event) => {
     const button = event.relatedTarget;
-    skuComment = button.getAttribute('data-bs-sku');
+    skuComment = button.getAttribute("data-bs-sku");
 
     const inputComment = document.getElementById(
-      `additionalInfo-${skuComment}`
+      `additionalInfo-${skuComment}`,
     );
   });
 }
 
-const modalSaveButton = document.getElementById('modalSaveButton');
+const modalSaveButton = document.getElementById("modalSaveButton");
 
-modalSaveButton.addEventListener('click', (event) => {
+modalSaveButton.addEventListener("click", (event) => {
   event.preventDefault();
   if (!skuComment) return;
   const inputComment = document.getElementById(`additionalInfo-${skuComment}`);
   const commentField = document.getElementById(`comment-${skuComment}`);
-  const commentInput = document.getElementById('comment');
+  const commentInput = document.getElementById("comment");
   if (inputComment) {
-    inputComment.value = document.getElementById('comment').value;
+    inputComment.value = document.getElementById("comment").value;
     // TODO: add the link (optional) to present long comment
     inputComment.value = commentInput.value;
     if (commentField) commentField.textContent = inputComment.value;
-    saveButton.style.display = 'inline-block';
+    saveButton.style.display = "inline-block";
     commentColumnHandler();
   }
   const modal = bootstrap.Modal.getInstance(commentModal);
@@ -87,7 +90,7 @@ modalSaveButton.addEventListener('click', (event) => {
 function deleteItem(event, sku) {
   event.stopPropagation();
   const deleteConfirm = JSON.parse(
-    document.getElementById('delete-confirm').textContent
+    document.getElementById("delete-confirm").textContent,
   );
   if (confirm(`${deleteConfirm}?`)) {
     let itemElement = document.getElementById(sku);
@@ -96,7 +99,7 @@ function deleteItem(event, sku) {
     }
     skus = skus.filter((itemSku) => itemSku !== sku);
   }
-  saveButton.style.display = 'inline-block';
+  saveButton.style.display = "inline-block";
   checkSkuList();
   commentColumnHandler();
 }
@@ -128,13 +131,13 @@ function calculateTotal(skuChanged) {
 
 function addItemToTransaction(sku, name, price) {
   const deleteLabel = JSON.parse(
-    document.getElementById('delete-label').textContent
+    document.getElementById("delete-label").textContent,
   );
   const commentLabel = JSON.parse(
-    document.getElementById('add-comment-label').textContent
+    document.getElementById("add-comment-label").textContent,
   );
 
-  let newRow = document.createElement('tr');
+  let newRow = document.createElement("tr");
 
   if (!sku) sku = getNextSku();
   skus.push(sku);
@@ -151,12 +154,12 @@ function addItemToTransaction(sku, name, price) {
         <div class="ps-2 text-start">${name}</div>
     `;
   }
-  if (!price) {
+  if (!price || isAdmin) {
     priceField = `
         <div class="input-group">
         <input id="price-${sku}" name="price-${sku}" 
                 type="number"
-            value="${price}" min="0.1" step="0.01" required
+            value="${price}" min="0.01" step="0.01" required
             class="form-control ms-auto separator-input" style="max-width: 100px; margin: 0;"
             onchange="calculateTotal('${sku}')"><span class="input-group-text me-auto">€<span>
         </div>
@@ -179,7 +182,7 @@ function addItemToTransaction(sku, name, price) {
         <td>
             <div class="input-group text-center" style="margin: 0 auto;">
                 <input id="amount-${sku}" name="amount-${sku}" type="number"
-                       value="0.0" min="0.1" step="0.1"
+                       value="0.0" min="0.01" step="0.01"
                        class="form-control ms-auto separator-input" style="max-width: 100px;"
                        onchange="calculateTotal('${sku}')">
                 <span class="input-group-text me-auto">kg<span>
@@ -196,25 +199,25 @@ function addItemToTransaction(sku, name, price) {
             </div>
         </td>
     `;
-  document.querySelector('table tbody').appendChild(newRow);
+  document.querySelector("table tbody").appendChild(newRow);
   calculateTotal(sku);
-  saveButton.style.display = 'inline-block';
+  saveButton.style.display = "inline-block";
   showSuccessAlert();
   commentColumnHandler();
 }
 
 function showSuccessAlert() {
-  successAlert.style.display = 'block';
+  successAlert.style.display = "block";
   setTimeout(() => {
-    successAlert.style.display = 'none';
+    successAlert.style.display = "none";
   }, 3000);
 }
 
-const successAlert = document.getElementById('successAlert');
+const successAlert = document.getElementById("successAlert");
 function validateOffer() {
   if (skus.length === 0) {
     var emptyOfferModal = new bootstrap.Modal(
-      document.getElementById('emptyOfferModal')
+      document.getElementById("emptyOfferModal"),
     );
     emptyOfferModal.show();
     return false;
@@ -222,85 +225,85 @@ function validateOffer() {
   return true;
 }
 
-const form = document.getElementById('edit-form');
-const inputs = form.querySelectorAll('input, textarea');
-const saveButton = document.getElementById('saveButton');
+const form = document.getElementById("edit-form");
+const inputs = form.querySelectorAll("input, textarea");
+const saveButton = document.getElementById("saveButton");
 
 inputs.forEach((input) => {
-  input.addEventListener('input', () => {
-    saveButton.style.display = 'inline-block';
+  input.addEventListener("input", () => {
+    saveButton.style.display = "inline-block";
   });
 });
 
-form.addEventListener('submit', function (event) {
+form.addEventListener("submit", function (event) {
   const submitButton = document.activeElement;
   const saveChangesConfirm = JSON.parse(
-    document.getElementById('save-changes-confirm').textContent
+    document.getElementById("save-changes-confirm").textContent,
   );
-  if (submitButton && submitButton.type === 'submit') {
+  if (submitButton && submitButton.type === "submit") {
     if (!confirm(`${saveChangesConfirm}?`)) {
       event.preventDefault();
     }
   }
 });
 
-document.addEventListener('keydown', function (event) {
-  if (event.key === 'Enter') {
-    let searchModal = document.getElementById('searchModal');
-    if (searchModal.classList.contains('show')) {
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    let searchModal = document.getElementById("searchModal");
+    if (searchModal.classList.contains("show")) {
       event.preventDefault();
-      document.getElementById('searchBtn').click();
+      document.getElementById("searchBtn").click();
     }
   }
 });
 
 document
-  .getElementById('searchBtn')
-  .addEventListener('click', function (event) {
+  .getElementById("searchBtn")
+  .addEventListener("click", function (event) {
     event.preventDefault();
 
-    let query = document.getElementById('searchQuery').value.trim();
+    let query = document.getElementById("searchQuery").value.trim();
 
-    if (!query) url = '/?f=json';
+    if (!query) url = "/?f=json";
     else url = `/?search=${query}&f=json`;
 
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        let resultsContainer = document.getElementById('searchResults');
-        resultsContainer.innerHTML = '';
+        let resultsContainer = document.getElementById("searchResults");
+        resultsContainer.innerHTML = "";
 
         if (data.items.length === 0) {
-          resultsContainer.innerHTML = '<p>No items found.</p>';
+          resultsContainer.innerHTML = "<p>No items found.</p>";
           return;
         }
 
-        let resultList = document.createElement('ul');
-        resultList.classList.add('list-group');
+        let resultList = document.createElement("ul");
+        resultList.classList.add("list-group");
 
         Object.entries(data.items).forEach(([category, categoryItems]) => {
           if (categoryItems.length === 0) {
             return;
           }
-          let listItem = document.createElement('li');
+          let listItem = document.createElement("li");
           listItem.innerHTML = `<strong>${category}</strong>`;
           listItem.classList.add(
-            'list-group-item',
-            'text-left',
-            'text-light',
-            'fw-semibold',
-            'text-uppercase',
-            'align-middle'
+            "list-group-item",
+            "text-left",
+            "text-light",
+            "fw-semibold",
+            "text-uppercase",
+            "align-middle",
           );
-          listItem.style.backgroundColor = '#9E0F06';
+          listItem.style.backgroundColor = "#9E0F06";
           resultList.appendChild(listItem);
           categoryItems.forEach((item) => {
-            let listItem = document.createElement('li');
+            let listItem = document.createElement("li");
             listItem.classList.add(
-              'list-group-item',
-              'd-flex',
-              'justify-content-between',
-              'align-items-center'
+              "list-group-item",
+              "d-flex",
+              "justify-content-between",
+              "align-items-center",
             );
 
             listItem.innerHTML = `
@@ -313,8 +316,60 @@ document
 
         resultsContainer.appendChild(resultList);
       })
-      .catch((error) => console.error('Error fetching items: ' + error));
+      .catch((error) => console.error("Error fetching items: " + error));
   });
+
+$(document).ready(function () {
+  $("#select-client").select2({
+    ajax: {
+      url: "/clients/admin?format=json&query=query",
+      dataType: "json",
+      delay: 250,
+      processResults: function (data) {
+        return {
+          results: data.map(function (item) {
+            return {
+              id: item.id,
+              text: item.name,
+            };
+          }),
+        };
+      },
+      cache: true,
+    },
+  });
+});
+// $("#select-client").select({
+//   ajax: {
+//     url: "/clients/admin",
+//     dataType: "json",
+//     delay: 250,
+//     data: function (params) {
+//       return {
+//         format: "json",
+//         query: params.term, // user's input
+//       };
+//     },
+//     processResults: function (data) {
+//       return {
+//         results: data.map(function (item) {
+//           return {
+//             id: item.id,
+//             text: item.name,
+//           };
+//         }),
+//       };
+//     },
+//     cache: true,
+//   },
+//   placeholder: "Select a client",
+//   minimumInputLength: 1,
+// });
+
+const defaultValue = document.getElementById("defaultValue");
+const defaultOption = { id: 1, text: defaultValue };
+const option = new Option(defaultOption.text, defaultOption.id, true, true);
+$("#select-client").append(option).trigger("change");
 
 window.onload = () => {
   skus.forEach((sku) => calculateTotal(sku));

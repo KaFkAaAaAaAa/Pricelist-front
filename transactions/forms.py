@@ -2,7 +2,7 @@ from django import forms
 from django.forms.widgets import Widget
 from django.utils.translation import gettext_lazy as _
 
-STATUSES = ["PROPOSITION", "OFFER", "PROGNOSE", "FINAL", "FINAL_C", "FINAL_K"]
+STATUSES = ["PROPOSITION", "OFFER", "PROGNOSE", "FINAL", "FINAL_C"]
 
 
 class StatusForm(forms.Form):
@@ -57,8 +57,8 @@ class ItemForm(forms.Form):
             attrs={
                 "class": "form-control",
                 "id": "amount",
-                "min": "0.1",
-                "value": "0.1",
+                "min": "0.01",
+                "value": "0.01",
                 "onchange": "updateTotal();",
             },
         ),
@@ -88,15 +88,27 @@ class PrognoseFrom(forms.Form):
                 "class": "form-control",
             },
         ),
+        required=False,
+    )
+    client_date = forms.DateField(
+        label=_("Client date") + ":",
+        widget=forms.DateInput(
+            attrs={
+                "type": "date",
+                "class": "form-control",
+            },
+        ),
+        required=False,
     )
     delivery_price = forms.DecimalField(
         label=_("Delivery price") + ":",
         widget=forms.NumberInput(
             attrs={
-                "min": "0.1",
+                "min": "0",
                 "class": "form-control",
             }
         ),
+        required=False,
     )
     description = forms.CharField(
         label=_("Additional info about transaction") + ":",

@@ -26,11 +26,12 @@ from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 logger = logging.getLogger(__name__)
 
 
-def _generate_doc_filename(transaction):
+def _generate_doc_filename(transaction, status=None):
     """generates a file name for a transaction with keys client, status and status time"""
     try:
         transaction["init_time"] = _get_date_from_datetime(transaction["init_time"])
-        return f'{transaction["init_time"]}_{transaction["client"]["clientCompanyName"]}_{transaction["status"]}.pdf'
+        status_name = status if status else transaction["status"]
+        return f'{transaction["init_time"]}_{transaction["client"]["clientCompanyName"]}_{status_name}.pdf'
     except KeyError:
         return "document_name_error"
 
@@ -66,6 +67,10 @@ def _get_stored_item_list_to_display(item_list, key_p="price", key_a="amount") -
     price = 0
     mass = 0
     for item in item_list:
+        # TODO: bug, after changing the laguage, the values are stored in string
+        for possible_int in (item[key_p], item[key_a]):
+            if not isinstance(possible_int, int):
+                return {"mass": 0, "price": 0}
         item["total"] = floor(item.get(key_p) * item.get(key_a) / 10)
         price += item.get("total")
         mass += item.get(key_a)
@@ -98,7 +103,7 @@ def _parse_transaction_edit_items(request):
         if not (field and uuid):
             continue
         if uuid not in items:
-            if re.match(r"^new.*", uuid) or re.match(SKU_REGEX, uuid):
+            if re.match(r"new.*", uuid) or re.match(SKU_REGEX, uuid):
                 items[uuid] = {}
             else:
                 items[uuid] = {"uuid": uuid}
@@ -108,7 +113,10 @@ def _parse_transaction_edit_items(request):
         if field == "price":
             value = _price_to_store(value)
         if field == "alku":
-            alku[uuid] = _amount_to_store(value)
+            if re.match(r"^new.*", uuid):
+                alku[items[uuid]["sku"]] = _amount_to_store(value)
+            else:
+                alku[uuid] = _amount_to_store(value)
         else:
             items[uuid][field] = value
     return list(items.values()), alku
@@ -154,9 +162,9 @@ def offer(request):
     if "current_offer" not in request.session.keys():
         request.session["current_offer"] = []
 
-    if request.method == "POST" and request.POST["action"] == "save":
+    if request.method == "POST":
         _add_items_to_session(request)
-    elif request.method == "POST" and not _is_admin(request):
+    if request.method == "POST" and not _is_admin(request):
         items, _ = _parse_transaction_edit_items(request)
         payload = {
             "description": request.POST["transaction_description"],
@@ -179,20 +187,20 @@ def offer(request):
     client_company_names = []  # here bc unbound
     if _is_admin(request):
         response = requests.get(
-            f"{API_BASE_URL}/clients/admin/admin-list/groups/",
+            f"{API_BASE_URL}/clients/admin/admin-list/groups/?pageSize=200",
             headers=headers,
         )
         clients_auths = response.json()
 
         for client, client_auth in zip(
-            clients_auths["clients"], clients_auths["auths"]
+            Page(clients_auths["clients"]).content, clients_auths["auths"]
         ):
             if client_auth["authGroup"] in CLIENT_GROUPS:
                 # TODO: two clients same company
                 client_company_names.append(client["clientCompanyName"])
         if request.method == "POST":
             client_uuid = ""
-            for client in clients_auths["clients"]:
+            for client in Page(clients_auths["clients"]).content:
                 if client["clientCompanyName"] == request.POST["client"]:
                     client_uuid = client["id"]
             if not client_uuid:
@@ -321,7 +329,7 @@ def client_transactions(request):
     for transaction in page.content:
         _set_status(transaction)
         if "itemsOrdered" in transaction.keys():
-            if transaction["status"] == "FINAL":
+            if transaction["status"] in TRANSACTION_FINAL:
                 transaction_details, error = _make_api_request(
                     f"{API_BASE_URL}/transaction-details/{transaction['uuid']}/",
                     headers=headers,
@@ -366,7 +374,7 @@ def admin_transactions(request):
     for transaction in page.content:
         _set_status(transaction)
         if "itemsOrdered" in transaction.keys():
-            if transaction["status"] == "FINAL":
+            if transaction["status"] in TRANSACTION_FINAL:
                 transaction_details, error = _make_api_request(
                     f"{API_BASE_URL}/transaction-details/admin/{transaction['uuid']}/",
                     headers=headers,
@@ -427,98 +435,98 @@ def support_transaction_detail(request, transaction_uuid):
     headers = _get_headers(request)
     group = _get_group(request)
 
-    transaction, error = _make_api_request(f"{API_BASE_URL}/transactions/admin/{transaction_uuid}", headers=headers)
+    transaction, error = _make_api_request(
+        f"{API_BASE_URL}/transactions/admin/{transaction_uuid}", headers=headers
+    )
     if error:
         return error
 
-    transaction_details, error = _make_api_request(f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}", headers=headers)
+    transaction_details, error = _make_api_request(
+        f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}", headers=headers
+    )
     if error:
         return error
 
-    data = {
-            "transaction": transaction,
-            "transaction_details": transaction_details
-            }
+    data = {"transaction": transaction, "transaction_details": transaction_details}
     return render(request, data)
 
 
-@require_auth
-@require_group(ADMIN_GROUPS + SUPPORT_GROUPS)
-def admin_transaction_detail(request, transaction_uuid):
-    headers = _get_headers(request)
-    lang = request.LANGUAGE_CODE.upper()
-    # if auth.get("group") not in ADMIN_GROUPS:
-    #     return HttpResponseForbidden(
-    #         "<h1>You do not have access to that page<h1>".encode("utf-8")
-    #     )
-
-    msg = {}
-
-    is_logistics = request.session["group"] != "LOGISTICS"
-
-    if request.session["group"] in SUPPORT_GROUPS:
-        if not is_logistics:
-            return support_transaction_detail(request, transaction_uuid)
-
-    if request.method == "POST":
-        transaction, error = _make_api_request(
-            f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/?lang={lang}",
-            headers=headers,
-        )
-        if error or not transaction:
-            return error
-
-        # NOT FINAL_K
-        if not (is_logistics and transaction["status"] in TRANSACTION_FINAL[0:1]):
-            return _api_error_interpreter(401)
-        payload = {}
-        response = requests.post(
-            f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/",
-            headers=headers,
-            json=payload,
-        )
-        if response.status_code != 200:
-            msg["err"] = "Error! Something went wrong"
-        else:
-            msg["suc"] = "transaction data changed successfully"
-
-    response = requests.get(
-        f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/?lang={lang}",
-        headers=headers,
-    )
-    transaction = response.json()
-    transaction = _set_status(transaction)
-    transaction["totals"] = _get_stored_item_list_to_display(
-        transaction["itemsOrdered"],
-    )
-    if transaction["status"] in ("PROGNOSE", "FINAL"):
-        response = requests.get(
-            f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
-            headers=headers,
-        )
-        error = _api_error_interpreter(response.status_code)
-        if error:
-            return error
-
-        transaction_details = response.json()
-        return render(
-            request,
-            "transaction_detail_admin.html",
-            {
-                "transaction": transaction,
-                "transactionDetails": transaction_details,
-                "msg": msg,
-            },
-        )
-
-    return render(
-        request,
-        "transaction_detail_admin.html",
-        {
-            "transaction": transaction,
-            "msg": msg,
-        },
-    )
+# @require_auth
+# @require_group(ADMIN_GROUPS + SUPPORT_GROUPS)
+# def admin_transaction_detail(request, transaction_uuid):
+#     headers = _get_headers(request)
+#     lang = request.LANGUAGE_CODE.upper()
+#     # if auth.get("group") not in ADMIN_GROUPS:
+#     #     return HttpResponseForbidden(
+#     #         "<h1>You do not have access to that page<h1>".encode("utf-8")
+#     #     )
+#
+#     msg = {}
+#
+#     is_logistics = request.session["group"] != "LOGISTICS"
+#
+#     if request.session["group"] in SUPPORT_GROUPS:
+#         if not is_logistics:
+#             return support_transaction_detail(request, transaction_uuid)
+#
+#     if request.method == "POST":
+#         transaction, error = _make_api_request(
+#             f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/?lang={lang}",
+#             headers=headers,
+#         )
+#         if error or not transaction:
+#             return error
+#
+#         if not (is_logistics and transaction["status"] in TRANSACTION_FINAL[0:1]):
+#             return _api_error_interpreter(401)
+#         payload = {}
+#         response = requests.post(
+#             f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/",
+#             headers=headers,
+#             json=payload,
+#         )
+#         if response.status_code != 200:
+#             msg["err"] = "Error! Something went wrong"
+#         else:
+#             msg["suc"] = "transaction data changed successfully"
+#
+#     response = requests.get(
+#         f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/?lang={lang}",
+#         headers=headers,
+#     )
+#     transaction = response.json()
+#     transaction = _set_status(transaction)
+#     transaction["totals"] = _get_stored_item_list_to_display(
+#         transaction["itemsOrdered"],
+#     )
+#     if transaction["status"] in ("PROGNOSE", "FINAL"):
+#         response = requests.get(
+#             f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
+#             headers=headers,
+#         )
+#         error = _api_error_interpreter(response.status_code)
+#         if error:
+#             return error
+#
+#         transaction_details = response.json()
+#         return render(
+#             request,
+#             "transaction_detail_admin.html",
+#             {
+#                 "transaction": transaction,
+#                 "transactionDetails": transaction_details,
+#                 "msg": msg,
+#             },
+#         )
+#
+#     return render(
+#         request,
+#         "transaction_detail_admin.html",
+#         {
+#             "transaction": transaction,
+#             "msg": msg,
+#         },
+#     )
 
 
 @require_auth
@@ -623,7 +631,7 @@ def print_transaciton(request, transaction_uuid):
         return error
 
     transaction = response.json()
-    totals = _get_stored_item_list_to_display(transaction["itemsOrdered"])
+    totals = _get_stored_item_list_to_display(transaction.get("itemsOrdered", []))
     transaction = _set_status(transaction)
 
     data = {
@@ -633,6 +641,13 @@ def print_transaciton(request, transaction_uuid):
     }
 
     status = transaction["status"]
+
+    if not _is_admin(request):
+        if status == "PROPOSITION":
+            messages.warning(request, _("Proposition cannot be printed"))
+        if status == "FINAL_C":
+            return print_final(request, data, "FINAL")
+        return print_offer(request, data, "OFFER")
 
     if status == "OFFER":
         return print_offer(request, data)
@@ -647,21 +662,27 @@ def print_transaciton(request, transaction_uuid):
         return error
     if status == "PROGNOSE":
         return print_prognose(request, data)
-    if status == "FINAL":
-        if admin_url and request.GET["client"] != "1":
+    if status in ("FINAL", "FINAL_C"):
+        if admin_url and (
+            "client" not in request.GET.keys() or request.GET["client"] != "1"
+        ):
             return print_final_admin(request, data)
         return print_final(request, data)
 
+    logger.error("Invalid status in print function!")
     return HttpResponseServerError()
 
 
-def print_offer(request, data):
+def print_offer(request, data, status=""):
     return generate_pdf(
-        request, "pdf_offer.html", data, _generate_doc_filename(data["transaction"])
+        request,
+        "pdf_offer.html",
+        data,
+        _generate_doc_filename(data["transaction"], status),
     )
 
 
-def print_prognose(request, data):
+def print_prognose(request, data, status=""):
     transport = data["transactionDetails"]["transportCost"]
     total_amount = float(data["total"]["mass"])
     total_price = float(data["total"]["price"])
@@ -673,11 +694,11 @@ def print_prognose(request, data):
         request,
         "pdf_prognose.html",
         data,
-        filename=_generate_doc_filename(data["transaction"]),
+        filename=_generate_doc_filename(data["transaction"], status),
     )
 
 
-def print_final(request, data):
+def print_final(request, data, status=""):
     data["prognose_date"] = _parse_date(
         data["transaction"]["statusHistory"][-2]["time"]
     )
@@ -693,7 +714,7 @@ def print_final(request, data):
         request,
         "pdf_final.html",
         data,
-        filename=_generate_doc_filename(data["transaction"]),
+        filename=_generate_doc_filename(data["transaction"], status),
     )
 
 
@@ -701,6 +722,7 @@ def print_final_admin(request, data):
     data["prognose_date"] = _parse_date(
         data["transaction"]["statusHistory"][-2]["time"]
     )
+
     transport = data["transactionDetails"]["transportCost"]
     data["total"]["amount"], data["total"]["price"] = 0, 0
     for item in data["transaction"]["itemsOrdered"]:
@@ -747,16 +769,9 @@ def delete_transaction(request, transaction_uuid):
 
 
 @require_group(ADMIN_GROUPS)
-def create_offer(request, data, headers):
+def create_offer(request, data):
     uuid = data["transaction_uuid"]
-    response = requests.get(
-        f"{API_BASE_URL}/transactions/admin/{uuid}/update-status/?status=offer",
-        headers=headers,
-    )
-    error = _api_error_interpreter(response.status_code)
-    if error:
-        return error
-    return redirect("admin_transaction_detail", data["transaction_uuid"])
+    return change_status_api(request, uuid, "offer")
 
 
 def create_prognose(request, data, headers):
@@ -776,7 +791,11 @@ def create_prognose(request, data, headers):
                     if form.cleaned_data["plates_list"]
                     else []
                 ),
-                "transportCost": int(form.cleaned_data["delivery_price"]),
+                "transportCost": int(
+                    form.cleaned_data["delivery_price"]
+                    if form.cleaned_data["delivery_price"]
+                    else 0
+                ),
                 "informations": {
                     "delivery_info": form.cleaned_data["delivery_info"],
                     "delivery_date": str(form.cleaned_data["delivery_date"]),
@@ -805,51 +824,42 @@ def create_prognose(request, data, headers):
                 headers=headers,
                 body={"description": form.cleaned_data["description"]},
             )
-            response = requests.get(
-                f"{API_BASE_URL}/transactions/admin/{uuid}/update-status/?status=prognose",
-                headers=headers,
-            )
-            error = _api_error_interpreter(response.status_code)
-            if error:
-                return error
-            return redirect("admin_transaction_detail", data["transaction_uuid"])
+            return change_status_api(request, uuid, "prognose")
     else:
-        form = PrognoseFrom(initial={"description": data["transaction"]["description"]})
+        if "description" in data["transaction"].keys():
+            description = data["transaction"]["description"]
+        else:
+            description = ""
+        form = PrognoseFrom(initial={"description": description})
 
     return render(request, "create_prognose.html", {"form": form, "plates": plates})
 
 
 def create_final(request, data, headers):
     uuid = data["transaction_uuid"]
-    lang = request.LANGUAGE_CODE.upper()
-    if request.method == "POST":
-        items, alku = _parse_transaction_edit_items(request)
-        response = requests.put(
-            f"{API_BASE_URL}/transactions/admin/{uuid}/",
-            json={"itemsOrdered": items, "description": request.POST["description"]},
-            headers=headers,
-        )
-        error = _api_error_interpreter(response.status_code)
-        if error:
-            return error
+    # lang = request.LANGUAGE_CODE.upper()
+    # if request.method == "POST":
+    #     items, alku = _parse_transaction_edit_items(request)
+    #     response = requests.put(
+    #         f"{API_BASE_URL}/transactions/admin/{uuid}/",
+    #         json={"itemsOrdered": items, "description": request.POST["description"]},
+    #         headers=headers,
+    #     )
+    # error = _api_error_interpreter(response.status_code)
+    # if error:
+    # return error
 
-        response = requests.put(
-            f"{API_BASE_URL}/transaction-details/admin/{uuid}/",
-            json={"alkuAmount": alku},
-            headers=headers,
-        )
-        error = _api_error_interpreter(response.status_code)
-        if error:
-            return error
+    alku = {item["uuid"]: _amount_to_store(item["amount"]) for item in data["items"]}
+    response = requests.put(
+        f"{API_BASE_URL}/transaction-details/admin/{uuid}/",
+        json={"alkuAmount": alku},
+        headers=headers,
+    )
+    error = _api_error_interpreter(response.status_code)
+    if error:
+        return error
 
-        response = requests.get(
-            f"{API_BASE_URL}/transactions/admin/{uuid}/update-status/?status=final",
-            headers=headers,
-        )
-        error = _api_error_interpreter(response.status_code)
-        if error:
-            return error
-        return redirect("admin_transaction_detail", data["transaction_uuid"])
+    return change_status_api(request, uuid, "final")
 
     response = requests.get(
         f"{API_BASE_URL}/transaction-details/admin/{uuid}/?lang={lang}",
@@ -917,13 +927,27 @@ def change_status(request, transaction_uuid):
     }
 
     if status == "PROPOSITION":
-        return create_offer(request, data, headers)
+        return create_offer(request, data)
     if status == "OFFER":
         return create_prognose(request, data, headers)
     if status == "PROGNOSE":
         return create_final(request, data, headers)
+    if status == "FINAL":
+        change_status_api(request, transaction_uuid, "FINAL_C")
+        return redirect("admin_transaction_detail", transaction_uuid)
     messages.error(request, _("Invalid status name"))
     return redirect("admin_transaction_detail", transaction_uuid)
+
+
+def change_status_api(request, transaction_uuid, status):
+    _, error = _make_api_request(
+        f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/update-status/?status={status}",
+        headers=_get_headers(request),
+    )
+    if error:
+        return error
+    else:
+        return redirect("admin_transaction_detail", transaction_uuid)
 
 
 @require_auth
@@ -947,7 +971,7 @@ def client_transaction_detail(request, transaction_uuid):
         transaction["itemsOrdered"],
     )
     data = {"transaction": transaction}
-    if transaction["status"] in ("PROGNOSE", "FINAL"):
+    if transaction["status"] in ("PROGNOSE", "FINAL", "FINAL_C"):
         transaction_details, error = _make_api_request(
             f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
             headers=headers,
@@ -961,7 +985,10 @@ def client_transaction_detail(request, transaction_uuid):
         ):
             return _api_error_interpreter(INTERNAL_SERVER_ERROR)
 
-        if transaction["status"] == "FINAL" and transaction_details["alkuAmount"]:
+        if (
+            transaction["status"] in ("FINAL", "FINAL_C")
+            and transaction_details["alkuAmount"]
+        ):
             for item in transaction["itemsOrdered"]:
                 try:
                     item["alku"] = _amount_to_display(
@@ -970,7 +997,8 @@ def client_transaction_detail(request, transaction_uuid):
                 except KeyError:
                     continue
         data["transactionDetails"] = transaction_details
-        data["statuses"] = ["PROPOSITION", "OFFER"]
+        data["offer"] = "OFFER"
+        data["proposition"] = "PROPOSITION"
     return render(request, "transaction_detail_client.html", data)
 
 
@@ -984,7 +1012,19 @@ def admin_transaction_detail(request, transaction_uuid):
 
     if request.method == "POST":
         items, alku = _parse_transaction_edit_items(request)
-        payload_transaction = {"itemsOrdered": items}
+        payload_transaction = {
+            "itemsOrdered": items,
+            "clientId": request.POST["client_uuid"],
+        }
+        payload_transaction["description"] = request.POST["description"]
+        transaction, error = _make_api_request(
+            f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/",
+            method=requests.put,
+            headers=headers,
+            body=payload_transaction,
+        )
+        if error:
+            return error
         if "plates_list" in request.POST.keys():
             payload = {
                 "informations": {
@@ -1004,11 +1044,20 @@ def admin_transaction_detail(request, transaction_uuid):
             if error:
                 return error
         elif alku:
+            alku_copy = alku.copy()
+            for uuid, amount in alku_copy.items():
+                if re.match(SKU_REGEX, uuid):
+                    for item in transaction["itemsOrdered"]:
+                        if item["sku"] == uuid:
+                            alku[item["uuid"]] = amount
+                            break
+                    alku.pop(uuid)
 
             payload = {
                 "alkuAmount": alku,
                 "informations": {
                     "delivery_date": request.POST["delivery_date"],
+                    "client_date": request.POST["client_date"],
                 },
             }
             _, error = _make_api_request(
@@ -1017,15 +1066,6 @@ def admin_transaction_detail(request, transaction_uuid):
                 headers=headers,
                 body=payload,
             )
-            if error:
-                return error
-        payload_transaction["description"] = request.POST["description"]
-        _, error = _make_api_request(
-            f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/",
-            method=requests.put,
-            headers=headers,
-            body=payload_transaction,
-        )
 
     transaction, error = _make_api_request(
         f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/?lang={lang}",
@@ -1042,7 +1082,7 @@ def admin_transaction_detail(request, transaction_uuid):
     )
     form = StatusForm(init_status=transaction["status"])
     data = {"transaction": transaction, "form": form}
-    if transaction["status"] in ("PROGNOSE", "FINAL"):
+    if transaction["status"] in ("PROGNOSE", "FINAL", "FINAL_C"):
         transaction_details, error = _make_api_request(
             f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
             headers=headers,
@@ -1056,7 +1096,10 @@ def admin_transaction_detail(request, transaction_uuid):
         ):
             return _api_error_interpreter(INTERNAL_SERVER_ERROR)
 
-        if transaction["status"] == "FINAL" and transaction_details["alkuAmount"]:
+        if (
+            transaction["status"] in TRANSACTION_FINAL
+            and transaction_details["alkuAmount"]
+        ):
             for item in transaction["itemsOrdered"]:
                 try:
                     item["alku"] = _amount_to_display(
@@ -1077,7 +1120,7 @@ def prognose_list(request):
 
     # IDK why status=FINAL returns list of prognose, some enum stuff in data base
     prognoses, error = _make_api_request(
-        f"{API_BASE_URL}/transactions/by-status?status=FINAL&{page.strip('?')}",
+        f"{API_BASE_URL}/transactions/by-status?status=PROGNOSE&{page.strip('?')}",
         headers=headers,
     )
     if error or not prognoses:
@@ -1092,12 +1135,11 @@ def prognose_list(request):
 
 
 @require_auth
-@require_group(["MBS"])
-def mbs_list(request):
+@require_group(["MSB"])
+def msb_list(request):
     headers = _get_headers(request)
     page = _get_page_param(request)
 
-    # IDK why status=FINAL returns list of prognose, some enum stuff in data base
     transactions, error = _make_api_request(
         f"{API_BASE_URL}/transactions/admin/{page}",
         headers=headers,
@@ -1111,4 +1153,6 @@ def mbs_list(request):
         if error or not transactions:
             return error
         transaction["transport"] = transaction_detail
-        transaction["total_amount"] = _calculate_total_mass(transaction["itemsOrdered"])/10
+        transaction["total_amount"] = (
+            _calculate_total_mass(transaction["itemsOrdered"]) / 10
+        )

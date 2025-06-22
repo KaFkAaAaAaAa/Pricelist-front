@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}{% trans "Item Details" %}{% endblock %}
+{% block title %}
+    {% trans "Item Details" %}
+{% endblock %}
 {% block content %}
     <div class="container my-5">
         <div class="card shadow-lg p-4" style="max-width: 900px; margin: 0 auto;">
@@ -35,8 +37,13 @@
                 <div class="carousel-inner">
                     {% for image in images %}
                         <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                            <img src="{{ image }}" alt="{% trans "Gallery Image" %}" class="d-block w-100 img-thumbnail"
-                                 style="height: 300px; object-fit: cover;"/>
+                        <img src="{{ image }}" 
+                             alt="{% trans 'Gallery Image' %}" 
+                             class="d-block w-100 img-thumbnail"
+                             style="height: 300px; object-fit: cover; cursor: pointer;"
+                             data-bs-toggle="modal"
+                             data-bs-target="#imageModal"
+                             data-image="{{ image }}">
                         </div>
                     {% endfor %}
                 </div>
@@ -58,13 +65,38 @@
             </div>
 
             <div class="mt-4 text-center">
-              <button
-                class="btn btn-outline-danger mb-4"
-                onclick="history.back()"
-              >
+                <button
+                        class="btn btn-outline-danger mb-4"
+                        onclick="history.back()"
+                >
                     {% trans "Go back" %}
-              </button>
+                </button>
             </div>
         </div>
     </div>
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-transparent border-0">
+          <div class="modal-header border-0">
+            <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body d-flex justify-content-center align-items-center p-0">
+            <img id="modalImage" src="" class="img-fluid rounded shadow-lg" alt="Large View" style="max-height: 90vh;">
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const imageModal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+
+        imageModal.addEventListener('show.bs.modal', function (event) {
+            const triggerImage = event.relatedTarget;
+            const imageUrl = triggerImage.getAttribute('data-image');
+            modalImage.src = imageUrl;
+        });
+    });
+    </script>
+
 {% endblock %}

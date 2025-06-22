@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}Transaction{% endblock %}
+{% block title %}
+    {% trans "Transaction" %}
+{% endblock %}
 {% block content %}
     <div class="container text-center">
         <div id="successAlert" class="alert alert-success alert-dismissible fade show alert-custom" role="alert"
@@ -8,7 +10,7 @@
             {% trans "Item added successfully!" %}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-        <form id="edit-form" class="mb-2" method="post">
+        <form lang="en" id="edit-form" class="mb-2" method="post">
             {% csrf_token %}
             <div class="container">
                 <div class="row text-start float-start">
@@ -33,17 +35,17 @@
                         {% if transaction.status == "PROGNOSE" %}
                             <p class="mb-2" style="white-space: nowrap;">
                                 <strong>{% trans "Total price with transport included" %}: </strong><span
-                                    class="separator" id="totalTransportIncluded"></span> €</p>
+                                    class="" id="totalTransportIncluded"></span> €</p>
                             <p class="mb-2" style="white-space: nowrap;">
-                                <strong>{% trans "Transport cost per 1 kg" %}: </strong><span class="separator"
+                                <strong>{% trans "Transport cost per 1 kg" %}: </strong><span class=""
                                                                                               id="transportPerKg"></span>
                                 €</p>
                             <p class="mb-2" style="white-space: nowrap;">
                                 <strong>{% trans "Transport cost as a part of total price" %}: </strong><span
-                                    class="separator" id="transportPercent"></span>%</p>
+                                    class="" id="transportPercent"></span>%</p>
                         {% endif %}
                     </div>
-                    {% if transaction.status == "PROGNOSE" or transaction.status == "FINAL" %}
+                    {% if transaction.status == "PROGNOSE" or transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
                         <div class="col-md-4 float-end text-end">
                             <h5 class="fw-bold">{% trans "Delivery" %}</h5>
                             <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Date" %}: </strong>
@@ -56,7 +58,7 @@
                                 {% if transaction.status == "PROGNOSE" %}
                                     <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Price" %}: </strong>
                                     <div class="input-group">
-                                        <input {% if request.session.auth.group == "LOGISTICS" %}read-only{% endif %} name="transport" id="transport" class="form-control separator-input"
+                                        <input {% if request.session.auth.group == "LOGISTICS" %}read-only{% endif %} name="transport" id="transport" class="form-control"
                                                type="number" value="{{ transactionDetails.transportCost }}"
                                                onchange="uuids.forEach(uuid => calculateTotal(uuid));"/>
                                         <span class="input-group-text">€</span>
@@ -69,7 +71,8 @@
                                         <div class="d-flex gap-2">
                                             <input {% if request.session.auth.group == "LOGISTICS" %}read-only{% endif %} type="text" class="form-control flex-grow-1" id="plate-input"
                                                    placeholder="Enter a plate"/>
-                                            <button class="btn btn-outline-secondary" type="button" id="add-btn">{% trans "Add" %}</button>
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                    id="add-btn">{% trans "Add" %}</button>
                                         </div>
                                         <label for="delivery_info"
                                                class="form-label mt-3">{% trans "Delivery info" %}:</label>
@@ -79,6 +82,10 @@
                                 {% endif %}
                         </div>
                     {% endif %}
+                </div>
+                <div class="row mt-4 text-start pb-1 px-0 mx-0">
+                  <label for="selectClient" class="form-label">{% trans "Change the client" %}:</label><br>
+                  <select name="client_uuid" id="selectClient" class="form-select" style="width: 50%"></select>
                 </div>
                 <button type="button" data-bs-toggle="modal" data-bs-target="#searchModal"
                         class="btn btn-sm btn-outline-success mt-2 mb-2">
@@ -93,7 +100,7 @@
                         <th scope="col" class="col-xs-2">{% trans "SKU" %}</th>
                         <th scope="col">{% trans "Product" %}</th>
                         <th scope="col">{% trans "Amount" %}</th>
-                        {% if transaction.status == "FINAL" %}
+                        {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
                             <th scope="col">{% trans "Alku" %}</th>
                         {% endif %}
                         <th scope="col">{% trans "Price" %}</th>
@@ -111,7 +118,7 @@
                             <tr id="{{ item.uuid }}" class="align-middle">
                                 <td>
                                     {% if item.sku|slice:":2" != "NA" %}
-                                    <img style="width: 80px; height: auto; vertical-align: middle;"
+                                        <img style="width: 80px; height: auto; vertical-align: middle;"
                                              src="/images/{{ item.sku }}.M.jpg">
                                     {% endif %}
                                 </td>
@@ -123,18 +130,24 @@
                                 <td>
                                     <div class="input-group">
                                         <input {% if request.session.auth.group == "LOGISTICS" %}read-only{% endif %} name="amount-{{ item.uuid }}" id="amount-{{ item.uuid }}"
-                                               class="form-control separator-input w-amount"
-                                               type="number" min="0.1" max="99999.9" step="0.1" value="{{ item.amount|floatformat:1 }}"
+                                               class="form-control w-amount"
+                                               type="number" 
+                                               min="{%if transaction.status != "FINAL" or transaction.status != "FINAL_C" or transaction.status != "FINAL_C" or transaction.status != "FINAL_C"%}0.0{% else %}0.01{%endif%}" max="99999.9" step="0.01"
+                                               value="{{ item.amount }}"
+                                               lang="en"
+                                               lang="en"
                                                onchange="calculateTotal('{{ item.uuid }}')"/>
                                         <span class="input-group-text">kg</span>
                                     </div>
                                 </td>
-                                {% if transaction.status == "FINAL" %}
+                                {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
                                     <td>
                                         <div class="input-group">
                                             <input name="alku-{{ item.uuid }}" id="alku-{{ item.uuid }}"
-                                                   class="form-control w-amount separator-input"
-                                                   type="number" min="0.1" step="0.1" value="{{ item.alku }}"
+                                                   class="form-control w-amount"
+                                                   min="{%if transaction.status != "FINAL" or transaction.status != "FINAL_C" or transaction.status != "FINAL_C" or transaction.status != "FINAL_C"%}0.0{% else %}0.01{%endif%}" max="99999.9" step="0.01"
+                                                   type="number" step="0.01" value="{{ item.alku }}"
+                                                   lang="en"
                                                    onchange="calculateTotal('{{ item.uuid }}')"/>
                                             <span class="input-group-text">kg</span>
                                         </div>
@@ -142,19 +155,21 @@
                                 {% endif %}
                                 <td>
                                     <div class="input-group">
+
                                         <input {% if request.session.auth.group == "LOGISTICS" %}read-only{% endif %} name="price-{{ item.uuid }}" id="price-{{ item.uuid }}"
-                                               class="form-control w-price separator-input"
-                                               type="number" min="0.01" step="0.01" value="{{ item.price }}"
+                                               class="form-control w-price"
+                                               type="number" min="0.01" step="0.01" value="{{ item.price}}"
+                                               lang="en"
                                                onchange="calculateTotal('{{ item.uuid }}')"/>
                                         <span class="input-group-text">€</span>
                                     </div>
                                 </td>
                                 {% if transaction.status == "PROGNOSE" %}
-                                    <td><span style="white-space: nowrap;" class="separator"
+                                    <td><span style="white-space: nowrap;" class=""
                                               id="priceWithTransport-{{ item.uuid }}"></span> €
                                     </td>
                                 {% endif %}
-                                <td style="white-space: nowrap;"><span class="separator"
+                                <td style="white-space: nowrap;"><span class=""
                                                                        id="total-{{ item.uuid }}">{{ item.total }}</span>
                                     €
                                 </td>
@@ -185,12 +200,12 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td class="fw-bold" style="white-space: nowrap;"><span class="separator"
+                        <td class="fw-bold" style="white-space: nowrap;"><span class=""
                                                                                id="totalAmount">{{ totals.mass }}</span>
                             kg
                         </td>
                         {% if transaction.status == "FINAL" %}
-                            <td class="fw-bold" style="white-space: nowrap;"><span class="separator"
+                            <td class="fw-bold" style="white-space: nowrap;"><span class=""
                                                                                    id="totalAlku"></span> kg
                             </td>
                         {% endif %}
@@ -198,7 +213,7 @@
                         {% if transaction.status == "PROGNOSE" %}
                             <td></td>
                         {% endif %}
-                        <td class="fw-bold" style="white-space: nowrap;"><span class="separator"
+                        <td class="fw-bold" style="white-space: nowrap;"><span class=""
                                                                                id="totalPrice">{{ totals.price }}</span>
                             €
                         </td>
@@ -230,14 +245,12 @@
                     class="btn btn-outline-primary">{% trans "Change status" %}</button>
             <a class="btn btn-outline-secondary" href="/transactions/{{ transaction.uuid }}/print/"
                target="_blank">{% trans "Print" %}</a>
-            {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" or transaction.status == "FINAL_K" %}
+            {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
                 <a class="btn btn-outline-secondary" href="/transactions/{{ transaction.uuid }}/print/?client=1"
                    target="_blank">{% trans "Print client version" %}</a>
             {% endif %}
 
-            {% if request.session.auth.group == "LOGISTICS" %}
             <a class="btn btn-outline-secondary" href="/files/{{ transaction.uuid }}/">{% trans "Files" %}</a>
-            {% endif %}
 
         </form>
     </div>
@@ -303,7 +316,39 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
+          $(document).ready(function() {
+          $('#selectClient').select2({
+              placeholder: 'Search for an option',
+              ajax: {
+                url: '/admin/clients/',  // Django URL for your API
+                dataType: 'json',
+                delay: 250,
+                processResults: function (data) {
+                  return {
+                    results: data.map(function(item) {
+                      return {
+                          id: item.user_id,  // or any unique ID you want to use
+                          text: item.client_company_name  // this is what will be shown
+                      };
+                    })
+                  };
+                },
+                cache: true
+              }
+          });
+
+            const defaultOption = { id: "{{ transaction.client.id }}", text: "{{ transaction.client.clientCompanyName }}" };
+            const option = new Option(defaultOption.text, defaultOption.id, true, true);
+            $('#selectClient').append(option).trigger('change');
+              $('#selectClient').on('change', function (e) {
+                saveButton.style.display = "inline-block";
+              });
+          });
+
         function showSuccessAlert() {
             successAlert.style.display = "block";  // Show alert
             setTimeout(() => {
@@ -329,17 +374,19 @@
                 <td><input name="name-${uuid}"  id="name-${uuid}" class="form-control" type="text" value="${name}"/></td>
                 <td>
                     <div class="input-group">
-                        <input name="amount-${uuid}"  id="amount-${uuid}" class="form-control separator-input"
-                            type="number" min="1.1" step="0.1"
+                        <input name="amount-${uuid}"  id="amount-${uuid}" class="form-control"
+                            
+                            min="{%if transaction.status != "FINAL" or transaction.status != "FINAL_C" or transaction.status != "FINAL_C" or transaction.status != "FINAL_C"%}0.0{% else %}0.01{%endif%}" max="99999.9" step="0.01"
+                            type="number"
                             onchange="calculateTotal('${uuid}')"/>
                         <span class="input-group-text">kg</span>
                     </div>
                 </td>
-                {% if transaction.status == "FINAL" %}
+                {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
                 <td>
                     <div class="input-group">
-                        <input name="alku-${uuid}" id="alku-${uuid}" class="form-control separator-input"
-                            type="number" min="0.1" step="0.1"
+                        <input name="alku-${uuid}" id="alku-${uuid}" class="form-control"
+                            type="number" min="0.01" step="0.01"
                             onchange="calculateTotal('${uuid}')"/>
                         <span class="input-group-text">kg</span>
                     </div>
@@ -347,14 +394,14 @@
                 {% endif %}
                 <td>
                     <div class="input-group">
-                        <input name="price-${uuid}" id="price-${uuid}" class="form-control separator-input"
+                        <input name="price-${uuid}" id="price-${uuid}" class="form-control"
                             type="number" min="0.01" step="0.01" value="${price}"
                             onchange="calculateTotal('${uuid}')"/>
                         <span class="input-group-text">€</span>
                     </div>
                 </td>
                 {% if transaction.status == "PROGNOSE" %}
-                <td><span style="white-space: nowrap;" id="priceWithTransport-${uuid}" class="separator"></span> €</td>
+                <td><span style="white-space: nowrap;" id="priceWithTransport-${uuid}" class=""></span> €</td>
                 {% endif %}
                 <td style="white-space: nowrap;"><span id="total-${uuid}"></span> €</td>
                 <input type="hidden" name="additionalInfo-${uuid}" id="additionalInfo-${uuid}" value=""/>
@@ -370,6 +417,7 @@
             document.querySelector("table tbody").appendChild(newRow);
             uuids.push(uuid);
             calculateTotal(uuid);
+            saveButton.style.display = "inline-block";
             saveButton.style.display = "inline-block";
             showSuccessAlert();
         }
@@ -395,7 +443,7 @@
             {% endif %}
             let amount = parseFloat(document.getElementById(`amount-${uuidChanged}`).value) || 0;
             let pricePerKg = parseFloat(document.getElementById(`price-${uuidChanged}`).value) || 0;
-            {% if transaction.status == "FINAL" %}
+            {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
                 let alku = parseFloat(document.getElementById(`alku-${uuidChanged}`).value) || 0;
                 document.getElementById(`total-${uuidChanged}`).textContent = (alku * pricePerKg).toFixed(2);
             {% else %}
@@ -404,11 +452,11 @@
 
             uuids.forEach(uuid => {
                 let amount = parseFloat(document.getElementById(`amount-${uuid}`).value) || 0;
-                {% if transaction.status == "FINAL" %}
+                {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
                     let alku = parseFloat(document.getElementById(`alku-${uuid}`).value) || 0;
                 {% endif %}
                 let pricePerKg = parseFloat(document.getElementById(`price-${uuid}`).value) || 0;
-                {% if transaction.status == "FINAL" %}
+                {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
                     allTotalPrice += alku * pricePerKg;
                     allTotalAlku += alku
                 {% else %}
@@ -419,14 +467,14 @@
 
             document.getElementById(`totalPrice`).textContent = allTotalPrice.toFixed(2);
             document.getElementById(`totalAmount`).textContent = allTotalAmount.toFixed(1);
-            {% if transaction.status == "FINAL" %}
+            {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
                 document.getElementById(`totalAlku`).textContent = allTotalAlku.toFixed(1);
             {% endif %}
             {% if transaction.status == "PROGNOSE" %}
                 transportPerKg = transport / allTotalAmount
                 transportPercent = transport / allTotalPrice
                 uuids.forEach(uuid => {
-                    document.getElementById(`priceWithTransport-${uuidChanged}`).textContent = (pricePerKg + pricePerKg * transportPerKg).toFixed(2);
+                    document.getElementById(`priceWithTransport-${uuidChanged}`).textContent = (pricePerKg + pricePerKg * transportPercent).toFixed(2);
                 });
                 document.getElementById(`totalTransportIncluded`).textContent = (allTotalPrice + transport).toFixed(2);
                 document.getElementById(`transportPerKg`).textContent = transportPerKg.toFixed(2);
@@ -576,7 +624,7 @@
                     resultsContainer.innerHTML = "";
 
                     if (data.items.length === 0) {
-                        resultsContainer.innerHTML = "<p>No items found.</p>";
+                        resultsContainer.innerHTML = "<p>{% trans "No items found" %}.</p>";
                         return;
                     }
 
@@ -613,6 +661,7 @@
         });
 
 
+        {% if transaction.status == "OFFER" %}
         document.getElementById("EXW").addEventListener("click", function (event) {
             document.getElementById("description").value = "{% trans "- Shipping costs are covered by the buyer.\n" %}{% trans "- Payment deadline - 7 business days from delivery." %}"
             saveButton.style.display = "inline-block";
@@ -622,5 +671,6 @@
             document.getElementById("description").value = "{% trans "- Delivered to Alku.\n" %}{% trans "- Payment deadline - 7 business days from delivery." %}"
             saveButton.style.display = "inline-block";
         });
+        {% endif %}
     </script>
 {% endblock %}

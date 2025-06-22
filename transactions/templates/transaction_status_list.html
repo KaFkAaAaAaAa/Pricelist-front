@@ -8,7 +8,8 @@
             <button class="btn btn-outline-danger mb-4 mt-3" onclick="history.back()">Go back</button>
         </div>
         <div class="table-responsive">
-            <table class="table table-hover table-striped">
+            {#<table class="table table-hover table-striped">#}
+            <table class="table table-striped">
                 <thead>
                 <tr>
                     <th scope="col">{% trans "Company name" %}</th>
@@ -20,13 +21,14 @@
                 </thead>
                 <tbody>
                 {% for transaction in page.content %}
-                <tr style="cursor: pointer" onclick="window.location.href='{% if request.session.logged_user.user %}/transactions/{% else %}/transactions/admin/{% endif %}{{ transaction.uuid }}/';">
+                {# <tr style="cursor: pointer" onclick="window.location.href='{% if request.session.logged_user.user %}/transactions/{% else %}/transactions/admin/{% endif %}{{ transaction.uuid }}/';"> #}
+                <tr>
                     <td>{{ transaction.client_company_name }}</td>
                     <td>{{ transaction.init_time|date:"d-m-Y H:i" }}</td>
                     <td>{{ transaction.status_time |date:"d-m-Y H:i" }}</td>
                     <td>{{ transaction.status }}</td>
                     <td>
-                        <a class="btn btn-outline-danger btn-sm" onclick="event.stopPropagation(); return confirm('{% trans "Are you sure you want to delete this transaction?" %}');" href="/transactions/delete/{{transaction.uuid}}/">{% trans "Delete" %}</a>
+                        <a class="btn btn-primary btn-sm" href="/files/{{ transaction.uuid }}/">{% trans "Files" %}</a>
                     </td>
                 </tr>
                 {% endfor %}

@@ -79,12 +79,10 @@
             <p class="text-end pe-2">{{ total.alku|floatformat:1 }} kg</p>
         </div>
         <div class="col-4">
-                    <p><b>{% trans "Delivery value (declared)" %}: </b></p>
                     <p><b>{% trans "Delivery value" %}: </b></p>
         </div>
         <div class="col-2">
-            <p class="text-end pe-1">{{ total.price }} €</p>
-            <p class="text-end pe-1">{{ total.alku_price }} €</p>
+            <p class="text-end pe-1">{{ total.alku_price|floatformat:2  }} €</p>
         </div>
     </div>
     {% if transaction.description %}

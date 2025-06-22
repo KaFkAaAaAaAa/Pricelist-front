@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}Transaction List{% endblock %}
+{% block title %}
+    {% trans "Transaction list" %}
+{% endblock %}
 {% block content %}
     <div class="container text-center">
     {% if not request.session.logged_user.user %}
@@ -18,8 +20,7 @@
         </div>
     </form>
     {% endif %}
-        <h1 class="text-center">{% trans 'Transaction list' %}</h1>
-
+        <h1 class="text-center mt-3">{% trans 'Transaction list' %}</h1>
         <div class="d-flex justify-content-start">
             <button class="btn btn-outline-danger mb-4 mt-3" onclick="history.back()">{% trans "Go back" %}</button>
         </div>
@@ -44,7 +45,7 @@
                     {% if request.session.logged_user.user %}
                         {% if transaction.status in statuses %}
                         <td>{{ transaction.status }}</td>
-                        {% elif transaction.status == "FINAL_K" %}
+                        {% elif transaction.status == "FINAL_C" %}
                         <td>FINAL</td>
                         {% else %}
                         <td>OFFER</td>

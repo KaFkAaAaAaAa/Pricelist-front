@@ -11,7 +11,7 @@
 </head>
 <body>
     {% if messages %}
-      <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
+      <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
         {% for message in messages %}
           <div class="alert {{ message.tags }} alert-dismissible fade show custom-alert" role="alert">
             {{ message | safe }}

@@ -1,11 +1,14 @@
 import logging
 import re
+import urllib.parse
 from asyncio import timeout
+from http.client import NOT_FOUND
 from typing import Iterable
 from uuid import UUID
 
 import requests
 from django.contrib import messages
+from django.http import JsonResponse
 from django.http.response import HttpResponseNotFound, HttpResponseServerError
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
@@ -13,9 +16,16 @@ from django.utils.translation import gettext as _
 from transactions.views import _set_status
 
 from .forms import LoginForm, NewUserForm, PasswordResetForm, RegisterForm
-from .settings import ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS, GROUPS_ROMAN
+from .settings import (
+    ADMIN_GROUPS,
+    API_BASE_URL,
+    CLIENT_GROUPS,
+    GROUPS_ROMAN,
+    SUPPORT_GROUPS,
+)
 from .utils import (
     Page,
+    _api_error_interpreter,
     _get_headers,
     _get_page_param,
     _group_to_roman,
@@ -60,7 +70,7 @@ def login_view(request):
                     headers={"Authorization": f'Bearer {request.session["token"]}'},
                 )
                 request.session["logged_user"] = response_auth.json().get("currentUser")
-                if response_auth.json()["group"].strip("[]") in ["LOGISTICS"]:
+                if response_auth.json()["group"].strip("[]") in ["LOGISTICS", "DISPO"]:
                     return redirect("prognose_list")
                 return redirect("price_list")
             logger.warning("Invalid credentials for email: %s", payload["email"])
@@ -129,7 +139,7 @@ def profile(request):
     user_admin = False
     headers = _get_headers(request)
 
-    if request.session["auth"]["group"] in ADMIN_GROUPS:
+    if request.session["auth"]["group"] in ADMIN_GROUPS + SUPPORT_GROUPS:
         user_admin = True
 
     if request.method == "POST":
@@ -279,7 +289,7 @@ def verify_registration(request):
             messages.error(request, _("API error"))
         else:
             messages.warning(request, _("Passwords are invalid"))
-        redirect("login")
+        return redirect("login")
     return render(request, "verify_registration.html")
 
 
@@ -288,10 +298,15 @@ def verify_registration(request):
 def my_users(request, func="activate-user"):
 
     page = _get_page_param(request)
-    clients, error = _make_api_request(
-        f"{API_BASE_URL}/clients/admin/admin-list/with-groups/{page}",
-        headers=_get_headers(request),
-    )
+    headers = _get_headers(request)
+    if "search" in request.GET.keys():
+        page = _get_page_param(request, False)
+        search_param = "?cname=" + request.GET["search"]
+        url = f"{API_BASE_URL}/clients/admin/admin-list/with-groups/search{search_param}{page}"
+    else:
+        page = _get_page_param(request)
+        url = f"{API_BASE_URL}/clients/admin/admin-list/with-groups/{page}"
+    clients, error = _make_api_request(url, headers=headers)
     if error or not clients:
         return error
     page = Page(clients)
@@ -302,7 +317,7 @@ def my_users(request, func="activate-user"):
     return render(
         request,
         "new_users.html",
-        {"page": page, "func": func},
+        {"page": page, "func": func, "header": _("My clients")},
     )
 
 
@@ -320,7 +335,7 @@ def new_users(request, func="assign-admin"):
     return render(
         request,
         "new_users.html",
-        {"page": page, "func": func},
+        {"page": page, "func": func, "header": _("New clients")},
     )
 
 
@@ -414,14 +429,24 @@ def activate_user(request, user_id):
 @require_group(ADMIN_GROUPS)
 def client_list(request):
     headers = _get_headers(request)
-
-    page = _get_page_param(request)
-    clients, error = _make_api_request(
-        f"{API_BASE_URL}/clients/admin/with-groups/{page}", headers=headers
-    )
+    if "search" in request.GET.keys():
+        page = _get_page_param(request, False)
+        search_param = "?cname=" + request.GET["search"]
+        url = f"{API_BASE_URL}/clients/admin/with-groups/search{search_param}{page}"
+    elif "term" in request.GET.keys():
+        page = _get_page_param(request, False)
+        search_param = "?cname=" + request.GET["term"]
+        url = f"{API_BASE_URL}/clients/admin/with-groups/search{search_param}{page}"
+    else:
+        page = _get_page_param(request)
+        url = f"{API_BASE_URL}/clients/admin/with-groups/{page}"
+    clients, error = _make_api_request(url, headers=headers)
     if error or not clients:
         return error
     page = Page(clients)
+    if "_type" in request.GET.keys():
+        if request.GET["_type"]:
+            return JsonResponse(page.content, safe=False)
 
     return render(request, "client_list.html", {"page": page})
 
@@ -481,7 +506,7 @@ def client_add(request):
                 headers=_get_headers(request),
             )
             if response.status_code == 200:
-                return redirect("client_list")
+                return redirect("new_users")
             return render(
                 request,
                 "new_client.html",
@@ -504,6 +529,16 @@ def client_add(request):
 @require_group(ADMIN_GROUPS)
 def edit_client(request, client_id):
     headers = _get_headers(request)
+    last_name_to_id = {}
+    admins, error = _make_api_request(
+        f"{API_BASE_URL}/users/admin/admins/", headers=headers
+    )
+    if error:
+        return error
+    if not admins:
+        return _api_error_interpreter(NOT_FOUND)
+    for admin in admins:
+        last_name_to_id[admin["userLastName"]] = admin["userId"]
     if request.method == "POST":
         payload_user = {
             "userLastName": request.POST["userLastName"],
@@ -518,6 +553,7 @@ def edit_client(request, client_id):
             "clientCode": request.POST["clientCode"],
             "clientCity": request.POST["clientCity"],
             "clientCountry": request.POST["clientCountry"],
+            "clientAdminId": last_name_to_id[request.POST["clientAdmin"]],
         }
 
         response_user = requests.put(
@@ -532,7 +568,7 @@ def edit_client(request, client_id):
         )
         if response_user.status_code == 200 and response_client.status_code == 200:
             messages.success(request, _("Client edited successfully"))
-            return render(request, "edit_client.html")
+            return redirect("edit_client", client_id)
         messages.error(request, _("Internal server error!"))
 
     client, error = _make_api_request(
@@ -541,7 +577,7 @@ def edit_client(request, client_id):
     if error:
         return error
 
-    return render(request, "edit_client.html", {"client": client})
+    return render(request, "edit_client.html", {"client": client, "admins": admins})
 
 
 @require_auth
@@ -559,10 +595,7 @@ def change_password(request):
             response = requests.post(
                 f"{API_BASE_URL}/auth/change-password", headers=headers, json=payload
             )
-            if (
-                response.status_code == 200
-                and response.text == "Password Change Successful"
-            ):
+            if response.status_code == 200 and re.match(".*uccess.*", response.text):
                 messages.info(request, _("Password change successful!"))
                 return redirect("/profile/")
         messages.error(request, _("Passwords are invalid"))
@@ -589,6 +622,9 @@ def reset_password(request):
             if isinstance(response, str) and re.match(".*uccess.*", response):
                 messages.success(request, _("Password change successful"))
                 return redirect("login")
+            if isinstance(response, str) and re.match(".*invalid.*", response.lower()):
+                messages.error(request, _("Invalid token"))
+                return redirect("login")
             if error:
                 messages.error(request, _("API error"))
                 return redirect("login")
@@ -602,8 +638,9 @@ def reset_password(request):
         )
         if error:
             messages.error(request, _("Invalid email"))
-        elif isinstance(text, str) and re.match("success", text.lower()):
+        elif isinstance(text, str) and re.match("^.*success.*", text.lower()):
             messages.success(request, _("Message sent, check your spam folder"))
+            return redirect("login")
         else:
             messages.error(request, _("Unknown error"))
     if "token" in request.GET and request.GET["token"]:

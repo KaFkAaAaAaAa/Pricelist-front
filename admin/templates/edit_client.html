@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}Edit Client{% endblock %}
+{% load i18n %}
 {% block content %}
 <div class="d-flex justify-content-center align-items-center flex-column mb-3">
     <h1>Edit Client</h1>
@@ -7,7 +8,7 @@
         <form method="post" class="w-50 w-sm-75 w-md-50 mt-3">
             {% csrf_token %}
             <div class="mb-3">
-                <label for="userFirstName" class="form-label h5">First Name</label>
+                <label for="userFirstName" class="form-label h5">{% trans "First Name" %}</label>
                 <input
                     type="text"
                     class="form-control"
@@ -17,7 +18,7 @@
                 />
             </div>
             <div class="mb-3">
-                <label for="userLastName" class="form-label h5">Last Name</label>
+                <label for="userLastName" class="form-label h5">{% trans "Last Name" %}</label>
                 <input
                     type="text"
                     class="form-control"
@@ -27,7 +28,7 @@
                 />
             </div>
             <div class="mb-3">
-                <label for="userEmail" class="form-label h5">Email</label>
+                <label for="userEmail" class="form-label h5">{% trans "Email" %}</label>
                 <input
                     type="text"
                     class="form-control"
@@ -37,7 +38,7 @@
                 />
             </div>
             <div class="mb-3">
-                <label for="userTelephoneNumber" class="form-label h5">Telephone number</label>
+                <label for="userTelephoneNumber" class="form-label h5">{% trans "Telephone number" %}</label>
                 <input
                     type="text"
                     class="form-control"
@@ -47,7 +48,7 @@
                 />
             </div>
             <div class="mb-3">
-                <label for="clientCompanyName" class="form-label h5">Company Name</label>
+                <label for="clientCompanyName" class="form-label h5">{% trans "Company Name" %}</label>
                 <input
                     type="text"
                     class="form-control"
@@ -57,7 +58,7 @@
                 />
             </div>
             <div class="mb-3">
-                <label for="clientStreet" class="form-label h5">Street</label>
+                <label for="clientStreet" class="form-label h5">{% trans "Street" %}</label>
                 <input
                     type="text"
                     class="form-control"
@@ -67,7 +68,7 @@
                 />
             </div>
             <div class="mb-3">
-                <label for="clientCode" class="form-label h5">Code</label>
+                <label for="clientCode" class="form-label h5">{% trans "Code" %}</label>
                 <input
                     type="text"
                     class="form-control"
@@ -77,7 +78,7 @@
                 />
             </div>
             <div class="mb-3">
-                <label for="clientCity" class="form-label h5">City</label>
+                <label for="clientCity" class="form-label h5">{% trans "City" %}</label>
                 <input
                     type="text"
                     class="form-control"
@@ -87,7 +88,7 @@
                 />
             </div>
             <div class="mb-3">
-                <label for="clientCountry" class="form-label h5">Country</label>
+                <label for="clientCountry" class="form-label h5">{% trans "Country" %}</label>
                 <input
                     type="text"
                     class="form-control"
@@ -97,22 +98,24 @@
                 />
             </div>
             <div class="mb-3">
-                <label for="clientAdmin" class="form-label h5">Client Admin WIP</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    id="clientAdmin"
-                    name="clientAdmin"
-                    value="{{ client.clientAdmin }}"
-                />
+            <label for="clientAdmin" class="form-label h5">{% trans "Trader"%}</label>
+            <select class="form-control" name="clientAdmin">
+                {% for admin in admins %}
+                    <option value={{admin.userLastName}}
+                   {% if admin.userId == client.clientAdmin.userId %}
+                    selected
+                   {% endif %}
+                    >{{admin.userLastName}}</option>                    
+                {% endfor %}
+            </select>
             </div>
             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
                 <a class="btn btn-outline-secondary mb-2 mb-sm-0" href="/admin/clients/">Back to List</a>
-                <button class="btn btn-success ms-0 ms-sm-2">Save Changes</button>
+                <button class="btn btn-success ms-0 ms-sm-2">{% trans "Save Changes" %}</button>
             </div>
         </form>
     {% else %}
-        <div class="alert alert-danger">Client not found.</div>
+        <div class="alert alert-danger">{% trans "Client not found." %}</div>
     {% endif %}
 </div>
 {% endblock %}

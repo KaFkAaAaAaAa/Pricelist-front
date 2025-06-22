@@ -104,15 +104,15 @@
           <p class="unit"><b>{% trans "Confirmed weight" %}: </b></p>
         </div>
         <div class="col-2">
-          <p class="text-end pe-2">{{ total.mass }} kg</p>
-          <p class="text-end pe-2">{{ total.amount }} kg</p>
+          <p class="text-end pe-2">{{ total.mass|floatformat:1 }} kg</p>
+          <p class="text-end pe-2">{{ total.amount|floatformat:1 }} kg</p>
         </div>
         <div class="col-4">
           <p class="unit"><b>{% trans "Delivery value" %}: </b></p>
           <p><b>{% trans "incl. transport costs" %}: </b></p>
         </div>
         <div class="col-2">
-          <p class="text-end pe-1">{{ total.price }} €</p>
+          <p class="text-end pe-1">{{ total.price|floatformat:2 }} €</p>
           <p class="text-end pe-1 align-text-bottom">
             <span class="unit"
               >{{ total.price_transport|floatformat:2 }} €</span

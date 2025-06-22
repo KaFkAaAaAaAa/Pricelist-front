@@ -1,43 +1,91 @@
-|x| MBS -> dokumenty; z kim, data; cena transportu; suma wagi
-    |x| back
-    |x| tabelka
+|x| zrobić checklistę
+|x| bold email nazwa firmy, status
+|x| poprawić nagłówki w listach klientów
+|x| mail na rejestracji
+|x| mail na rejestracji - sekw
+|x| mail na weryfikacji
+|x| mail na aktywacji klienta
+|x| redirect na zmień hasło
+|x| usunać deklarowaną wartość z klienta
+|x| tworzenie final - za wąskie kolumy
+|x| przy tworzeniu final dodawanie produktow z listy
+|x| w finale jak dodasz produkt to znika wszystko??
+|x| zero w alku i zero w amount w finale
+|x| haslo do 14mn008
+|x| file upload and dleete
+|x| client wydruk
+|x| redirect after dleete client
+|x| redirect after reset password
+|x| 0.01 kg
+|x| verify registration redirect
+|x| status changes (check online, bc email)
+|x| client detail
+|x| bug delete file from root transaction dir
+|x| bug no items added from offer when there are items
+|x| dodaj dispo na glownym
+|x| zweryfikuj dispo
+| | proposition/transaction weird stuff with editable fields
+| | search item in transaction
 
-| | DISPO -> odczyt na prognozy; dokumenty
-    | | zakaz
+| | bug client deletion - what to do with transactions ;< !!!
+| | Make offer
+    | | H collumn header - comment
+    | | L add comment -> edit comment
+    | | L comment modal - flush input
+| | change email accepts wrong email
+| | ostatnia transakcja u klientów + sort po ostatniej transakcji (dodatkowy endpoint uuid-data)
+
+
+pomysly:
+| | wydruk cennika -> przycisk drukuj w tym wydruk częściowy - bez kategorii, ewentualnie obiektów, w zależności od zalogowanego handlowca/administratora-handlowca -> numer telefonu, email
+| | klient dodawanie zdjęć do zapytania i rozliczania - folder
+| | galeria - poprawić kontrolki - dodać strzałki
+| | 4/5 cyfrowy numer do księgowania - numer księgowania - może być jednakowy dla kilku pozycji, dodać wyszukiwanie po tym
+| | możliwość oferty bez klienta, opcja header do dopisania typu Sz. P.
+| | wgląd w logowania klientów - lista z admina - ostatnie zalogowanie klienta
+| | responsywność
+| | powrót do poprzedniej strony
+| | nierozwijane menu (możliwe)
+
+
+| | dodatkowe role:
+    |x| zweryfikuj admin
+    |x| zweryfikuj owner
+    | | zweryfikuj logistics
+    | | zweryfikuj msb
+|x| DISPO -> odczyt na prognozy; dokumenty
+    |x| zakaz
     |x| mozliwość
-
-|x| MAGAZYN -> prognoza do finał (edycja: wagi i komentarze); bez dokumentów
-
-|x| dostawa od klienta i do alku (dwie daty) + dodać godziny (string):
-    |x| back
-    |x| front
-
-|x| szukanie po nazwie firmy
-    |x| back
-    |x| front
-    |x| text
-
-|x| klient widzi prognozy i finały
-    |x| lista
-    |x| detal
-    |x| test
-
-|x| files przycisk -> duża litera
-
-|x| zmaina_nazwy_transakcji -> FIRMA-DATA
-
-|x| powrót z plików do tra_det
-
-|x| usuń transakcję nie działa (działa xD)
-
-|x| więcej niż 5
-
-|x| mail gdy:
-|x| dodanie plików 
-|x| zmiana danych klienta
-|x| nowa propozycja
-
-|x| mail sprawdzony - działa
-
-|x| model klienta przy zmianie konta nie rozpoznawany (nazwa firmy nie zmienia się)
-
+|x| M kolejność po sku artykułów
+|x| List Clients
+    |x| L equal lenght of buttons
+    |x| Wyszukiwanie ;>
+    |x| Który handlowiec
+| | Change password:
+    | | alert po wysłaniu nie prawidłowego
+|x| My client list:
+    |x| delete button
+    |x| not every one in my clients
+    |x| company name text-start
+|x| Transaction:
+    |x| zmiana clienta w podczas transakcji
+    |x| M kolejność po sku artykułów
+|x| final print
+|x| make prognose:
+    |x| transport cost >= 0
+|x| edit client
+    |x| po proprawnej edycji alert ze client not found
+    |x| select admin
+|x| List Clients
+    |x| L equal lenght of buttons
+    |x| Wyszukiwanie ;>
+    |x| Który handlowiec
+|x| Change password:
+    |x| alert po wysłaniu nie prawidłowego
+|x| login:
+    |x| nie pamiętasz hasła
+|x| My client list:
+    |x| delete button
+        |x| tested
+    |x| not every one in my clients
+    |x| company name text-start
