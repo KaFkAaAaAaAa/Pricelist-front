@@ -41,7 +41,7 @@ pomysly:
 | | klient dodawanie zdjęć do zapytania i rozliczania - folder
 | | galeria - poprawić kontrolki - dodać strzałki
 | | 4/5 cyfrowy numer do księgowania - numer księgowania - może być jednakowy dla kilku pozycji, dodać wyszukiwanie po tym
-| | możliwość oferty bez klienta, opcja header do dopisania typu Sz. P.
+|?| możliwość oferty bez klienta, opcja header do dopisania typu Sz. P.
 | | wgląd w logowania klientów - lista z admina - ostatnie zalogowanie klienta
 | | responsywność
 | | powrót do poprzedniej strony
