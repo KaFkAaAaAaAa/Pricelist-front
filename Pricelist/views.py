@@ -11,6 +11,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.http.response import HttpResponseNotFound, HttpResponseServerError
 from django.shortcuts import redirect, render
+from django.utils.translation import get_language
 from django.utils.translation import gettext as _
 
 from transactions.views import _set_status
@@ -521,7 +522,12 @@ def client_add(request):
         form = RegisterForm()
         for bound_field in form.visible_fields():
             # TODO: fix translation here
-            if "placeholder" in bound_field.field.widget.attrs:
+            if get_language() == "de":
+                # Gaben Sie Ihne(n) "WAS?" ein
+                bound_field.field.widget.attrs["placeholder"] = (
+                    bound_field.field.widget.attrs["placeholder"].split(" ")[3]
+                )
+            elif "placeholder" in bound_field.field.widget.attrs:
                 bound_field.field.widget.attrs["placeholder"] = (
                     bound_field.field.widget.attrs["placeholder"].replace(
                         _("your "), ""

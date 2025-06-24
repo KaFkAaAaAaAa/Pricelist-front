@@ -51,21 +51,22 @@ function getNextSku() {
   return `${prefix}${nextNumber}`;
 }
 
+const textareaDiv = document.getElementById("client-textarea");
+const clientSelect = document.getElementById("client");
+
 function toggleClientTextboxVisibility() {
   let dispStyle = "none";
-  // if (textareaDiv.style.display == "none") dispStyle = "";
-  // textareaDiv.style.display = dispStyle;
+  if (textareaDiv.style.display == "none") dispStyle = "";
+  textareaDiv.style.display = dispStyle;
 }
 
-const clientSelect = document.getElementById("client");
-// const textareaDiv = document.getElementById("client-textarea");
-// clientSelect.addEventListener("change", function () {
-//   if (clientSelect.value === "null") {
-//     textareaDiv.style.display = "block";
-//   } else {
-//     textareaDiv.style.display = "none";
-//   }
-// });
+clientSelect.addEventListener("change", function () {
+  if (clientSelect.value === "null") {
+    textareaDiv.style.display = "block";
+  } else {
+    textareaDiv.style.display = "none";
+  }
+});
 const commentModal = document.getElementById("commentModal");
 let skuComment = null;
 

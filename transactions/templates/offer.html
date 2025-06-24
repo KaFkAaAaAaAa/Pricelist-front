@@ -30,17 +30,17 @@
                         {% for client in clients %}
                         <option value="{{ client }}">{{ client }}</option>
                         {% endfor %}
-                        {#<option value="null">{% trans "Type in client data" %}</option>#}
+                        <option value="null">{% trans "Type in client data" %}</option>
                     </select>
                 </div>
             {% endif %}
-            {#<div id="client-textarea" style="display: none" class="mt-2">#}
-                {#<label for="client-text">{% trans "Client header:" %}</label>#}
-                {#<textarea name="client-text" id="client-text" class="form-control"></textarea>#}
-            {#</div>#}
+            <div id="client-textarea" style="display: none" class="mt-2">
+                <label for="client-text">{% trans "Client header:" %}</label>
+                <textarea name="client-text" id="client-text" class="form-control mb-3"></textarea>
+            </div>
 
             <button type="button" data-bs-toggle="modal" data-bs-target="#searchModal"
-                    class="btn btn-sm btn-outline-success mt-2 mb-2">
+                    class="btn btn-sm btn-outline-success mt-2 mb-1">
                 {% trans "Add item" %}
             </button>
             <div class="table-responsive">
