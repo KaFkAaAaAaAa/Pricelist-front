@@ -229,9 +229,9 @@ def offer(request):
                 "clientId": client_uuid,
             }
             # items already converted to "store" values
-            response = requests.post(
-                f"{API_BASE_URL}/transactions/admin/", headers=headers, json=payload
-            )
+            # response = requests.post(
+            #     f"{API_BASE_URL}/transactions/admin/", headers=headers, json=payload
+            # )
             transaction, error = _make_api_request(
                 f"{API_BASE_URL}/transactions/admin/",
                 method=requests.post,
@@ -252,16 +252,16 @@ def offer(request):
             request.session["current_offer"] = []
             request.session.modified = True
             # TODO: inspect
-            if not client_uuid:
-                payload_detail = {
-                    "clientHeader": request.POST.client,
-                }
-                response, error = _make_api_request(
-                    requests.post,
-                    f"{API_BASE_URL}/transaction-details/admin/{transaction['uuid']}/",
-                    headers=headers,
-                    body=payload_detail,
-                )
+            # if not client_uuid:
+            #     payload_detail = {
+            #         "clientHeader": request.POST.client,
+            #     }
+            #     response, error = _make_api_request(
+            #         requests.post,
+            #         f"{API_BASE_URL}/transaction-details/admin/{transaction['uuid']}/",
+            #         headers=headers,
+            #         body=payload_detail,
+            #     )
             return redirect("admin_transaction_detail", transaction["uuid"])
 
     return render(
