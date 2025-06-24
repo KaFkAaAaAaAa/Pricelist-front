@@ -6,7 +6,7 @@
 {% block content %}
 <div class="container mt-4 mb-4">
     <div class="text-center mb-4">
-        <h2>{{ item.itemSku }} - {{ item.name.EN }}</h2>
+        <h2>{{ item.itemSku }} - {{ item.itemName.EN }}</h2>
     </div>
 
     {% if error %}
@@ -27,6 +27,9 @@
             <hr>
             <label for="itemSku" class="form-label fw-bold">SKU</label>
             <input type="text" class="form-control mb-3" id="itemSku" name="itemSku" value="{{ item.itemSku }}">
+
+            <label for="itemAccNo" class="form-label fw-bold">{% trans "Accounting Number" %}</label>
+            <input type="text" class="form-control mb-3" id="itemAccNo" name="itemAccNo" value="{{ item.itemAccountingNumber }}">
 
             <label for="itemGroup" class="form-label fw-bold">{% trans "Group" %}</label>
             <select name="itemGroup" id="itemGroup" class="form-select">

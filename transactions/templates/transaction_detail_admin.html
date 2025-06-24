@@ -104,6 +104,7 @@
                     <tr>
                         <th></th>
                         <th scope="col" class="col-xs-2">{% trans "SKU" %}</th>
+                        <th scope="col" class="col-xs-2">{% trans "Acc.No." %}</th>
                         <th scope="col">{% trans "Product" %}</th>
                         <th scope="col">{% trans "Amount" %}</th>
                         {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
@@ -131,6 +132,8 @@
                                 <td class="w-auto w-sku"><input {% if request.session.auth.group == "LOGISTICS" %}read-only{% endif %} name="sku-{{ item.uuid }}" id="sku-{{ item.uuid }}"
                                                                 class="form-control w-sku" type="text"
                                                                 value="{{ item.sku }}"/></td>
+                                <td class="w-auto w-sku">{% if item.sku|slice:":2" == "NA" %}<input name="AccNo-{{ item.uuid }}" id="AccNo-{{ item.uuid }}"
+                                                                class="form-control w-sku" type="number" value="{{ item.accountingNumber }}"/>{% else %}{{ item.accountingNumber }}{% endif %}</td>
                                 <td><input {% if request.session.auth.group == "LOGISTICS" %}read-only{% endif %} name="name-{{ item.uuid }}" id="name-{{ item.uuid }}" class="form-control"
                                            type="text" value="{{ item.name }}"/></td>
                                 <td>
@@ -295,7 +298,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
                     <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal"
-                            onclick="addItemToTransaction('', '', 0)">{% trans "Create new item" %}</button>
+                            onclick="addItemToTransaction('', '', 0, '')">{% trans "Create new item" %}</button>
                     <button type="button" class="btn btn-primary" id="searchBtn">{% trans "Search" %}</button>
                 </div>
             </div>
@@ -362,21 +365,26 @@
             }, 3000);
         }
 
-        function addItemToTransaction(sku, name, price) {
+        function addItemToTransaction(sku, name, price, accNo) {
             let newRow = document.createElement("tr");
+            let accNoRow;
             uuid = `new-${crypto.randomUUID()}`
             newRow.id = uuid;
             if (sku) {
                 newRow.innerHTML = `
                 <td><img style="width: 80px; height: auto; vertical-align: middle;" src="/images/${sku}.M.jpg"></td>`
+                accNoRow = `<td class="w-auto w-sku">${accNo}</td>`
             } else {
                 newRow.innerHTML = `
                 <td></td>
                 `
+                accNoRow = `<td class="w-auto w-sku"><input name="AccNo-${uuid}" id="AccNo-${ uuid }"
+                    class="form-control w-sku" type="number"/></td>`
             }
 
             newRow.innerHTML += `
                 <td class="col-xs-2"><input name="sku-${uuid}" id="sku-${uuid}" class="form-control" type="text" value="${sku}"/></td>
+                ${accNoRow}
                 <td><input name="name-${uuid}"  id="name-${uuid}" class="form-control" type="text" value="${name}"/></td>
                 <td>
                     <div class="input-group">
@@ -653,7 +661,7 @@
 
                             listItem.innerHTML = `
                                 <span><strong>${item.sku}</strong> - ${item.name} (€${item.price}/kg)</span>
-                                <button class="btn btn-sm btn-outline-success" data-bs-dismiss="modal" onclick="addItemToTransaction('${item.sku}', '${item.name}', ${item.price})">{% trans "Add" %}</button>
+                                <button class="btn btn-sm btn-outline-success" data-bs-dismiss="modal" onclick="addItemToTransaction('${item.sku}', '${item.name}', ${item.price}, ${item.accountingNumber})">{% trans "Add" %}</button>
                             `;
 
                             resultList.appendChild(listItem);

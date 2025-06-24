@@ -88,7 +88,6 @@ def _make_price_list(request, headers, pattern="price_list.html"):
     if "f" in request.GET.keys() and request.GET["f"] == "json":
         return JsonResponse({"items": items})
     if "print" in request.GET.keys():
-        __import__("pdb").set_trace()
         return generate_pdf(
             request,
             "pdf_pricelist.html",
@@ -215,6 +214,7 @@ def edit_item(request, item_sku):
     if request.method == "POST":
         payload = {
             "itemSku": request.POST.get("itemSku"),
+            "itemAccountingNumber": request.POST.get("itemAccNo"),
             "itemGroup": request.POST.get("itemGroup"),
             "itemName": {
                 "DE": request.POST.get("DE-n"),

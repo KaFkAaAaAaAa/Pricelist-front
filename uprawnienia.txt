@@ -35,17 +35,25 @@
 | | change email accepts wrong email
 | | ostatnia transakcja u klientów + sort po ostatniej transakcji (dodatkowy endpoint uuid-data)
 
+| | po transactions error
 
 pomysly:
 | | wydruk cennika -> przycisk drukuj w tym wydruk częściowy - bez kategorii, ewentualnie obiektów, w zależności od zalogowanego handlowca/administratora-handlowca -> numer telefonu, email
 | | klient dodawanie zdjęć do zapytania i rozliczania - folder
 | | galeria - poprawić kontrolki - dodać strzałki
-| | 4/5 cyfrowy numer do księgowania - numer księgowania - może być jednakowy dla kilku pozycji, dodać wyszukiwanie po tym
+    | | click out of modal with photo
+|?| 4/5 cyfrowy numer do księgowania - numer księgowania - może być jednakowy dla kilku pozycji, dodać wyszukiwanie po tym
+    |x| numer w liście itemów
+    |x| numer w transakcji
+    | | numer dla nowych itemów
 | | możliwość oferty bez klienta, opcja header do dopisania typu Sz. P.
+    | | zamień custom na "wpisz swojego klienta"
+    | | zdebuguj custom (default klient zwykly ale okienko)
 | | wgląd w logowania klientów - lista z admina - ostatnie zalogowanie klienta
 | | responsywność
 | | powrót do poprzedniej strony
 | | nierozwijane menu (możliwe)
+| | admin interface - chhange default EN to locale
 
 
 | | dodatkowe role:
