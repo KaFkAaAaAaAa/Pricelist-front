@@ -251,6 +251,7 @@ def offer(request):
                 )
             request.session["current_offer"] = []
             request.session.modified = True
+            # TODO: inspect
             if not client_uuid:
                 payload_detail = {
                     "clientHeader": request.POST.client,
@@ -261,8 +262,7 @@ def offer(request):
                     headers=headers,
                     body=payload_detail,
                 )
-
-                return redirect("admin_transaction_detail", transaction["uuid"])
+            return redirect("admin_transaction_detail", transaction["uuid"])
 
     return render(
         request,
