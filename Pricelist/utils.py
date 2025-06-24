@@ -1,4 +1,6 @@
 import logging
+import math
+import re
 from dataclasses import dataclass
 from functools import wraps
 from http.client import INTERNAL_SERVER_ERROR
@@ -20,6 +22,7 @@ from Pricelist.settings import (
     API_BASE_URL,
     CLIENT_GROUPS,
     GROUPS_ROMAN,
+    LOGGING_CONFIG,
     SUPPORT_GROUPS,
 )
 
@@ -267,3 +270,28 @@ def client_groups_context(request):
 
 def support_groups_context(request):
     return {"SUPPORT_GROUPS": SUPPORT_GROUPS}
+
+
+def parse_logs_login_action(page_no, page_size):
+
+    login_logs = []
+
+    with open("pricelist-front.log", "r") as l:
+        logfile_lines = l.readlines()
+
+    for line in logfile_lines:
+        if re.match(r"logged in succ", line):
+            login_logs.append(line)
+
+    first = page_size * page_no
+    last = first + page_size - 1
+    page_init = {
+        "content": login_logs[first:last],
+        "pageNo": page_no,
+        "pageSize": page_size,
+        "totalElements": len(login_logs),
+        "totalPages": math.ceil(len(login_logs) / page_size),
+    }
+    page = Page(page_init)
+
+    return page

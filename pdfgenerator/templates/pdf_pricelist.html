@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{{ filename }}{% endblock %}</title>
+    {% load i18n %}
+    <style>
+        .watermark {
+            background-image: url("{{ images_root }}/images/logo-alku-hires.png");
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark"></div>
+    <div>
+        <table class="table table-hover table-bordered mt-1 align-middle"
+            style="font-family: Calibri, sans-serif; vertical-align: middle !important;"
+            >
+            <tbody>
+                {% for sorting_category in categories %} 
+                {% for category, item_list in items.items %}
+                {% if category == sorting_category %}
+                {% if item_list %}
+                <tr class="d-flex align-middle">
+                    <th class="flex-shrink-0 align-middle" 
+                        style="background-color: #9E0F06; width: 100px; border-right: 0 solid; vertical-align: middle;"
+                        >
+                    </th>
+                    <th colspan="3"
+                        class="text-left fs-4 py-2 text-light fw-semibold text-uppercase align-middle flex-fill"
+                        style="background-color: #9E0F06; border-left: 0px solid; vertical-align: middle;"
+                        >
+                        {{ category }}
+                    </th>
+                </tr>
+                {% for item in item_list %}
+                <tr class="colored-row d-flex align-middle"
+                    style="cursor: pointer; font-size: 19px; vertical-align: middle;">
+                    <td class="text-center px-0 flex-shrink-0 align-middle"
+                        style="width: 100px; vertical-align: middle;"
+                        onclick="window.location.href='/item/{{ item.sku }}/';"
+                        >
+                        <img src="/images/{{ item.sku }}.M.jpg" alt="" class="img"
+                            style="width: 80px; height: auto; vertical-align: middle;" />
+                    </td>
+                    <td class="text-center flex-shrink-0 align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}"
+                        style="font-size: 17px; width: 80px; vertical-align: middle;"
+                        onclick="window.location.href='/item/{{ item.sku }}/';">
+                        {{ item.sku }}
+                    </td>
+                    <td class="flex-fill align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}"
+                        style="font-size: 17px; vertical-align: middle;"
+                        onclick="window.location.href='/item/{{ item.sku }}/';"
+                        >
+                        {{ item.name }}
+                    </td>
+                    {% if item.price_pln %}
+                    <td class="text-end fw-semibold flex-shrink-0 align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}"
+                        style="font-size: 20px; width: 130px; vertical-align: middle;"
+                        onclick="window.location.href='/item/{{ item.sku }}/';"
+                        >
+                        {{ item.price_pln }} zł
+                    </td>
+                    {% endif %}
+                    <td class="text-end fw-semibold flex-shrink-0 align-middle {% if forloop.counter|divisibleby:2 %} bg-light {% endif %}"
+                        style="font-size: 20px; width: 120px; vertical-align: middle;"
+                        onclick="window.location.href='/item/{{ item.sku }}/';"
+                        >
+                        {{ item.price }} €
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+        <table>
+            <tbody>
+                {% for sorting_category in categories %}
+                {% for category, item_list in items.items %}
+                <th colspan="3" >
+                {{ category }}
+                </th>
+                {% for item in item_list %}
+                <tr>
+                    <td>
+                        img
+                    </td>
+                    <td>
+                        {{ item.sku }}
+                    </td>
+                    <td>
+                        {{ item.name }}
+                    </td>
+                    <td>
+                        {{ item.price }}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="font-weight-light text-center text-muted mt-4 mb-2">
+            <hr style="border-top: 1.5px solid black">
+            {% trans "Prices per 1 kg. The price list is for information purposes only. Prices are subject to change. Prices are not binding. Typographical errors excepted. Please contact us for prices for larger quantities or special materials." %} </div>
+        {% include "pdf_footer.html" %}
+    </div>
+</body>
+
+</html>

@@ -29,10 +29,8 @@ function checkSkuList() {
   const noItemsAlert = document.getElementById("alert-no-items");
   if (skus.length === 0) {
     noItemsAlert.style.display = "";
-    console.log("dupa");
   } else {
     noItemsAlert.style.display = "none";
-    console.log("dupa2");
   }
 }
 
@@ -53,6 +51,21 @@ function getNextSku() {
   return `${prefix}${nextNumber}`;
 }
 
+function toggleClientTextboxVisibility() {
+  let dispStyle = "none";
+  // if (textareaDiv.style.display == "none") dispStyle = "";
+  // textareaDiv.style.display = dispStyle;
+}
+
+const clientSelect = document.getElementById("client");
+// const textareaDiv = document.getElementById("client-textarea");
+// clientSelect.addEventListener("change", function () {
+//   if (clientSelect.value === "null") {
+//     textareaDiv.style.display = "block";
+//   } else {
+//     textareaDiv.style.display = "none";
+//   }
+// });
 const commentModal = document.getElementById("commentModal");
 let skuComment = null;
 

@@ -64,6 +64,16 @@ def delete_admin(request, admin_id):
 
 @require_auth
 @require_group(ADMIN_GROUPS)
+def user_logins_list(request):
+    headers = _get_headers(request)
+
+    last_logged_in_page = parse_logs_login_action(page_no, page_size)
+
+    return render(request, "user_logins_list.html", {"last_logged_in": last_logged_in})
+
+
+@require_auth
+@require_group(ADMIN_GROUPS)
 def edit_admin(request, admin_id):
 
     headers = _get_headers(request)

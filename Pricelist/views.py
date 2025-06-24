@@ -64,21 +64,26 @@ def login_view(request):
                 )
 
             if response.status_code == 200:
+
                 request.session["token"] = response.json().get("token")
                 response_auth = requests.get(
                     f"{API_BASE_URL}/auth/whoami/",
                     headers={"Authorization": f'Bearer {request.session["token"]}'},
                 )
                 request.session["logged_user"] = response_auth.json().get("currentUser")
+                logger.info("User (%s) logged in successfully", payload["email"])
+
                 if response_auth.json()["group"].strip("[]") in ["LOGISTICS", "DISPO"]:
                     return redirect("prognose_list")
                 return redirect("price_list")
+
             logger.warning("Invalid credentials for email: %s", payload["email"])
             return render(
                 request,
                 "login.html",
                 {"form": form, "error": "Invalid credentials"},
             )
+
     else:
         form = LoginForm()
     return render(request, "login.html", {"form": form})

@@ -28,11 +28,16 @@
                     <label for="client" class="form-label h5">{% trans "Client" %}:</label>
                     <select name="client" class="form-select" id="client" style="max-width: 300px; margin: 0 auto;">
                         {% for client in clients %}
-                            <option value="{{ client }}">{{ client }}</option>
+                        <option value="{{ client }}">{{ client }}</option>
                         {% endfor %}
+                        {#<option value="null">{% trans "Type in client data" %}</option>#}
                     </select>
                 </div>
             {% endif %}
+            {#<div id="client-textarea" style="display: none" class="mt-2">#}
+                {#<label for="client-text">{% trans "Client header:" %}</label>#}
+                {#<textarea name="client-text" id="client-text" class="form-control"></textarea>#}
+            {#</div>#}
 
             <button type="button" data-bs-toggle="modal" data-bs-target="#searchModal"
                     class="btn btn-sm btn-outline-success mt-2 mb-2">
