@@ -28,9 +28,7 @@
                 <div class="row text-start">{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</div>
                 <div class="row text-start">{{ transaction.client.clientCountry }}</div>
                 {% else %}
-                <textarea class="form-control">
-                {{ transaction.clientText }}
-                </textarea>
+                <textarea class="form-control">{{ transaction.clientHeader }}</textarea>
                 {% endif %}
                 <div class="row text-start"><b class="text-start p-0">{% trans "Status" %}:</b>
                     {% if transaction.status %}{{ transaction.status }}
@@ -90,6 +88,7 @@
                     {% endif %}
                 </div>
                 <div class="row mt-4 text-start pb-1 px-0 mx-0">
+                    {# TODO: make it work with non-reg #}
                   <label for="selectClient" class="form-label">{% trans "Change the client" %}:</label><br>
                   <select name="client_uuid" id="selectClient" class="form-select" style="width: 50%"></select>
                 </div>
