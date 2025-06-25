@@ -939,20 +939,25 @@ def change_status(request, transaction_uuid):
             return redirect("admin_transaction_detail", uuid)
 
     if admin_url:
-        response_client = requests.get(
-            f"{API_BASE_URL}/clients/{admin_url}{transaction['clientId']}",
-            headers=headers,
-        )
-        error = _api_error_interpreter(response_client.status_code)
-        if error:
-            return error
+        if "clientId" in transaction.keys():
+            response_client = requests.get(
+                f"{API_BASE_URL}/clients/{admin_url}{transaction['clientId']}",
+                headers=headers,
+            )
+            error = _api_error_interpreter(response_client.status_code)
+            if error:
+                return error
+            response_client = response_client.json()
+        else:
+            transaction["clientId"] = None
+            response_client = {}
     else:
         response_client = request.session["logged_user"]
 
     data = {
         "transaction": transaction,
         "items": transaction["itemsOrdered"],
-        "client": response_client.json(),
+        "client": response_client,
         "total": totals,
         "date": transaction["status_time"],
         "transaction_uuid": transaction_uuid,
@@ -1149,7 +1154,6 @@ def prognose_list(request):
     headers = _get_headers(request)
     page = _get_page_param(request)
 
-    # IDK why status=FINAL returns list of prognose, some enum stuff in data base
     prognoses, error = _make_api_request(
         f"{API_BASE_URL}/transactions/by-status?status=PROGNOSE&{page.strip('?')}",
         headers=headers,
@@ -1157,7 +1161,6 @@ def prognose_list(request):
     if error or not prognoses:
         return error
     page = Page(prognoses)
-    # TODO: TEST
     for prognose in page.content:
         prognose["init_time"] = _parse_date(prognose["init_time"])
         prognose["status_time"] = _parse_date(prognose["status_time"])
