@@ -14,14 +14,31 @@ from django.utils.translation import gettext_lazy as _
 
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
-from Pricelist.settings import (ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS,
-                                SKU_REGEX, SUPPORT_GROUPS, TRANSACTION_FINAL)
-from Pricelist.utils import (Page, _amount_to_display, _amount_to_float,
-                             _amount_to_store, _api_error_interpreter,
-                             _get_group, _get_headers, _get_page_param,
-                             _is_admin, _make_api_request, _price_to_display,
-                             _price_to_float, _price_to_store, require_auth,
-                             require_group)
+from Pricelist.settings import (
+    ADMIN_GROUPS,
+    API_BASE_URL,
+    CLIENT_GROUPS,
+    SKU_REGEX,
+    SUPPORT_GROUPS,
+    TRANSACTION_FINAL,
+)
+from Pricelist.utils import (
+    Page,
+    _amount_to_display,
+    _amount_to_float,
+    _amount_to_store,
+    _api_error_interpreter,
+    _get_group,
+    _get_headers,
+    _get_page_param,
+    _is_admin,
+    _make_api_request,
+    _price_to_display,
+    _price_to_float,
+    _price_to_store,
+    require_auth,
+    require_group,
+)
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
 logger = logging.getLogger(__name__)
@@ -177,7 +194,10 @@ def _send_proposition_to_api(request):
         return redirect("client_transaction_detail", transaction["uuid"])
     return _api_error_interpreter(response.status_code)
 
-def _send_offer_to_api_admin(request, client_auths, current_offer, totals, client_company_names):
+
+def _send_offer_to_api_admin(
+    request, client_auths, current_offer, totals, client_company_names
+):
     headers = _get_headers(request)
     client_uuid = None
     if request.POST["client"] != "null":
@@ -186,9 +206,7 @@ def _send_offer_to_api_admin(request, client_auths, current_offer, totals, clien
                 client_uuid = client["id"]
     payload = {
         "description": request.POST["transaction_description"],
-        "itemsOrdered": _current_offer_to_payload(
-            request.session["current_offer"]
-        ),
+        "itemsOrdered": _current_offer_to_payload(request.session["current_offer"]),
         "clientId": client_uuid,
     }
     if not client_uuid:
@@ -214,10 +232,10 @@ def _send_offer_to_api_admin(request, client_auths, current_offer, totals, clien
     request.session.modified = True
     return redirect("admin_transaction_detail", transaction["uuid"])
 
+
 @require_auth
 @require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def offer(request):
-    # headers = _get_headers(request)
     if "current_offer" not in request.session.keys():
         request.session["current_offer"] = []
 
@@ -231,7 +249,7 @@ def offer(request):
 
     current_offer = request.session.get("current_offer")
     totals = _get_stored_item_list_to_display(current_offer)
-    client_company_names = []  # here bc unbound
+    client_company_names = []
 
     if _is_admin(request):
         client_auths, error = _make_api_request(
@@ -250,9 +268,8 @@ def offer(request):
 
         if request.method == "POST":
             return _send_offer_to_api_admin(
-                    request, client_auths,
-                    current_offer, totals,
-                    client_company_names)
+                request, client_auths, current_offer, totals, client_company_names
+            )
 
     return render(
         request,

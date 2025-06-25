@@ -65,6 +65,7 @@ pomysly:
 | | powrót do poprzedniej strony
 | | nierozwijane menu (możliwe)
 | | admin interface - chhange default EN to locale
+| | email do klienta
 
 
 | | dodatkowe role:
