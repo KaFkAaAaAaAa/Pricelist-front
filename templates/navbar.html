@@ -14,7 +14,7 @@
                 <ul class="navbar-nav text-center">
                 {% if request.session.token %}
                     <li class="nav-item navbar-text my-auto mx-3">
-                    {% trans "Logged in:" %} {{ request.session.logged_user.user.userEmail }} {{ request.session.logged_user.userEmail }}
+                    {% trans "Logged in" %}: {{ request.session.logged_user.user.userEmail }} {{ request.session.logged_user.userEmail }}
                     </li>
                 {% endif %}
                     <li class="nav-item dropdown my-1 me-2">

@@ -24,7 +24,7 @@ class LoginForm(forms.Form):
 class RegisterForm(forms.Form):
     # TODO: remove your when used in add client
     userFirstName = forms.CharField(
-        label=_("First Name:"),
+        label=_("First Name") + ":",
         max_length=30,
         widget=forms.TextInput(
             attrs={
@@ -34,7 +34,7 @@ class RegisterForm(forms.Form):
         ),
     )
     userLastName = forms.CharField(
-        label=_("Last Name:"),
+        label=_("Last Name") + ":",
         max_length=30,
         widget=forms.TextInput(
             attrs={
@@ -44,14 +44,14 @@ class RegisterForm(forms.Form):
         ),
     )
     userEmail = forms.EmailField(
-        label=_("Email:"),
+        label=_("Email") + ":",
         max_length=100,
         widget=forms.EmailInput(
             attrs={"class": "form-control", "placeholder": _("Enter your email")}
         ),
     )
     userTelephoneNumber = forms.CharField(
-        label=_("Telephone number:"),
+        label=_("Telephone number") + ":",
         max_length=15,
         widget=forms.TextInput(
             attrs={
@@ -61,7 +61,7 @@ class RegisterForm(forms.Form):
         ),
     )
     clientCompanyName = forms.CharField(
-        label=_("Company name:"),
+        label=_("Company name") + ":",
         max_length=100,
         widget=forms.TextInput(
             attrs={
@@ -71,7 +71,7 @@ class RegisterForm(forms.Form):
         ),
     )
     clientStreet = forms.CharField(
-        label=_("Street:"),
+        label=_("Street") + ":",
         max_length=100,
         widget=forms.TextInput(
             attrs={
@@ -81,7 +81,7 @@ class RegisterForm(forms.Form):
         ),
     )
     clientCode = forms.CharField(
-        label=_("Code:"),
+        label=_("Code") + ":",
         max_length=100,
         widget=forms.TextInput(
             attrs={
@@ -137,8 +137,7 @@ class NewUserForm(forms.Form):
         label=_("Email") + ":",
         max_length=100,
         widget=forms.EmailInput(
-            attrs={"class": "form-control",
-                   "placeholder": _("Enter your email")}
+            attrs={"class": "form-control", "placeholder": _("Enter your email")}
         ),
     )
     userGroup = forms.ChoiceField(
@@ -183,7 +182,7 @@ class PasswordResetForm(forms.Form):
 
 class EditProfileForm(forms.Form):
     userFirstName = forms.CharField(
-        label= _("First Name:"),
+        label=_("First Name") + ":",
         max_length=30,
         widget=forms.TextInput(
             attrs={
@@ -192,7 +191,7 @@ class EditProfileForm(forms.Form):
         ),
     )
     userLastName = forms.CharField(
-        label= _("Last Name:"),
+        label=_("Last Name") + ":",
         max_length=30,
         widget=forms.TextInput(
             attrs={
@@ -210,7 +209,7 @@ class EditProfileForm(forms.Form):
         ),
     )
     userTelephoneNumber = forms.CharField(
-        label= _("Telephone number:"),
+        label=_("Telephone number") + ":",
         max_length=15,
         widget=forms.TextInput(
             attrs={

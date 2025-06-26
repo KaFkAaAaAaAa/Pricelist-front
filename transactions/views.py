@@ -4,6 +4,7 @@ import re
 from datetime import date, datetime
 from http.client import INTERNAL_SERVER_ERROR, UNAUTHORIZED
 from math import floor
+from typing import Iterable, Literal
 
 import requests
 from django.contrib import messages
@@ -114,7 +115,7 @@ def _parse_transaction_edit_items(request):
     items = {}
     alku = {}
     for param in request.POST:
-        if param.find("-") == -1:
+        if param.find("-") == -1 or param == "client-text":
             continue
         field, uuid = param.split("-", 1)
         if not (field and uuid):
@@ -172,97 +173,103 @@ def _add_items_to_session(request):
     request.session["current_offer"], _ = _parse_transaction_edit_items(request)
 
 
+def _send_proposition_to_api(request):
+    items, _ = _parse_transaction_edit_items(request)
+    payload = {
+        "description": request.POST["transaction_description"],
+        "itemsOrdered": items,
+    }
+    # items already converted to "store" values
+    response = requests.post(
+        f"{API_BASE_URL}/transactions/", headers=_get_headers(request), json=payload
+    )
+    transaction, error = _make_api_request(
+        f"{API_BASE_URL}/transactions/",
+        method=requests.post,
+        headers=_get_headers(request),
+    )
+    if not error and transaction:
+        request.session["current_offer"] = []
+        request.session.modified = True
+        return redirect("client_transaction_detail", transaction["uuid"])
+    return _api_error_interpreter(response.status_code)
+
+
+def _send_offer_to_api_admin(
+    request, client_auths, current_offer, totals, client_company_names
+):
+    headers = _get_headers(request)
+    client_uuid = None
+    if request.POST["client"] != "null":
+        for client in Page(client_auths["clients"]).content:
+            if client["clientCompanyName"] == request.POST["client"]:
+                client_uuid = client["id"]
+    payload = {
+        "description": request.POST["transaction_description"],
+        "itemsOrdered": _current_offer_to_payload(request.session["current_offer"]),
+        "clientId": client_uuid,
+    }
+    if not client_uuid:
+        payload["clientHeader"] = request.POST["client-text"]
+    transaction, error = _make_api_request(
+        f"{API_BASE_URL}/transactions/admin/",
+        method=requests.post,
+        headers=headers,
+        body=payload,
+    )
+    if error or not transaction:
+        messages.error(request, "Internal server error")
+        return render(
+            request,
+            "offer.html",
+            {
+                "offer": current_offer,
+                "totals": totals,
+                "clients": client_company_names,
+            },
+        )
+    request.session["current_offer"] = []
+    request.session.modified = True
+    return redirect("admin_transaction_detail", transaction["uuid"])
+
+
 @require_auth
 @require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def offer(request):
-    headers = _get_headers(request)
     if "current_offer" not in request.session.keys():
         request.session["current_offer"] = []
 
     if request.method == "POST":
         _add_items_to_session(request)
-    if request.method == "POST" and not _is_admin(request):
-        items, _ = _parse_transaction_edit_items(request)
-        payload = {
-            "description": request.POST["transaction_description"],
-            "itemsOrdered": items,
-        }
-        # items already converted to "store" values
-        response = requests.post(
-            f"{API_BASE_URL}/transactions/", headers=headers, json=payload
-        )
-        if response.status_code == 200:
-            request.session["current_offer"] = []
-            request.session.modified = True
-            return redirect("client_transaction_detail", response.json()["uuid"])
-        return _api_error_interpreter(response.status_code)
-        # TODO: weird bug, after getting error from api the
-        # prices aren't formatted well
+
+        if not _is_admin(request):
+            return _send_proposition_to_api(request)
+            # TODO: weird bug, after getting error from api the
+            # prices aren't formatted well
 
     current_offer = request.session.get("current_offer")
     totals = _get_stored_item_list_to_display(current_offer)
-    client_company_names = []  # here bc unbound
+    client_company_names = []
+
     if _is_admin(request):
-        response = requests.get(
+        client_auths, error = _make_api_request(
             f"{API_BASE_URL}/clients/admin/admin-list/groups/?pageSize=200",
-            headers=headers,
+            headers=_get_headers(request),
         )
-        clients_auths = response.json()
+        if error or not client_auths:
+            messages.error(request, _("Could not fetch any clients"))
 
         for client, client_auth in zip(
-            Page(clients_auths["clients"]).content, clients_auths["auths"]
+            Page(client_auths["clients"]).content, client_auths["auths"]
         ):
             if client_auth["authGroup"] in CLIENT_GROUPS:
                 # TODO: two clients same company
                 client_company_names.append(client["clientCompanyName"])
+
         if request.method == "POST":
-            client_uuid = None
-            if request.POST["client"] != "null":
-                for client in Page(clients_auths["clients"]).content:
-                    if client["clientCompanyName"] == request.POST["client"]:
-                        client_uuid = client["id"]
-            payload = {
-                "description": request.POST["transaction_description"],
-                "itemsOrdered": _current_offer_to_payload(
-                    request.session["current_offer"]
-                ),
-                "clientId": client_uuid,
-            }
-            # items already converted to "store" values
-            # response = requests.post(
-            #     f"{API_BASE_URL}/transactions/admin/", headers=headers, json=payload
-            # )
-            transaction, error = _make_api_request(
-                f"{API_BASE_URL}/transactions/admin/",
-                method=requests.post,
-                headers=headers,
-                body=payload,
+            return _send_offer_to_api_admin(
+                request, client_auths, current_offer, totals, client_company_names
             )
-            if error or not transaction:
-                messages.error(request, "Internal server error")
-                return render(
-                    request,
-                    "offer.html",
-                    {
-                        "offer": current_offer,
-                        "totals": totals,
-                        "clients": client_company_names,
-                    },
-                )
-            request.session["current_offer"] = []
-            request.session.modified = True
-            # TODO: inspect
-            # if not client_uuid:
-            #     payload_detail = {
-            #         "clientHeader": request.POST.client,
-            #     }
-            #     response, error = _make_api_request(
-            #         requests.post,
-            #         f"{API_BASE_URL}/transaction-details/admin/{transaction['uuid']}/",
-            #         headers=headers,
-            #         body=payload_detail,
-            #     )
-            return redirect("admin_transaction_detail", transaction["uuid"])
 
     return render(
         request,
@@ -949,20 +956,25 @@ def change_status(request, transaction_uuid):
             return redirect("admin_transaction_detail", uuid)
 
     if admin_url:
-        response_client = requests.get(
-            f"{API_BASE_URL}/clients/{admin_url}{transaction['clientId']}",
-            headers=headers,
-        )
-        error = _api_error_interpreter(response_client.status_code)
-        if error:
-            return error
+        if "clientId" in transaction.keys():
+            response_client = requests.get(
+                f"{API_BASE_URL}/clients/{admin_url}{transaction['clientId']}",
+                headers=headers,
+            )
+            error = _api_error_interpreter(response_client.status_code)
+            if error:
+                return error
+            response_client = response_client.json()
+        else:
+            transaction["clientId"] = None
+            response_client = {}
     else:
         response_client = request.session["logged_user"]
 
     data = {
         "transaction": transaction,
         "items": transaction["itemsOrdered"],
-        "client": response_client.json(),
+        "client": response_client,
         "total": totals,
         "date": transaction["status_time"],
         "transaction_uuid": transaction_uuid,
@@ -1049,7 +1061,6 @@ def client_transaction_detail(request, transaction_uuid):
 def admin_transaction_detail(request, transaction_uuid):
 
     headers = _get_headers(request)
-
     lang = request.LANGUAGE_CODE.upper()
 
     if request.method == "POST":
@@ -1160,7 +1171,6 @@ def prognose_list(request):
     headers = _get_headers(request)
     page = _get_page_param(request)
 
-    # IDK why status=FINAL returns list of prognose, some enum stuff in data base
     prognoses, error = _make_api_request(
         f"{API_BASE_URL}/transactions/by-status?status=PROGNOSE&{page.strip('?')}",
         headers=headers,
@@ -1168,7 +1178,6 @@ def prognose_list(request):
     if error or not prognoses:
         return error
     page = Page(prognoses)
-    # TODO: TEST
     for prognose in page.content:
         prognose["init_time"] = _parse_date(prognose["init_time"])
         prognose["status_time"] = _parse_date(prognose["status_time"])

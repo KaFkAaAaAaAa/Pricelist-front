@@ -28,9 +28,9 @@
                 <div class="row text-start">{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</div>
                 <div class="row text-start">{{ transaction.client.clientCountry }}</div>
                 {% else %}
-                <textarea class="form-control">
-                {{ transaction.clientText }}
-                </textarea>
+
+                <input type="text" class="form-control" name="clientName" value="{{ transaction.clientName }}">
+                <textarea class="form-control">{{ transaction.clientAddress }}</textarea>
                 {% endif %}
                 <div class="row text-start"><b class="text-start p-0">{% trans "Status" %}:</b>
                     {% if transaction.status %}{{ transaction.status }}
@@ -70,7 +70,7 @@
                                         <span class="input-group-text">€</span>
                                     </div>
                                     <div class="mt-2">
-                                        <h6 class="fw-semibold">{% trans "Plates:" %}</h6>
+                                        <h6 class="fw-semibold">{% trans "Plates" %}:</h6>
                                         <div id="plate-list" class="mb-3">
                                         </div>
                                         <input type="hidden" name="plates_list" id="id_plates_list"/>
@@ -90,6 +90,7 @@
                     {% endif %}
                 </div>
                 <div class="row mt-4 text-start pb-1 px-0 mx-0">
+                    {# TODO: make it work with non-reg #}
                   <label for="selectClient" class="form-label">{% trans "Change the client" %}:</label><br>
                   <select name="client_uuid" id="selectClient" class="form-select" style="width: 50%"></select>
                 </div>

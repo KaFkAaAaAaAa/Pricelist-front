@@ -11,6 +11,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.http.response import HttpResponseNotFound, HttpResponseServerError
 from django.shortcuts import redirect, render
+from django.utils.translation import get_language
 from django.utils.translation import gettext as _
 
 from transactions.views import _set_status
@@ -328,6 +329,34 @@ def my_users(request, func="activate-user"):
 
 @require_auth
 @require_group(ADMIN_GROUPS)
+def clients_activity(request):
+
+    page = _get_page_param(request)
+    headers = _get_headers(request)
+    # clients, error = _make_api_request(
+    #     f"{API_BASE_URL}/clients/admin/with-groups/{page}",
+    #     headers=headers,
+    # )
+    # if error:
+    #     return error
+    client_activity_map, error = _make_api_request(
+        f"{API_BASE_URL}/clients/admin/activity/{page}",
+        headers=headers,
+    )
+    if error or not client_activity_map:
+        return error
+    page = Page(client_activity_map)
+    for client in page.content:
+        if not client["user_last_login"]:
+            client["user_last_login"] = "-"
+        if not client["transaction_uuid"] or client["transaction_uuid"] == "None":
+            client["status_change_time"] = "-"
+
+    return render(request, "clients_activity.html", {"page": page})
+
+
+@require_auth
+@require_group(ADMIN_GROUPS)
 def new_users(request, func="assign-admin"):
 
     page = _get_page_param(request)
@@ -521,7 +550,12 @@ def client_add(request):
         form = RegisterForm()
         for bound_field in form.visible_fields():
             # TODO: fix translation here
-            if "placeholder" in bound_field.field.widget.attrs:
+            if get_language() == "de":
+                # Gaben Sie Ihne(n) "WAS?" ein
+                bound_field.field.widget.attrs["placeholder"] = (
+                    bound_field.field.widget.attrs["placeholder"].split(" ")[3]
+                )
+            elif "placeholder" in bound_field.field.widget.attrs:
                 bound_field.field.widget.attrs["placeholder"] = (
                     bound_field.field.widget.attrs["placeholder"].replace(
                         _("your "), ""

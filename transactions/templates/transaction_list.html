@@ -39,7 +39,11 @@
                 <tbody>
                 {% for transaction in page.content %}
                 <tr style="cursor: pointer" onclick="window.location.href='{% if request.session.logged_user.user %}/transactions/{% else %}/transactions/admin/{% endif %}{{ transaction.uuid }}/';">
+                    {% if transaction.client.clientCompanyName  %}
                     <td>{{ transaction.client.clientCompanyName }}</td>
+                    {% else %}
+                    <td>{{ transaction.clientHeader }}</td>
+                    {% endif %}
                     <td>{{ transaction.init_time|date:"d-m-Y H:i" }}</td>
                     <td>{{ transaction.status_time|date:"d-m-Y H:i" }}</td>
                     {% if request.session.logged_user.user %}
