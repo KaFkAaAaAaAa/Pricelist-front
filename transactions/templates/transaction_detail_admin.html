@@ -29,8 +29,8 @@
                 <div class="row text-start">{{ transaction.client.clientCountry }}</div>
                 {% else %}
 
-                <input type="text" class="form-control" name="clientName" value="{{ transaction.clientName }}">
-                <textarea class="form-control">{{ transaction.clientAddress }}</textarea>
+                <input type="text" class="form-control" name="client-name" id="client-name" value="{{ transaction.clientName }}">
+                <textarea class="form-control" name="client-address" id="client-address">{{ transaction.clientAddress }}</textarea>
                 {% endif %}
                 <div class="row text-start"><b class="text-start p-0">{% trans "Status" %}:</b>
                     {% if transaction.status %}{{ transaction.status }}

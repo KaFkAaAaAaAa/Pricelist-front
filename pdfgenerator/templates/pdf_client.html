@@ -9,9 +9,9 @@
     {{ transaction.client.clientCountry }}<br />
   </div>
   {% else %}
-  <div class="fw-bold client-company">{{ transaction.client.clientName }}</div>
+  <div class="fw-bold client-company">{{ transaction.clientName }}</div>
   <div class="mx-0 client-address">
-    {{ transaction.client.clientAddress|linebreakesbr }}
+    {{ transaction.clientAddress|linebreaksbr }}
   </div>
   {% endif %}
 </div>
