@@ -45,8 +45,6 @@ TRANSACTION_ROOT = os.getenv(
 )
 TRANSACTION_URL = "/docs/"
 
-LANGUAGE_CODE = "pl"
-
 STATICFILES_DIRS = [
     BASE_DIR / "front/static",
 ]

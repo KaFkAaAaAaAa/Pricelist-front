@@ -25,3 +25,5 @@ file_manager/__pycache__
 transactions_docs/*
 pricelist-front.log
 */__pycache__
+locale/de/LC_MESSAGES/django.mo
+locale/pl/LC_MESSAGES/django.mo
