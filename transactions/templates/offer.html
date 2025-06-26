@@ -35,8 +35,10 @@
                 </div>
             {% endif %}
             <div id="client-textarea" style="display: none" class="mt-2">
-                <label for="client-text">{% trans "Client header:" %}</label>
-                <textarea name="client-text" id="client-text" class="form-control mb-3"></textarea>
+                <label for="client-name">{% trans "Client name" %}:</label>
+                <input class="form-control" type="text" name="client-name" id="client-name">
+                <label for="client-address">{% trans "Client address" %}:</label>
+                <textarea name="client-address" id="client-address" class="form-control mb-3"></textarea>
             </div>
 
             <button type="button" data-bs-toggle="modal" data-bs-target="#searchModal"

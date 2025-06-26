@@ -37,11 +37,11 @@
 |x| po transactions error
 
 germanizacja:
-| | nowy klient/nowy artykul - różne rodzaje po niemiecku - zrobić add item i add new w klientach i administratorach?
+|?| nowy klient/nowy artykul - różne rodzaje po niemiecku - zrobić add item i add new w klientach i administratorach?
 
 pomysly:
 
-| | ostatnia transakcja u klientów + sort po ostatniej transakcji (dodatkowy endpoint uuid-data)
+|x| ostatnia transakcja u klientów + sort po ostatniej transakcji (dodatkowy endpoint uuid-data)
 | | wydruk cennika -> przycisk drukuj w tym wydruk częściowy - bez kategorii, ewentualnie obiektów, w zależności od zalogowanego handlowca/administratora-handlowca -> numer telefonu, email
 | | klient dodawanie zdjęć do zapytania i rozliczania - folder
 | | galeria - poprawić kontrolki - dodać strzałki
@@ -53,14 +53,14 @@ pomysly:
 | | możliwość oferty bez klienta, opcja header do dopisania typu Sz. P.
     |x| zamień custom na "wpisz swojego klienta"
     |x| zdebuguj custom (default klient zwykly ale okienko)
-    | | obsługa pustego klienta
-        | | oferta
-            | | back
+    |x| obsługa pustego klienta
+        |x| oferta
+            |x| back
             |x| front
-        | | transakcja
-            | | back
-            | | front
-| | wgląd w logowania klientów - lista z admina - ostatnie zalogowanie klienta
+        |x| transakcja
+            |x| back
+            |x| front
+|x| wgląd w logowania klientów - lista z admina - ostatnie zalogowanie klienta
 | | responsywność
 | | powrót do poprzedniej strony
 | | nierozwijane menu (możliwe)

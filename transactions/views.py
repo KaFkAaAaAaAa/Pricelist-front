@@ -14,31 +14,14 @@ from django.utils.translation import gettext_lazy as _
 
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
-from Pricelist.settings import (
-    ADMIN_GROUPS,
-    API_BASE_URL,
-    CLIENT_GROUPS,
-    SKU_REGEX,
-    SUPPORT_GROUPS,
-    TRANSACTION_FINAL,
-)
-from Pricelist.utils import (
-    Page,
-    _amount_to_display,
-    _amount_to_float,
-    _amount_to_store,
-    _api_error_interpreter,
-    _get_group,
-    _get_headers,
-    _get_page_param,
-    _is_admin,
-    _make_api_request,
-    _price_to_display,
-    _price_to_float,
-    _price_to_store,
-    require_auth,
-    require_group,
-)
+from Pricelist.settings import (ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS,
+                                SKU_REGEX, SUPPORT_GROUPS, TRANSACTION_FINAL)
+from Pricelist.utils import (Page, _amount_to_display, _amount_to_float,
+                             _amount_to_store, _api_error_interpreter,
+                             _get_group, _get_headers, _get_page_param,
+                             _is_admin, _make_api_request, _price_to_display,
+                             _price_to_float, _price_to_store, require_auth,
+                             require_group)
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
 logger = logging.getLogger(__name__)
@@ -49,8 +32,13 @@ def _generate_doc_filename(transaction, status=None):
     try:
         transaction["init_time"] = _get_date_from_datetime(transaction["init_time"])
         status_name = status if status else transaction["status"]
-        return f'{transaction["init_time"]}_{transaction["client"]["clientCompanyName"]}_{status_name}.pdf'
+        if "client" in transaction.keys():
+            client = transaction["client"]["clientCompanyName"]
+        else:
+            client = transaction["clientName"]
+        return f'{transaction["init_time"]}_{client}_{status_name}.pdf'
     except KeyError:
+        logger.error("Key error in func _generate_doc_filename: %s", transaction)
         return "document_name_error"
 
 
@@ -115,7 +103,7 @@ def _parse_transaction_edit_items(request):
     items = {}
     alku = {}
     for param in request.POST:
-        if param.find("-") == -1 or param == "client-text":
+        if param.find("-") == -1 or param in ("client-name", "client-address"):
             continue
         field, uuid = param.split("-", 1)
         if not (field and uuid):
@@ -210,7 +198,8 @@ def _send_offer_to_api_admin(
         "clientId": client_uuid,
     }
     if not client_uuid:
-        payload["clientHeader"] = request.POST["client-text"]
+        payload["clientName"] = request.POST["client-name"]
+        payload["clientAddress"] = request.POST["client-address"]
     transaction, error = _make_api_request(
         f"{API_BASE_URL}/transactions/admin/",
         method=requests.post,
@@ -1060,15 +1049,24 @@ def client_transaction_detail(request, transaction_uuid):
 @require_group(ADMIN_GROUPS + ["LOGISTICS"])
 def admin_transaction_detail(request, transaction_uuid):
 
+    __import__('pdb').set_trace()
+
     headers = _get_headers(request)
     lang = request.LANGUAGE_CODE.upper()
 
     if request.method == "POST":
         items, alku = _parse_transaction_edit_items(request)
-        payload_transaction = {
-            "itemsOrdered": items,
-            "clientId": request.POST["client_uuid"],
-        }
+        if "client_uuid" in request.POST.keys() and request.POST["client_uuid"]:
+            payload_transaction = {
+                "itemsOrdered": items,
+                "clientId": request.POST["client_uuid"],
+            }
+        else:
+            payload_transaction = {
+                "itemsOrdered": items,
+                "clientName": request.POST["client-name"],
+                "clientAddress": request.POST["client-address"],
+            }
         payload_transaction["description"] = request.POST["description"]
         transaction, error = _make_api_request(
             f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/",
