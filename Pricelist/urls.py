@@ -31,6 +31,9 @@ urlpatterns = (
         path("admin/new-admin/", views.new_admin, name="new_admin"),
         path("admin/new-clients/", views.new_users, name="new_users"),
         path(
+            "admin/clients-activity/", views.clients_activity, name="clients_activity"
+        ),
+        path(
             "admin/clients/<uuid:user_id>/assign-admin",
             views.assign_admin,
             name="assign_admin",

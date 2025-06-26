@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}Client List{% endblock %}
+{% block content %}
+    <h1 class="text-center">{% trans "Client List" %}</h1>
+    <div class="my-2 d-flex align-items-center">
+        <a class="btn btn-outline-danger me-2" href="{% url 'admin_dashboard' %}">
+            {% trans "Go back" %}
+        </a>
+        <form method="GET" class="mb-0">
+            <div class="input-group">
+                <input type="text" class="form-control" name="search" placeholder="{% trans "Search" %}...">
+                <button type="submit" class="btn btn-outline-secondary">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover table-striped mt-3">
+            <thead>
+            <tr>
+                <th scope="col" class="text-start" style="max-width=400px">{% trans "Company Name" %}</th>
+                <th>{% trans 'Last login' %}</th>
+                <th>{% trans 'Last transaction' %}</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr></tr>
+            {% for client in page.content %}
+                <tr
+                        onclick="window.location.href='/admin/clients/{{ client.user_user_id }}';"
+                        style="cursor: pointer"
+                >
+                    <td>{{ client.client_company_name }}</td>
+                    <td>{{ client.user_last_login }}</td>
+                    <td>{{ client.status_change_time }}</td>
+                <td><button class="btn btn-outline-primary" {% if not client.transaction_uuid %}disabled{% endif %}
+                    onclick="event.stopPropagation(); location.href='/transactions/admin/{{ client.transaction_uuid }}';">{% trans "transaction" %}</button></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% include "pagination.html" %}
+    </div>
+{% endblock %}
