@@ -1049,8 +1049,6 @@ def client_transaction_detail(request, transaction_uuid):
 @require_group(ADMIN_GROUPS + ["LOGISTICS"])
 def admin_transaction_detail(request, transaction_uuid):
 
-    __import__('pdb').set_trace()
-
     headers = _get_headers(request)
     lang = request.LANGUAGE_CODE.upper()
 

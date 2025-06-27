@@ -202,6 +202,7 @@ def admin_items(request):
         item["itemPrice"] = [
             _price_to_display(group_price) for group_price in item["itemPrice"]
         ]
+        item["localized_name"] = item["itemName"][lang]
         items_dict[item.get("itemGroup")].append(item)
     return render(request, "item_list.html", {"items": items_dict})
 
