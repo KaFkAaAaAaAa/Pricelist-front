@@ -1,6 +1,7 @@
 import copy
 import logging
 import re
+from collections import defaultdict
 from datetime import date, datetime
 from http.client import INTERNAL_SERVER_ERROR, UNAUTHORIZED
 from math import floor
@@ -16,12 +17,12 @@ from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
 from Pricelist.settings import (ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS,
                                 SKU_REGEX, SUPPORT_GROUPS, TRANSACTION_FINAL)
-from Pricelist.utils import (Page, _amount_to_display, _amount_to_float,
-                             _amount_to_store, _api_error_interpreter,
-                             _get_group, _get_headers, _get_page_param,
-                             _is_admin, _make_api_request, _price_to_display,
-                             _price_to_float, _price_to_store, require_auth,
-                             require_group)
+from Pricelist.utils import (ItemOrdered, Page, _amount_to_display,
+                             _amount_to_float, _amount_to_store,
+                             _api_error_interpreter, _get_group, _get_headers,
+                             _get_page_param, _is_admin, _make_api_request,
+                             _price_to_display, _price_to_float,
+                             _price_to_store, require_auth, require_group)
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
 logger = logging.getLogger(__name__)
@@ -1044,11 +1045,63 @@ def client_transaction_detail(request, transaction_uuid):
         data["proposition"] = "PROPOSITION"
     return render(request, "transaction_detail_client.html", data)
 
+def process_alku(alku, payload_transaction, transaction):
+    # 1. Build mappings from transaction data
+    uuid_to_item = {}
+    sku_to_items = defaultdict(list)  # Now stores full items for comparison
+
+    for item in transaction["itemsOrdered"]:
+        uuid = item["uuid"]
+        sku = item.get("sku")
+        uuid_to_item[uuid] = item
+        if sku:
+            sku_to_items[sku].append(item)
+
+    sku_to_payload_item = {
+        item["sku"]: item for item in payload_transaction["itemsOrdered"]
+        if "sku" in item and "uuid" not in item
+    }
+
+    # 3. Process alku dictionary
+    for sku_or_uuid, amount in list(alku.items()):
+        if sku_or_uuid in uuid_to_item:
+            continue
+
+        if not re.match(SKU_REGEX, sku_or_uuid):
+            alku.pop(sku_or_uuid)
+            continue
+
+
+        matching_items = sku_to_items.get(sku_or_uuid, [])
+
+
+        if len(matching_items) == 1:
+            alku[matching_items[0]["uuid"]] = amount
+            alku.pop(sku_or_uuid)
+
+
+        elif matching_items:
+            payload_item = sku_to_payload_item.get(sku_or_uuid)
+            if payload_item:
+                for transaction_item in matching_items:
+                    # if (transaction_item.get("name") == payload_item.get("name") and
+                    #     transaction_item.get("price") == payload_item.get("price") and
+                    #     transaction_item.get("additionalInfo") == payload_item.get("additionalInfo")):
+                    if ItemOrdered(transaction_item) == ItemOrdered(payload_item):
+                        alku[transaction_item["uuid"]] = amount
+                        alku.pop(sku_or_uuid)
+                        break
+                else:
+                    # No exact match found, use first available
+                    alku[matching_items[0]["uuid"]] = amount
+                    alku.pop(sku_or_uuid)
 
 @require_auth
 @require_group(ADMIN_GROUPS + ["LOGISTICS"])
 def admin_transaction_detail(request, transaction_uuid):
-
+ 
+    __import__('pdb').set_trace()
+    
     headers = _get_headers(request)
     lang = request.LANGUAGE_CODE.upper()
 
@@ -1093,15 +1146,9 @@ def admin_transaction_detail(request, transaction_uuid):
             if error:
                 return error
         elif alku:
-            alku_copy = alku.copy()
-            for uuid, amount in alku_copy.items():
-                if re.match(SKU_REGEX, uuid):
-                    for item in transaction["itemsOrdered"]:
-                        if item["sku"] == uuid:
-                            alku[item["uuid"]] = amount
-                            break
-                    alku.pop(uuid)
 
+            process_alku(alku, payload_transaction, transaction)
+            
             payload = {
                 "alkuAmount": alku,
                 "informations": {
