@@ -1,0 +1,63 @@
+input:
+    alku: {"uuid/sku": alku}
+    payload_transaction[itemOrderedModel(uuid<null|uuid>)]
+    transaction[uuid<uuid>]
+
+output:
+    alku with uuids applied to sku-indexed items
+
+code:
+    alku_copy = alku.copy()
+    items_copy = payload_transaction["itemsOrdered"]
+    for uuid, amount in alku_copy.items():
+        if re.match(SKU_REGEX, uuid):
+            for item in payload_transaction["itemsOrdered"]:
+                if "uuid" in item.keys():
+                   continue 
+                for itemOrdered in transaction["itemsOrdered"]:
+                    if Item(item) == Item(itemsOrdered):
+                        alku[itemOrdered["uuid"]] = amount
+                        break
+        alku.pop(uuid)
+
+
+    private UUID uuid;
+    private String sku;
+    @Transient
+    private String accountingNumber;
+    private String name;
+    private Integer price;
+    private Integer amount;
+    private String additionalInfo;
+    private UUID transactionId;
+
+problems:
+    skus without uuid
+    multiple uuids with the same sku
+
+uuid_to_item = {}
+sku_to_uuids = defaultdict(list)
+alku_copy = alku.copy()
+sku_to_assign = {}
+
+for item in transaction["itemsOrdered"]:
+    uuid_to_item[item["uuid"]] = item
+    sku_to_uuids[item["sku"]].append(item) 
+
+for item in payload_transaction["itemsOrdered"]:
+    if "uuid" not in item:
+        sku_to_assign[item["sku"]] = item
+        
+
+
+for key, amount in alku_copy:
+    if re.match(key, SKU_REGEX)
+        uuids = sku_to_uuids[key]
+        if len(uuids) == 1:
+            alku[uuids[0]] = amount
+        else:
+
+            
+
+
+

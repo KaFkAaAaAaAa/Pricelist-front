@@ -9,6 +9,7 @@ from math import floor
 
 import requests
 from django.contrib import messages
+from django.forms import UUIDField
 from django.http.response import (
     HttpResponseForbidden,
     HttpResponseNotFound,
@@ -248,6 +249,44 @@ class Page:
 
     def __str__(self) -> str:
         return f"PageObject:{self.page_size}:{self.page_no}/{self.total_pages}"
+
+
+@dataclass
+class ItemOrdered:
+    """ItemOrderedModel used by API"""
+
+    uuid: str | None
+    sku: str
+    accounting_number: str | None
+    name: str
+    price: int
+    amount: int
+    additional_info: str
+    transaction_id: str
+
+    def __init__(self, api_response: dict) -> None:
+        self.uuid = api_response.get("uuid", None)
+        self.sku = api_response.get("sku", "")
+        self.accounting_number = api_response.get("accountingNumber", None)
+        self.name = api_response.get("name", "")
+        self.price = api_response.get("price", 0)
+        self.amount = api_response.get("amount", 0)
+        self.additional_info = api_response.get("additionaInfo", "")
+        self.transaction_id = api_response.get("transactionId", "")
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, self.__class__):
+            return False
+        if self is other:
+            return True
+        return (
+            self.sku == other.sku
+            and self.accounting_number == other.accounting_number
+            and self.name == other.name
+            and self.price == other.price
+            and self.amount == other.amount
+            and self.additional_info == other.additional_info
+        )
 
 
 def _get_page_param(request, first=True):
