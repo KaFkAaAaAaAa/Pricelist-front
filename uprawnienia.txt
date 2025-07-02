@@ -43,16 +43,18 @@ pomysly:
 
 | | wydruk cennika -> przycisk drukuj w tym wydruk częściowy - bez kategorii, ewentualnie obiektów, w zależności od zalogowanego handlowca/administratora-handlowca -> numer telefonu, email
 | | klient dodawanie zdjęć do zapytania i rozliczania - folder
+| | sortowanie po datach transakcji - koniecznie
+| | sortowanie po datach logowania - opt
 | | galeria - poprawić kontrolki - dodać strzałki
-    | | click out of modal with photo
+    |?| click out of modal with photo
 |?| 4/5 cyfrowy numer do księgowania - numer księgowania - może być jednakowy dla kilku pozycji, dodać wyszukiwanie po tym
     |x| numer w liście itemów
     |x| numer w transakcji
     | | numer dla nowych itemów
-| | transaction_detail -> fix bugs, check new items same sku and save changes display 
+|x| transaction_detail -> fix bugs, check new items same sku and save changes display 
 | | responsywność
 | | powrót do poprzedniej strony
-| | nierozwijane menu (możliwe)
+|-| nierozwijane menu (możliwe)
 |?| admin interface - chhange default EN to locale
 |x| email do klienta?
 
@@ -70,11 +72,11 @@ pomysly:
         |x| transakcja
             |x| back
             |x| front
-| | dodatkowe role:
+|?| dodatkowe role:
     |x| zweryfikuj admin
     |x| zweryfikuj owner
-    | | zweryfikuj logistics
-    | | zweryfikuj msb
+    |?| zweryfikuj logistics
+    |?| zweryfikuj msb
 |x| DISPO -> odczyt na prognozy; dokumenty
     |x| zakaz
     |x| mozliwość
@@ -83,8 +85,8 @@ pomysly:
     |x| L equal lenght of buttons
     |x| Wyszukiwanie ;>
     |x| Który handlowiec
-| | Change password:
-    | | alert po wysłaniu nie prawidłowego
+|?| Change password:
+    |?| alert po wysłaniu nie prawidłowego
 |x| My client list:
     |x| delete button
     |x| not every one in my clients
