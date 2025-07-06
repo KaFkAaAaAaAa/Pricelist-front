@@ -67,6 +67,11 @@
                 class="btn btn-sm btn-outline-success mt-2 mb-2">
             {% trans "Add item" %}
         </button>
+        <button type="button" id="photoButton"
+                class="btn btn-sm btn-outline-secondary mt-2 mb-2"
+                onclick="initImages();">
+            {% trans "Add images" %}
+        </button>
         <form method="post" id="edit-form">
             {% csrf_token %}
             <div class="table-responsive">
@@ -127,6 +132,7 @@
                                         {{ item.amount }}
                                 {% endif %}
                             </td>
+                            {% if transaction.status == 'FINAL_C' %}
                             <td>
                                 <div>
                                     <input type="hidden" name="alku-{{ item.uuid }}" id="alku-{{ item.uuid }}"
@@ -134,6 +140,7 @@
                                     {{ item.alku }}
                                 </div>
                             </td>
+                            {% endif %}
 
                             <td class="">
                                 {% if transaction.status == 'PROPOSITION' %}
@@ -160,7 +167,7 @@
                                 {{ item.total }}
                                 </span> €
                             </td>
-                            <td></td>
+                            <td style="display: none" class="add-photo p-0 m-0 align-middle"><a href="/transactions/{{ transaction.uuid }}/{{ item.uuid }}/add-photo/" class="m-1 btn btn-sm btn-outline-secondary">{% trans "Add photos" %}</a></td>
                             {% if transaction.status == "PROPOSITION" %}
                             <td>
                                 <div class="d-grid gap-1 w-100">
@@ -526,5 +533,15 @@
             {% endif %}
         }
         window.onload = () => uuids.forEach(uuid => calculateTotal(uuid));
+
+        
+        function initImages() {
+            const addPhotoCells = document.querySelectorAll('.add-photo');
+
+            addPhotoCells.forEach(cell => {
+                cell.style.display = 'block';
+            });
+        }
+
     </script>
 {% endblock %}

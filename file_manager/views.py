@@ -34,10 +34,10 @@ fs = FileSystemStorage(location=TRANSACTION_ROOT)
 DIRECTORIES = ["finance", "transport"]
 
 
-def _sanitize_path(path):
+def _sanitize_path(path, file_sys=fs):
     """Sanitize a path against directory traversal attacks."""
-    path = os.path.normpath(os.path.join(fs.base_location, path))
-    if not path.startswith(fs.base_location):
+    path = os.path.normpath(os.path.join(str(file_sys.base_location), path))
+    if not path.startswith(str(file_sys.base_location)):
         raise ValueError("Invalid file path detected!")
     return path
 

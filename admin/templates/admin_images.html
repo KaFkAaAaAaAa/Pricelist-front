@@ -21,7 +21,7 @@
             <a class="btn btn-primary" href="/admin/items/{{ item_sku }}/edit">{% blocktrans %}Back to Edit{% endblocktrans %}</a>
             <button type="submit" class="btn btn-primary">{% trans "Upload" %}</button>
         </form>
-        <div class="gallery" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        <div class="gallery mt-3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
             {% for image in images %}
                 <div class="image-container" style="text-align: center;">
                     <img src="{{ image }}" alt="Image" style="width: 100%; max-width: 300px; height: auto;"/>

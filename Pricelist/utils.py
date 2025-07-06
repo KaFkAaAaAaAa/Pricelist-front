@@ -6,10 +6,12 @@ from functools import wraps
 from http.client import INTERNAL_SERVER_ERROR
 from json import JSONDecodeError
 from math import floor
+from pathlib import Path
+from uuid import uuid4
 
 import requests
 from django.contrib import messages
-from django.forms import UUIDField
+from django.core.files.storage.filesystem import FileSystemStorage
 from django.http.response import (
     HttpResponseForbidden,
     HttpResponseNotFound,
@@ -17,6 +19,7 @@ from django.http.response import (
 )
 from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
+from requests.exceptions import Timeout
 
 from Pricelist.settings import (
     ADMIN_GROUPS,
@@ -25,6 +28,7 @@ from Pricelist.settings import (
     GROUPS_ROMAN,
     LOGGING_CONFIG,
     SUPPORT_GROUPS,
+    TRANSACTION_ROOT,
 )
 
 RESPONSE_FORBIDDEN = HttpResponseForbidden(
@@ -94,19 +98,26 @@ def _make_api_request(url, method=requests.get, headers=None, body=None):
         logger.error(
             "Connection error, API is unreachable; %s %s", method.__name__.upper(), url
         )
-        return HttpResponseServerError(b"Internal server error")
+    except Timeout:
+        logger.error(
+            "Connection error, API is unreachable; %s %s", method.__name__.upper(), url
+        )
+    except ConnectionError:
+        logger.error(
+            "Connection error, API is unreachable; %s %s", method.__name__.upper(), url
+        )
     except JSONDecodeError:
+        # response cannot be unbound and throw JSONDecodeError but the ide warning is bugging me
         if response:
-            return response.text, _api_error_interpreter(
-                response.status_code
-            )  # response cannot be unbound and throw JSONDecodeError but the warning is bugging me
-        return False, _api_error_interpreter(INTERNAL_SERVER_ERROR)
-    except requests.exceptions.Timeout:
-        logger.error("API request timeout; %s %s", method.__name__.upper(), url)
-        return False, _api_error_interpreter(INTERNAL_SERVER_ERROR)
-    except:
-        logger.error("Unknown error request %s %s", method.__name__.upper(), url)
-        return False, _api_error_interpreter(INTERNAL_SERVER_ERROR)
+            return response.text, _api_error_interpreter(response.status_code)
+    except Exception as e:
+        logger.error(
+            "Unknown error request %s %s\nException: %s",
+            method.__name__.upper(),
+            url,
+            e,
+        )
+    return False, _api_error_interpreter(INTERNAL_SERVER_ERROR)
 
 
 def _get_auth(token):
@@ -334,3 +345,28 @@ def parse_logs_login_action(page_no, page_size):
     page = Page(page_init)
 
     return page
+
+
+def _file_indexer(dir_path: str, file_name: str) -> str:
+
+    # Not validated - beware and pass only valid values into dir path
+    path = Path(dir_path)
+    path.mkdir(parents=True, exist_ok=True)
+    fs = FileSystemStorage(location=str(path))
+    ls_dir = fs.listdir(".")
+
+    file_name_split = file_name.rsplit(".", 1)
+
+    if len(file_name_split) != 1:
+        extension = file_name_split[-1]
+    else:
+        extension = ""
+    file_name_no_ext = file_name_split[0]
+
+    if file_name not in ls_dir[1]:
+        return file_name
+    for i in range(1, 100):
+        indexed_filename = f"{file_name_no_ext}-{i}.{extension}"
+        if indexed_filename not in ls_dir[1]:
+            return indexed_filename
+    return ""
