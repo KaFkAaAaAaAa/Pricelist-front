@@ -244,7 +244,6 @@ def _send_offer_to_api_admin(
 @require_auth
 @require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def offer(request):
-    __import__("pdb").set_trace()
     if "current_offer" not in request.session.keys():
         request.session["current_offer"] = []
 
