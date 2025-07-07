@@ -42,9 +42,14 @@ germanizacja:
 pomysly:
 
 | | wydruk cennika -> przycisk drukuj w tym wydruk częściowy - bez kategorii, ewentualnie obiektów, w zależności od zalogowanego handlowca/administratora-handlowca -> numer telefonu, email
-| | klient dodawanie zdjęć do zapytania i rozliczania - folder
+|x| klient dodawanie zdjęć do zapytania i rozliczania - folder
+| | poprawki estetyczne:
+    | | bugująca się tabelka
+    | | nazwa transakcji (data)
+    | | admin
 | | sortowanie po datach transakcji - koniecznie
 | | sortowanie po datach logowania - opt
+| | aktywność klientów - zmienić nagłówek
 | | galeria - poprawić kontrolki - dodać strzałki
     |?| click out of modal with photo
 |?| 4/5 cyfrowy numer do księgowania - numer księgowania - może być jednakowy dla kilku pozycji, dodać wyszukiwanie po tym
