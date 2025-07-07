@@ -177,19 +177,19 @@ def _send_proposition_to_api(request):
         "itemsOrdered": items,
     }
     # items already converted to "store" values
-    response = requests.post(
-        f"{API_BASE_URL}/transactions/", headers=_get_headers(request), json=payload
-    )
     transaction, error = _make_api_request(
         f"{API_BASE_URL}/transactions/",
         method=requests.post,
         headers=_get_headers(request),
+        body=payload,
     )
-    if not error and transaction:
+    if error:
+        return error
+    if transaction:
         request.session["current_offer"] = []
         request.session.modified = True
         return redirect("client_transaction_detail", transaction["uuid"])
-    return _api_error_interpreter(response.status_code)
+    return _api_error_interpreter(INTERNAL_SERVER_ERROR)
 
 
 def _send_offer_to_api_admin(
@@ -1053,6 +1053,7 @@ def client_transaction_detail(request, transaction_uuid):
         data["proposition"] = "PROPOSITION"
     return render(request, "transaction_detail_client.html", data)
 
+
 def process_alku(alku, payload_transaction, transaction):
     # 1. Build mappings from transaction data
     uuid_to_item = {}
@@ -1066,7 +1067,8 @@ def process_alku(alku, payload_transaction, transaction):
             sku_to_items[sku].append(item)
 
     sku_to_payload_item = {
-        item["sku"]: item for item in payload_transaction["itemsOrdered"]
+        item["sku"]: item
+        for item in payload_transaction["itemsOrdered"]
         if "sku" in item and "uuid" not in item
     }
 
@@ -1079,14 +1081,11 @@ def process_alku(alku, payload_transaction, transaction):
             alku.pop(sku_or_uuid)
             continue
 
-
         matching_items = sku_to_items.get(sku_or_uuid, [])
-
 
         if len(matching_items) == 1:
             alku[matching_items[0]["uuid"]] = amount
             alku.pop(sku_or_uuid)
-
 
         elif matching_items:
             payload_item = sku_to_payload_item.get(sku_or_uuid)
@@ -1104,10 +1103,11 @@ def process_alku(alku, payload_transaction, transaction):
                     alku[matching_items[0]["uuid"]] = amount
                     alku.pop(sku_or_uuid)
 
+
 @require_auth
 @require_group(ADMIN_GROUPS + ["LOGISTICS"])
 def admin_transaction_detail(request, transaction_uuid):
-    
+
     headers = _get_headers(request)
     lang = request.LANGUAGE_CODE.upper()
 
@@ -1154,7 +1154,7 @@ def admin_transaction_detail(request, transaction_uuid):
         elif alku:
 
             process_alku(alku, payload_transaction, transaction)
-            
+
             payload = {
                 "alkuAmount": alku,
                 "informations": {
