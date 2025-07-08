@@ -41,27 +41,47 @@ germanizacja:
 
 pomysly:
 
+nowe:
+| | w nowa oferta zmiana klienta - wyszukiwarka
+| | obrót klienta - w transakcjach klienta
+| | kategorie dla klientów
+| | wyszukiwarka klientów
+| | total with transport z wydruku wywal i spróbuj scieśnić kolumny
+| | zamień w wydruku alku na weight
+
 | | wydruk cennika -> przycisk drukuj w tym wydruk częściowy - bez kategorii, ewentualnie obiektów, w zależności od zalogowanego handlowca/administratora-handlowca -> numer telefonu, email
+or
+| | wydruk cennika -> zrób stronę + znak wodny
 |x| klient dodawanie zdjęć do zapytania i rozliczania - folder
-| | poprawki estetyczne:
+|?| poprawki estetyczne:
     |x| bugująca się tabelka
-    | | nazwa transakcji (data)
+    |?| nazwa transakcji (data)
     |x| admin
+    | | is_photos - na liście
 |x| sortowanie po datach transakcji - koniecznie
 |x| sortowanie po datach logowania - opt
 |x| aktywność klientów - zmienić nagłówek
 |x| galeria - poprawić kontrolki - dodać strzałki
-    |-| click out of modal with photo
+    |x| click out of modal with photo
 |?| 4/5 cyfrowy numer do księgowania - numer księgowania - może być jednakowy dla kilku pozycji, dodać wyszukiwanie po tym
     |x| numer w liście itemów
     |x| numer w transakcji
     | | numer dla nowych itemów
+    | | prognoza i filnał numer rozliczeniowy
 |x| transaction_detail -> fix bugs, check new items same sku and save changes display 
 | | responsywność
-| | powrót do poprzedniej strony
+|?| powrót do poprzedniej strony
 |-| nierozwijane menu (możliwe)
 |?| admin interface - chhange default EN to locale
 |x| email do klienta?
+
+| | porzuć ofertę
+| | oczyść dane do zapisu z session w ofercie -> dodaj przecinek
+| | złóż zamówienie -> wyślij propzycję
+| | ewentualne zdjęcia można dodać w kolejnym kroku
+| | uzupełnij polskie tłumaczenia
+| | drukowanie -> wyświetla pdf na zmianę z pobieraniem -> zmiany jezyka wzmagają to
+    | | proeco się robi źle ecosuccess robi dobrze
 
 
 

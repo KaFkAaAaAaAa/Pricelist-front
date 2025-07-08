@@ -1,42 +1,15 @@
-{% extends 'base.html' %}
+{% extends 'base_no_head.html' %}
 {% load static %}
 {% load i18n %}
 {% block title %}{% trans "Price List" %}{% endblock %}
 {% block head %}
     <link rel="stylesheet" href="{% static 'css/price_list.css' %}">
 {% endblock %}
-
 {% block content %}
-    <form method="GET" id="search" class="container-fluid">
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-6">
-                <div class="input-group">
-                    <input type="text" class="form-control" name="search" placeholder="{% trans "Search" %}...">
-                    <button type="submit" class="btn btn-outline-secondary">
-                        <i class="fa fa-search"></i>
-                    </button>
-                    <a class="btn btn-outline-secondary ms-1" href="/">{% trans "Clear" %}</a>
-                    <a href="/transactions/offer/" class="btn btn-success ms-1">
-                        {% if request.session.logged_user.user %}
-                            {% trans "Make proposition" %}
-                        {% else %}
-                            {% trans "Make offer" %}
-                        {% endif %}
-                    </a>
-                </div>
-            </div>
-        </div>
-    </form>
 
-    <div class="row mt-4">
-        <div class="col-12 col-md-4 text-center text-md-start">
-            <a href="{% url 'offer_list' %}" class="btn btn-outline-success">
-                {% trans "Select item" %}
+            <a class="navbar-brand ms-2" href="/">
+                <img src="/images/alku-logo-2013-10-17.jpg" alt="ALKU-GMBH" class="img-fluid" style="max-height: 40px;">
             </a>
-            <a href="/print-pricelist" class="btn btn-outline-secondary">{% trans "Print version" %}</a>
-        </div>
-    </div>
-
     <div class="font-weight-light text-end mt-3">{% now "m-Y" %}</div>
 
     <div class="table-responsive">
@@ -104,4 +77,4 @@
         <hr style="border-top: 1.5px solid black">
         {% trans "Prices per 1 kg. The price list is for information purposes only. Prices are subject to change. Prices are not binding. Typographical errors excepted. Please contact us for prices for larger quantities or special materials." %}
     </div>
-{% endblock %}
+{% endblock content %}

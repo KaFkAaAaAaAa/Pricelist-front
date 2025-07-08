@@ -156,6 +156,11 @@ def price_list(request):
         return redirect("prognose_list")
     return _make_price_list(request, _get_headers(request))
 
+@require_auth
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
+def price_list_print(request):
+    return _make_price_list(request, _get_headers(request), pattern="price_list_print.html")
+
 
 @require_auth
 @require_group(ADMIN_GROUPS + CLIENT_GROUPS)
