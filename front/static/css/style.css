@@ -53,3 +53,45 @@ input[type='number'] {
   white-space: nowrap;
   flex-wrap: nowrap;
 }
+.carousel-inner img {
+  height: 500px; /* Adjust as needed */
+  object-fit: cover; /* This preserves aspect ratio while filling space */
+}
+/* Custom carousel controls styling */
+.carousel-bottom-controls {
+  position: relative;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 10px 0;
+  border-radius: 0 0 0.375rem 0.375rem;
+}
+
+.carousel-control-custom {
+  position: relative;
+  width: auto;
+  height: auto;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  padding: 10px;
+}
+
+/* Make indicators more visible */
+.carousel-indicators [data-bs-target] {
+  background-color: #666;
+  opacity: 0.5;
+}
+
+.carousel-indicators .active {
+  opacity: 1;
+  background-color: #000;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .carousel-bottom-controls {
+    padding: 8px 0;
+  }
+
+  .carousel-control-custom {
+    padding: 8px;
+  }
+}

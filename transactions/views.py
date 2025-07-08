@@ -1,46 +1,36 @@
 import copy
 import logging
+import os
 import re
 from collections import defaultdict
 from datetime import date, datetime
-from http.client import INTERNAL_SERVER_ERROR, UNAUTHORIZED
+from http.client import INTERNAL_SERVER_ERROR, NOT_FOUND, UNAUTHORIZED
 from math import floor
+from pathlib import Path
 from typing import Iterable, Literal
 
 import requests
 from django.contrib import messages
-from django.http import HttpResponseNotFound, HttpResponseServerError
+from django.core.files.storage import FileSystemStorage
+from django.http import (FileResponse, HttpResponse, HttpResponseNotFound,
+                         HttpResponseServerError)
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext_lazy as _
 
+from file_manager.views import _sanitize_path
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
-from Pricelist.settings import (
-    ADMIN_GROUPS,
-    API_BASE_URL,
-    CLIENT_GROUPS,
-    SKU_REGEX,
-    SUPPORT_GROUPS,
-    TRANSACTION_FINAL,
-)
-from Pricelist.utils import (
-    ItemOrdered,
-    Page,
-    _amount_to_display,
-    _amount_to_float,
-    _amount_to_store,
-    _api_error_interpreter,
-    _get_group,
-    _get_headers,
-    _get_page_param,
-    _is_admin,
-    _make_api_request,
-    _price_to_display,
-    _price_to_float,
-    _price_to_store,
-    require_auth,
-    require_group,
-)
+from Pricelist.settings import (ADMIN_GROUPS, API_BASE_URL, BASE_DIR,
+                                CLIENT_GROUPS, MAX_FILE_SIZE, SKU_REGEX,
+                                SUPPORT_GROUPS, TRANSACTION_FINAL,
+                                TRANSACTION_ROOT)
+from Pricelist.utils import (ItemOrdered, Page, _amount_to_display,
+                             _amount_to_float, _amount_to_store,
+                             _api_error_interpreter, _file_indexer, _get_group,
+                             _get_headers, _get_page_param, _is_admin,
+                             _make_api_request, _price_to_display,
+                             _price_to_float, _price_to_store, require_auth,
+                             require_group)
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
 logger = logging.getLogger(__name__)
@@ -1013,18 +1003,37 @@ def change_status_api(request, transaction_uuid, status):
 
 
 @require_auth
-@require_group(CLIENT_GROUPS)
+@require_group(CLIENT_GROUPS + ADMIN_GROUPS)
 def client_transaction_detail(request, transaction_uuid):
+
+    if request.session["auth"].get("group") in ADMIN_GROUPS:
+        return redirect("admin_transaction_detail", transaction_uuid)
+
     lang = request.LANGUAGE_CODE.upper()
     headers = _get_headers(request)
+
     transaction, error = _make_api_request(
         f"{API_BASE_URL}/transactions/{transaction_uuid}/?lang={lang}",
         headers=headers,
     )
     if error:
         return error
-    if request.method == "POST":
-        pass
+    transaction = _set_status(transaction)
+    if request.method == "POST" and transaction["status"] == "PROPOSITION":
+        items, _ = _parse_transaction_edit_items(request)
+        payload_transaction = {
+                "itemsOrdered": items,
+        }
+        payload_transaction["description"] = request.POST["description"]
+        transaction, error = _make_api_request(
+            f"{API_BASE_URL}/transactions/{transaction_uuid}/",
+            method=requests.put,
+            headers=headers,
+            body=payload_transaction,
+        )
+        if error:
+            return error
+                
 
     transaction = _set_status(transaction)
     if "itemsOrdered" not in transaction.keys():
@@ -1035,7 +1044,7 @@ def client_transaction_detail(request, transaction_uuid):
     data = {"transaction": transaction}
     if transaction["status"] in ("PROGNOSE", "FINAL", "FINAL_C"):
         transaction_details, error = _make_api_request(
-            f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
+            f"{API_BASE_URL}/transaction-details/{transaction_uuid}/",
             headers=headers,
         )
         if error:
@@ -1266,3 +1275,121 @@ def msb_list(request):
         transaction["total_amount"] = (
             _calculate_total_mass(transaction["itemsOrdered"]) / 10
         )
+
+def _validate_photo_path(path):
+    root_dir = Path(path).parent
+    fs = FileSystemStorage(root_dir)
+    path = _sanitize_path(path, file_sys=fs)
+    return path
+
+
+def _photo_list(transaction_uuid, item_uuid):
+    item_photo_list = []
+
+    path = Path(f"{TRANSACTION_ROOT}/{transaction_uuid}/photos/")
+    path.mkdir(parents=True, exist_ok=True)
+    fs = FileSystemStorage(location=str(path))
+    ls_dir = fs.listdir(".")
+
+    for file in ls_dir[1]:
+        if re.match("\w\w\d\d\d?_"+str(item_uuid)+".*", file):
+            item_photo_list.append(file)
+
+    return item_photo_list
+
+def _save_photo(root_dir, file_name, image):
+    path = Path(root_dir)
+    path.mkdir(parents=True, exist_ok=True)
+    fs = FileSystemStorage(location=str(path))
+    fs.save(file_name, image, MAX_FILE_SIZE)
+
+def _init_photo_operation(request, transaction_uuid, item_uuid):
+    # verify request valid - client is able to read that transaction item exists
+    admin_url = ""
+    if _is_admin(request):
+        admin_url = "admin/"
+    transaction, error = _make_api_request(
+        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
+        headers=_get_headers(request),
+    )
+    item = None
+    if error:
+        return error, False
+    item_uuid = str(item_uuid)
+    if item_uuid not in [item["uuid"] for item in transaction["itemsOrdered"]]:
+        return _api_error_interpreter(NOT_FOUND), False
+    for item_ordered in transaction["itemsOrdered"]:
+        if item_uuid == item_ordered["uuid"]:
+            item = item_ordered
+            break
+    return transaction, item
+
+@require_auth
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
+def add_photo(request, transaction_uuid, item_uuid):
+    init_data = _init_photo_operation(request, transaction_uuid, item_uuid)
+    if isinstance(init_data, HttpResponse):
+        return init_data
+    transaction, item = init_data
+    if not item:
+        # this should not happen ever - lsp warning
+        return _api_error_interpreter(NOT_FOUND)
+    # POST
+    if (request.method == "POST" and request.FILES and "image" in request.FILES.keys()):
+        image = request.FILES["image"]
+
+        root_dir = f"{TRANSACTION_ROOT}/{transaction_uuid}/photos/" 
+        ext = image.name.rsplit(".")[-1]
+        file_name = _file_indexer(root_dir, f"{item['sku']}_{item_uuid}.{ext}")
+
+        _save_photo(root_dir, file_name, image)
+
+    elif request.method == "POST":
+        messages.warning(request, _("Error during file upload"))
+
+    file_list = _photo_list(transaction_uuid, item_uuid)
+
+    return render(request, "add_photo.html", {
+        "transaction": transaction,
+        "item": item,
+        "file_list": file_list,
+        })
+
+
+
+@require_auth
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
+def delete_photo(request, transaction_uuid, item_uuid, file):
+    init_data = _init_photo_operation(request, transaction_uuid, item_uuid)
+    if isinstance(init_data, HttpResponse):
+        return init_data
+    _, item = init_data
+    if not item:
+        return _api_error_interpreter(NOT_FOUND)
+    # Validate img_path as in get photo
+    img_path = f"{TRANSACTION_ROOT}/{transaction_uuid}/photos/{file}"
+    path = _validate_photo_path(img_path)
+    fs = FileSystemStorage(f"{TRANSACTION_ROOT}/{transaction_uuid}/photos/")
+    if fs.exists(path):
+        fs.delete(path)
+        return redirect("add_photo", transaction_uuid, item_uuid)
+    else:
+        return _api_error_interpreter(NOT_FOUND)
+
+@require_auth
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
+def get_photo(request, transaction_uuid, item_uuid, file):
+    init_data = _init_photo_operation(request, transaction_uuid, item_uuid)
+    if isinstance(init_data, HttpResponse):
+        return init_data
+    _, item = init_data
+    if not item:
+        return _api_error_interpreter(NOT_FOUND)
+    img_path = f"{TRANSACTION_ROOT}/{transaction_uuid}/photos/{file}" 
+    fs = FileSystemStorage(f"{TRANSACTION_ROOT}/{transaction_uuid}/photos/")
+    path = _validate_photo_path(img_path)
+
+    if not fs.exists(path):
+        return _api_error_interpreter(NOT_FOUND)
+    content_type = 'image/jpeg'
+    return FileResponse(open(path, 'rb'), content_type=content_type)

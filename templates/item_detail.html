@@ -33,31 +33,47 @@
             </div>
 
             <h3 class="mb-3 text-center">{% trans "Gallery" %}</h3>
-            <div id="galleryCarousel" class="carousel-dark slide">
-                <div class="carousel-inner">
-                    {% for image in images %}
-                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                        <img src="{{ image }}" 
-                             alt="{% trans 'Gallery Image' %}" 
-                             class="d-block w-100 img-thumbnail"
-                             style="height: 300px; object-fit: cover; cursor: pointer;"
-                             data-bs-toggle="modal"
-                             data-bs-target="#imageModal"
-                             data-image="{{ image }}">
-                        </div>
-                    {% endfor %}
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel"
-                        data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">{% trans "Previous" %}</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel"
-                        data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">{% trans "Next" %}</span>
-                </button>
-            </div>
+<div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
+  <!-- Slides -->
+  <div class="carousel-inner">
+    {% for image in images %}
+     <div class="carousel-item {% if forloop.first %}active{% endif %}">
+      <img src="{{ image }}" 
+           class="d-block w-100 cursor-pointer" 
+           alt="Image {{ forloop.counter }}"
+           onclick="showImageModal('{{ image }}', {{ forloop.counter0 }})"
+           style="cursor: pointer;">
+      </div>
+    {% endfor %}
+  </div>
+  
+  <!-- Bottom Controls Container -->
+  <div class="carousel-bottom-controls">
+    <!-- Indicators - now visible on all screens -->
+    <div class="carousel-indicators position-static mx-auto mb-2">
+      {% for image in images %}
+        <button type="button" 
+                data-bs-target="#imageCarousel" 
+                data-bs-slide-to="{{ forloop.counter0 }}"
+                class="{% if forloop.first %}active{% endif %}"
+                style="width: 10px; height: 10px; border-radius: 50%;">
+        </button>
+      {% endfor %}
+    </div>
+    
+    <!-- Navigation Buttons - now always visible -->
+    <div class="d-flex justify-content-center gap-3 mb-3">
+      <button class="carousel-control-prev carousel-control-custom" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next carousel-control-custom" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </div>
+</div>
 
             <div class="mt-4">
                 <h4>{% trans "Description" %}</h4>
@@ -74,29 +90,70 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-fullscreen">
-        <div class="modal-content bg-transparent border-0">
-          <div class="modal-header border-0">
-            <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body d-flex justify-content-center align-items-center p-0">
-            <img id="modalImage" src="" class="img-fluid rounded shadow-lg" alt="Large View" style="max-height: 90vh;">
-          </div>
+<!-- Fullscreen Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content bg-dark">
+      <div class="modal-header border-0">
+        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex flex-column justify-content-center align-items-center p-0">
+        <img id="modalImage" src="" class="img-fluid" alt="Large View" style="max-height: 80vh; object-fit: contain;">
+        <div class="d-flex justify-content-center gap-4 my-3">
+          <button class="btn btn-outline-light rounded-circle p-3" id="modalPrev">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+          <button class="btn btn-outline-light rounded-circle p-3" id="modalNext">
+            <i class="bi bi-chevron-right"></i>
+          </button>
         </div>
       </div>
     </div>
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const imageModal = document.getElementById('imageModal');
-        const modalImage = document.getElementById('modalImage');
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>// Enhanced modal functionality
+let currentImageIndex = 0;
+const imageList = [{% for image in images %}'{{ image }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
 
-        imageModal.addEventListener('show.bs.modal', function (event) {
-            const triggerImage = event.relatedTarget;
-            const imageUrl = triggerImage.getAttribute('data-image');
-            modalImage.src = imageUrl;
-        });
-    });
-    </script>
+function showImageModal(imageSrc, index) {
+  currentImageIndex = index;
+  const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+  document.getElementById('modalImage').src = imageSrc;
+  modal.show();
+}
 
+document.addEventListener('DOMContentLoaded', function() {
+  const modalPrev = document.getElementById('modalPrev');
+  const modalNext = document.getElementById('modalNext');
+  const modalImage = document.getElementById('modalImage');
+  
+  modalPrev.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (currentImageIndex > 0) {
+      currentImageIndex--;
+      modalImage.src = imageList[currentImageIndex];
+    }
+  });
+  
+  modalNext.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (currentImageIndex < imageList.length - 1) {
+      currentImageIndex++;
+      modalImage.src = imageList[currentImageIndex];
+    }
+  });
+  
+  // Keyboard navigation
+  document.getElementById('imageModal').addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft') {
+      modalPrev.click();
+    } else if (e.key === 'ArrowRight') {
+      modalNext.click();
+    }
+  });
+});
+
+</script>
 {% endblock %}

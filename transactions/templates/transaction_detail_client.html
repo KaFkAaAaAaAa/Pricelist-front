@@ -1,261 +1,317 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}{% trans "Transaction Detail" %}{% endblock %}
-
+{% block title %}
+    {% trans "Transaction Detail" %}
+{% endblock %}
 {% block content %}
     <div class="container mt-4">
         <div class="d-flex justify-content-start">
             <button class="btn btn-outline-danger mb-4 mt-3" onclick="history.back()">Go back</button>
         </div>
-            <div class="text-end mb-2 text-muted" style="font-size: 0.9rem;">
-                <div class="clearfix"></div>
-                <div class="row text-start">{{ transaction.client.clientCompanyName }}</div>
-                <div class="row text-start">{{ transaction.client.clientStreet }}</div>
-                <div class="row text-start">{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</div>
-                <div class="row text-start">{{ transaction.client.clientCountry }}</div>
-                <div class="row text-start"><b class="text-start p-0">{% trans "Status" %}:</b>
-                    {% if transaction.status %}
-                        {% if transaction.status == "OFFER" or transaction.status == "PROPOSITION" %}
-                            {{ transaction.status }}
-                        {% elif transaction.status == "FINAL_C" %}
+        <div class="text-end mb-2 text-muted" style="font-size: 0.9rem;">
+            <div class="clearfix"></div>
+            <div class="row text-start">{{ transaction.client.clientCompanyName }}</div>
+            <div class="row text-start">{{ transaction.client.clientStreet }}</div>
+            <div class="row text-start">{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</div>
+            <div class="row text-start">{{ transaction.client.clientCountry }}</div>
+            <div class="row text-start">
+                <b class="text-start p-0">{% trans "Status" %}:</b>
+                {% if transaction.status %}
+                    {% if transaction.status == "OFFER" or transaction.status == "PROPOSITION" %}
+                        {{ transaction.status }}
+                    {% elif transaction.status == "FINAL_C" %}
                         FINAL
-                        {% else %}
+                    {% else %}
                         OFFER
-                        {% endif %}
-                        {{ transaction.status_time|date:"d-m-Y H:i" }}{% else %}{% trans "No transaction status" %}
-                        {% now "d-m-Y H:i" %}{% endif %}</div>
-                    {# <div class="col float-start ps-0"> #}
-                    {#     {% if transaction.status == "PROGNOSE" %} #}
-                    {#         <p class="mb-2" style="white-space: nowrap;"> #}
-                    {#             <strong>{% trans "Total price with transport included" %}: </strong><span #}
-                    {#                 class="" id="totalTransportIncluded"></span> €</p> #}
-                    {#     {% endif %} #}
-                    {# </div> #}
-                    {% if transaction.status == "PROGNOSE" or transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
-                        <div class="row justify-content-end text-end">
-                            <h5 class="fw-bold">{% trans "Delivery" %}</h5>
-                            <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Date" %}: </strong>
-                                       {{ transactionDetails.informations.delivery_date }}</p>
-                                       {# <p class="mb-2">{% trans "Alku" %}: {{ transactionDetails.informations.client_date }}</p> #}
-                                {% if transaction.status == "PROGNOSE" %}
-                                    {# <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Price" %}: </strong> #}
-                                        {# <input type="hidden" name="transport" id="transport" #}
-                                               {# value="{{ transactionDetails.transportCost }}"> #}
-                                        {# <span class="input-group-text">{{ transactionDetails.transportCost }} €</span> #}
-                                    <div class="mt-2">
-                                        <h6 class="fw-semibold">{% trans "Plates" %}:</h6>
-                                        <div id="plate-list" class="mb-3">
-                                            {% for plate in transactionDetails.plates %}
-                                                <p>{{ plate }}</p>
-                                            {% endfor %}
-                                        </div>
-                                        <div class="d-flex gap-2">
-                                        </div>
-                                        <label for="delivery_info"
-                                               class="form-label mt-3">{% trans "Delivery info" %}:</label>
-                                        <input type="hidden" name="delivery_info" id="delivery_info" class="" value="{{ transactionDetails.informations.delivery_info }}"/>
-                                        <p>{{ transactionDetails.informations.delivery_info }}</p>
-                                    </div>
-                                {% endif %}
+                    {% endif %}
+                    {{ transaction.status_time|date:"d-m-Y H:i" }}
+                {% else %}
+                    {% trans "No transaction status" %}
+                    {% now "d-m-Y H:i" %}
+                {% endif %}
+            </div>
+            {# <div class="col float-start ps-0"> #}
+            {#     {% if transaction.status == "PROGNOSE" %} #}
+            {#         <p class="mb-2" style="white-space: nowrap;"> #}
+            {#             <strong>{% trans "Total price with transport included" %}: </strong><span #}
+            {#                 class="" id="totalTransportIncluded"></span> €</p> #}
+            {#     {% endif %} #}
+            {# </div> #}
+            {% if transaction.status == "PROGNOSE" or transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
+                <div class="row justify-content-end text-end">
+                    <h5 class="fw-bold">{% trans "Delivery" %}</h5>
+                    <p class="mb-2" style="white-space: nowrap;">
+                        <strong>{% trans "Date" %}:</strong>
+                        {{ transactionDetails.informations.delivery_date }}
+                    </p>
+                    {# <p class="mb-2">{% trans "Alku" %}: {{ transactionDetails.informations.client_date }}</p> #}
+                    {% if transaction.status == "PROGNOSE" %}
+                        {# <p class="mb-2" style="white-space: nowrap;"><strong>{% trans "Price" %}: </strong> #}
+                        {# <input type="hidden" name="transport" id="transport" #}
+                        {# value="{{ transactionDetails.transportCost }}"> #}
+                        {# <span class="input-group-text">{{ transactionDetails.transportCost }} €</span> #}
+                        <div class="mt-2">
+                            <h6 class="fw-semibold">{% trans "Plates" %}:</h6>
+                            <div id="plate-list" class="mb-3">
+                                {% for plate in transactionDetails.plates %}<p>{{ plate }}</p>{% endfor %}
+                            </div>
+                            <div class="d-flex gap-2"></div>
+                            <label for="delivery_info" class="form-label mt-3">{% trans "Delivery info" %}:</label>
+                            <input type="hidden"
+                                   name="delivery_info"
+                                   id="delivery_info"
+                                   class=""
+                                   value="{{ transactionDetails.informations.delivery_info }}" />
+                            <p>{{ transactionDetails.informations.delivery_info }}</p>
                         </div>
                     {% endif %}
-
+                </div>
+            {% endif %}
             <div class="row"></div>
-            </div>
+        </div>
         <div>
-        <button type="button" data-bs-toggle="modal" data-bs-target="#searchModal"
-                class="btn btn-sm btn-outline-success mt-2 mb-2">
-            {% trans "Add item" %}
-        </button>
-        <form method="post" id="edit-form">
-            {% csrf_token %}
-            <div class="table-responsive">
-                <table class="table table-hover table-striped align-middle text-center">
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th>{% trans "SKU" %}</th>
-                        <th class="text-start">{% trans "Name" %}</th>
-                        <th class="text-center">{% trans "Amount" %}</th>
-                        {% if transaction.status == 'FINAL_C' %}
-                            <th class="text-end" >{% trans "Alku" %}</th>
-                        {% endif %}
-                        <th class="text-center">{% trans "Price" %}</th>
-                        <th class="text-end">{% trans "Total" %}</th>
-                        <!-- <th scope="col">{% trans "Comment" %}</th> -->
-                        {% if transaction.status == "PROPOSITION" %}
-                        <th></th>
-                        {% endif %}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for item in transaction.itemsOrdered %}
-                        <tr id="{{ item.uuid }}">
-                            <td id="img-field">
-                                {% if item.sku|slice:":2" != "NA" %}
-                                <img style="width: 80px; height: auto; vertical-align: middle;"
-                                         src="/images/{{ item.sku }}.M.jpg">
+            <button type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#searchModal"
+                    class="btn btn-sm btn-outline-success mt-2 mb-2">{% trans "Add item" %}</button>
+            <button type="button"
+                    id="photoButton"
+                    class="btn btn-sm btn-outline-secondary mt-2 mb-2"
+                    onclick="initImages();">{% trans "Add images" %}</button>
+            <form method="post" id="edit-form">
+                {% csrf_token %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle text-center">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>{% trans "SKU" %}</th>
+                                <th class="text-start">{% trans "Name" %}</th>
+                                <th class="text-center">{% trans "Amount" %}</th>
+                                {% if transaction.status == 'FINAL_C' %}
+                                    <th class="text-end">{% trans "Alku" %}</th>
                                 {% endif %}
-                            </td>
-
-                            <td>
-                                <input type="hidden" name="sku-{{ item.uuid }}" value="{{ item.sku }}"
-                                       pattern="^[a-zA-Z]{2}\d{2,3}$" maxlength="5" class="form-control w-sku">
-                                {{ item.sku }}
-                            </td>
-
-                            <td class="text-start">
-                                {% if transaction.status == 'PROPOSITION' %}
-                                <input type={% if item.sku|slice:":2" == "NA" %}"text"{% else %}"hidden"{% endif %}
-                                    name="name-{{ item.uuid }}" value="{{ item.name }}" class="form-control">
-                                {% endif %}
-                                {% if transaction.status != 'PROPOSITION' or item.sku|slice:":2" != "NA" %}
-                                    {{ item.name }}
-                                {% endif %}
-                            </td>
-
-                            <td>
-                                {% if transaction.status == 'PROPOSITION' %}
-                                    <div class="input-group">
-                                        <input type="number" step="0.01" min="0.01" max="99999.9" name="amount-{{ item.uuid }}" id="amount-{{ item.uuid }}"
-                                               value="{{ item.amount }}" class="form-control w-amount text-end" onchange="calculateTotal('{{ item.uuid }}')">
-                                        <span class="input-group-text">kg</span>
-                                    </div>
-                                {% else %}
-                                        <input type="hidden" name="amount-{{ item.uuid }}" id="amount-{{ item.uuid }}"
-                                               value="{{ item.amount }}">
-                                        {{ item.amount }}
-                                {% endif %}
-                            </td>
-                            <td>
-                                <div>
-                                    <input type="hidden" name="alku-{{ item.uuid }}" id="alku-{{ item.uuid }}"
-                                           value="{{ item.alku }}">
-                                    {{ item.alku }}
-                                </div>
-                            </td>
-
-                            <td class="">
-                                {% if transaction.status == 'PROPOSITION' %}
-                                    {% if item.sku|slice:":2" == "NA" %}
-                                    <div class="input-group">
-                                        <input type="number" step="0.01" min="0.01" max="999.99" id="price-{{ item.uuid }}"
-                                                       name="price-{{ item.uuid }}" value="{{ item.price }}"
-                                            class="form-control w-price text-end" onchange="calculateTotal('{{ item.uuid }}')">
-                                        <span class="input-group-text">€</span>
-                                    </div>
-                                    {% else %}
-                                        <input type="hidden" name="price-{{ item.uuid }}" id="price-{{ item.uuid }}"
-                                               value="{{ item.price }}">
-                                        {{ item.price }}
+                                <th class="text-center">{% trans "Price" %}</th>
+                                <th class="text-end">{% trans "Total" %}</th>
+                                <!-- <th scope="col">{% trans "Comment" %}</th> -->
+                                <th style="display: none" class="add-photo p-0 m-0 align-middle">
+                                    {% if transaction.status == "PROPOSITION" %}<th></th>{% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in transaction.itemsOrdered %}
+                                    <tr id="{{ item.uuid }}">
+                                        <td id="img-field">
+                                            {% if item.sku|slice:":2" != "NA" %}
+                                                <img style="width: 80px;
+                                                            height: auto;
+                                                            vertical-align: middle"
+                                                     src="/images/{{ item.sku }}.M.jpg">
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <input type="hidden"
+                                                   name="sku-{{ item.uuid }}"
+                                                   value="{{ item.sku }}"
+                                                   pattern="^[a-zA-Z]{2}\d{2,3}$"
+                                                   maxlength="5"
+                                                   class="form-control w-sku">
+                                            {{ item.sku }}
+                                        </td>
+                                        <td class="text-start">
+                                            {% if transaction.status == 'PROPOSITION' %}
+                                                <input type="{% if item.sku|slice:":2" == "NA" %}text{% else %}hidden{% endif %}"
+                                                       name="name-{{ item.uuid }}"
+                                                       value="{{ item.name }}"
+                                                       class="form-control">
+                                            {% endif %}
+                                            {% if transaction.status != 'PROPOSITION' or item.sku|slice:":2" != "NA" %}{{ item.name }}{% endif %}
+                                        </td>
+                                        <td>
+                                            {% if transaction.status == 'PROPOSITION' %}
+                                                <div class="input-group">
+                                                    <input type="number"
+                                                           step="0.01"
+                                                           min="0.01"
+                                                           max="99999.9"
+                                                           name="amount-{{ item.uuid }}"
+                                                           id="amount-{{ item.uuid }}"
+                                                           value="{{ item.amount }}"
+                                                           class="form-control w-amount text-end"
+                                                           onchange="calculateTotal('{{ item.uuid }}')">
+                                                    <span class="input-group-text">kg</span>
+                                                </div>
+                                            {% else %}
+                                                <input type="hidden"
+                                                       name="amount-{{ item.uuid }}"
+                                                       id="amount-{{ item.uuid }}"
+                                                       value="{{ item.amount }}">
+                                                {{ item.amount }}
+                                            {% endif %}
+                                        </td>
+                                        {% if transaction.status == 'FINAL_C' %}
+                                            <td>
+                                                <div>
+                                                    <input type="hidden"
+                                                           name="alku-{{ item.uuid }}"
+                                                           id="alku-{{ item.uuid }}"
+                                                           value="{{ item.alku }}">
+                                                    {{ item.alku }}
+                                                </div>
+                                            </td>
+                                        {% endif %}
+                                        <td class="">
+                                            {% if transaction.status == 'PROPOSITION' %}
+                                                {% if item.sku|slice:":2" == "NA" %}
+                                                    <div class="input-group">
+                                                        <input type="number"
+                                                               step="0.01"
+                                                               min="0.01"
+                                                               max="999.99"
+                                                               id="price-{{ item.uuid }}"
+                                                               name="price-{{ item.uuid }}"
+                                                               value="{{ item.price }}"
+                                                               class="form-control w-price text-end"
+                                                               onchange="calculateTotal('{{ item.uuid }}')">
+                                                        <span class="input-group-text">€</span>
+                                                    </div>
+                                                {% else %}
+                                                    <input type="hidden"
+                                                           name="price-{{ item.uuid }}"
+                                                           id="price-{{ item.uuid }}"
+                                                           value="{{ item.price }}">
+                                                    {{ item.price }}
+                                                {% endif %}
+                                            {% else %}
+                                                <input type="hidden"
+                                                       name="price-{{ item.uuid }}"
+                                                       id="price-{{ item.uuid }}"
+                                                       value="{{ item.price }}">
+                                                {{ item.price }}
+                                            {% endif %}
+                                        </td>
+                                        <td style="white-space: nowrap;" class="text-end">
+                                            <span class="" id="total-{{ item.uuid }}">{{ item.total }}</span> €
+                                        </td>
+                                        <td style="display: none" class="add-photo p-0 m-0 align-middle">
+                                            <a href="/transactions/{{ transaction.uuid }}/{{ item.uuid }}/add-photo/"
+                                               class="m-1 btn btn-sm btn-outline-secondary">{% trans "Add photos" %}</a>
+                                        </td>
+                                        {% if transaction.status == "PROPOSITION" %}
+                                            <td>
+                                                <div class="d-grid gap-1 w-100">
+                                                    <button class="btn btn-outline-secondary btn-sm"
+                                                            type="button"
+                                                            data-bs-target="#commentModal"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-uuid="{{ item.uuid }}">
+                                                        {% trans "Add comment" %}
+                                                    </button>
+                                                    <button class="btn btn-outline-danger btn-sm"
+                                                            type="button"
+                                                            onclick="deleteItem(event, '{{ item.uuid }}')">
+                                                        {% trans "Delete" %}
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="fw-bold" style="white-space: nowrap;">
+                                        <span class="" id="totalAmount"></span> kg
+                                    </td>
+                                    {% if transaction.status == "FINAL_C" %}
+                                        <td class="fw-bold" style="white-space: nowrap;">
+                                            <span class="" id="totalAlku"></span> kg
+                                        </td>
                                     {% endif %}
-                                {% else %}
-                                        <input type="hidden" name="price-{{ item.uuid }}" id="price-{{ item.uuid }}"
-                                               value="{{ item.price }}">
-                                    {{ item.price }}
-                                {% endif %}
-                            </td>
-                            <td style="white-space: nowrap;" class="text-end">
-                                <span class="" id="total-{{ item.uuid }}">
-                                {{ item.total }}
-                                </span> €
-                            </td>
-                            <td></td>
-                            {% if transaction.status == "PROPOSITION" %}
-                            <td>
-                                <div class="d-grid gap-1 w-100">
-                                    <button class="btn btn-outline-secondary btn-sm" type="button"
-                                            data-bs-target="#commentModal" data-bs-toggle="modal"
-                                            data-bs-uuid="{{ item.uuid }}">{% trans "Add comment" %}</button>
-                                    <button class="btn btn-outline-danger btn-sm" type="button"
-                                            onclick="deleteItem(event, '{{ item.uuid }}')">{% trans "Delete" %}</button>
-                                </div>
-                            </td>
-                            {% endif %}
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="fw-bold" style="white-space: nowrap;">
-                                <span class="" id="totalAmount"></span> kg
-                            </td>
-                            {% if transaction.status == "FINAL_C" %}
-                                <td class="fw-bold" style="white-space: nowrap;">
-                                <span class="" id="totalAlku"></span> kg
-                                </td>
-                            {% endif %}
-                            <td></td>
-                            <td class="fw-bold text-end" style="white-space: nowrap;">
-                                <span class="" id="totalPrice"></span> €
-                            </td>
-                            <td></td>
-                            {% if transaction.status == "PROPOSITION" %}
-                            <td></td>
-                            {% endif %}
-                        </tr>
-                    </tfoot>
-                </table>
+                                    <td></td>
+                                    <td class="fw-bold text-end" style="white-space: nowrap;">
+                                        <span class="" id="totalPrice"></span> €
+                                    </td>
+                                    <td></td>
+                                    {% if transaction.status == "PROPOSITION" %}<td></td>{% endif %}
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <textarea class="form-control mb-3"
+                              id="description"
+                              name="description"
+                              rows="3">{{ transaction.description }}</textarea>
+                    <div class="text-end mt-3">
+                        {% if transaction == "PROPOSITION" %}
+                            <button class="btn btn-primary" type="submit">{% trans "Save Changes" %}</button>
+                        {% endif %}
+                        <a class="btn btn-outline-secondary"
+                           href="/files/{{ transaction.uuid }}/">{% trans "Files" %}</a>
+                        <a class="btn btn-outline-secondary"
+                           href="/transactions/{{ transaction.uuid }}/print/"
+                           target="_blank">{% trans "Print" %}</a>
+                        <input id="saveButton"
+                               class="btn btn-outline-success"
+                               style="display: none"
+                               type="submit"
+                               value="{% trans "Save changes" %}">
+                    </div>
+                </form>
             </div>
-            <textarea class="form-control mb-3" id="description" name="description"
-                      rows="3">{{ transaction.description }}</textarea>
-            <div class="text-end mt-3">
-                {% if transaction == "PROPOSITION" %}
-                <button class="btn btn-primary" type="submit">{% trans "Save Changes" %}</button>
-                {% endif %}
-                <a class="btn btn-outline-secondary" href="/files/{{ transaction.uuid }}/">{% trans "Files" %}</a>
-                <a class="btn btn-outline-secondary" href="/transactions/{{ transaction.uuid }}/print/"
-                   target="_blank">{% trans "Print" %}</a>
-                </div>
-        </form>
-
         </div>
-    </div>
-    <div class="modal" id="commentModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans "Add comment" %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <label for="comment">{% trans "Comment" %}:</label>
-                    <input type="text" class="form-control" id="comment"/>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
-                    <button type="button" class="btn btn-primary"
-                            id="modalSaveButton">{% trans "Save changes" %}</button>
+        <div class="modal" id="commentModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans "Add comment" %}</h5>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="comment">{% trans "Comment" %}:</label>
+                        <input type="text" class="form-control" id="comment" />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+                        <button type="button" class="btn btn-primary" id="modalSaveButton">{% trans "Save changes" %}</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal" id="searchModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans "Add item" %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <label for="comment">{% trans "Search" %}:</label>
-                    <input type="text" class="form-control" id="searchQuery"/>
-                    <p class="text-body-secondary mb-2">{% trans "Empty search query returns all items" %}</p>
-                    <div id="searchResults"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal"
-                            onclick="addItemToTransaction('', '', 0)">{% trans "Create new item" %}</button>
-                    <button type="button" class="btn btn-primary" id="searchBtn">{% trans "Search" %}</button>
+        <div class="modal" id="searchModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans "Add item" %}</h5>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="comment">{% trans "Search" %}:</label>
+                        <input type="text" class="form-control" id="searchQuery" />
+                        <p class="text-body-secondary mb-2">{% trans "Empty search query returns all items" %}</p>
+                        <div id="searchResults"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+                        <button type="button"
+                                class="btn btn-outline-primary"
+                                data-bs-dismiss="modal"
+                                onclick="addItemToTransaction('', '', 0)">{% trans "Create new item" %}</button>
+                        <button type="button" class="btn btn-primary" id="searchBtn">{% trans "Search" %}</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <script>
+        <script>
         let uuids = [{% for item in transaction.itemsOrdered %}"{{ item.uuid }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
         let skus = [{% for item in transaction.itemsOrdered %}"{{ item.sku }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
 
@@ -416,11 +472,11 @@
 
       if (!name) {
         nameField = `
-            <input name="name-${uuid}" type="text" class="form-control text-start" required/>
+            <input name="name-${uuid}" type="text" class="form-control text-start" required />
         `;
       } else {
         nameField = `
-            <input type="hidden" name="name-${uuid}" value="${name}" required maxlength="255"/>
+            <input type="hidden" name="name-${uuid}" value="${name}" required maxlength="255" />
             <div class="ps-2 text-start">${name}</div>
         `;
       }
@@ -428,18 +484,12 @@
         priceField = `
             ${image}
             <div class="input-group">
-            <input id="price-${uuid}" name="price-${uuid}" 
-                    type="number"
-                value="${price}" min="0.01" step="0.01" required
-                class="form-control ms-auto" 
-                onchange="calculateTotal('${uuid}')"><span class="input-group-text me-auto">€<span>
+            <input id="price-${uuid}" name="price-${uuid}" type="number" value="${price}" min="0.01" step="0.01" required class="form-control ms-auto" onchange="calculateTotal('${uuid}')"><span class="input-group-text me-auto">€<span>
             </div>
         `;
       } else {
         priceField = `
-            <input id="price-${uuid}" name="price-${uuid}" 
-                type="hidden" value="${price}" min="0.01" step="0.01"
-                onchange="calculateTotal('${uuid}')" required />
+            <input id="price-${uuid}" name="price-${uuid}" type="hidden" value="${price}" min="0.01" step="0.01" onchange="calculateTotal('${uuid}')" required />
             <div class="ps-2 text-start">${price} €</div>
 
         `;
@@ -452,10 +502,7 @@
             <td>${nameField}</td>
             <td>
                 <div class="input-group text-center" style="margin: 0 auto;">
-                    <input id="amount-${uuid}" name="amount-${uuid}" type="number"
-                           value="0.0" min="0.01" step="0.01"
-                           class="form-control ms-auto"
-                           onchange="calculateTotal('${uuid}')">
+                    <input id="amount-${uuid}" name="amount-${uuid}" type="number" value="0.0" min="0.01" step="0.01" class="form-control ms-auto" onchange="calculateTotal('${uuid}')">
                     <span class="input-group-text me-auto">kg<span>
                 </div>
             </td>
@@ -526,5 +573,22 @@
             {% endif %}
         }
         window.onload = () => uuids.forEach(uuid => calculateTotal(uuid));
-    </script>
-{% endblock %}
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('input, select, textarea').forEach(el => {
+            el.addEventListener('change', () => {
+                saveButton.style.display = "inline-block";
+            });
+            });
+        });
+
+        
+        function initImages() {
+            const addPhotoCells = document.querySelectorAll('.add-photo');
+
+            addPhotoCells.forEach(cell => {
+                cell.style.display = 'table-cell';
+            });
+        }
+
+        </script>
+    {% endblock %}

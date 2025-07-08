@@ -339,8 +339,16 @@ def clients_activity(request):
     # )
     # if error:
     #     return error
+    sort = '&' if page else '?'
+    sort_column = request.GET.get("sort")
+    sort_dir = request.GET.get("direction")
+    sort += f"sortDir={sort_dir}&sortCol={sort_column}"
+    if sort_column and sort_dir:
+        url = f"{API_BASE_URL}/clients/admin/activity/{page}{sort}"
+    else:
+        url = f"{API_BASE_URL}/clients/admin/activity/{page}"
     client_activity_map, error = _make_api_request(
-        f"{API_BASE_URL}/clients/admin/activity/{page}",
+        url,
         headers=headers,
     )
     if error or not client_activity_map:

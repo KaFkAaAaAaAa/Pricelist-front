@@ -39,9 +39,7 @@
                     {% for item in items_list %}
                         <tr>
                             <td>
-                                {% if item.itemImgPath %}
-                                    <img src="{{ item.itemImgPath }}" alt="Item Image" class="img-fluid d-block mx-auto" style="max-width: 80px; height: auto"/>
-                                {% endif %}
+                                <img src="/images/{{ item.itemSku }}.M.jpg" alt="" class="img-fluid d-block mx-auto" style="max-width: 80px; height: auto"/>
                             </td>
                             <td>{{ item.itemSku }}</td>
                             <td>{% if item.itemAccountingNumber %}{{ item.itemAccountingNumber }}{% endif %}</td>

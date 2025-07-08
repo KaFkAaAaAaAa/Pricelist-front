@@ -85,4 +85,19 @@ urlpatterns = [
     path("", views.client_transactions, name="client_transactions"),
     path("admin/", views.admin_transactions, name="admin_transactions"),
     path("prognose/", views.prognose_list, name="prognose_list"),
+    path(
+        "<uuid:transaction_uuid>/<uuid:item_uuid>/add-photo/",
+        views.add_photo,
+        name="add_photo",
+    ),
+    path(
+        "<uuid:transaction_uuid>/<uuid:item_uuid>/photos/<str:file>/delete",
+        views.delete_photo,
+        name="delete_photo",
+    ),
+    path(
+        "<uuid:transaction_uuid>/<uuid:item_uuid>/photos/<str:file>",
+        views.get_photo,
+        name="get_photo",
+    ),
 ]
