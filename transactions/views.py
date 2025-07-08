@@ -1003,18 +1003,37 @@ def change_status_api(request, transaction_uuid, status):
 
 
 @require_auth
-@require_group(CLIENT_GROUPS)
+@require_group(CLIENT_GROUPS + ADMIN_GROUPS)
 def client_transaction_detail(request, transaction_uuid):
+
+    if request.session["auth"].get("group") in ADMIN_GROUPS:
+        return redirect("admin_transaction_detail", transaction_uuid)
+
     lang = request.LANGUAGE_CODE.upper()
     headers = _get_headers(request)
+
     transaction, error = _make_api_request(
         f"{API_BASE_URL}/transactions/{transaction_uuid}/?lang={lang}",
         headers=headers,
     )
     if error:
         return error
-    if request.method == "POST":
-        pass
+    transaction = _set_status(transaction)
+    if request.method == "POST" and transaction["status"] == "PROPOSITION":
+        items, _ = _parse_transaction_edit_items(request)
+        payload_transaction = {
+                "itemsOrdered": items,
+        }
+        payload_transaction["description"] = request.POST["description"]
+        transaction, error = _make_api_request(
+            f"{API_BASE_URL}/transactions/{transaction_uuid}/",
+            method=requests.put,
+            headers=headers,
+            body=payload_transaction,
+        )
+        if error:
+            return error
+                
 
     transaction = _set_status(transaction)
     if "itemsOrdered" not in transaction.keys():
@@ -1025,7 +1044,7 @@ def client_transaction_detail(request, transaction_uuid):
     data = {"transaction": transaction}
     if transaction["status"] in ("PROGNOSE", "FINAL", "FINAL_C"):
         transaction_details, error = _make_api_request(
-            f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
+            f"{API_BASE_URL}/transaction-details/{transaction_uuid}/",
             headers=headers,
         )
         if error:
@@ -1286,8 +1305,11 @@ def _save_photo(root_dir, file_name, image):
 
 def _init_photo_operation(request, transaction_uuid, item_uuid):
     # verify request valid - client is able to read that transaction item exists
+    admin_url = ""
+    if _is_admin(request):
+        admin_url = "admin/"
     transaction, error = _make_api_request(
-        f"{API_BASE_URL}/transactions/{transaction_uuid}/",
+        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
         headers=_get_headers(request),
     )
     item = None

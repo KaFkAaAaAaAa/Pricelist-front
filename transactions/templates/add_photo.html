@@ -2,60 +2,68 @@
 {% load i18n %}
 {% block title %}Upload image{% endblock %}
 {% block content %}
-<div class="container mt-5">
-    <h1>{% trans "Upload image" %}</h1>
-    {#  TODO: transaction name? #}
-    <h2 class="mt-4">{{ item.itemSku }}</h2>
-    <form method="post" enctype="multipart/form-data" class="mt-3">
-        {% csrf_token %}
-        <div class="my-3">
-            <label for="image" class="form-label">{% trans "Choose an image to upload" %}:</label>
-            <input
-                    type="file"
-                    class="form-control"
-                    id="image"
-                    name="image"
-                    accept="image/*"
-            />
-        </div>
-        <a class="btn btn-primary mt-3" href="/transactions/{{ transaction.transaction_uuid }}">{% trans "Back to transaction" %}</a>
-        <button type="submit" class="btn btn-primary mt-3">{% trans "Upload" %}</button>
-    </form>
-
-    <div class="container my-4">
-      <div class="row">
-        {% for img_name in file_list %}
-          <div class="col-6 col-sm-4 col-md-3 mb-3">
-            <div class="position-relative">
-                <img src="/transactions/{{ transaction.uuid }}/{{ item.uuid }}/photos/{{ img_name }}"
-                   class="img-fluid rounded border"
-                   style="height:100px; width:100%; object-fit:cover; cursor:pointer;"
-                   data-bs-toggle="modal"
-                   data-bs-target="#imageModal"
-                   data-img-src="/transactions/{{ transaction.uuid}}/{{ item.uuid }}/photos/{{ img_name }}" />
-                <a href="/transactions/{{ transaction.uuid }}/{{ item.uuid }}/photos/{{ img_name }}/delete" 
-                 class="badge bg-danger position-absolute top-0 end-0 m-1"
-                 onclick="return confirm('{% trans "Delete image?" %}');">{% trans "Delete" %}</a>
+    <div class="container mt-5">
+        <h1>{% trans "Upload image" %}</h1>
+        {#  TODO: transaction name? #}
+        <h2 class="mt-4">{{ item.itemSku }}</h2>
+        <form method="post" enctype="multipart/form-data" class="mt-3">
+            {% csrf_token %}
+            <div class="my-3">
+                <label for="image" class="form-label">{% trans "Choose an image to upload" %}:</label>
+                <input type="file"
+                       class="form-control"
+                       id="image"
+                       name="image"
+                       accept="image/*" />
             </div>
-          </div>
-        {% endfor %}
-      </div>
+            <a class="btn btn-primary mt-3"
+               href="/transactions/{{ transaction.uuid }}">{% trans "Back to transaction" %}</a>
+            <button type="submit" class="btn btn-primary mt-3">{% trans "Upload" %}</button>
+        </form>
+        <div class="container my-4">
+            <div class="row">
+                {% for img_name in file_list %}
+                    <div class="col-6 col-sm-4 col-md-3 mb-3">
+                        <div class="position-relative">
+                            <img src="/transactions/{{ transaction.uuid }}/{{ item.uuid }}/photos/{{ img_name }}"
+                                 class="img-fluid rounded border"
+                                 style="height:100px;
+                                        width:100%;
+                                        object-fit:cover;
+                                        cursor:pointer"
+                                 data-bs-toggle="modal"
+                                 data-bs-target="#imageModal"
+                                 data-img-src="/transactions/{{ transaction.uuid }}/{{ item.uuid }}/photos/{{ img_name }}" />
+                            <a href="/transactions/{{ transaction.uuid }}/{{ item.uuid }}/photos/{{ img_name }}/delete"
+                               class="badge bg-danger position-absolute top-0 end-0 m-1"
+                               onclick="return confirm('{% trans "Delete image?" %}');">{% trans "Delete" %}</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-</div>
-<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content bg-transparent border-0 shadow-none">
-      <div class="modal-body p-0 position-relative text-center">
-        <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
-        <img src="" alt="Large view" id="modal-img" class="img-fluid rounded mx-auto d-block" style="max-width:80vw; max-height:80vh;" />
-      </div>
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-transparent border-0 shadow-none">
+                <div class="modal-body p-0 position-relative text-center">
+                    <button type="button"
+                            class="btn-close btn-close-white position-absolute top-0 end-0 m-3"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    <img src=""
+                         alt="Large view"
+                         id="modal-img"
+                         class="img-fluid rounded mx-auto d-block"
+                         style="max-width:80vw;
+                                max-height:80vh" />
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-
 {% endblock %}
 {% block  script %}
-<script>
+    <script>
   const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
   const modalImg = document.getElementById('modal-img');
 
@@ -69,5 +77,5 @@
   modalElement.addEventListener('hidden.bs.modal', () => {
     modalImg.src = '';
   });
-</script>
+    </script>
 {% endblock %}
