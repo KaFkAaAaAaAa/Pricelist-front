@@ -20,10 +20,36 @@
         <table class="table table-hover table-striped mt-3">
             <thead>
             <tr>
-                <th scope="col" class="text-start" style="max-width=400px">{% trans "Company Name" %}</th>
-                <th>{% trans 'Last login' %}</th>
-                <th>{% trans 'Last transaction' %}</th>
-                <th></th>
+                <th scope="col" class="text-start" style="max-width=400px">
+                    {% trans "Company Name" %}</th>
+                <th>
+                    <a href="?sort=login&direction={% if request.GET.direction == 'asc' %}desc{%else%}asc{%endif%}"
+                        class="text-decoration-none">
+                      {% trans 'Last login' %}
+                      {% if request.GET.sort == 'login' %}
+                        {% if request.GET.direction == 'asc' %}
+                          <i class="bi bi-arrow-up"></i>
+                        {% else %}
+                          <i class="bi bi-arrow-down"></i>
+                        {% endif %}
+                      {% endif %}
+                    </a>
+                </th>
+                <th>
+                    <a href="?sort=transaction&direction={% if request.GET.direction == 'asc' %}desc{% else %}asc{% endif %}"
+                        class="text-decoration-none">
+                      {% trans 'Last transaction' %}
+                      {% if request.GET.sort == 'transaction' %}
+                        {% if request.GET.direction == 'asc' %}
+                          <i class="bi bi-arrow-up"></i>
+                        {% else %}
+                          <i class="bi bi-arrow-down"></i>
+                        {% endif %}
+                      {% elif not request.GET.sort %}
+                          <i class="bi bi-arrow-down"></i>
+                      {% endif %}
+                    </a>
+                </th>
             </tr>
             </thead>
             <tbody>
