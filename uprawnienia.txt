@@ -50,8 +50,8 @@ pomysly:
 |x| sortowanie po datach transakcji - koniecznie
 |x| sortowanie po datach logowania - opt
 |x| aktywność klientów - zmienić nagłówek
-| | galeria - poprawić kontrolki - dodać strzałki
-    |?| click out of modal with photo
+|x| galeria - poprawić kontrolki - dodać strzałki
+    |-| click out of modal with photo
 |?| 4/5 cyfrowy numer do księgowania - numer księgowania - może być jednakowy dla kilku pozycji, dodać wyszukiwanie po tym
     |x| numer w liście itemów
     |x| numer w transakcji
