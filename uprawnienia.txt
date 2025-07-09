@@ -80,6 +80,7 @@ or
 | | złóż zamówienie -> wyślij propzycję
 | | ewentualne zdjęcia można dodać w kolejnym kroku
 | | uzupełnij polskie tłumaczenia
+| | final_P
 | | drukowanie -> wyświetla pdf na zmianę z pobieraniem -> zmiany jezyka wzmagają to
     | | proeco się robi źle ecosuccess robi dobrze
 

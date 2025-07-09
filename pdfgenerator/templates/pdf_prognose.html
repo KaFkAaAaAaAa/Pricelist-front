@@ -66,6 +66,7 @@
         <tr class="text-center">
             <th scope="col"></th>
             <th scope="col">{% trans "SKU" %}</th>
+            <th scope="col">{% trans "Acc. No." %}</th>
             <th scope="col">{% trans "Product" %}</th>
             <th scope="col">{% trans "Amount" %}</th>
         {% if auth_group != "LOGISTICS" %}
@@ -83,6 +84,7 @@
                         style="width: 50px; height: auto; vertical-align: middle;"/>
                 </td>
                 <td class="px-1">{{ item.sku }}</td>
+                <td class="px-1">{{ item.accountingNumber }}</td>
                 <td class="px-1 text-start">{{ item.name }}</td>
                 <td class="unit text-end px-1">{{ item.amount }}</td>
         {% if auth_group != "LOGISTICS" %}
