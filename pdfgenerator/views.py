@@ -42,7 +42,10 @@ def generate_pdf(request, template, data, filename="document"):
         ]
     )
 
-    HTML(string=html_string, base_url=request.build_absolute_uri("/")).write_pdf(
+    HTML(
+        string=html_string,
+        base_url=request.build_absolute_uri("/").replace("http:", "https:"),
+    ).write_pdf(
         pdf_file_path,
         stylesheets=css,
     )
