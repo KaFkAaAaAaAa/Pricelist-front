@@ -70,10 +70,12 @@
             <div class="row"></div>
         </div>
         <div>
+            {% if request.session.auth.group != "LOGISTICS" %}
             <button type="button"
                     data-bs-toggle="modal"
                     data-bs-target="#searchModal"
                     class="btn btn-sm btn-outline-success mt-2 mb-2">{% trans "Add item" %}</button>
+            {% endif %}
             <form method="post" id="edit-form">
                 {% csrf_token %}
                 <div class="table-responsive">
@@ -577,15 +579,5 @@
             });
             });
         });
-
-        
-        function initImages() {
-            const addPhotoCells = document.querySelectorAll('.add-photo');
-
-            addPhotoCells.forEach(cell => {
-                cell.style.display = 'table-cell';
-            });
-        }
-
         </script>
     {% endblock %}

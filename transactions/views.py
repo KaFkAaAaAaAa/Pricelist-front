@@ -583,7 +583,7 @@ def delete_transaction_item(request, transaction_uuid, item_uuid):
 
 
 @require_auth
-@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS + ["LOGISTICS"])
 def print_transaciton(request, transaction_uuid):
     headers = _get_headers(request)
 
@@ -1224,7 +1224,7 @@ def _photo_list(transaction_uuid, item_uuid):
     ls_dir = fs.listdir(".")
 
     for file in ls_dir[1]:
-        pattern = re.compile("^[a-zA-Z]{2}\\d{2,3}_" + str(item_uuid) + ".*")
+        pattern = re.compile("[^_]*_" + str(item_uuid) + ".*")
         if re.match(pattern, file):
             item_photo_list.append(file)
 
