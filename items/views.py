@@ -87,7 +87,7 @@ def _make_price_list(request, headers, pattern="price_list.html"):
             is_results = True
     if "f" in request.GET.keys() and request.GET["f"] == "json":
         return JsonResponse({"items": items})
-    if "print" in request.GET.keys():
+    if "print" in request.GET.keys() or pattern == "pdf":
         return generate_pdf(
             request,
             "pdf_pricelist.html",
@@ -156,10 +156,11 @@ def price_list(request):
         return redirect("prognose_list")
     return _make_price_list(request, _get_headers(request))
 
+
 @require_auth
 @require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def price_list_print(request):
-    return _make_price_list(request, _get_headers(request), pattern="price_list_print.html")
+    return _make_price_list(request, _get_headers(request), pattern="pdf")
 
 
 @require_auth

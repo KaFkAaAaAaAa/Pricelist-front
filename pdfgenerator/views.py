@@ -30,18 +30,21 @@ def generate_pdf(request, template, data, filename="document"):
     font_conf = FontConfiguration()
 
     pdf_file_path = tempfile.mktemp(suffix=".pdf")
-    HTML(string=html_string, base_url=request.build_absolute_uri("/")).write_pdf(
-        pdf_file_path,
-        stylesheets=[
+
+    css = (
+        []
+        if template == "pricelist-pdf.html"
+        else [
             CSS(
                 filename=str(STATICFILES_DIRS[0]) + "/css/bootstrap-pdf.css",
                 font_config=font_conf,
             ),
-            # CSS(
-            #     filename=str(STATICFILES_DIRS[0]) + "/css/pdf.css",
-            #     font_config=font_conf,
-            # ),
-        ],
+        ]
+    )
+
+    HTML(string=html_string, base_url=request.build_absolute_uri("/")).write_pdf(
+        pdf_file_path,
+        stylesheets=css,
     )
     with open(pdf_file_path, "rb") as pdf_file:
         response = HttpResponse(pdf_file.read(), content_type="application/pdf")
