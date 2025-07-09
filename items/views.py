@@ -1,5 +1,6 @@
 import logging
 import re
+from datetime import datetime
 from math import floor
 
 import requests
@@ -88,11 +89,12 @@ def _make_price_list(request, headers, pattern="price_list.html"):
     if "f" in request.GET.keys() and request.GET["f"] == "json":
         return JsonResponse({"items": items})
     if "print" in request.GET.keys() or pattern == "pdf":
+        date = datetime.date(datetime.now()).strftime("%m-%Y")
         return generate_pdf(
             request,
             "pdf_pricelist.html",
             {"items": items, "categories": CATEGORIES[lang]},
-            "pricelist",
+            f"pricelist_alku_{date}.pdf",
         )
     return render(
         request,
