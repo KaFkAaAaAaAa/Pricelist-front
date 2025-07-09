@@ -120,7 +120,7 @@
 <body>
     <div class="watermark"></div>
     <div>
-        <img src="/images/alku-logo-2013-10-17.jpg" alt="ALKU-GMBH" class="logo">
+            <img src="{{images_root}}/images/alku-logo-2013-10-17.jpg" alt="ALKU-GMBH" class="logo">
         <div class="font-weight-light text-end mt-3">{% now "m-Y" %}</div>
         
         <table>
@@ -138,7 +138,7 @@
                             {% for item in item_list %}
                             <tr class="colored-row">
                                 <td style="width: 80px; text-align: center;">
-                                    <img src="/images/{{ item.sku }}.M.jpg" alt="" class="item-image" />
+                            <img src="{{ images_root }}/images/{{ item.sku }}.M.jpg" alt="" class="item-image" />
                                 </td>
                                 <td style="width: 80px; text-align: center;">
                                     {{ item.sku }}

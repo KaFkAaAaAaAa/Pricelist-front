@@ -42,9 +42,10 @@ def generate_pdf(request, template, data, filename="document"):
         ]
     )
 
+    __import__("pdb").set_trace()
     HTML(
         string=html_string,
-        base_url=request.build_absolute_uri("/").replace("http:", "https:"),
+        base_url=data["images_root"],
     ).write_pdf(
         pdf_file_path,
         stylesheets=css,
