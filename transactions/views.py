@@ -30,7 +30,8 @@ from Pricelist.utils import (ItemOrdered, Page, _amount_to_display,
                              _api_error_interpreter, _file_indexer, _get_group,
                              _get_headers, _get_page_param, _is_admin,
                              _make_api_request, _price_to_display,
-                             _price_to_float, _price_to_store, require_auth,
+                             _price_to_float, _price_to_store,
+                             _str_price_to_decimal, require_auth,
                              require_group)
 from transactions.forms import STATUSES, ItemForm, PrognoseFrom, StatusForm
 
@@ -680,7 +681,7 @@ def print_final(request, data, status=""):
         item["alku"] = _amount_to_float(
             data["transactionDetails"]["alkuAmount"][item["uuid"]]
         )
-        item["total"] = item["alku"] * float(item["price"])
+        item["total"] = item["alku"] * _str_price_to_decimal(item["price"])
         data["total"]["alku"] += item["alku"]
         data["total"]["alku_price"] += item["total"]
     return generate_pdf(
@@ -702,7 +703,7 @@ def print_final_admin(request, data):
         item["alku"] = _amount_to_float(
             data["transactionDetails"]["alkuAmount"][item["uuid"]]
         )
-        item["total"] = item["alku"] * float(item["price"])
+        item["total"] = item["alku"] * _str_price_to_decimal(item["price"])
         data["total"]["amount"] += item["alku"]
         data["total"]["price"] += item["total"]
     data["transport"] = {}
