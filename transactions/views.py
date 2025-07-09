@@ -1292,7 +1292,7 @@ def _photo_list(transaction_uuid, item_uuid):
     ls_dir = fs.listdir(".")
 
     for file in ls_dir[1]:
-        if re.match("\w\w\d\d\d?_"+str(item_uuid)+".*", file):
+        if re.match("[a-zA-Z]{2}[0-9]{2,3}_"+str(item_uuid)+".*", file):
             item_photo_list.append(file)
 
     return item_photo_list
@@ -1385,7 +1385,7 @@ def get_photo(request, transaction_uuid, item_uuid, file):
     _, item = init_data
     if not item:
         return _api_error_interpreter(NOT_FOUND)
-    img_path = f"{TRANSACTION_ROOT}/{transaction_uuid}/photos/{file}" 
+    img_path = f"{TRANSACTION_ROOT}/{transaction_uuid}/photos/{file}"
     fs = FileSystemStorage(f"{TRANSACTION_ROOT}/{transaction_uuid}/photos/")
     path = _validate_photo_path(img_path)
 

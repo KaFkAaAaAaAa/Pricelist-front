@@ -3,13 +3,14 @@ table {
   border-collapse: collapse;
 }
 
-table th, table td {
+table th,
+table td {
   padding: 12px 15px;
   text-align: left;
 }
 
 table th {
-  background-color: #9E0F06;
+  background-color: #9e0f06;
   color: white;
 }
 
