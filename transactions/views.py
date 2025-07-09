@@ -16,6 +16,7 @@ from django.http import (FileResponse, HttpResponse, HttpResponseNotFound,
                          HttpResponseServerError)
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext_lazy as _
+
 from file_manager.views import _sanitize_path
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
@@ -497,84 +498,6 @@ def support_transaction_detail(request, transaction_uuid):
     return render(request, data)
 
 
-# @require_auth
-# @require_group(ADMIN_GROUPS + SUPPORT_GROUPS)
-# def admin_transaction_detail(request, transaction_uuid):
-#     headers = _get_headers(request)
-#     lang = request.LANGUAGE_CODE.upper()
-#     # if auth.get("group") not in ADMIN_GROUPS:
-#     #     return HttpResponseForbidden(
-#     #         "<h1>You do not have access to that page<h1>".encode("utf-8")
-#     #     )
-#
-#     msg = {}
-#
-#     is_logistics = request.session["group"] != "LOGISTICS"
-#
-#     if request.session["group"] in SUPPORT_GROUPS:
-#         if not is_logistics:
-#             return support_transaction_detail(request, transaction_uuid)
-#
-#     if request.method == "POST":
-#         transaction, error = _make_api_request(
-#             f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/?lang={lang}",
-#             headers=headers,
-#         )
-#         if error or not transaction:
-#             return error
-#
-#         if not (is_logistics and transaction["status"] in TRANSACTION_FINAL[0:1]):
-#             return _api_error_interpreter(401)
-#         payload = {}
-#         response = requests.post(
-#             f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/",
-#             headers=headers,
-#             json=payload,
-#         )
-#         if response.status_code != 200:
-#             msg["err"] = "Error! Something went wrong"
-#         else:
-#             msg["suc"] = "transaction data changed successfully"
-#
-#     response = requests.get(
-#         f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/?lang={lang}",
-#         headers=headers,
-#     )
-#     transaction = response.json()
-#     transaction = _set_status(transaction)
-#     transaction["totals"] = _get_stored_item_list_to_display(
-#         transaction["itemsOrdered"],
-#     )
-#     if transaction["status"] in ("PROGNOSE", "FINAL"):
-#         response = requests.get(
-#             f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
-#             headers=headers,
-#         )
-#         error = _api_error_interpreter(response.status_code)
-#         if error:
-#             return error
-#
-#         transaction_details = response.json()
-#         return render(
-#             request,
-#             "transaction_detail_admin.html",
-#             {
-#                 "transaction": transaction,
-#                 "transactionDetails": transaction_details,
-#                 "msg": msg,
-#             },
-#         )
-#
-#     return render(
-#         request,
-#         "transaction_detail_admin.html",
-#         {
-#             "transaction": transaction,
-#             "msg": msg,
-#         },
-#     )
-
-
 @require_auth
 @require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def edit_transaction_item(request, transaction_uuid, item_uuid):
@@ -1002,17 +925,22 @@ def change_status_api(request, transaction_uuid, status):
 
 
 @require_auth
-@require_group(CLIENT_GROUPS + ADMIN_GROUPS)
+@require_group(CLIENT_GROUPS + ADMIN_GROUPS + ["LOGISTICS"])
 def client_transaction_detail(request, transaction_uuid):
 
     if request.session["auth"].get("group") in ADMIN_GROUPS:
         return redirect("admin_transaction_detail", transaction_uuid)
 
+    if request.session["auth"].get("group") == "LOGISTICS":
+        admin_url = "admin/"
+    else:
+        admin_url = ""
+
     lang = request.LANGUAGE_CODE.upper()
     headers = _get_headers(request)
 
     transaction, error = _make_api_request(
-        f"{API_BASE_URL}/transactions/{transaction_uuid}/?lang={lang}",
+        f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/?lang={lang}",
         headers=headers,
     )
     if error:
@@ -1025,7 +953,7 @@ def client_transaction_detail(request, transaction_uuid):
         }
         payload_transaction["description"] = request.POST["description"]
         transaction, error = _make_api_request(
-            f"{API_BASE_URL}/transactions/{transaction_uuid}/",
+            f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
             method=requests.put,
             headers=headers,
             body=payload_transaction,
@@ -1042,7 +970,7 @@ def client_transaction_detail(request, transaction_uuid):
     data = {"transaction": transaction}
     if transaction["status"] in ("PROGNOSE", "FINAL", "FINAL_C"):
         transaction_details, error = _make_api_request(
-            f"{API_BASE_URL}/transaction-details/{transaction_uuid}/",
+            f"{API_BASE_URL}/transaction-details/{admin_url}{transaction_uuid}/",
             headers=headers,
         )
         if error:
@@ -1068,12 +996,15 @@ def client_transaction_detail(request, transaction_uuid):
         data["transactionDetails"] = transaction_details
         data["offer"] = "OFFER"
         data["proposition"] = "PROPOSITION"
+
+    for item in data["transaction"]["itemsOrdered"]:
+        item["photos_no"] = len(_photo_list(transaction["uuid"], item["uuid"]))
+
     return render(request, "transaction_detail_client.html", data)
 
 
 def process_alku(alku, payload_transaction, transaction):
     # 1. Build mappings from transaction data
-    uuid_to_item = {}
     sku_to_items = defaultdict(list)  # Now stores full items for comparison
 
     for item in transaction["itemsOrdered"]:
@@ -1120,9 +1051,8 @@ def process_alku(alku, payload_transaction, transaction):
                     alku[matching_items[0]["uuid"]] = amount
                     alku.pop(sku_or_uuid)
 
-
 @require_auth
-@require_group(ADMIN_GROUPS + ["LOGISTICS"])
+@require_group(ADMIN_GROUPS)
 def admin_transaction_detail(request, transaction_uuid):
 
     headers = _get_headers(request)
@@ -1228,6 +1158,9 @@ def admin_transaction_detail(request, transaction_uuid):
                     continue
         data["transactionDetails"] = transaction_details
 
+    for item in data["transaction"]["itemsOrdered"]:
+        item["photos_no"] = len(_photo_list(transaction["uuid"], item["uuid"]))
+
     return render(request, "transaction_detail_admin.html", data)
 
 
@@ -1308,7 +1241,7 @@ def _save_photo(root_dir, file_name, image):
 def _init_photo_operation(request, transaction_uuid, item_uuid):
     # verify request valid - client is able to read that transaction item exists
     admin_url = ""
-    if _is_admin(request):
+    if _is_admin(request) or _get_group(request) == "LOGISTICS":
         admin_url = "admin/"
     transaction, error = _make_api_request(
         f"{API_BASE_URL}/transactions/{admin_url}{transaction_uuid}/",
@@ -1328,7 +1261,7 @@ def _init_photo_operation(request, transaction_uuid, item_uuid):
 
 
 @require_auth
-@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS + ["LOGISTICS"])
 def add_photo(request, transaction_uuid, item_uuid):
     init_data = _init_photo_operation(request, transaction_uuid, item_uuid)
     if isinstance(init_data, HttpResponse):
@@ -1364,7 +1297,7 @@ def add_photo(request, transaction_uuid, item_uuid):
 
 
 @require_auth
-@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS + ["LOGISTICS"])
 def delete_photo(request, transaction_uuid, item_uuid, file):
     init_data = _init_photo_operation(request, transaction_uuid, item_uuid)
     if isinstance(init_data, HttpResponse):
@@ -1384,7 +1317,7 @@ def delete_photo(request, transaction_uuid, item_uuid, file):
 
 
 @require_auth
-@require_group(ADMIN_GROUPS + CLIENT_GROUPS)
+@require_group(ADMIN_GROUPS + CLIENT_GROUPS + ["LOGISTICS"])
 def get_photo(request, transaction_uuid, item_uuid, file):
     init_data = _init_photo_operation(request, transaction_uuid, item_uuid)
     if isinstance(init_data, HttpResponse):

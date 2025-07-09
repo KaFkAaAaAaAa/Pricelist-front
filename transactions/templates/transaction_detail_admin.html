@@ -260,7 +260,7 @@
                                                     </button>
                                                     <a href="/transactions/{{ transaction.uuid }}/{{ item.uuid }}/add-photo/"
                                                        class="btn btn-sm btn-outline-secondary">
-                                                        {% trans "Photos" %}
+                                                        {% trans "Photos" %}: {{ item.photos_no }}
                                                     </a>
                                                     {% if request.session.auth.group != "LOGISTICS" %}
                                                         <button class="btn btn-outline-danger btn-sm"

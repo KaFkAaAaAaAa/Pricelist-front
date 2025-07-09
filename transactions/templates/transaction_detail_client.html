@@ -74,10 +74,6 @@
                     data-bs-toggle="modal"
                     data-bs-target="#searchModal"
                     class="btn btn-sm btn-outline-success mt-2 mb-2">{% trans "Add item" %}</button>
-            <button type="button"
-                    id="photoButton"
-                    class="btn btn-sm btn-outline-secondary mt-2 mb-2"
-                    onclick="initImages();">{% trans "Add images" %}</button>
             <form method="post" id="edit-form">
                 {% csrf_token %}
                 <div class="table-responsive">
@@ -193,10 +189,6 @@
                                         <td style="white-space: nowrap;" class="text-end">
                                             <span class="" id="total-{{ item.uuid }}">{{ item.total }}</span> €
                                         </td>
-                                        <td style="display: none" class="add-photo p-0 m-0 align-middle">
-                                            <a href="/transactions/{{ transaction.uuid }}/{{ item.uuid }}/add-photo/"
-                                               class="m-1 btn btn-sm btn-outline-secondary">{% trans "Add photos" %}</a>
-                                        </td>
                                         {% if transaction.status == "PROPOSITION" %}
                                             <td>
                                                 <div class="d-grid gap-1 w-100">
@@ -213,6 +205,11 @@
                                                         {% trans "Delete" %}
                                                     </button>
                                                 </div>
+                                            </td>
+                                        {% elif request.session.auth.group == "LOGISTICS" %}
+                                            <td>
+                                            <a href="/transactions/{{ transaction.uuid }}/{{ item.uuid }}/add-photo/"
+                                                class="btn btn-sm btn-outline-secondary">{% trans "Photos" %}: {{ item.photos_no }}</a>
                                             </td>
                                         {% endif %}
                                     </tr>
