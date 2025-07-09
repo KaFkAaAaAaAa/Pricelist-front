@@ -278,7 +278,7 @@ class Page:
         self.last = self.page_no == self.total_pages
         self.first = self.page_no == 1
         self.prev = self.page_no - 1 if not self.first else 0
-        self.next = self.page_no + 1 if not self.first else self.total_pages
+        self.next = self.page_no + 1 if not self.last else self.total_pages
 
     def __str__(self) -> str:
         return f"PageObject:{self.page_size}:{self.page_no}/{self.total_pages}"
