@@ -48,6 +48,11 @@ urlpatterns = [
         name="client_transaction_detail",
     ),
     path(
+        "logistics/<uuid:transaction_uuid>/",
+        views.logistics_transaction_detail,
+        name="logistics_transaction_detail",
+    ),
+    path(
         "<uuid:transaction_uuid>/change-status/",
         views.change_status,
         name="change_status",

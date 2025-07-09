@@ -2,6 +2,7 @@ import copy
 import logging
 import os
 import re
+import uuid
 from collections import defaultdict
 from datetime import date, datetime
 from http.client import INTERNAL_SERVER_ERROR, NOT_FOUND, UNAUTHORIZED
@@ -935,7 +936,8 @@ def client_transaction_detail(request, transaction_uuid):
         return redirect("admin_transaction_detail", transaction_uuid)
 
     if request.session["auth"].get("group") == "LOGISTICS":
-        admin_url = "admin/"
+        return redirect("logistics_transaction_detail", transaction_uuid)
+        
     else:
         admin_url = ""
 
@@ -1009,11 +1011,12 @@ def client_transaction_detail(request, transaction_uuid):
 def process_alku(alku, payload_transaction, transaction):
     # 1. Build mappings from transaction data
     sku_to_items = defaultdict(list)  # Now stores full items for comparison
+    uuid_to_item = {}
 
     for item in transaction["itemsOrdered"]:
-        uuid = item["uuid"]
+        uuid_item = item["uuid"]
         sku = item.get("sku")
-        uuid_to_item[uuid] = item
+        uuid_to_item[uuid_item] = item
         if sku:
             sku_to_items[sku].append(item)
 
@@ -1166,6 +1169,80 @@ def admin_transaction_detail(request, transaction_uuid):
 
     return render(request, "transaction_detail_admin.html", data)
 
+
+
+@require_auth
+@require_group(["LOGISTICS"])
+def logistics_transaction_detail(request, transaction_uuid):
+
+    headers = _get_headers(request)
+    lang = request.LANGUAGE_CODE.upper()
+
+
+    transaction, error = _make_api_request(
+        f"{API_BASE_URL}/transactions/admin/{transaction_uuid}/?lang={lang}",
+        headers=headers,
+    )
+    if request.method == "POST":
+        items, alku = _parse_transaction_edit_items(request)
+
+        for item in items:
+            for itemOrdered in transaction["itemsOrdered"]:
+                if item["uuid"] == itemOrdered["uuid"]:
+                    item["sku"] = itemOrdered["sku"]
+                    break
+
+        payload_transaction = {"itemsOrdered": items}
+
+        process_alku(alku, payload_transaction, transaction)
+
+        payload = {
+            "alkuAmount": alku,
+        }
+        transaction_details, error = _make_api_request(
+            f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
+            method=requests.put,
+            headers=headers,
+            body=payload,
+        )
+
+    if error:
+        return error
+
+    transaction = _set_status(transaction)
+    if "itemsOrdered" not in transaction.keys():
+        transaction["itemsOrdered"] = {}
+    transaction["totals"] = _get_stored_item_list_to_display(
+        transaction["itemsOrdered"],
+    )
+    data = {"transaction": transaction}
+    transaction_details, error = _make_api_request(
+        f"{API_BASE_URL}/transaction-details/admin/{transaction_uuid}/",
+        headers=headers,
+    )
+    if error:
+        return error
+
+    if not (
+        isinstance(transaction_details, dict)
+        and "alkuAmount" in transaction_details.keys()
+        ):
+        return _api_error_interpreter(INTERNAL_SERVER_ERROR)
+
+    if transaction_details["alkuAmount"]:
+        for item in transaction["itemsOrdered"]:
+            try:
+                item["alku"] = _amount_to_display(
+                    transaction_details["alkuAmount"][item["uuid"]]
+                )
+            except KeyError:
+                continue
+    data["transactionDetails"] = transaction_details
+
+    for item in data["transaction"]["itemsOrdered"]:
+        item["photos_no"] = len(_photo_list(transaction["uuid"], item["uuid"]))
+
+    return render(request, "transaction_detail_logistics.html", data)
 
 @require_auth
 @require_group(["LOGISTICS", "DISPO"])
