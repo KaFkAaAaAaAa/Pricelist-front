@@ -46,17 +46,14 @@
     <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-transparent border-0 shadow-none">
-                <div class="modal-body p-0 position-relative text-center">
-                    <button type="button"
-                            class="btn-close btn-close-white position-absolute top-0 end-0 m-3"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"></button>
+                <div class="modal-body p-0 d-flex justify-content-center align-items-center" style="min-height: 100vh;">
                     <img src=""
                          alt="Large view"
                          id="modal-img"
-                         class="img-fluid rounded mx-auto d-block"
+                         class="img-fluid rounded"
                          style="max-width:80vw;
-                                max-height:80vh" />
+                                max-height:80vh;
+                                object-fit: contain;" />
                 </div>
             </div>
         </div>
@@ -64,18 +61,18 @@
 {% endblock %}
 {% block  script %}
     <script>
-  const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
-  const modalImg = document.getElementById('modal-img');
+      const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+      const modalImg = document.getElementById('modal-img');
 
-  const modalElement = document.getElementById('imageModal');
-  modalElement.addEventListener('show.bs.modal', event => {
-    const triggerImg = event.relatedTarget;
-    const imgSrc = triggerImg.getAttribute('data-img-src');
-    modalImg.src = imgSrc;
-  });
+      const modalElement = document.getElementById('imageModal');
+      modalElement.addEventListener('show.bs.modal', event => {
+        const triggerImg = event.relatedTarget;
+        const imgSrc = triggerImg.getAttribute('data-img-src');
+        modalImg.src = imgSrc;
+      });
 
-  modalElement.addEventListener('hidden.bs.modal', () => {
-    modalImg.src = '';
-  });
+      modalElement.addEventListener('hidden.bs.modal', () => {
+        modalImg.src = '';
+      });
     </script>
 {% endblock %}

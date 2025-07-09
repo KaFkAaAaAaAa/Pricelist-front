@@ -16,7 +16,6 @@ from django.http import (FileResponse, HttpResponse, HttpResponseNotFound,
                          HttpResponseServerError)
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext_lazy as _
-
 from file_manager.views import _sanitize_path
 from items.views import _add_items_to_offer, _make_price_list
 from pdfgenerator.views import generate_pdf
@@ -1022,7 +1021,7 @@ def client_transaction_detail(request, transaction_uuid):
     if request.method == "POST" and transaction["status"] == "PROPOSITION":
         items, _ = _parse_transaction_edit_items(request)
         payload_transaction = {
-                "itemsOrdered": items,
+            "itemsOrdered": items,
         }
         payload_transaction["description"] = request.POST["description"]
         transaction, error = _make_api_request(
@@ -1033,7 +1032,6 @@ def client_transaction_detail(request, transaction_uuid):
         )
         if error:
             return error
-                
 
     transaction = _set_status(transaction)
     if "itemsOrdered" not in transaction.keys():
@@ -1276,6 +1274,7 @@ def msb_list(request):
             _calculate_total_mass(transaction["itemsOrdered"]) / 10
         )
 
+
 def _validate_photo_path(path):
     root_dir = Path(path).parent
     fs = FileSystemStorage(root_dir)
@@ -1292,16 +1291,19 @@ def _photo_list(transaction_uuid, item_uuid):
     ls_dir = fs.listdir(".")
 
     for file in ls_dir[1]:
-        if re.match("[a-zA-Z]{2}[0-9]{2,3}_"+str(item_uuid)+".*", file):
+        pattern = re.compile("^[a-zA-Z]{2}\\d{2,3}_" + str(item_uuid) + ".*")
+        if re.match(pattern, file):
             item_photo_list.append(file)
 
     return item_photo_list
+
 
 def _save_photo(root_dir, file_name, image):
     path = Path(root_dir)
     path.mkdir(parents=True, exist_ok=True)
     fs = FileSystemStorage(location=str(path))
     fs.save(file_name, image, MAX_FILE_SIZE)
+
 
 def _init_photo_operation(request, transaction_uuid, item_uuid):
     # verify request valid - client is able to read that transaction item exists
@@ -1324,6 +1326,7 @@ def _init_photo_operation(request, transaction_uuid, item_uuid):
             break
     return transaction, item
 
+
 @require_auth
 @require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def add_photo(request, transaction_uuid, item_uuid):
@@ -1335,10 +1338,10 @@ def add_photo(request, transaction_uuid, item_uuid):
         # this should not happen ever - lsp warning
         return _api_error_interpreter(NOT_FOUND)
     # POST
-    if (request.method == "POST" and request.FILES and "image" in request.FILES.keys()):
+    if request.method == "POST" and request.FILES and "image" in request.FILES.keys():
         image = request.FILES["image"]
 
-        root_dir = f"{TRANSACTION_ROOT}/{transaction_uuid}/photos/" 
+        root_dir = f"{TRANSACTION_ROOT}/{transaction_uuid}/photos/"
         ext = image.name.rsplit(".")[-1]
         file_name = _file_indexer(root_dir, f"{item['sku']}_{item_uuid}.{ext}")
 
@@ -1349,12 +1352,15 @@ def add_photo(request, transaction_uuid, item_uuid):
 
     file_list = _photo_list(transaction_uuid, item_uuid)
 
-    return render(request, "add_photo.html", {
-        "transaction": transaction,
-        "item": item,
-        "file_list": file_list,
-        })
-
+    return render(
+        request,
+        "add_photo.html",
+        {
+            "transaction": transaction,
+            "item": item,
+            "file_list": file_list,
+        },
+    )
 
 
 @require_auth
@@ -1376,6 +1382,7 @@ def delete_photo(request, transaction_uuid, item_uuid, file):
     else:
         return _api_error_interpreter(NOT_FOUND)
 
+
 @require_auth
 @require_group(ADMIN_GROUPS + CLIENT_GROUPS)
 def get_photo(request, transaction_uuid, item_uuid, file):
@@ -1391,5 +1398,5 @@ def get_photo(request, transaction_uuid, item_uuid, file):
 
     if not fs.exists(path):
         return _api_error_interpreter(NOT_FOUND)
-    content_type = 'image/jpeg'
-    return FileResponse(open(path, 'rb'), content_type=content_type)
+    content_type = "image/jpeg"
+    return FileResponse(open(path, "rb"), content_type=content_type)
