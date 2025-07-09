@@ -42,7 +42,6 @@ def generate_pdf(request, template, data, filename="document"):
         ]
     )
 
-    __import__("pdb").set_trace()
     HTML(
         string=html_string,
         base_url=data["images_root"],
