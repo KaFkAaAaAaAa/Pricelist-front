@@ -16,7 +16,9 @@
             <div class="row text-start">{{ transaction.client.clientCountry }}</div>
             <div class="row text-start">
                 <b class="text-start p-0">{% trans "Status" %}:</b>
-                {% if transaction.status %}
+                {% if request.session.auth.group == "LOGISTICS" %}
+                    {{ transaction.status }}
+                {% elif transaction.status %}
                     {% if transaction.status == "OFFER" or transaction.status == "PROPOSITION" %}
                         {{ transaction.status }}
                     {% elif transaction.status == "FINAL_C" %}
@@ -37,6 +39,7 @@
             {#                 class="" id="totalTransportIncluded"></span> €</p> #}
             {#     {% endif %} #}
             {# </div> #}
+            {% if request.session.auth.group != "LOGISTICS" %}
             {% if transaction.status == "PROGNOSE" or transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
                 <div class="row justify-content-end text-end">
                     <h5 class="fw-bold">{% trans "Delivery" %}</h5>
@@ -67,6 +70,7 @@
                     {% endif %}
                 </div>
             {% endif %}
+            {% endif %}
             <div class="row"></div>
         </div>
         <div>
@@ -89,10 +93,12 @@
                                 {% if transaction.status == 'FINAL_C' %}
                                     <th class="text-end">{% trans "Alku" %}</th>
                                 {% endif %}
+                                {% if request.session.auth.group != "LOGISTICS" %}
                                 <th class="text-center">{% trans "Price" %}</th>
                                 <th class="text-end">{% trans "Total" %}</th>
-                                <!-- <th scope="col">{% trans "Comment" %}</th> -->
-                                <th style="display: none" class="add-photo p-0 m-0 align-middle">
+                                {% endif %}
+                                {# <!-- <th scope="col">{% trans "Comment" %}</th> --> #}
+                                <th></th>
                                     {% if transaction.status == "PROPOSITION" %}<th></th>{% endif %}
                                 </tr>
                             </thead>
@@ -158,6 +164,7 @@
                                                 </div>
                                             </td>
                                         {% endif %}
+                                        {% if request.session.auth.group != "LOGISTICS" %}
                                         <td class="">
                                             {% if transaction.status == 'PROPOSITION' %}
                                                 {% if item.sku|slice:":2" == "NA" %}
@@ -191,6 +198,7 @@
                                         <td style="white-space: nowrap;" class="text-end">
                                             <span class="" id="total-{{ item.uuid }}">{{ item.total }}</span> €
                                         </td>
+                                        {% endif %}
                                         {% if transaction.status == "PROPOSITION" %}
                                             <td>
                                                 <div class="d-grid gap-1 w-100">
@@ -231,10 +239,11 @@
                                         </td>
                                     {% endif %}
                                     <td></td>
+                                    {% if request.session.auth.group != "LOGISTICS" %}
                                     <td class="fw-bold text-end" style="white-space: nowrap;">
                                         <span class="" id="totalPrice"></span> €
                                     </td>
-                                    <td></td>
+                                    {% endif %}
                                     {% if transaction.status == "PROPOSITION" %}<td></td>{% endif %}
                                 </tr>
                             </tfoot>

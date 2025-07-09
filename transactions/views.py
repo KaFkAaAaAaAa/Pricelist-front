@@ -587,7 +587,7 @@ def delete_transaction_item(request, transaction_uuid, item_uuid):
 def print_transaciton(request, transaction_uuid):
     headers = _get_headers(request)
 
-    admin_url = "admin/" if _is_admin(request) else ""
+    admin_url = "admin/" if _is_admin(request) or _get_group(request) == "LOGISTICS" else ""
     lang = request.LANGUAGE_CODE.upper()
 
     response = requests.get(
@@ -611,12 +611,14 @@ def print_transaciton(request, transaction_uuid):
 
     status = transaction["status"]
 
-    if not _is_admin(request):
+    if not _is_admin(request) and _get_group(request) != "LOGISTICS":
         if status == "PROPOSITION":
             messages.warning(request, _("Proposition cannot be printed"))
         if status == "FINAL_C":
             return print_final(request, data, "FINAL")
         return print_offer(request, data, "OFFER")
+
+    data["auth_group"] = _get_group(request)
 
     if status == "OFFER":
         return print_offer(request, data)
@@ -659,6 +661,7 @@ def print_prognose(request, data, status=""):
     data["transport"]["transportPerKg"] = transport / total_amount
     data["transport"]["transportPercent"] = transport / total_price * 100
     data["total"]["wTransport"] = transport + total_price
+    # data["auth_group"] = _get_group(request)
     return generate_pdf(
         request,
         "pdf_prognose.html",
