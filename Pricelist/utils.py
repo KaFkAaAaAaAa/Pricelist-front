@@ -2,11 +2,13 @@ import logging
 import math
 import re
 from dataclasses import dataclass
+from decimal import Decimal, getcontext
 from functools import wraps
 from http.client import INTERNAL_SERVER_ERROR
 from json import JSONDecodeError
 from math import floor
 from pathlib import Path
+from typing import Union
 from uuid import uuid4
 
 import requests
@@ -36,33 +38,53 @@ RESPONSE_FORBIDDEN = HttpResponseForbidden(
 )
 logger = logging.getLogger(__name__)
 
-
-def _price_to_float(price: int) -> float:
-    return price / 100
+getcontext().prec = 10
 
 
-def _amount_to_float(amount: int) -> float:
-    return amount / 10
+def _price_to_store(price: Union[str, int, float, None]) -> int:
+    """Convert user input price to storable integer"""
+    if price in (None, "", "0", False):
+        return 0
+    try:
+        # Use Decimal for perfect decimal arithmetic
+        return int((Decimal(str(price).strip()) * Decimal(100)).to_integral_value())
+    except (ValueError, TypeError):
+        return 0
 
 
-def _price_to_display(price: float) -> str:
-    return f"{price / 100:.2f}".replace(",", ".")
+def _amount_to_store(amount: Union[str, int, float, None]) -> int:
+    """Convert user input amount to storable integer"""
+    if amount in (None, "", "0", False):
+        return 0
+    try:
+        # Use Decimal for perfect decimal arithmetic
+        return int((Decimal(str(amount).strip()) * Decimal(10)).to_integral_value())
+    except (ValueError, TypeError):
+        return 0
 
 
-def _amount_to_display(amount: float) -> str:
-    return f"{amount / 10:.1f}".replace(",", ".")
+def _price_to_float(price: int) -> Decimal:
+    """Convert stored price to Decimal"""
+    return Decimal(price) / Decimal(100)
 
 
-def _amount_to_store(amount: str) -> int:
-    if amount in ("", "0", False):
-        amount = "0"
-    return int(floor(float(amount) * 10)) if amount else 0
+def _amount_to_float(amount: int) -> Decimal:
+    """Convert stored amount to Decimal"""
+    return Decimal(amount) / Decimal(10)
 
 
-def _price_to_store(price: str) -> int:
-    if price in ("", "0", False):
-        price = "0"
-    return int(floor(float(price) * 100)) if price else 0
+def _price_to_display(price: Union[int, Decimal]) -> str:
+    """Format price for display with exactly 2 decimal places"""
+    if isinstance(price, int):
+        price = _price_to_float(price)
+    return f"{price:.2f}".replace(",", ".")
+
+
+def _amount_to_display(amount: Union[int, Decimal]) -> str:
+    """Format amount for display with exactly 1 decimal place"""
+    if isinstance(amount, int):
+        amount = _amount_to_float(amount)
+    return f"{amount:.1f}".replace(",", ".")
 
 
 def _api_error_interpreter(status_code, msg_404=None, msg_401=None, msg_500=None):

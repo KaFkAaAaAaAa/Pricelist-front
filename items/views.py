@@ -83,7 +83,7 @@ def _make_price_list(request, headers, pattern="price_list.html"):
             if pln_exr:
                 item["price_pln"] = floor(item["price"] * pln_exr)
                 item["price_pln"] = _price_to_display(item["price_pln"])
-            item["price"] = f"{item['price'] / 100:.2f}"
+            item["price"] = _price_to_display(item["price"])
 
             is_results = True
     if "f" in request.GET.keys() and request.GET["f"] == "json":
