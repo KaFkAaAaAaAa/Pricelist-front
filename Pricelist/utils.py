@@ -87,6 +87,14 @@ def _amount_to_display(amount: Union[int, Decimal]) -> str:
     return f"{amount:.1f}".replace(",", ".")
 
 
+def _str_amount_to_decimal(amount: str) -> Decimal:
+    return Decimal(amount.replace(",", "."))
+
+
+def _str_price_to_decimal(price: str) -> Decimal:
+    return Decimal(price.replace(",", "."))
+
+
 def _api_error_interpreter(status_code, msg_404=None, msg_401=None, msg_500=None):
     """Interpreter for api error response status code. It renders error response pages.
     If response code is not either 404 or 401, it uses HttpResponseServerError"""
