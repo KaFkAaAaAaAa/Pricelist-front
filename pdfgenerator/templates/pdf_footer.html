@@ -12,13 +12,13 @@
   <div class="row text-center">
     <p>
       <strong>e-mail:</strong>
-      {% if transaction.client.clientAdmin.userEmail %}
-      {{transaction.client.clientAdmin.userEmail}} {% else %}
-      pawel.zubrzycki@alku-gmbh.de {% endif %}
+      {% if logged_user.clientAdmin.userEmail %}
+      {{logged_user.clientAdmin.userEmail}} {% else %}
+      {{logged_user.userEmail}} {% endif %}
       <strong>tel:</strong>
-      {% if transaction.client.clientAdmin.userEmail %}
-      {{transaction.client.clientAdmin.userTelephoneNumber}} {% else %}
-      +4915121402684 {% endif %}
+      {% if logged_user.clientAdmin.userEmail%}
+      {{logged_user.clientAdmin.userTelephoneNumber}} {% else %}
+      {{logged_user.userTelephoneNumber}} {% endif %}
     </p>
   </div>
 </footer>

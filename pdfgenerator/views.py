@@ -26,6 +26,7 @@ def generate_pdf(request, template, data, filename="document"):
 
     data["images_root"] = "file://" + str(BASE_DIR)
     data["filename"] = filename
+    data["logged_user"] = request.session["logged_user"]
     html_string = render_to_string(template, data)
     font_conf = FontConfiguration()
 
