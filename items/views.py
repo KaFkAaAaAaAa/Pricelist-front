@@ -69,10 +69,10 @@ def _make_price_list(request, headers, pattern="price_list.html"):
 
     params_str = "?lang={lang}"
     for key, val in request.GET.items():
-        if not _is_admin(request):
-            return _api_error_interpreter(UNAUTHORIZED)
         if key == "group":
             val = int(val) - 1
+            if not _is_admin(request):
+                return _api_error_interpreter(UNAUTHORIZED)
         params_str += f"&{key}={val}"
     if "search" in request.GET.keys():
         url = f"{API_BASE_URL}/items/search{params_str}"
