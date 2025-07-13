@@ -471,13 +471,13 @@
                 newRow.innerHTML = `
                 <td></td>
                 `
-                accNoRow = `<td class="w-auto w-sku"><input name="AccNo-${uuid}" id="AccNo-${ uuid }" class="form-control w-sku" type="number" /></td>`
+                accNoRow = `<td class="w-auto w-sku"><input name="new_item-${uuid}" type="hidden"/><input name="AccNo-${uuid}" id="AccNo-${ uuid }" class="form-control w-sku" type="number" /></td>`
             }
 
             newRow.innerHTML += `
                 <td class="col-xs-2"><input name="sku-${uuid}" id="sku-${uuid}" class="form-control" type="text" value="${sku}" /></td>
                 ${accNoRow}
-                <td><input name="name-${uuid}"  id="name-${uuid}" class="form-control" type="text" value="${name}" /></td>
+                <td><input name="name-${uuid}" id="name-${uuid}" class="form-control" type="text" value="${name}" /></td>
                 <td>
                     <div class="input-group">
                         <input name="amount-${uuid}"  id="amount-${uuid}" class="form-control"  min="{%if transaction.status != "FINAL" or transaction.status != "FINAL_C" or transaction.status != "FINAL_C" or transaction.status != "FINAL_C"%}0.0{% else %}0.01{%endif%}" max="99999.9" step="0.01" type="number" onchange="calculateTotal('${uuid}')" />

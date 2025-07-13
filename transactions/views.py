@@ -928,6 +928,10 @@ def change_status_api(request, transaction_uuid, status):
     else:
         return redirect("admin_transaction_detail", transaction_uuid)
 
+def _set_photo_numbers(items_ordered, transaction_uuid):
+    for item in items_ordered:
+        item["photos_no"] = len(_photo_list(transaction_uuid, item["uuid"]))
+
 
 @require_auth
 @require_group(CLIENT_GROUPS + ADMIN_GROUPS + ["LOGISTICS"])
@@ -1003,8 +1007,7 @@ def client_transaction_detail(request, transaction_uuid):
         data["offer"] = "OFFER"
         data["proposition"] = "PROPOSITION"
 
-    for item in data["transaction"]["itemsOrdered"]:
-        item["photos_no"] = len(_photo_list(transaction["uuid"], item["uuid"]))
+        _set_photo_numbers(data["transaction"]["itemsOrdered"], transaction_uuid)
 
     return render(request, "transaction_detail_client.html", data)
 
@@ -1165,8 +1168,7 @@ def admin_transaction_detail(request, transaction_uuid):
                     continue
         data["transactionDetails"] = transaction_details
 
-    for item in data["transaction"]["itemsOrdered"]:
-        item["photos_no"] = len(_photo_list(transaction["uuid"], item["uuid"]))
+    _set_photo_numbers(data["transaction"]["itemsOrderes"], transaction_uuid)
 
     return render(request, "transaction_detail_admin.html", data)
 
@@ -1240,8 +1242,7 @@ def logistics_transaction_detail(request, transaction_uuid):
                 continue
     data["transactionDetails"] = transaction_details
 
-    for item in data["transaction"]["itemsOrdered"]:
-        item["photos_no"] = len(_photo_list(transaction["uuid"], item["uuid"]))
+    _set_photo_numbers(data["transaction"]["itemsOrdered"], transaction_uuid)
 
     return render(request, "transaction_detail_logistics.html", data)
 

@@ -51,13 +51,13 @@ nowe:
 
 | | wydruk cennika -> przycisk drukuj w tym wydruk częściowy - bez kategorii, ewentualnie obiektów, w zależności od zalogowanego handlowca/administratora-handlowca -> numer telefonu, email
 or
-| | wydruk cennika -> zrób stronę + znak wodny
+|x| wydruk cennika -> zrób stronę + znak wodny
 |x| klient dodawanie zdjęć do zapytania i rozliczania - folder
-|?| poprawki estetyczne:
+|x| poprawki estetyczne:
     |x| bugująca się tabelka
-    |?| nazwa transakcji (data)
+    |-| nazwa transakcji (data)
     |x| admin
-    | | is_photos - na liście
+    |x| is_photos - na liście
 |x| sortowanie po datach transakcji - koniecznie
 |x| sortowanie po datach logowania - opt
 |x| aktywność klientów - zmienić nagłówek
@@ -67,7 +67,7 @@ or
     |x| numer w liście itemów
     |x| numer w transakcji
     | | numer dla nowych itemów
-    | | prognoza i filnał numer rozliczeniowy
+    |x| prognoza i filnał numer rozliczeniowy
 |x| transaction_detail -> fix bugs, check new items same sku and save changes display 
 | | responsywność
 |?| powrót do poprzedniej strony
