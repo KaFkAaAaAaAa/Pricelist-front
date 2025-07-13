@@ -57,7 +57,7 @@
           <h4 class="fw-semibold">
             {% trans "Final of " %}{{ date|date:"d-m-Y H:i" }}
           </h4>
-          <p class="fw-semibold text-info">
+          <p class="fw-semibold text-def">
             {% trans "To prognose of " %}{{ prognose_date|date:"d-m-Y H:i" }}
           </p>
         </div>
@@ -67,12 +67,13 @@
         <thead class="text-head">
           <tr class="text-center">
             <th scope="col">{% trans "SKU" %}</th>
+            <th scope="col">{% trans "Acc. No." %}</th>
             <th scope="col">{% trans "Product" %}</th>
             <th scope="col">{% trans "Alku" %}</th>
             <th scope="col">{% trans "Price" %}</th>
             <th scope="col">{% trans "w/transport" %}</th>
             <th scope="col">{% trans "Total" %}</th>
-            <th scope="col">{% trans "Total w/transport" %}</th>
+            {# <th scope="col">{% trans "Total w/transport" %}</th> #}
             <th scope="col"></th>
           </tr>
         </thead>
@@ -80,14 +81,15 @@
           {% for item in transaction.itemsOrdered %}
           <tr>
             <td class="px-1">{{ item.sku }}</td>
+            <td class="px-1">{{ item.accountingNumber}}</td>
             <td class="px-1 text-start">{{ item.name }}</td>
             <td class="unit text-end px-1">{{ item.alku|floatformat:1 }}</td>
             <td class="unit text-end px-1">{{ item.price|floatformat:2 }}</td>
             <td class="unit text-end px-1">{{ item.price_transport|floatformat:2 }}</td>
             <td class="unit text-end px-1">{{ item.total|floatformat:2 }} €</td>
-            <td class="unit text-end px-1">
-              {{ item.total_transport|floatformat:2 }} €
-            </td>
+            {# <td class="unit text-end px-1"> #}
+            {#   {{ item.total_transport|floatformat:2 }} € #}
+            {# </td> #}
             <td class="px-1 text-start">
             {% if item.additionalInfo and item.additionalInfo|length < 10 %}
                 {{ item.additionalInfo }}
@@ -130,8 +132,8 @@
             {% endif %}
     {% endfor %}
       <hr />
-        <p class="text-info">{% trans "c/k - transport cost per kg" %}</p>
-        <p class="text-info">
+        <p class="text-def">{% trans "c/k - transport cost per kg" %}</p>
+        <p class="text-def">
           {% trans "c/v - transport cost per delivery value" %}
         </p>
       </div>

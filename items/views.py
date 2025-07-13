@@ -1,6 +1,7 @@
 import logging
 import re
 from datetime import datetime
+from http.client import UNAUTHORIZED
 from math import floor
 
 import requests
@@ -17,12 +18,15 @@ from Pricelist.settings import (
     API_BASE_URL,
     CATEGORIES,
     CLIENT_GROUPS,
+    GROUPS_ROMAN,
     SKU_REGEX,
     SUPPORT_GROUPS,
 )
 from Pricelist.utils import (
     _amount_to_store,
+    _api_error_interpreter,
     _get_headers,
+    _is_admin,
     _price_to_display,
     _price_to_store,
     require_auth,
@@ -63,15 +67,20 @@ def _make_price_list(request, headers, pattern="price_list.html"):
     if lang == "PL":
         pln_exr = _get_pln_exr()
 
+    params_str = "?lang={lang}"
+    for key, val in request.GET.items():
+        if key == "group":
+            val = int(val) - 1
+            if not _is_admin(request):
+                return _api_error_interpreter(UNAUTHORIZED)
+        params_str += f"&{key}={val}"
     if "search" in request.GET.keys():
-        response = requests.get(
-            f"{API_BASE_URL}/items/search?lang={lang}&query={request.GET['search']}",
-            headers=headers,
-        )
+        url = f"{API_BASE_URL}/items/search{params_str}"
     else:
-        response = requests.get(
-            f"{API_BASE_URL}/items/price-list?lang={lang}", headers=headers
-        )
+        url = f"{API_BASE_URL}/items/price-list{params_str}"
+
+    response = requests.get(url, headers=headers)
+
     items = {}
     items = (
         response.json() if response.status_code == 200 else {}
@@ -99,7 +108,12 @@ def _make_price_list(request, headers, pattern="price_list.html"):
     return render(
         request,
         pattern,
-        {"is_results": is_results, "items": items, "categories": CATEGORIES[lang]},
+        {
+            "is_results": is_results,
+            "items": items,
+            "categories": CATEGORIES[lang],
+            "roman_groups": GROUPS_ROMAN,
+        },
     )
 
 

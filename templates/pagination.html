@@ -3,25 +3,31 @@
     <ul class="pagination">
         {% if not page.first %}
             <li class="page-item">
-                <a class="page-link" href="?page=1">&laquo; {% trans "first" %}</a>
+                <a class="page-link" href="?{% if request.GET.sort %}sort={{ request.GET.sort }}&{% endif %}{% if request.GET.direction %}direction={{ request.GET.direction }}&{% endif %}page=1">
+                    &laquo; {% trans "first" %}
+                </a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="?page={{ page.prev }}">{% trans "previous" %}</a>
+                <a class="page-link" href="?{% if request.GET.sort %}sort={{ request.GET.sort }}&{% endif %}{% if request.GET.direction %}direction={{ request.GET.direction }}&{% endif %}page={{ page.prev }}">
+                    {% trans "previous" %}
+                </a>
             </li>
         {% endif %}
 
         <li class="page-item active">
-            <a class="page-link" href="#"
-            >{{ page.page_no }}/{{ page.total_pages }}</a
-            >
+            <a class="page-link" href="#">{{ page.page_no }}/{{ page.total_pages }}</a>
         </li>
 
         {% if not page.last %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ page.next }}">{% trans "next" %}</a>
+                <a class="page-link" href="?{% if request.GET.sort %}sort={{ request.GET.sort }}&{% endif %}{% if request.GET.direction %}direction={{ request.GET.direction }}&{% endif %}page={{ page.next }}">
+                    {% trans "next" %}
+                </a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="?page={{ page.total_pages }}">{% trans "last" %} &raquo;</a>
+                <a class="page-link" href="?{% if request.GET.sort %}sort={{ request.GET.sort }}&{% endif %}{% if request.GET.direction %}direction={{ request.GET.direction }}&{% endif %}page={{ page.total_pages }}">
+                    {% trans "last" %} &raquo;
+                </a>
             </li>
         {% endif %}
     </ul>

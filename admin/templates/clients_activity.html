@@ -23,7 +23,8 @@
                 <th scope="col" class="text-start" style="max-width=400px">
                     {% trans "Company Name" %}</th>
                 <th>
-                    <a href="?sort=login&direction={% if request.GET.direction == 'asc' %}desc{%else%}asc{%endif%}"
+                    {# <a href="?sort=login&direction={% if request.GET.direction == 'asc' %}desc{%else%}asc{%endif%}" #}
+                    <a href="?sort=login&direction={% if request.GET.direction == 'asc' %}desc{%else%}asc{%endif%}&page={{ request.GET.page|default:'1' }}"
                         class="text-decoration-none">
                       {% trans 'Last login' %}
                       {% if request.GET.sort == 'login' %}
@@ -36,7 +37,8 @@
                     </a>
                 </th>
                 <th>
-                    <a href="?sort=transaction&direction={% if request.GET.direction == 'asc' %}desc{% else %}asc{% endif %}"
+                    {# <a href="?sort=transaction&direction={% if request.GET.direction == 'asc' %}desc{% else %}asc{% endif %}" #}
+                    <a href="?sort=transaction&direction={% if request.GET.direction == 'asc' %}desc{%else%}asc{%endif%}&page={{ request.GET.page|default:'1' }}"
                         class="text-decoration-none">
                       {% trans 'Last transaction' %}
                       {% if request.GET.sort == 'transaction' %}

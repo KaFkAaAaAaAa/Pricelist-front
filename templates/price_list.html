@@ -29,11 +29,42 @@
     </form>
 
     <div class="row mt-4">
-        <div class="col-12 col-md-4 text-center text-md-start">
-            <a href="{% url 'offer_list' %}" class="btn btn-outline-success">
+        <div class="col-12 col-md-4 text-center text-md-start d-inline-flex">
+            <a href="{% url 'offer_list' %}" class="btn btn-outline-success mx-1">
                 {% trans "Select item" %}
             </a>
-            <a href="/print-pricelist" class="btn btn-outline-secondary">{% trans "Print version" %}</a>
+            {% if not  request.session.logged_user.user %}
+
+            <div class="dropdown mx-1">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="groupDropdown" data-bs-toggle="dropdown">
+                {% if 'group' in request.GET %}
+                  Group: {{ request.GET.group }}
+                {% else %}
+                  Select Group
+                {% endif %}
+              </button>
+              <ul class="dropdown-menu">
+                {% for i in roman_groups %}
+                  <li>
+                    <a class="dropdown-item" href="?{% if request.GET.search %}search={{ request.GET.search }}&{% endif %}group={{ forloop.counter }}">
+                      {{ i }}
+                    </a>
+                  </li>
+                {% endfor %}
+                
+                {% if 'group' in request.GET %}
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    <a class="dropdown-item" href="?{% if request.GET.search %}search={{ request.GET.search }}{% endif %}">
+                      Clear Group
+                    </a>
+                  </li>
+                {% endif %}
+              </ul>
+            </div>
+
+            {% endif %}
+            <a href="/print-pricelist{% if request.GET.group %}?group={{ request.GET.group }}{% endif %}" class="btn btn-outline-secondary mx-1">{% trans "Print" %}</a>
         </div>
     </div>
 

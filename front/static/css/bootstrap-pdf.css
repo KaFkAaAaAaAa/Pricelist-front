@@ -12726,3 +12726,7 @@ fieldset:disabled .btn {
     display: none !important;
   }
 }
+
+.text-def {
+  color: #841c05;
+}
