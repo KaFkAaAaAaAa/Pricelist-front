@@ -44,8 +44,8 @@
                     {% else %}
                     <td>{{ transaction.clientHeader }}</td>
                     {% endif %}
-                    <td>{{ transaction.init_time|date:"d-m-Y H:i" }}</td>
-                    <td>{{ transaction.status_time|date:"d-m-Y H:i" }}</td>
+                    <td>{{ transaction.init_time|date:"d-m-Y" }}</td>
+                    <td>{{ transaction.status_time|date:"d-m-Y" }}</td>
                     {% if request.session.logged_user.user %}
                         {% if transaction.status in statuses %}
                         <td>{{ transaction.status }}</td>

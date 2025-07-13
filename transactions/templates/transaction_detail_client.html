@@ -26,10 +26,10 @@
                     {% else %}
                         OFFER
                     {% endif %}
-                    {{ transaction.status_time|date:"d-m-Y H:i" }}
+                    {{ transaction.status_time|date:"d-m-Y" }}
                 {% else %}
                     {% trans "No transaction status" %}
-                    {% now "d-m-Y H:i" %}
+                    {% now "d-m-Y" %}
                 {% endif %}
             </div>
             {# <div class="col float-start ps-0"> #}
