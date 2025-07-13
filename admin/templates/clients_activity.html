@@ -62,8 +62,8 @@
                         style="cursor: pointer"
                 >
                     <td>{{ client.client_company_name }}</td>
-                    <td>{{ client.user_last_login }}</td>
-                    <td>{{ client.status_change_time }}</td>
+                    <td>{{ client.user_last_login|date:d-m-Y H:i }}</td>
+                    <td>{{ client.status_change_time|date:d-m-Y }}</td>
                 <td><button class="btn btn-outline-primary" {% if not client.transaction_uuid %}disabled{% endif %}
                     onclick="event.stopPropagation(); location.href='/transactions/admin/{{ client.transaction_uuid }}';">{% trans "transaction" %}</button></td>
                 </tr>

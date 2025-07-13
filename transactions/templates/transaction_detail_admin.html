@@ -37,10 +37,10 @@
                     <b class="text-start p-0">{% trans "Status" %}:</b>
                     {% if transaction.status %}
                         {{ transaction.status }}
-                        {{ transaction.status_time|date:"d-m-Y H:i" }}
+                        {{ transaction.status_time|date:"d-m-Y" }}
                     {% else %}
                         {% trans "No status" %}
-                        {% now "d-m-Y H:i" %}
+                        {% now "d-m-Y" %}
                     {% endif %}
                 </div>
                 <div class="row text-start ">

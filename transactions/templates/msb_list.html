@@ -26,7 +26,7 @@
                 {% for transaction in page.content %}
                     <tr>
                         <td>{{ transaction.client.clientCompanyName }}</td>
-                        <td>{{ transaction.init_time|date:"d-m-Y H:i" }}</td>
+                        <td>{{ transaction.init_time|date:"d-m-Y" }}</td>
                         <td class="text-end">{{ transaction.transport }} €</td>
                         <td class="text-end">{{ transaction.total_amount }} kg</td>
                         <td>

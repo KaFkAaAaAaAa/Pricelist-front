@@ -35,8 +35,8 @@
                     {% else %}
                     <td>{{ transaction.client_header }}</td>
                     {% endif %}
-                    <td>{{ transaction.init_time|date:"d-m-Y H:i" }}</td>
-                    <td>{{ transaction.status_time |date:"d-m-Y H:i" }}</td>
+                    <td>{{ transaction.init_time|date:"d-m-Y" }}</td>
+                    <td>{{ transaction.status_time |date:"d-m-Y" }}</td>
                     <td>{{ transaction.status }}</td>
                     <td>
                         <a class="btn btn-primary btn-sm" href="/files/{{ transaction.uuid }}/">{% trans "Files" %}</a>
