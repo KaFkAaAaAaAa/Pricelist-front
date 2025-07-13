@@ -67,7 +67,7 @@ def _make_price_list(request, headers, pattern="price_list.html"):
     if lang == "PL":
         pln_exr = _get_pln_exr()
 
-    params_str = "?lang={lang}"
+    params_str = f"?lang={lang}"
     for key, val in request.GET.items():
         if key == "group":
             val = int(val) - 1
