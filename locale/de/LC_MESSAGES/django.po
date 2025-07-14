@@ -731,7 +731,7 @@ msgstr "Lieferdatum"
 #: pdfgenerator/templates/pdf_final.html:37
 #: pdfgenerator/templates/pdf_final_admin.html:58
 msgid "Final of "
-msgstr "entgültigt vom "
+msgstr "Entgültig vom "
 
 #: pdfgenerator/templates/pdf_final.html:38
 #: pdfgenerator/templates/pdf_final_admin.html:61
