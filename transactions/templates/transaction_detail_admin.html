@@ -175,7 +175,7 @@
                                                     {{ item.accountingNumber }}
                                                 {% endif %}
                                             </td>
-                                            <td>
+                                            <td class="w-50">
                                                 <input {% if request.session.auth.group == "LOGISTICS" %}read-only{% endif %}
                                                        name="name-{{ item.uuid }}"
                                                        id="name-{{ item.uuid }}"
@@ -194,7 +194,6 @@
                                                            max="99999.9"
                                                            step="0.01"
                                                            value="{{ item.amount }}"
-                                                           lang="en"
                                                            lang="en"
                                                            onchange="calculateTotal('{{ item.uuid }}')" />
                                                     <span class="input-group-text">kg</span>

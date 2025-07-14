@@ -4,7 +4,7 @@
 }
 
 body {
-  font-family: 'roboto', sans-serif;
+  font-family: "roboto", sans-serif;
 }
 
 .card-title {
@@ -35,7 +35,7 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-input[type='number'] {
+input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
 }
@@ -44,7 +44,7 @@ input[type='number'] {
   width: 80px !important;
 }
 .w-price {
-  width: 80px !important;
+  width: 70px !important;
 }
 .w-amount {
   width: 90px !important;
