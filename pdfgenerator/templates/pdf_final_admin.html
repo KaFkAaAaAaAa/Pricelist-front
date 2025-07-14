@@ -7,9 +7,19 @@
 <title>{% block title %}{{ filename }}{% endblock %}</title>
     {% load i18n %}
     <style>
-      .watermark {
-        background-image: url("{{ images_root }}/images/logo-alku-hires.png");
-      }
+        .watermark {
+            position: fixed;
+            top: -200px;
+            left: -400px;
+            width: 200%;
+            height: 200%;
+            background-repeat: repeat;
+            background-size: 1200px auto;
+            opacity: 0.1;
+            z-index: 2;
+            transform: rotate(20deg);
+            background-image: url("{{ images_root }}/images/logo-alku-hires.png");
+        }        
     </style>
   </head>
   <body>
