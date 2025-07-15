@@ -97,7 +97,7 @@
                                 <th class="text-center">{% trans "Price" %}</th>
                                 <th class="text-end">{% trans "Total" %}</th>
                                 {% endif %}
-                                {# <!-- <th scope="col">{% trans "Comment" %}</th> --> #}
+                                <th scope="col">{% trans "Comment" %}</th>
                                 <th></th>
                                     {% if transaction.status == "PROPOSITION" %}<th></th>{% endif %}
                                 </tr>
@@ -199,6 +199,11 @@
                                             <span class="" id="total-{{ item.uuid }}">{{ item.total }}</span> €
                                         </td>
                                         {% endif %}
+                                        <input type="hidden"
+                                               name="additionalInfo-{{ item.uuid }}"
+                                               id="additionalInfo-{{ item.uuid }}"
+                                               value="{{ item.additionalInfo }}" />
+                                        <td id="comment-{{ item.uuid }}">{{ item.additionalInfo }}</td>
                                         {% if transaction.status == "PROPOSITION" %}
                                             <td>
                                                 <div class="d-grid gap-1 w-100">
@@ -209,6 +214,10 @@
                                                             data-bs-uuid="{{ item.uuid }}">
                                                         {% trans "Add comment" %}
                                                     </button>
+                                                    <a href="/transactions/{{ transaction.uuid }}/{{ item.uuid }}/add-photo/"
+                                                       class="btn btn-sm btn-outline-secondary">
+                                                        {% trans "Photos" %}: {{ item.photos_no }}
+                                                    </a>
                                                     <button class="btn btn-outline-danger btn-sm"
                                                             type="button"
                                                             onclick="deleteItem(event, '{{ item.uuid }}')">
