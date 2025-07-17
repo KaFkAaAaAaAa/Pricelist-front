@@ -139,6 +139,9 @@
                                     {% endif %}
                                     <th scope="col">{% trans "Total" %}</th>
                                     <th scope="col">{% trans "Comment" %}</th>
+                                    {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
+                                    <th></th>
+                                    {% endif %}
                                     <th></th>
                                 </tr>
                             </thead>
@@ -245,6 +248,11 @@
                                                    id="additionalInfo-{{ item.uuid }}"
                                                    value="{{ item.additionalInfo }}" />
                                             <td id="comment-{{ item.uuid }}">{{ item.additionalInfo }}</td>
+                                        {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
+                                        <td>
+                                          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                        </td>
+                                        {% endif %}
                                             <td>
                                                 <div class="d-grid gap-1 w-100">
                                                     <button class="btn btn-outline-secondary btn-sm"
@@ -278,11 +286,12 @@
                                     <td></td>
                                     <td></td>
                                     <td></td>
+                                    <td></td>
                                     <td class="fw-bold" style="white-space: nowrap;">
                                         <span class="" id="totalAmount">{{ totals.mass }}</span>
                                         kg
                                     </td>
-                                    {% if transaction.status == "FINAL" %}
+                                    {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
                                         <td class="fw-bold" style="white-space: nowrap;">
                                             <span class="" id="totalAlku"></span> kg
                                         </td>
@@ -294,6 +303,9 @@
                                         €
                                     </td>
                                     <td></td>
+                                    {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
+                                    <td></td>
+                                    {% endif %}
                                     <td></td>
                                 </tr>
                             </tfoot>
