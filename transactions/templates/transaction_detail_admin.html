@@ -26,11 +26,13 @@
                     <div class="row text-start">{{ transaction.client.clientCode }} {{ transaction.client.clientCity }}</div>
                     <div class="row text-start">{{ transaction.client.clientCountry }}</div>
                 {% else %}
+                    <label for="client-name align-start">{% trans "Client name" %}:</label>
                     <input type="text"
                            class="form-control"
                            name="client-name"
                            id="client-name"
                            value="{{ transaction.clientName }}">
+                    <label for="client-address align-start">{% trans "Client address" %}:</label>
                     <textarea class="form-control" name="client-address" id="client-address">{{ transaction.clientAddress }}</textarea>
                 {% endif %}
                 <div class="row text-start">
@@ -112,9 +114,7 @@
                         <div class="row mt-4 text-start pb-1 px-0 mx-0">
                             {# TODO: make it work with non-reg #}
                             <label for="selectClient" class="form-label">{% trans "Change the client" %}:</label>
-                            <select name="client_uuid"
-                                    id="selectClient"
-                                    class="form-select w-50"></select>
+                            <select name="client_uuid" id="selectClient" class="form-select w-50"></select>
                         </div>
                         <button type="button"
                                 data-bs-toggle="modal"
@@ -504,29 +504,32 @@
                 <td>
                     <div class="d-grid gap-1">
                         <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-target="#commentModal" data-bs-toggle="modal" data-bs-uuid="${uuid}">{% trans "Add comment" %}</button>
-                        <button class="btn btn-outline-danger btn-sm" onclick="deleteItem(event, '${uuid}')");" >{% trans "Delete" %}</button> </div> </td> `;
-              document.querySelector("table tbody").appendChild(newRow);
-              uuids.push(uuid);
-              calculateTotal(uuid);
-              saveButton.style.display = "inline-block";
-              saveButton.style.display = "inline-block";
-              showSuccessAlert();
-          }
+                        <button class="btn btn-outline-danger btn-sm" onclick="deleteItem(event, '${uuid}')");" >{% trans "Delete" %}</button> 
+                    </div>
+              </td> `;
+                    document.querySelector("table tbody").appendChild(newRow);
+            uuids.push(uuid);
+            calculateTotal(uuid);
+            saveButton.style.display = "inline-block";
+            saveButton.style.display = "inline-block";
+            showSuccessAlert();
+        }
           function deleteItem(event, uuid) {
               event.stopPropagation();
               if (confirm('{% trans "Are you sure you want to delete this item" %}?')) {
                   let itemElement = document.getElementById(uuid);
                   if (itemElement) { itemElement.remove(); }
-                  uuids = uuids.filter(itemUuid => itemUuid !== uuid);
+                  uuids = uuids.filter(
+                      itemUuid => itemUuid !== uuid);
               }
               saveButton.style.display = "inline-block";
           }
-          function calculateTotal(uuidChanged) { 
+          function calculateTotal(uuidChanged) {
               let allTotalPrice = 0.0, allTotalAmount = 0.0, allTotalAlku = 0.0;
               {% if transaction.status == "PROGNOSE" %}
               let totalWithTransport = 0.0, transportPerKg = 0.0, transportPercent = 0.0;
-              let transport = parseFloat(document.getElementById("transport").value)
-              {% endif %}
+              let transport = parseFloat(document.getElementById("transport").value) || 0;
+              {% endif %} 
               let amount = parseFloat(document.getElementById(`amount-${uuidChanged}`).value) || 0;
               let pricePerKg = parseFloat(document.getElementById(`price-${uuidChanged}`).value) || 0;
               {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
@@ -535,15 +538,14 @@
               {% else %}
               document.getElementById(`total-${uuidChanged}`).textContent = (amount * pricePerKg).toFixed(2);
               {% endif %}
-              uuids.forEach(uuid => {
-                  let amount = parseFloat(document.getElementById(`amount-${uuid}`).value) || 0;
+              uuids.forEach(uuid => { let amount = parseFloat(document.getElementById(`amount-${uuid}`).value) || 0;
                   {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
                   let alku = parseFloat(document.getElementById(`alku-${uuid}`).value) || 0;
                   {% endif %}
                   let pricePerKg = parseFloat(document.getElementById(`price-${uuid}`).value) || 0;
                   {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
                   allTotalPrice += alku * pricePerKg;
-                  allTotalAlku += alku ;
+                  allTotalAlku += alku;
                   {% else %}
                   allTotalPrice += amount * pricePerKg;
                   {% endif %}
@@ -553,12 +555,14 @@
               document.getElementById(`totalAmount`).textContent = allTotalAmount.toFixed(1);
               {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
               document.getElementById(`totalAlku`).textContent = allTotalAlku.toFixed(1);
-              {% endif %} {% if transaction.status == "PROGNOSE" %} 
+              {% endif %}
+              {% if transaction.status == "PROGNOSE" %}
               transportPerKg = transport / allTotalAmount;
               transportPercent = transport / allTotalPrice;
-              uuids.forEach(uuid => {
-                  document.getElementById(`priceWithTransport-${uuidChanged}`).textContent = (pricePerKg + pricePerKg * transportPercent).toFixed(2);
-              });
+              uuids.forEach(
+                  uuid => {
+                      document.getElementById(`priceWithTransport-${uuidChanged}`).textContent = (pricePerKg + pricePerKg * transportPercent).toFixed(2);
+                  });
               document.getElementById(`totalTransportIncluded`).textContent = (allTotalPrice + transport).toFixed(2);
               document.getElementById(`transportPerKg`).textContent = transportPerKg.toFixed(2);
               document.getElementById(`transportPercent`).textContent = (transportPercent * 100).toFixed(2);
@@ -580,7 +584,10 @@
               platesArray.push(value);
               updateHiddenInput();
               const listItem = document.createElement("div");
-              listItem.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center", "ps-2");
+              listItem.classList.add(
+                  "list-group-item", "d-flex",
+                  "justify-content-between", "align-items-center",
+                  "ps-2");
               const textSpan = document.createElement("span");
               textSpan.textContent = value;
               textSpan.classList.add("fw-bold");
@@ -598,27 +605,26 @@
               listContainer.appendChild(listItem);
               inputField.value = "";
           }
-
           addButton.addEventListener("click", function (event) {
               event.preventDefault();
               const value = inputField.value.trim();
               if (value) {
                   addPlate(value);
-              }
+              } 
           });
           {% endif %}
           let uuids = [{% for item in transaction.itemsOrdered %}"{{ item.uuid }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
           const commentModal = document.getElementById('commentModal');
           let uuid = null;
           if (commentModal) {
-              commentModal.addEventListener('show.bs.modal', event => { 
+              commentModal.addEventListener('show.bs.modal', event => {
                   const button = event.relatedTarget;
                   uuid = button.getAttribute('data-bs-uuid');
                   const inputComment = document.getElementById(`additionalInfo-${uuid}`);
                   const commentInput = document.getElementById('comment');
                   if (inputComment) {
-                      commentInput.value = inputComment.value;
-                  } 
+                      commentInput.value = inputComment.value; 
+                  }
               });
           }
           const modalSaveButton = document.getElementById('modalSaveButton');
@@ -628,7 +634,9 @@
               const inputComment = document.getElementById(`additionalInfo-${uuid}`);
               if (inputComment) {
                   inputComment.value = document.getElementById('comment').value;
-                  comment = document.getElementById(`comment-${uuid}`) // TODO: add the link if (comment) comment.textContent = inputComment.value;
+                  comment = document.getElementById(`comment-${uuid}`) 
+                  // TODO: add the link?
+                  if (comment) comment.textContent = inputComment.value;
                   saveButton.style.display = "inline-block";
               }
               const modal = bootstrap.Modal.getInstance(commentModal);
@@ -661,19 +669,20 @@
                       event.preventDefault();
                       document.getElementById("searchBtn").click();
                   }
-              }
+              } 
           });
           document.getElementById("searchBtn").addEventListener("click", function (event) {
               event.preventDefault();
               let query = document.getElementById("searchQuery").value.trim();
               if (!query) url = "/?f=json";
-              else url = `/?search=${query}&f=json`
-              fetch(url).then(response => response.json()).then(data => {
-                  let resultsContainer = document.getElementById("searchResults");
-                  resultsContainer.innerHTML = "";
-                  if (data.items.length === 0) {
-                      resultsContainer.innerHTML = "<p>{% trans "No items found" %}.</p>";
-                      return;
+              else url = `/?search=${query}&f=json`;
+              fetch(url)
+                  .then(response => response.json())
+                  .then(data => {
+                      let resultsContainer = document.getElementById("searchResults");
+                      resultsContainer.innerHTML = "";
+                      if (data.items.length === 0) { resultsContainer.innerHTML = "<p>{% trans "No items found" %}.</p>";
+                          return;
                   }
                   let resultList = document.createElement("ul");
                   resultList.classList.add("list-group");
