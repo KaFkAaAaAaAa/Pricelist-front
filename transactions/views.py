@@ -199,7 +199,7 @@ def _send_offer_to_api_admin(
 ):
     headers = _get_headers(request)
     client_uuid = None
-    if request.POST["client"] != "null":
+    if "client" in request.POST.keys() and request.POST["client"] != "null":
         for client in Page(client_auths["clients"]).content:
             if client["clientCompanyName"] == request.POST["client"]:
                 client_uuid = client["id"]
