@@ -38,9 +38,9 @@
             <div class="dropdown mx-1">
               <button class="btn btn-secondary dropdown-toggle" type="button" id="groupDropdown" data-bs-toggle="dropdown">
                 {% if 'group' in request.GET %}
-                  Group: {{ request.GET.group }}
+                  {% trans "Group" %}: {{ request.GET.group }}
                 {% else %}
-                  Select Group
+                  {% trans "Select Group" %}
                 {% endif %}
               </button>
               <ul class="dropdown-menu">

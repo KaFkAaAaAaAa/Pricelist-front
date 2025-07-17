@@ -1,5 +1,8 @@
 let skus = JSON.parse(document.getElementById('skus').textContent);
 let isAdmin = JSON.parse(document.getElementById('isAdmin').textContent);
+let typeInText = JSON.parse(
+  document.getElementById('type-in-text').textContent
+);
 
 function isComments(commentColumn) {
   let out = false;
@@ -59,6 +62,10 @@ function toggleClientTextboxVisibility() {
   if (textareaDiv.style.display == 'none') dispStyle = '';
   textareaDiv.style.display = dispStyle;
 }
+
+$('#client').on('change', function (e) {
+  saveButton.style.display = 'inline-block';
+});
 
 if (clientSelect !== null) {
   clientSelect.addEventListener('change', function () {
@@ -334,59 +341,69 @@ document
       })
       .catch((error) => console.error('Error fetching items: ' + error));
   });
+const defaultValue = document.getElementById('defaultValue');
 
+const defaultOption = { id: 1, text: defaultValue };
+
+const option = new Option(defaultOption.text, defaultOption.id, true, true);
 $(document).ready(function () {
-  $('#select-client').select2({
+  // Initialize Select2
+  const $clientSelect = $('#client').select2({
+    allowClear: true,
+    width: '300px',
     ajax: {
-      url: '/clients/admin?format=json&query=query',
+      url: '/admin/clients/',
       dataType: 'json',
       delay: 250,
-      processResults: function (data) {
+      data: function (params) {
         return {
-          results: data.map(function (item) {
-            return {
-              id: item.id,
-              text: item.name,
-            };
-          }),
+          term: params.term,
+          _type: 'query',
         };
       },
-      cache: true,
+      processResults: function (data) {
+        // Add your static "Type in client data" option
+        var results = data.map(function (item) {
+          return {
+            id: item.id || item.user_id,
+            text: item.name || item.client_company_name,
+          };
+        });
+
+        results.unshift({
+          id: 'null',
+          text: 'Type in client data',
+        });
+
+        return { results: results };
+      },
     },
   });
+
+  // Get DOM elements
+  const textareaDiv = document.getElementById('textareaDiv');
+  const saveButton = document.getElementById('saveButton');
+
+  // Handle change event
+  $clientSelect.on('change', function (e) {
+    // Show save button on any change
+    if (saveButton) saveButton.style.display = 'inline-block';
+
+    // Toggle textarea visibility
+    if (textareaDiv) {
+      textareaDiv.style.display = this.value === 'null' ? 'block' : 'none';
+    }
+  });
+
+  // Initialize visibility state
+  if (textareaDiv) {
+    textareaDiv.style.display =
+      $clientSelect.val() === 'null' ? 'block' : 'none';
+  }
+  if (saveButton) {
+    saveButton.style.display = 'none'; // Initially hidden
+  }
 });
-// $("#select-client").select({
-//   ajax: {
-//     url: "/clients/admin",
-//     dataType: "json",
-//     delay: 250,
-//     data: function (params) {
-//       return {
-//         format: "json",
-//         query: params.term, // user's input
-//       };
-//     },
-//     processResults: function (data) {
-//       return {
-//         results: data.map(function (item) {
-//           return {
-//             id: item.id,
-//             text: item.name,
-//           };
-//         }),
-//       };
-//     },
-//     cache: true,
-//   },
-//   placeholder: "Select a client",
-//   minimumInputLength: 1,
-// });
-
-const defaultValue = document.getElementById('defaultValue');
-const defaultOption = { id: 1, text: defaultValue };
-const option = new Option(defaultOption.text, defaultOption.id, true, true);
-$('#select-client').append(option).trigger('change');
-
 window.onload = () => {
   skus.forEach((sku) => calculateTotal(sku));
   checkSkuList();
