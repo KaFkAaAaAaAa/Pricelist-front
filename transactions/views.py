@@ -199,9 +199,9 @@ def _send_offer_to_api_admin(
 ):
     headers = _get_headers(request)
     client_uuid = None
-    if "client" in request.POST.keys() and request.POST["client"] != "null":
+    if "selectClient" in request.POST.keys() and request.POST["selectClient"] != "null":
         for client in Page(client_auths["clients"]).content:
-            if client["clientCompanyName"] == request.POST["client"]:
+            if client["id"] == request.POST["selectClient"]:
                 client_uuid = client["id"]
     payload = {
         "description": request.POST["transaction_description"],

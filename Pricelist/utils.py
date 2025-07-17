@@ -6,10 +6,8 @@ from decimal import Decimal, getcontext
 from functools import wraps
 from http.client import INTERNAL_SERVER_ERROR
 from json import JSONDecodeError
-from math import floor
 from pathlib import Path
 from typing import Union
-from uuid import uuid4
 
 import requests
 from django.contrib import messages
@@ -28,9 +26,7 @@ from Pricelist.settings import (
     API_BASE_URL,
     CLIENT_GROUPS,
     GROUPS_ROMAN,
-    LOGGING_CONFIG,
     SUPPORT_GROUPS,
-    TRANSACTION_ROOT,
 )
 
 RESPONSE_FORBIDDEN = HttpResponseForbidden(
