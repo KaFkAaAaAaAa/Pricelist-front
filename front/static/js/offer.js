@@ -182,7 +182,7 @@ function addItemToTransaction(sku, name, price) {
         <div class="input-group">
         <input id="price-${sku}" name="price-${sku}" 
                 type="number"
-            value="${price}" min="0.01" step="0.01" required
+            value="${price}" min="-999.99" max="999.99" step="0.01" required
             class="form-control ms-auto separator-input" style="max-width: 100px; margin: 0;"
             onchange="calculateTotal('${sku}')"><span class="input-group-text me-auto">€<span>
         </div>
