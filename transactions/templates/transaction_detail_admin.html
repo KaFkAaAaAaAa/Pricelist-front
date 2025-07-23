@@ -559,21 +559,21 @@
               let allTotalPrice = 0.0, allTotalAmount = 0.0, allTotalAlku = 0.0;
               {% if transaction.status == "PROGNOSE" %}
               let totalWithTransport = 0.0, transportPerKg = 0.0, transportPercent = 0.0;
-              let transport = parseFloat(document.getElementById("transport").value) || 0;
+              let transport = parseFloat(document.getElementById("transport").value.replace(",", "." )) || 0;
               {% endif %} 
-              let amount = parseFloat(document.getElementById(`amount-${uuidChanged}`).value) || 0;
-              let pricePerKg = parseFloat(document.getElementById(`price-${uuidChanged}`).value) || 0;
+              let amount = parseFloat(document.getElementById(`amount-${uuidChanged}`).value.replace(",", "." )) || 0;
+              let pricePerKg = parseFloat(document.getElementById(`price-${uuidChanged}`).value.replace(",", "." )) || 0;
               {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
-              let alku = parseFloat(document.getElementById(`alku-${uuidChanged}`).value) || 0;
+              let alku = parseFloat(document.getElementById(`alku-${uuidChanged}`).value.replace(",", "." )) || 0;
               document.getElementById(`total-${uuidChanged}`).textContent = (alku * pricePerKg).toFixed(2);
               {% else %}
               document.getElementById(`total-${uuidChanged}`).textContent = (amount * pricePerKg).toFixed(2);
               {% endif %}
-              uuids.forEach(uuid => { let amount = parseFloat(document.getElementById(`amount-${uuid}`).value) || 0;
+              uuids.forEach(uuid => { let amount = parseFloat(document.getElementById(`amount-${uuid}`).value.replace(",", "." )) || 0;
                   {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
-                  let alku = parseFloat(document.getElementById(`alku-${uuid}`).value) || 0;
+                  let alku = parseFloat(document.getElementById(`alku-${uuid}`).value.replace(",", "." )) || 0;
                   {% endif %}
-                  let pricePerKg = parseFloat(document.getElementById(`price-${uuid}`).value) || 0;
+                  let pricePerKg = parseFloat(document.getElementById(`price-${uuid}`).value.replace(",", "." )) || 0;
                   {% if transaction.status == "FINAL" or transaction.status == "FINAL_C" %}
                   allTotalPrice += alku * pricePerKg;
                   allTotalAlku += alku;

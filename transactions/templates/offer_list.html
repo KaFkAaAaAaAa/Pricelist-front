@@ -100,7 +100,7 @@
 
             inputs.forEach(input => {
                 if (input.name !== "csrfmiddlewaretoken") {
-                    let value = parseFloat(input.value);
+                    let value = parseFloat(input.value.replace(",", "." ));
                     if (value === 0 || isNaN(value)) {
                         input.remove();
                     } else {

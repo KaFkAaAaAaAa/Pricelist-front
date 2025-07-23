@@ -58,8 +58,8 @@
 
     <script>
         function updateTotal() {
-            let amount = parseFloat(document.getElementById("amount").value) || 0;
-            let price = parseFloat(document.getElementById("price").textContent) || 0;
+            let amount = parseFloat(document.getElementById("amount").value.replace(",", "." )) || 0;
+            let price = parseFloat(document.getElementById("price").textContent.replace(",", "." )) || 0;
             document.getElementById("total").textContent = (amount * price).toFixed(2);
         }
 

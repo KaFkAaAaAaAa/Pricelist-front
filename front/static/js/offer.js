@@ -131,18 +131,26 @@ function calculateTotal(skuChanged) {
   let allTotalPrice = 0.0,
     allTotalAmount = 0.0;
   let amount =
-    parseFloat(document.getElementById(`amount-${skuChanged}`).value) || 0;
+    parseFloat(
+      document.getElementById(`amount-${skuChanged}`).value.replace(",", "."),
+    ) || 0;
   let pricePerKg =
-    parseFloat(document.getElementById(`price-${skuChanged}`).value) || 0;
+    parseFloat(
+      document.getElementById(`price-${skuChanged}`).value.replace(",", "."),
+    ) || 0;
   document.getElementById(`totalPrice-${skuChanged}`).textContent = (
     amount * pricePerKg
   ).toFixed(2);
 
   skus.forEach((sku) => {
     let amount =
-      parseFloat(document.getElementById(`amount-${sku}`).value) || 0;
+      parseFloat(
+        document.getElementById(`amount-${sku}`).value.replace(",", "."),
+      ) || 0;
     let pricePerKg =
-      parseFloat(document.getElementById(`price-${sku}`).value) || 0;
+      parseFloat(
+        document.getElementById(`price-${sku}`).value.replace(",", "."),
+      ) || 0;
     allTotalPrice += amount * pricePerKg;
     allTotalAmount += amount;
   });

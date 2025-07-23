@@ -144,12 +144,12 @@
 
         function calculateTotal(uuidChanged) {
             let allTotalPrice = 0.0, allTotalAmount = 0.0, allTotalAlku = 0.0;
-            let amount = parseFloat(document.getElementById(`amount-${uuidChanged}`).value) || 0;
-            let alku = parseFloat(document.getElementById(`alku-${uuidChanged}`).value) || 0;
+            let amount = parseFloat(document.getElementById(`amount-${uuidChanged}`).value.replace(",", "." )) || 0;
+            let alku = parseFloat(document.getElementById(`alku-${uuidChanged}`).value.replace(",", "." )) || 0;
 
             uuids.forEach(uuid => {
-                let amount = parseFloat(document.getElementById(`amount-${uuid}`).value) || 0;
-                let alku = parseFloat(document.getElementById(`alku-${uuid}`).value) || 0;
+                let amount = parseFloat(document.getElementById(`amount-${uuid}`).value.replace(",", "." )) || 0;
+                let alku = parseFloat(document.getElementById(`alku-${uuid}`).value.replace(",", "." )) || 0;
                 allTotalAlku += alku;
                 allTotalAmount += amount;
             });
