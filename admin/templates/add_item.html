@@ -37,46 +37,46 @@
             <div class="row mb-3">
                 <div class="col">
                     <label for="itemPrice-1" class="form-label">{% trans "Price" %} 1</label>
-                    <input
-                            type="number"
-                            step="0.01"
-                            class="form-control separator-input"
-                            id="itemPrice-1"
-                            name="itemPrice-1"
-                            value="{{ item.itemPrice.0 }}"
+                    <input type="text"
+                           pattern="-?[0-9]{1,5}([.,][0-9]{1,2})?"
+                           inputmode="numeric"
+                           class="form-control separator-input"
+                           id="itemPrice-1"
+                           name="itemPrice-1"
+                           value="{{ item.itemPrice.0 }}"
                     />
                 </div>
                 <div class="col">
                     <label for="itemPrice-2" class="form-label">{% trans "Price" %} 2</label>
-                    <input
-                            type="number"
-                            step="0.01"
-                            class="form-control separator-input"
-                            id="itemPrice-2"
-                            name="itemPrice-2"
-                            value="{{ item.itemPrice.1 }}"
+                    <input type="text"
+                           pattern="-?[0-9]{1,5}([.,][0-9]{1,2})?"
+                           inputmode="numeric"
+                           class="form-control separator-input"
+                           id="itemPrice-2"
+                           name="itemPrice-2"
+                           value="{{ item.itemPrice.1 }}"
                     />
                 </div>
                 <div class="col">
                     <label for="itemPrice-3" class="form-label">{% trans "Price" %} 3</label>
-                    <input
-                            type="number"
-                            step="0.01"
-                            class="form-control separator-input"
-                            id="itemPrice-3"
-                            name="itemPrice-3"
-                            value="{{ item.itemPrice.2 }}"
+                    <input type="text"
+                           pattern="-?[0-9]{1,5}([.,][0-9]{1,2})?"
+                           inputmode="numeric"
+                           class="form-control separator-input"
+                           id="itemPrice-3"
+                           name="itemPrice-3"
+                           value="{{ item.itemPrice.2 }}"
                     />
                 </div>
                 <div class="col">
                     <label for="itemPrice-4" class="form-label">{% trans "Price" %} 4</label>
-                    <input
-                            type="number"
-                            step="0.01"
-                            class="form-control separator-input"
-                            id="itemPrice-4"
-                            name="itemPrice-4"
-                            value="{{ item.itemPrice.3 }}"
+                    <input type="text"
+                           pattern="-?[0-9]{1,5}([.,][0-9]{1,2})?"
+                           inputmode="numeric"
+                           class="form-control separator-input"
+                           id="itemPrice-4"
+                           name="itemPrice-4"
+                           value="{{ item.itemPrice.3 }}"
                     />
                 </div>
             </div>
