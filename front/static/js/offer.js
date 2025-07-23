@@ -181,8 +181,10 @@ function addItemToTransaction(sku, name, price) {
     priceField = `
         <div class="input-group">
         <input id="price-${sku}" name="price-${sku}" 
-                type="number"
-            value="${price}" min="-999.99" max="999.99" step="0.01" required
+               type="text"
+               pattern="-?[0-9]{1,5}([.,][0-9]{1,2})?"
+               inputmode="numeric"
+            value="${price}" required
             class="form-control ms-auto separator-input" style="max-width: 100px; margin: 0;"
             onchange="calculateTotal('${sku}')"><span class="input-group-text me-auto">€<span>
         </div>
@@ -190,7 +192,7 @@ function addItemToTransaction(sku, name, price) {
   } else {
     priceField = `
         <input id="price-${sku}" name="price-${sku}" 
-            type="hidden" value="${price}" min="0.01" step="0.01"
+            type="hidden" value="${price}"
             onchange="calculateTotal('${sku}')" required />
         <div class="ps-2 text-start">${price} €</div>
 
@@ -204,8 +206,9 @@ function addItemToTransaction(sku, name, price) {
         <td>${nameField}</td>
         <td>
             <div class="input-group text-center" style="margin: 0 auto;">
-                <input id="amount-${sku}" name="amount-${sku}" type="number"
-                       value="0.0" min="0.01" step="0.01"
+                <input id="amount-${sku}" name="amount-${sku}" type="text"
+                       pattern="[0-9]{1,5}([.,][0-9]{1,2})?"
+                       inputmode="numeric"
                        class="form-control ms-auto separator-input" style="max-width: 100px;"
                        onchange="calculateTotal('${sku}')">
                 <span class="input-group-text me-auto">kg<span>
