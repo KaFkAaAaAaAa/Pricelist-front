@@ -65,7 +65,13 @@
                 {% for price in item.itemPrice %}
                 <div class="col">
                     <label for="itemPrice-{{ forloop.counter }}" class="form-label">Price {{ forloop.counter }}</label>
-                    <input type="number" step="0.01" class="form-control separator-input" id="itemPrice-{{ forloop.counter }}" name="itemPrice-{{ forloop.counter }}" value="{{ price }}">
+                    <input type="text"
+                           class="form-control separator-input"
+                           id="itemPrice-{{ forloop.counter }}"
+                           name="itemPrice-{{ forloop.counter }}"
+                           value="{{ price }}"
+                           pattern="-?[0-9]{1,5}([.,][0-9]{1,2})?"
+                           inputmode="numeric" />
                 </div>
                 {% endfor %}
             </div>

@@ -7,9 +7,19 @@
 <title>{% block title %}{{ filename }}{% endblock %}</title>
     {% load i18n %}
     <style>
-      .watermark {
-        background-image: url("{{ images_root }}/images/logo-alku-hires.png");
-      }
+        .watermark {
+            position: fixed;
+            top: -200px;
+            left: -400px;
+            width: 200%;
+            height: 200%;
+            background-repeat: repeat;
+            background-size: 1200px auto;
+            opacity: 0.1;
+            z-index: 2;
+            transform: rotate(20deg);
+            background-image: url("{{ images_root }}/images/logo-alku-hires.png");
+        }        
     </style>
   </head>
   <body>
@@ -55,10 +65,10 @@
       <div class="text-end mt-4">
         <div class="text-end">
           <h4 class="fw-semibold">
-            {% trans "Final of " %}{{ date|date:"d-m-Y H:i" }}
+            {% trans "Final of " %}{{ date|date:"d-m-Y" }}
           </h4>
           <p class="fw-semibold text-def">
-            {% trans "To prognose of " %}{{ prognose_date|date:"d-m-Y H:i" }}
+            {% trans "To prognose of " %}{{ prognose_date|date:"d-m-Y" }}
           </p>
         </div>
       </div>

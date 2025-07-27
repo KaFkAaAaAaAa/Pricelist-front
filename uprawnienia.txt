@@ -48,8 +48,10 @@ nowe:
 | | wyszukiwarka klientów
 | | total with transport z wydruku wywal i spróbuj scieśnić kolumny
 | | zamień w wydruku alku na weight
+| | zmiana na finał - dodać etap przejściowy
+    | | dodać fajkę że ustalone
 
-| | wydruk cennika -> przycisk drukuj w tym wydruk częściowy - bez kategorii, ewentualnie obiektów, w zależności od zalogowanego handlowca/administratora-handlowca -> numer telefonu, email
+|x| wydruk cennika -> przycisk drukuj w tym wydruk częściowy - bez kategorii, ewentualnie obiektów, w zależności od zalogowanego handlowca/administratora-handlowca -> numer telefonu, email
 or
 |x| wydruk cennika -> zrób stronę + znak wodny
 |x| klient dodawanie zdjęć do zapytania i rozliczania - folder

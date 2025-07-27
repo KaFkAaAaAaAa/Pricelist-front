@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-26 19:05+0000\n"
+"POT-Creation-Date: 2025-07-16 23:09+0000\n"
 "PO-Revision-Date: 2025-02-05 00:32+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -73,7 +73,7 @@ msgstr "Wprowadź swój numer telefonu"
 #: Pricelist/forms.py:64 admin/templates/new_users.html:35
 #: transactions/templates/msb_list.html:18
 #: transactions/templates/transaction_list.html:31
-#: transactions/templates/transaction_status_list.html:15
+#: transactions/templates/transaction_status_list.html:18
 msgid "Company name"
 msgstr "Nazwa firmy:"
 
@@ -139,17 +139,17 @@ msgstr "Polski"
 msgid "Deutsch"
 msgstr "Niemiecki"
 
-#: Pricelist/utils.py:30
+#: Pricelist/utils.py:37
 msgid "You do not have access to that page"
 msgstr "Nie masz dostępu do tej strony"
 
-#: Pricelist/utils.py:195
+#: Pricelist/utils.py:237
 msgid "User not activated yet, wait for information on your email"
 msgstr ""
 "Użytkownik nie został jeszcze aktywowany, poczekaj na informacje na swoim e-"
 "mailu"
 
-#: Pricelist/views.py:64 Pricelist/views.py:516
+#: Pricelist/views.py:64 Pricelist/views.py:524
 msgid "Internal server error"
 msgstr "Wewnętrzny błąd serwera"
 
@@ -183,18 +183,18 @@ msgstr "Brak artykułów w zamówieniu"
 msgid "Error! Could not fetch users"
 msgstr "Błąd! Nie udało się pobrać użytkowników"
 
-#: Pricelist/views.py:293 Pricelist/views.py:662
+#: Pricelist/views.py:293 Pricelist/views.py:670
 #, fuzzy
 #| msgid "Registration successful"
 msgid "Password change successful"
 msgstr "Rejestracja powiodła się"
 
-#: Pricelist/views.py:295 Pricelist/views.py:668 items/views.py:288
-#: items/views.py:443
+#: Pricelist/views.py:295 Pricelist/views.py:676 items/views.py:311
+#: items/views.py:466
 msgid "API error"
 msgstr "Błąd API"
 
-#: Pricelist/views.py:297 Pricelist/views.py:640 Pricelist/views.py:670
+#: Pricelist/views.py:297 Pricelist/views.py:648 Pricelist/views.py:678
 msgid "Passwords are invalid"
 msgstr "Hasła są nieprawidłowe"
 
@@ -210,66 +210,66 @@ msgstr "Nie odnaleziono artykułu..."
 msgid "My clients"
 msgstr "Moi klienci"
 
-#: Pricelist/views.py:372 admin/templates/admin_dashboard.html:13
+#: Pricelist/views.py:380 admin/templates/admin_dashboard.html:13
 #: admin/templates/admin_list.html:4
 msgid "New clients"
 msgstr "Nowi klienci"
 
-#: Pricelist/views.py:416 Pricelist/views.py:449
+#: Pricelist/views.py:424 Pricelist/views.py:457
 msgid "API error!"
 msgstr "Błąd API!"
 
-#: Pricelist/views.py:492 Pricelist/views.py:507
+#: Pricelist/views.py:500 Pricelist/views.py:515
 #, fuzzy
 #| msgid "User Menu"
 msgid "User not found"
 msgstr "Menu użytkownika"
 
-#: Pricelist/views.py:500 admin/templates/edit_client.html:118
+#: Pricelist/views.py:508 admin/templates/edit_client.html:118
 msgid "Client not found."
 msgstr "Nie odnaleziono klienta."
 
-#: Pricelist/views.py:514
+#: Pricelist/views.py:522
 #, fuzzy
 #| msgid "Item added successfully!"
 msgid "Client deleted successfully"
 msgstr "Przedmiot dodany pomyślnie!"
 
-#: Pricelist/views.py:561
+#: Pricelist/views.py:569
 msgid "your "
 msgstr "Twój "
 
-#: Pricelist/views.py:609
+#: Pricelist/views.py:617
 #, fuzzy
 #| msgid "Item added successfully!"
 msgid "Client edited successfully"
 msgstr "Przedmiot dodany pomyślnie!"
 
-#: Pricelist/views.py:611
+#: Pricelist/views.py:619
 msgid "Internal server error!"
 msgstr "Wewnętrzny błąd serwera!"
 
-#: Pricelist/views.py:638
+#: Pricelist/views.py:646
 #, fuzzy
 #| msgid "Registration successful"
 msgid "Password change successful!"
 msgstr "Rejestracja powiodła się"
 
-#: Pricelist/views.py:665
+#: Pricelist/views.py:673
 #, fuzzy
 #| msgid "Invalid email"
 msgid "Invalid token"
 msgstr "Nieprawidłowy adres e-mail"
 
-#: Pricelist/views.py:679
+#: Pricelist/views.py:687
 msgid "Invalid email"
 msgstr "Nieprawidłowy adres e-mail"
 
-#: Pricelist/views.py:681
+#: Pricelist/views.py:689
 msgid "Message sent, check your spam folder"
 msgstr "Wiadomość została wysłana, sprawdź folder ze spamem"
 
-#: Pricelist/views.py:684
+#: Pricelist/views.py:692
 msgid "Unknown error"
 msgstr "Nieznany błąd"
 
@@ -279,12 +279,12 @@ msgstr "Aktywuj użytkownika"
 
 #: admin/templates/add_item.html:4 admin/templates/add_item.html:8
 #: transactions/templates/create_final.html:27
-#: transactions/templates/offer.html:44 transactions/templates/offer.html:187
+#: transactions/templates/offer.html:46 transactions/templates/offer.html:189
 #: transactions/templates/prognose.html:26
-#: transactions/templates/transaction_detail_admin.html:99
-#: transactions/templates/transaction_detail_admin.html:290
-#: transactions/templates/transaction_detail_client.html:68
-#: transactions/templates/transaction_detail_client.html:240
+#: transactions/templates/transaction_detail_admin.html:124
+#: transactions/templates/transaction_detail_admin.html:370
+#: transactions/templates/transaction_detail_client.html:81
+#: transactions/templates/transaction_detail_client.html:308
 msgid "Add item"
 msgstr "Dodaj artykuł"
 
@@ -296,30 +296,31 @@ msgstr "Ceny"
 
 #: admin/templates/add_item.html:39 admin/templates/add_item.html:50
 #: admin/templates/add_item.html:61 admin/templates/add_item.html:72
-#: pdfgenerator/templates/pdf_final.html:48
-#: pdfgenerator/templates/pdf_final_admin.html:72
-#: pdfgenerator/templates/pdf_offer.html:46
-#: pdfgenerator/templates/pdf_prognose.html:69 templates/item_detail.html:24
+#: pdfgenerator/templates/pdf_final.html:58
+#: pdfgenerator/templates/pdf_final_admin.html:83
+#: pdfgenerator/templates/pdf_offer.html:56
+#: pdfgenerator/templates/pdf_prognose.html:83 templates/item_detail.html:24
 #: transactions/forms.py:42 transactions/templates/create_final.html:44
 #: transactions/templates/edit_item_offer.html:35
-#: transactions/templates/offer.html:53
+#: transactions/templates/offer.html:55
 #: transactions/templates/order_edit.html:28
 #: transactions/templates/prognose.html:50
-#: transactions/templates/transaction_detail_admin.html:65
-#: transactions/templates/transaction_detail_admin.html:114
-#: transactions/templates/transaction_detail_client.html:83
+#: transactions/templates/transaction_detail_admin.html:82
+#: transactions/templates/transaction_detail_admin.html:138
+#: transactions/templates/transaction_detail_client.html:97
 msgid "Price"
 msgstr "Cena"
 
 #: admin/templates/add_item.html:84 admin/templates/client_list.html:26
 #: admin/templates/item_list.html:27 transactions/forms.py:34
 #: transactions/forms.py:37 transactions/templates/edit_item_offer.html:16
-#: transactions/templates/transaction_detail_client.html:78
+#: transactions/templates/transaction_detail_client.html:91
+#: transactions/templates/transaction_detail_logistics.html:32
 msgid "Name"
 msgstr "Nazwa"
 
 #: admin/templates/add_item.html:137 admin/templates/edit_item.html:86
-#: templates/item_detail.html:63
+#: templates/item_detail.html:79
 msgid "Description"
 msgstr "Opis"
 
@@ -340,7 +341,7 @@ msgstr "Panel Administracyjny"
 #: templates/change_password.html:33 templates/register.html:72
 #: templates/reset_password.html:20
 #: transactions/templates/edit_item_offer.html:53
-#: transactions/templates/offer.html:136
+#: transactions/templates/offer.html:138
 #: transactions/templates/offer_list.html:26
 msgid "Back"
 msgstr "Wstecz"
@@ -362,10 +363,8 @@ msgid "My Clients"
 msgstr "Moi klienci"
 
 #: admin/templates/admin_dashboard.html:16
-#, fuzzy
-#| msgid "Client List"
 msgid "Clients activity"
-msgstr "Lista klientów"
+msgstr "Aktywność klientów"
 
 #: admin/templates/admin_dashboard.html:17
 #: admin/templates/client_detail.html:29 admin/templates/client_detail.html:31
@@ -400,7 +399,7 @@ msgstr "Lista transakcji"
 
 #: admin/templates/admin_dashboard.html:54
 #: admin/templates/client_detail.html:14 admin/templates/client_list.html:25
-#: admin/templates/clients_activity.html:23 admin/templates/edit_client.html:51
+#: admin/templates/clients_activity.html:24 admin/templates/edit_client.html:51
 #: templates/profile.html:66
 msgid "Company Name"
 msgstr "Nazwa firmy"
@@ -418,8 +417,9 @@ msgstr "Nazwisko"
 #: admin/templates/admin_dashboard.html:57
 #: transactions/templates/create_final.html:21
 #: transactions/templates/prognose.html:17
-#: transactions/templates/transaction_detail_admin.html:35
-#: transactions/templates/transaction_detail_client.html:16
+#: transactions/templates/transaction_detail_admin.html:37
+#: transactions/templates/transaction_detail_client.html:18
+#: transactions/templates/transaction_detail_logistics.html:18
 msgid "Status"
 msgstr "Status"
 
@@ -444,6 +444,7 @@ msgstr "Powrót do listy"
 #: admin/templates/admin_images.html:22 admin/templates/upload_image.html:23
 #: file_manager/templates/file_browser.html:76
 #: file_manager/templates/upload_file.html:15
+#: transactions/templates/add_photo.html:21
 #, fuzzy
 #| msgid "Upload file"
 msgid "Upload"
@@ -459,14 +460,14 @@ msgstr "Lista nowych użytkowników"
 
 #: admin/templates/admin_list.html:15 admin/templates/client_list.html:8
 #: admin/templates/clients_activity.html:8 admin/templates/edit_admin.html:66
-#: admin/templates/item_list.html:76 admin/templates/new_admin.html:35
-#: admin/templates/new_users.html:19 templates/item_detail.html:72
+#: admin/templates/item_list.html:74 admin/templates/new_admin.html:35
+#: admin/templates/new_users.html:19 templates/item_detail.html:88
 #: templates/profile.html:117 transactions/templates/create_final.html:13
 #: transactions/templates/msb_list.html:11
 #: transactions/templates/new_item_transaction.html:11
 #: transactions/templates/order_edit.html:8
 #: transactions/templates/prognose.html:13
-#: transactions/templates/transaction_detail_admin.html:21
+#: transactions/templates/transaction_detail_admin.html:20
 #: transactions/templates/transaction_list.html:25
 msgid "Go back"
 msgstr "Powrót"
@@ -477,26 +478,28 @@ msgstr "Dodaj admina"
 
 #: admin/templates/admin_list.html:26
 msgid "User telephone number"
-msgstr "Numer telefonu użytkownika"
+msgstr "Numer telefonu"
 
 #: admin/templates/admin_list.html:39 admin/templates/client_list.html:50
-#: admin/templates/item_list.html:63 admin/templates/new_users.html:57
+#: admin/templates/item_list.html:61 admin/templates/new_users.html:57
 #: admin/templates/new_users.html:72
 msgid "Edit"
 msgstr "Edytuj"
 
 #: admin/templates/admin_list.html:41 admin/templates/client_list.html:52
-#: admin/templates/edit_item.html:48 admin/templates/item_list.html:66
+#: admin/templates/edit_item.html:48 admin/templates/item_list.html:64
 #: admin/templates/new_users.html:60 admin/templates/new_users.html:75
 #: file_manager/templates/file_browser.html:55
+#: transactions/templates/add_photo.html:39
 #: transactions/templates/create_final.html:90
-#: transactions/templates/offer.html:111 transactions/templates/offer.html:212
+#: transactions/templates/offer.html:113 transactions/templates/offer.html:214
 #: transactions/templates/prognose.html:76
-#: transactions/templates/transaction_detail_admin.html:196
-#: transactions/templates/transaction_detail_admin.html:427
-#: transactions/templates/transaction_detail_client.html:171
-#: transactions/templates/transaction_detail_client.html:404
+#: transactions/templates/transaction_detail_admin.html:267
+#: transactions/templates/transaction_detail_admin.html:509
+#: transactions/templates/transaction_detail_client.html:224
+#: transactions/templates/transaction_detail_client.html:477
 #: transactions/templates/transaction_list.html:62
+#: venv/lib/python3.13/site-packages/django/forms/formsets.py:499
 msgid "Delete"
 msgstr "Usuń"
 
@@ -511,9 +514,9 @@ msgid "Add User to Admin"
 msgstr "Dodaj użytkownika jako administratora"
 
 #: admin/templates/assign_admin.html:27 admin/templates/new_admin.html:37
-#: transactions/templates/transaction_detail_admin.html:81
-#: transactions/templates/transaction_detail_admin.html:665
-#: transactions/templates/transaction_detail_client.html:374
+#: transactions/templates/transaction_detail_admin.html:103
+#: transactions/templates/transaction_detail_admin.html:699
+#: transactions/templates/transaction_detail_client.html:447
 msgid "Add"
 msgstr "Dodaj"
 
@@ -540,18 +543,18 @@ msgstr "Zmień hasło"
 msgid "Back to Client List"
 msgstr "Powrót do listy klientów"
 
-#: admin/templates/client_list.html:5 admin/templates/clients_activity.html:5
+#: admin/templates/client_list.html:5
 msgid "Client List"
 msgstr "Lista klientów"
 
 #: admin/templates/client_list.html:14 admin/templates/clients_activity.html:12
 #: admin/templates/item_list.html:11 admin/templates/new_users.html:25
-#: templates/price_list.html:14 transactions/templates/offer.html:191
-#: transactions/templates/offer.html:200
-#: transactions/templates/transaction_detail_admin.html:294
-#: transactions/templates/transaction_detail_admin.html:303
-#: transactions/templates/transaction_detail_client.html:244
-#: transactions/templates/transaction_detail_client.html:253
+#: templates/price_list.html:14 transactions/templates/offer.html:193
+#: transactions/templates/offer.html:202
+#: transactions/templates/transaction_detail_admin.html:377
+#: transactions/templates/transaction_detail_admin.html:390
+#: transactions/templates/transaction_detail_client.html:315
+#: transactions/templates/transaction_detail_client.html:326
 #: transactions/templates/transaction_list.html:13
 msgid "Search"
 msgstr "Szukaj"
@@ -562,19 +565,25 @@ msgstr "Szukaj"
 msgid "Telephone Number"
 msgstr "Numer telefonu"
 
-#: admin/templates/clients_activity.html:24
+#: admin/templates/clients_activity.html:5
+#, fuzzy
+#| msgid "Client List"
+msgid "Client Activity"
+msgstr "Lista klientów"
+
+#: admin/templates/clients_activity.html:29
 #, fuzzy
 #| msgid "Login"
 msgid "Last login"
 msgstr "Zaloguj się"
 
-#: admin/templates/clients_activity.html:25
+#: admin/templates/clients_activity.html:43
 #, fuzzy
 #| msgid "Transactions"
 msgid "Last transaction"
 msgstr "Lista transakcji"
 
-#: admin/templates/clients_activity.html:40
+#: admin/templates/clients_activity.html:68
 #, fuzzy
 #| msgid "Transaction"
 msgid "transaction"
@@ -586,15 +595,17 @@ msgstr "Nowy administrator"
 
 #: admin/templates/edit_admin.html:68 admin/templates/edit_item.html:22
 #: admin/templates/edit_item.html:98 templates/profile.html:120
-#: transactions/templates/offer.html:142 transactions/templates/offer.html:178
-#: transactions/templates/transaction_detail_admin.html:253
-#: transactions/templates/transaction_detail_admin.html:281
-#: transactions/templates/transaction_detail_client.html:231
+#: transactions/templates/offer.html:144 transactions/templates/offer.html:180
+#: transactions/templates/transaction_detail_admin.html:328
+#: transactions/templates/transaction_detail_admin.html:361
+#: transactions/templates/transaction_detail_client.html:278
+#: transactions/templates/transaction_detail_client.html:299
+#: transactions/templates/transaction_detail_logistics.html:116
 msgid "Save changes"
 msgstr "Zapisz zmiany"
 
 #: admin/templates/edit_client.html:114
-#: transactions/templates/transaction_detail_client.html:207
+#: transactions/templates/transaction_detail_client.html:267
 #, fuzzy
 #| msgid "Save changes"
 msgid "Save Changes"
@@ -629,16 +640,12 @@ msgid "Additional Images"
 msgstr "Dodatkowe obrazy"
 
 #: admin/templates/edit_item.html:75
-#, fuzzy
-#| msgid "Last Name"
 msgid "Item Name"
-msgstr "Nazwa przedmiotu"
+msgstr "Nazwa artykułu"
 
 #: admin/templates/edit_item.html:102
-#, fuzzy
-#| msgid "User Menu"
 msgid "Item not found"
-msgstr "Menu użytkownika"
+msgstr "Artykuł nieznaleziony"
 
 #: admin/templates/item_list.html:4
 msgid "Item list"
@@ -646,17 +653,19 @@ msgstr "Lista przedmiotów"
 
 #: admin/templates/item_list.html:15 templates/price_list.html:18
 #: transactions/templates/transaction_list.html:17
+#: venv/lib/python3.13/site-packages/django/forms/widgets.py:461
 msgid "Clear"
 msgstr "Wyczyść"
 
 #: admin/templates/item_list.html:24
+#: venv/lib/python3.13/site-packages/django/db/models/fields/files.py:420
 msgid "Image"
 msgstr "Obraz"
 
 #: admin/templates/item_list.html:26
-#: transactions/templates/transaction_detail_admin.html:108
+#: transactions/templates/transaction_detail_admin.html:132
 msgid "Acc.No."
-msgstr ""
+msgstr "Num. Ks."
 
 #: admin/templates/item_list.html:28
 msgid "Category"
@@ -665,17 +674,17 @@ msgstr "Kategoria"
 #: admin/templates/item_list.html:33 admin/templates/new_users.html:54
 #: admin/templates/new_users.html:69
 #: transactions/templates/transaction_list.html:36
-#: transactions/templates/transaction_status_list.html:19
+#: transactions/templates/transaction_status_list.html:22
 msgid "Actions"
 msgstr "Czynności"
 
-#: admin/templates/item_list.html:65
+#: admin/templates/item_list.html:63
 #: transactions/templates/create_final.html:90
 #: transactions/templates/prognose.html:76
 msgid "Are you sure you want to delete this item?"
 msgstr "Czy na pewno chcesz usunąć ten artykuł?"
 
-#: admin/templates/item_list.html:77
+#: admin/templates/item_list.html:75
 msgid "Add new"
 msgstr "Dodaj"
 
@@ -689,10 +698,12 @@ msgid "New Client"
 msgstr "Dodaj klienta"
 
 #: admin/templates/upload_image.html:4 admin/templates/upload_image.html:8
+#: transactions/templates/add_photo.html:6
 msgid "Upload image"
 msgstr "Prześlij obraz"
 
 #: admin/templates/upload_image.html:13
+#: transactions/templates/add_photo.html:12
 #, fuzzy
 #| msgid "Choose an image to upload:"
 msgid "Choose an image to upload"
@@ -769,165 +780,168 @@ msgstr "Przedmiot dodany pomyślnie!"
 msgid "Invalid request"
 msgstr "Nieprawidłowe żądanie"
 
-#: items/views.py:251
+#: items/views.py:274
 msgid "Item edited successfully"
 msgstr "Przedmiot zedytowany pomyślnie"
 
-#: items/views.py:254 items/views.py:441
+#: items/views.py:277 items/views.py:464
 msgid "Error, SKU already exists"
 msgstr "Błąd, SKU już istnieje"
 
-#: items/views.py:256
+#: items/views.py:279
 msgid "Error, item has not been edited"
 msgstr "Błąd, przedmiot nie został edytowany"
 
-#: items/views.py:285
+#: items/views.py:308
 msgid "Item deleted successfully!"
 msgstr "Przedmiot został usunięty pomyślnie!"
 
-#: pdfgenerator/templates/pdf_final.html:32 transactions/forms.py:84
+#: pdfgenerator/templates/pdf_final.html:42 transactions/forms.py:84
 #: transactions/templates/create_final.html:31
 #: transactions/templates/prognose.html:36
 msgid "Delivery date"
 msgstr "Data dostawy"
 
-#: pdfgenerator/templates/pdf_final.html:37
-#: pdfgenerator/templates/pdf_final_admin.html:58
+#: pdfgenerator/templates/pdf_final.html:47
+#: pdfgenerator/templates/pdf_final_admin.html:68
 msgid "Final of "
 msgstr "Final z dnia"
 
-#: pdfgenerator/templates/pdf_final.html:38
-#: pdfgenerator/templates/pdf_final_admin.html:61
+#: pdfgenerator/templates/pdf_final.html:48
+#: pdfgenerator/templates/pdf_final_admin.html:71
 #, fuzzy
 #| msgid "Prognose of "
 msgid "To prognose of "
 msgstr "Prognoza z dnia "
 
-#: pdfgenerator/templates/pdf_final.html:44
-#: pdfgenerator/templates/pdf_final_admin.html:69
-#: pdfgenerator/templates/pdf_offer.html:43
-#: pdfgenerator/templates/pdf_prognose.html:66 templates/item_detail.html:22
+#: pdfgenerator/templates/pdf_final.html:54
+#: pdfgenerator/templates/pdf_final_admin.html:79
+#: pdfgenerator/templates/pdf_offer.html:53
+#: pdfgenerator/templates/pdf_prognose.html:78 templates/item_detail.html:22
 #: transactions/forms.py:29 transactions/templates/create_final.html:40
-#: transactions/templates/offer.html:50
+#: transactions/templates/offer.html:52
 #: transactions/templates/order_edit.html:25
 #: transactions/templates/prognose.html:46
-#: transactions/templates/transaction_detail_admin.html:107
-#: transactions/templates/transaction_detail_client.html:77
+#: transactions/templates/transaction_detail_admin.html:131
+#: transactions/templates/transaction_detail_client.html:90
+#: transactions/templates/transaction_detail_logistics.html:30
 msgid "SKU"
 msgstr "SKU"
 
-#: pdfgenerator/templates/pdf_final.html:45
-#: pdfgenerator/templates/pdf_final_admin.html:70
-#: pdfgenerator/templates/pdf_offer.html:44
-#: pdfgenerator/templates/pdf_prognose.html:67
+#: pdfgenerator/templates/pdf_final.html:55
+#: pdfgenerator/templates/pdf_final_admin.html:81
+#: pdfgenerator/templates/pdf_offer.html:54
+#: pdfgenerator/templates/pdf_prognose.html:80
 #: transactions/templates/create_final.html:41
-#: transactions/templates/offer.html:51
+#: transactions/templates/offer.html:53
 #: transactions/templates/order_edit.html:26
 #: transactions/templates/prognose.html:47
-#: transactions/templates/transaction_detail_admin.html:109
+#: transactions/templates/transaction_detail_admin.html:133
 msgid "Product"
 msgstr "Produkt"
 
-#: pdfgenerator/templates/pdf_final.html:46
-#: pdfgenerator/templates/pdf_offer.html:45
-#: pdfgenerator/templates/pdf_prognose.html:68 transactions/forms.py:54
+#: pdfgenerator/templates/pdf_final.html:56
+#: pdfgenerator/templates/pdf_offer.html:55
+#: pdfgenerator/templates/pdf_prognose.html:81 transactions/forms.py:54
 #: transactions/templates/create_final.html:42
 #: transactions/templates/edit_item_offer.html:21
-#: transactions/templates/offer.html:52
+#: transactions/templates/offer.html:54
 #: transactions/templates/order_edit.html:27
 #: transactions/templates/prognose.html:48
-#: transactions/templates/transaction_detail_admin.html:110
-#: transactions/templates/transaction_detail_client.html:79
+#: transactions/templates/transaction_detail_admin.html:134
+#: transactions/templates/transaction_detail_client.html:92
+#: transactions/templates/transaction_detail_logistics.html:33
 msgid "Amount"
 msgstr "Ilość"
 
-#: pdfgenerator/templates/pdf_final.html:47
-#: pdfgenerator/templates/pdf_final_admin.html:71
+#: pdfgenerator/templates/pdf_final.html:57
+#: pdfgenerator/templates/pdf_final_admin.html:82
 #: transactions/templates/create_final.html:43
-#: transactions/templates/transaction_detail_admin.html:61
-#: transactions/templates/transaction_detail_admin.html:112
-#: transactions/templates/transaction_detail_client.html:81
+#: transactions/templates/transaction_detail_admin.html:73
+#: transactions/templates/transaction_detail_admin.html:136
+#: transactions/templates/transaction_detail_client.html:94
+#: transactions/templates/transaction_detail_logistics.html:34
 msgid "Alku"
 msgstr "Alku"
 
-#: pdfgenerator/templates/pdf_final.html:49
-#: pdfgenerator/templates/pdf_final_admin.html:74
-#: pdfgenerator/templates/pdf_prognose.html:70
+#: pdfgenerator/templates/pdf_final.html:59
+#: pdfgenerator/templates/pdf_final_admin.html:85
+#: pdfgenerator/templates/pdf_prognose.html:84
 #: transactions/templates/create_final.html:45
 #: transactions/templates/edit_item_offer.html:40
 #: transactions/templates/new_item_transaction.html:42
-#: transactions/templates/offer.html:54
+#: transactions/templates/offer.html:56
 #: transactions/templates/order_edit.html:29
 #: transactions/templates/prognose.html:52
-#: transactions/templates/transaction_detail_admin.html:118
-#: transactions/templates/transaction_detail_client.html:84
+#: transactions/templates/transaction_detail_admin.html:142
+#: transactions/templates/transaction_detail_client.html:98
 #: transactions/templates/transaction_list.html:35
 msgid "Total"
 msgstr "Suma"
 
-#: pdfgenerator/templates/pdf_final.html:74
-#: pdfgenerator/templates/pdf_final_admin.html:103
-#: pdfgenerator/templates/pdf_prognose.html:99
+#: pdfgenerator/templates/pdf_final.html:84
+#: pdfgenerator/templates/pdf_final_admin.html:115
+#: pdfgenerator/templates/pdf_prognose.html:117
 msgid "Declared weight"
 msgstr "Zadeklarowana masa"
 
-#: pdfgenerator/templates/pdf_final.html:75
-#: pdfgenerator/templates/pdf_final_admin.html:104
+#: pdfgenerator/templates/pdf_final.html:85
+#: pdfgenerator/templates/pdf_final_admin.html:116
 msgid "Confirmed weight"
 msgstr "Potwierdzona masa"
 
-#: pdfgenerator/templates/pdf_final.html:82
-#: pdfgenerator/templates/pdf_final_admin.html:111
-#: pdfgenerator/templates/pdf_prognose.html:105
+#: pdfgenerator/templates/pdf_final.html:92
+#: pdfgenerator/templates/pdf_final_admin.html:123
+#: pdfgenerator/templates/pdf_prognose.html:124
 msgid "Delivery value"
 msgstr "Wartość dostawy"
 
-#: pdfgenerator/templates/pdf_final.html:99
+#: pdfgenerator/templates/pdf_final.html:109
 msgid "Thank you for your cooperation!"
 msgstr "Dziękujemy za współpracę!"
 
-#: pdfgenerator/templates/pdf_final_admin.html:39
-#: pdfgenerator/templates/pdf_prognose.html:52
+#: pdfgenerator/templates/pdf_final_admin.html:49
+#: pdfgenerator/templates/pdf_prognose.html:63
 msgid "Shipping costs"
 msgstr "Cena dostawy"
 
-#: pdfgenerator/templates/pdf_final_admin.html:45
-#: pdfgenerator/templates/pdf_prognose.html:53
+#: pdfgenerator/templates/pdf_final_admin.html:55
+#: pdfgenerator/templates/pdf_prognose.html:64
 msgid "c/k"
 msgstr ""
 
-#: pdfgenerator/templates/pdf_final_admin.html:49
-#: pdfgenerator/templates/pdf_prognose.html:54
+#: pdfgenerator/templates/pdf_final_admin.html:59
+#: pdfgenerator/templates/pdf_prognose.html:65
 msgid "c/v"
 msgstr ""
 
-#: pdfgenerator/templates/pdf_final_admin.html:73
+#: pdfgenerator/templates/pdf_final_admin.html:80
+#: pdfgenerator/templates/pdf_prognose.html:79
+#: transactions/templates/transaction_detail_logistics.html:31
+msgid "Acc. No."
+msgstr "Num. ks."
+
+#: pdfgenerator/templates/pdf_final_admin.html:84
 #, fuzzy
 #| msgid "With transport"
 msgid "w/transport"
 msgstr "Z transportem"
 
-#: pdfgenerator/templates/pdf_final_admin.html:75
-#, fuzzy
-#| msgid "With transport"
-msgid "Total w/transport"
-msgstr "Całkowity koszt z transportem"
-
-#: pdfgenerator/templates/pdf_final_admin.html:112
+#: pdfgenerator/templates/pdf_final_admin.html:124
 #, fuzzy
 #| msgid "Transport cost"
 msgid "incl. transport costs"
 msgstr "W tym koszty transportu"
 
-#: pdfgenerator/templates/pdf_final_admin.html:133
-#: pdfgenerator/templates/pdf_prognose.html:123
+#: pdfgenerator/templates/pdf_final_admin.html:145
+#: pdfgenerator/templates/pdf_prognose.html:144
 #, fuzzy
 #| msgid "Transport cost per kg"
 msgid "c/k - transport cost per kg"
 msgstr "Koszt transportu na kilogram"
 
-#: pdfgenerator/templates/pdf_final_admin.html:135
-#: pdfgenerator/templates/pdf_prognose.html:124
+#: pdfgenerator/templates/pdf_final_admin.html:147
+#: pdfgenerator/templates/pdf_prognose.html:145
 #, fuzzy
 #| msgid "Transport costs as a percentage of delivery value"
 msgid "c/v - transport cost per delivery value"
@@ -937,29 +951,29 @@ msgstr "Koszty transportu jako procent wartości dostawy"
 msgid "Prices in €/kg"
 msgstr "Ceny w €/kg"
 
-#: pdfgenerator/templates/pdf_offer.html:36
+#: pdfgenerator/templates/pdf_offer.html:46
 #, fuzzy
 #| msgid "Offer from "
 msgid "Offer of"
 msgstr "Oferta z"
 
-#: pdfgenerator/templates/pdf_offer.html:47
+#: pdfgenerator/templates/pdf_offer.html:57
 msgid "Sum"
 msgstr "Suma"
 
-#: pdfgenerator/templates/pdf_offer.html:74
-#: transactions/templates/offer.html:128
+#: pdfgenerator/templates/pdf_offer.html:84
+#: transactions/templates/offer.html:130
 msgid "Total price"
 msgstr "Suma"
 
-#: pdfgenerator/templates/pdf_offer.html:77
+#: pdfgenerator/templates/pdf_offer.html:87
 #, fuzzy
 #| msgid "Total quantity"
 msgid "Total amount"
 msgstr "Łączna ilość"
 
-#: pdfgenerator/templates/pdf_pricelist.html:114 templates/price_list.html:104
-#: transactions/templates/offer_list.html:92
+#: pdfgenerator/templates/pdf_pricelist.html:162 templates/price_list.html:136
+#: templates/price_list_print.html:78 transactions/templates/offer_list.html:92
 msgid ""
 "Prices per 1 kg. The price list is for information purposes only. Prices are "
 "subject to change. Prices are not binding. Typographical errors excepted. "
@@ -969,13 +983,13 @@ msgstr ""
 "nie są wiążące. Zastrzegamy sobie prawo do błędów typograficznych. Prosimy o "
 "kontakt w sprawie cen dla większych ilości lub specjalnych materiałów."
 
-#: pdfgenerator/templates/pdf_prognose.html:59
+#: pdfgenerator/templates/pdf_prognose.html:71
 #, fuzzy
 #| msgid "Prognose of "
 msgid "Prognose of"
 msgstr "Prognoza z dnia "
 
-#: pdfgenerator/templates/pdf_prognose.html:106
+#: pdfgenerator/templates/pdf_prognose.html:125
 msgid "Delivery value incl. transport costs"
 msgstr "Cena dostawy wliczając cenę transportu"
 
@@ -991,18 +1005,6 @@ msgstr "Miniatura artykułu"
 #: templates/item_detail.html:35
 msgid "Gallery"
 msgstr "Galeria"
-
-#: templates/item_detail.html:41
-msgid "Gallery Image"
-msgstr "Galeria"
-
-#: templates/item_detail.html:53
-msgid "Previous"
-msgstr "Poprzedni"
-
-#: templates/item_detail.html:58
-msgid "Next"
-msgstr "Następny"
 
 #: templates/login.html:3 templates/login.html:10 templates/login.html:26
 msgid "Login"
@@ -1047,7 +1049,7 @@ msgid "My Transactions"
 msgstr "Moje transakcje"
 
 #: templates/navbar.html:73 templates/price_list.html:4
-#: transactions/templates/offer_list.html:4
+#: templates/price_list_print.html:4 transactions/templates/offer_list.html:4
 msgid "Price List"
 msgstr "Cennik"
 
@@ -1059,27 +1061,27 @@ msgstr "Profil"
 msgid "Logout"
 msgstr "Wyloguj się"
 
-#: templates/pagination.html:6
+#: templates/pagination.html:7
 msgid "first"
 msgstr "Pierwsza"
 
-#: templates/pagination.html:9
+#: templates/pagination.html:12
 msgid "previous"
 msgstr "Poprzednia"
 
-#: templates/pagination.html:21
+#: templates/pagination.html:24
 msgid "next"
 msgstr "Następna"
 
-#: templates/pagination.html:24
+#: templates/pagination.html:29
 msgid "last"
 msgstr "Ostatnia"
 
-#: templates/price_list.html:21 transactions/templates/offer.html:138
+#: templates/price_list.html:21 transactions/templates/offer.html:140
 msgid "Make proposition"
 msgstr "Złóż zamówienie"
 
-#: templates/price_list.html:23 transactions/templates/offer.html:139
+#: templates/price_list.html:23 transactions/templates/offer.html:141
 #: transactions/templates/offer_list.html:27
 #: transactions/templates/offer_list.html:90
 msgid "Make offer"
@@ -1089,7 +1091,15 @@ msgstr "Złóż ofertę"
 msgid "Select item"
 msgstr "Wybierz przedmiot"
 
-#: templates/price_list.html:96 transactions/templates/offer_list.html:83
+#: templates/price_list.html:67 transactions/templates/prognose.html:109
+#: transactions/templates/transaction_detail_admin.html:335
+#: transactions/templates/transaction_detail_client.html:273
+#: transactions/templates/transaction_detail_logistics.html:111
+msgid "Print"
+msgstr "Drukuj"
+
+#: templates/price_list.html:128 templates/price_list_print.html:70
+#: transactions/templates/offer_list.html:83
 msgid "No items found..."
 msgstr "Nie odnaleziono artykułu..."
 
@@ -1123,7 +1133,7 @@ msgstr "Zmień hasło"
 
 #: templates/reset_password_form.html:20 templates/verify_registration.html:20
 #: transactions/templates/edit_item_offer.html:54
-#: transactions/templates/transaction_detail_admin.html:323
+#: transactions/templates/transaction_detail_admin.html:413
 msgid "Submit"
 msgstr "Prześlij"
 
@@ -1136,8 +1146,8 @@ msgid "Additional info"
 msgstr "Dodatkowe informacje"
 
 #: transactions/forms.py:79
-#: transactions/templates/transaction_detail_admin.html:73
-#: transactions/templates/transaction_detail_client.html:46
+#: transactions/templates/transaction_detail_admin.html:94
+#: transactions/templates/transaction_detail_client.html:57
 msgid "Plates"
 msgstr "Tablice rejestracyjne"
 
@@ -1158,13 +1168,25 @@ msgid "Additional info about transaction"
 msgstr "Dodatkowe informacje"
 
 #: transactions/forms.py:119
-#: transactions/templates/transaction_detail_admin.html:84
-#: transactions/templates/transaction_detail_client.html:55
+#: transactions/templates/transaction_detail_admin.html:105
+#: transactions/templates/transaction_detail_client.html:62
 msgid "Delivery info"
 msgstr "Informacje o dostawie"
 
+#: transactions/templates/add_photo.html:20
+#, fuzzy
+#| msgid "Transactions"
+msgid "Back to transaction"
+msgstr "Lista transakcji"
+
+#: transactions/templates/add_photo.html:39
+#, fuzzy
+#| msgid "Delete image"
+msgid "Delete image?"
+msgstr "Usuń obraz"
+
 #: transactions/templates/create_final.html:21
-#: transactions/templates/transaction_detail_admin.html:37
+#: transactions/templates/transaction_detail_admin.html:42
 #, fuzzy
 #| msgid "no status"
 msgid "No status"
@@ -1175,25 +1197,26 @@ msgid "changing to FINAL"
 msgstr "zamiana na FINAL"
 
 #: transactions/templates/create_final.html:46
-#: transactions/templates/offer.html:134 transactions/templates/offer.html:172
+#: transactions/templates/offer.html:136 transactions/templates/offer.html:174
 #: transactions/templates/order_edit.html:30
 #: transactions/templates/prognose.html:53
-#: transactions/templates/transaction_detail_admin.html:119
-#: transactions/templates/transaction_detail_admin.html:275
-#: transactions/templates/transaction_detail_client.html:85
-#: transactions/templates/transaction_detail_client.html:225
+#: transactions/templates/transaction_detail_admin.html:143
+#: transactions/templates/transaction_detail_admin.html:356
+#: transactions/templates/transaction_detail_client.html:100
+#: transactions/templates/transaction_detail_client.html:294
+#: transactions/templates/transaction_detail_logistics.html:35
 msgid "Comment"
 msgstr "Komentarz"
 
 #: transactions/templates/create_final.html:96
 #: transactions/templates/prognose.html:82
-#: transactions/templates/transaction_detail_admin.html:204
+#: transactions/templates/transaction_detail_admin.html:275
 msgid "No items in the transaction"
 msgstr "Brak artykułów w zamówieniu"
 
 #: transactions/templates/create_final.html:112
 #: transactions/templates/edit_item_offer.html:45
-#: transactions/templates/transaction_detail_admin.html:237
+#: transactions/templates/transaction_detail_admin.html:305
 msgid "Additional informations"
 msgstr "Dodatkowe informacje"
 
@@ -1219,7 +1242,7 @@ msgstr "Lista transakcji"
 
 #: transactions/templates/msb_list.html:19
 #: transactions/templates/transaction_list.html:32
-#: transactions/templates/transaction_status_list.html:16
+#: transactions/templates/transaction_status_list.html:19
 msgid "Transaction initialization"
 msgstr "Inicjalizacja transakcji"
 
@@ -1235,9 +1258,10 @@ msgid "Total mass"
 msgstr "Suma"
 
 #: transactions/templates/msb_list.html:33
-#: transactions/templates/transaction_detail_admin.html:263
-#: transactions/templates/transaction_detail_client.html:209
-#: transactions/templates/transaction_status_list.html:36
+#: transactions/templates/transaction_detail_admin.html:342
+#: transactions/templates/transaction_detail_client.html:270
+#: transactions/templates/transaction_detail_logistics.html:108
+#: transactions/templates/transaction_status_list.html:42
 #, fuzzy
 #| msgid "Profile"
 msgid "Files"
@@ -1248,7 +1272,7 @@ msgid "Save item"
 msgstr "Zapisz artykuł"
 
 #: transactions/templates/offer.html:10
-#: transactions/templates/transaction_detail_admin.html:10
+#: transactions/templates/transaction_detail_admin.html:12
 msgid "Item added successfully!"
 msgstr "Przedmiot dodany pomyślnie!"
 
@@ -1261,7 +1285,7 @@ msgid "New offer"
 msgstr "Nowa oferta"
 
 #: transactions/templates/offer.html:28
-#: transactions/templates/transaction_detail_admin.html:58
+#: transactions/templates/transaction_detail_admin.html:66
 msgid "Client"
 msgstr "Klient"
 
@@ -1271,70 +1295,76 @@ msgstr ""
 
 #: transactions/templates/offer.html:38
 #, fuzzy
-#| msgid "Client Details"
-msgid "Client header:"
-msgstr "Szczegóły klienta"
+#| msgid "Client List"
+msgid "Client name"
+msgstr "Lista klientów"
 
-#: transactions/templates/offer.html:109 transactions/templates/offer.html:168
-#: transactions/templates/offer.html:213
-#: transactions/templates/transaction_detail_admin.html:193
-#: transactions/templates/transaction_detail_admin.html:271
-#: transactions/templates/transaction_detail_admin.html:426
-#: transactions/templates/transaction_detail_client.html:169
-#: transactions/templates/transaction_detail_client.html:221
-#: transactions/templates/transaction_detail_client.html:405
+#: transactions/templates/offer.html:40
+#, fuzzy
+#| msgid "Client List"
+msgid "Client address"
+msgstr "Lista klientów"
+
+#: transactions/templates/offer.html:111 transactions/templates/offer.html:170
+#: transactions/templates/offer.html:215
+#: transactions/templates/transaction_detail_admin.html:257
+#: transactions/templates/transaction_detail_admin.html:349
+#: transactions/templates/transaction_detail_admin.html:508
+#: transactions/templates/transaction_detail_client.html:215
+#: transactions/templates/transaction_detail_client.html:287
+#: transactions/templates/transaction_detail_client.html:478
 #, fuzzy
 #| msgid "Comment"
 msgid "Add comment"
 msgstr "Dodaj komentarz"
 
-#: transactions/templates/offer.html:119
+#: transactions/templates/offer.html:121
 msgid "No items added to the offer, add some items from the price list"
 msgstr "Brak dodanych pozycji do oferty, dodaj kilka pozycji z cennika."
 
-#: transactions/templates/offer.html:130
+#: transactions/templates/offer.html:132
 msgid "Total quantity"
 msgstr "Łączna ilość"
 
-#: transactions/templates/offer.html:151
+#: transactions/templates/offer.html:153
 msgid "Warning"
 msgstr "Uwaga"
 
-#: transactions/templates/offer.html:155
+#: transactions/templates/offer.html:157
 msgid "You cannot submit an empty offer."
 msgstr "Nie możesz wysłać pustej oferty/transakcji"
 
-#: transactions/templates/offer.html:158 transactions/templates/offer.html:176
-#: transactions/templates/offer.html:197
-#: transactions/templates/transaction_detail_admin.html:279
-#: transactions/templates/transaction_detail_admin.html:300
-#: transactions/templates/transaction_detail_admin.html:322
-#: transactions/templates/transaction_detail_client.html:229
-#: transactions/templates/transaction_detail_client.html:250
+#: transactions/templates/offer.html:160 transactions/templates/offer.html:178
+#: transactions/templates/offer.html:199
+#: transactions/templates/transaction_detail_admin.html:360
+#: transactions/templates/transaction_detail_admin.html:383
+#: transactions/templates/transaction_detail_admin.html:412
+#: transactions/templates/transaction_detail_client.html:298
+#: transactions/templates/transaction_detail_client.html:321
 msgid "Close"
 msgstr "Zamknij"
 
-#: transactions/templates/offer.html:193
-#: transactions/templates/transaction_detail_admin.html:296
-#: transactions/templates/transaction_detail_client.html:246
+#: transactions/templates/offer.html:195
+#: transactions/templates/transaction_detail_admin.html:379
+#: transactions/templates/transaction_detail_client.html:317
 msgid "Empty search query returns all items"
 msgstr "Puste pole wyszukiwania zwraca wszystkie produkty"
 
-#: transactions/templates/offer.html:199
-#: transactions/templates/transaction_detail_admin.html:302
-#: transactions/templates/transaction_detail_client.html:252
+#: transactions/templates/offer.html:201
+#: transactions/templates/transaction_detail_admin.html:388
+#: transactions/templates/transaction_detail_client.html:325
 msgid "Create new item"
 msgstr "Dodaj nowy artykuł"
 
-#: transactions/templates/offer.html:211
-#: transactions/templates/transaction_detail_admin.html:443
-#: transactions/templates/transaction_detail_client.html:483
+#: transactions/templates/offer.html:213
+#: transactions/templates/transaction_detail_admin.html:519
+#: transactions/templates/transaction_detail_client.html:547
 #, fuzzy
 #| msgid "Are you sure you want to delete this item?"
 msgid "Are you sure you want to delete this item"
 msgstr "Czy na pewno chcesz usunąć ten artykoł?"
 
-#: transactions/templates/offer.html:214
+#: transactions/templates/offer.html:216
 #, fuzzy
 msgid "Are you sure you want to save changes"
 msgstr "Czy na pewno chcesz zapisać zmiany?"
@@ -1374,107 +1404,110 @@ msgid "incl. transport"
 msgstr "Z transportem"
 
 #: transactions/templates/prognose.html:108
-#: transactions/templates/transaction_detail_admin.html:255
-#: transactions/templates/transaction_detail_admin.html:313
+#: transactions/templates/transaction_detail_admin.html:332
+#: transactions/templates/transaction_detail_admin.html:401
 msgid "Change status"
 msgstr "Status transakcji"
 
-#: transactions/templates/prognose.html:109
-#: transactions/templates/transaction_detail_admin.html:257
-#: transactions/templates/transaction_detail_client.html:211
-msgid "Print"
-msgstr "Drukuj"
-
-#: transactions/templates/transaction_detail_admin.html:43
+#: transactions/templates/transaction_detail_admin.html:50
 msgid "Total price with transport included"
 msgstr "Wartość dostawy włączając transport"
 
-#: transactions/templates/transaction_detail_admin.html:46
+#: transactions/templates/transaction_detail_admin.html:53
 msgid "Transport cost per 1 kg"
 msgstr "Koszt transportu na kilogram"
 
-#: transactions/templates/transaction_detail_admin.html:50
+#: transactions/templates/transaction_detail_admin.html:57
 msgid "Transport cost as a part of total price"
 msgstr "Koszt transportu jako część wartości dostawy"
 
-#: transactions/templates/transaction_detail_admin.html:56
-#: transactions/templates/transaction_detail_client.html:36
+#: transactions/templates/transaction_detail_admin.html:63
+#: transactions/templates/transaction_detail_client.html:45
 msgid "Delivery"
 msgstr "Dostawa"
 
-#: transactions/templates/transaction_detail_admin.html:57
-#: transactions/templates/transaction_detail_client.html:37
+#: transactions/templates/transaction_detail_admin.html:65
+#: transactions/templates/transaction_detail_client.html:47
 msgid "Date"
 msgstr "Data"
 
-#: transactions/templates/transaction_detail_admin.html:94
+#: transactions/templates/transaction_detail_admin.html:114
 #, fuzzy
 #| msgid "Change status"
 msgid "Change the client"
 msgstr "Status transakcji"
 
-#: transactions/templates/transaction_detail_admin.html:116
+#: transactions/templates/transaction_detail_admin.html:140
 msgid "With transport"
 msgstr "Z transportem"
 
-#: transactions/templates/transaction_detail_admin.html:260
+#: transactions/templates/transaction_detail_admin.html:261
+#: transactions/templates/transaction_detail_client.html:219
+#: transactions/templates/transaction_detail_client.html:231
+#: transactions/templates/transaction_detail_logistics.html:83
+msgid "Photos"
+msgstr ""
+
+#: transactions/templates/transaction_detail_admin.html:339
 msgid "Print client version"
 msgstr "Wydrukuj wersję klienta"
 
-#: transactions/templates/transaction_detail_admin.html:317
+#: transactions/templates/transaction_detail_admin.html:408
 #, fuzzy
 #| msgid "Change status"
 msgid "Change status to"
 msgstr "Status transakcji"
 
-#: transactions/templates/transaction_detail_admin.html:610
-#: transactions/templates/transaction_detail_client.html:319
+#: transactions/templates/transaction_detail_admin.html:654
+#: transactions/templates/transaction_detail_client.html:392
+#: transactions/templates/transaction_detail_logistics.html:139
 #, fuzzy
 msgid "Are you sure you want to save changes?"
 msgstr "Czy na pewno chcesz zapisać zmiany?"
 
-#: transactions/templates/transaction_detail_admin.html:642
+#: transactions/templates/transaction_detail_admin.html:677
 #, fuzzy
 #| msgid "No items found..."
 msgid "No items found"
 msgstr "Nie odnaleziono artykułu..."
 
-#: transactions/templates/transaction_detail_admin.html:681
+#: transactions/templates/transaction_detail_admin.html:715
 #, fuzzy
 #| msgid "- Shipping costs are covered by the buyer."
 msgid "- Shipping costs are covered by the buyer.\\n"
 msgstr "– Koszty wysyłki pokrywa kupujący."
 
-#: transactions/templates/transaction_detail_admin.html:681
-#: transactions/templates/transaction_detail_admin.html:686
+#: transactions/templates/transaction_detail_admin.html:715
+#: transactions/templates/transaction_detail_admin.html:720
 msgid "- Payment deadline - 7 business days from delivery."
 msgstr "– Termin płatności – 7 dni roboczych od daty dostawy."
 
-#: transactions/templates/transaction_detail_admin.html:686
+#: transactions/templates/transaction_detail_admin.html:720
 #, fuzzy
 #| msgid "- Delivered to Alku."
 msgid "- Delivered to Alku.\\n"
 msgstr "– Dostarczone do Alku."
 
-#: transactions/templates/transaction_detail_client.html:3
+#: transactions/templates/transaction_detail_client.html:4
+#: transactions/templates/transaction_detail_logistics.html:4
 #, fuzzy
 #| msgid "Transaction status"
 msgid "Transaction Detail"
 msgstr "Status transakcji"
 
-#: transactions/templates/transaction_detail_client.html:25
+#: transactions/templates/transaction_detail_client.html:31
 #, fuzzy
 #| msgid "Transaction status"
 msgid "No transaction status"
 msgstr "Status transakcji"
 
 #: transactions/templates/transaction_list.html:33
-#: transactions/templates/transaction_status_list.html:17
+#: transactions/templates/transaction_status_list.html:20
 msgid "Transaction last change"
 msgstr "Ostatnia zmiana transakcji"
 
 #: transactions/templates/transaction_list.html:34
-#: transactions/templates/transaction_status_list.html:18
+#: transactions/templates/transaction_status_list.html:21
 msgid "Transaction status"
 msgstr "Status transakcji"
 
@@ -1488,21 +1521,1303 @@ msgstr "Czy na pewno chcesz usunąć tę transakcję?"
 msgid "Could not fetch any clients"
 msgstr "Brak artykułów w zamówieniu"
 
-#: transactions/views.py:660
+#: transactions/views.py:582
 msgid "Internal Server Error"
 msgstr "Wewnętrzny błąd serwera"
 
-#: transactions/views.py:696 transactions/views.py:704
+#: transactions/views.py:618 transactions/views.py:628
 msgid "Proposition cannot be printed"
 msgstr "Oferta nie może zostać wydrukowana"
 
-#: transactions/views.py:816
+#: transactions/views.py:741
 msgid "Error during transaction delete"
 msgstr "Wystąpił błąd podczas usuwania transakcji"
 
-#: transactions/views.py:992
+#: transactions/views.py:917
 msgid "Invalid status name"
 msgstr "Nieprawidłowa nazwa statusu"
+
+#: transactions/views.py:1365
+msgid "Error during file upload"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/contrib/messages/apps.py:16
+msgid "Messages"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/contrib/sitemaps/apps.py:8
+msgid "Site Maps"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/contrib/staticfiles/apps.py:9
+msgid "Static Files"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/contrib/syndication/apps.py:7
+msgid "Syndication"
+msgstr ""
+
+#. Translators: String used to replace omitted page numbers in elided page
+#. range generated by paginators, e.g. [1, 2, '…', 5, 6, 7, '…', 9, 10].
+#: venv/lib/python3.13/site-packages/django/core/paginator.py:30
+msgid "…"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/paginator.py:32
+msgid "That page number is not an integer"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/paginator.py:33
+msgid "That page number is less than 1"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/paginator.py:34
+msgid "That page contains no results"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:22
+msgid "Enter a valid value."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:70
+#, fuzzy
+#| msgid "Enter your company name"
+msgid "Enter a valid domain name."
+msgstr "Wprowadź nazwę swojej firmy"
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:155
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:768
+msgid "Enter a valid URL."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:216
+msgid "Enter a valid integer."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:227
+msgid "Enter a valid email address."
+msgstr ""
+
+#. Translators: "letters" means latin letters: a-z and A-Z.
+#: venv/lib/python3.13/site-packages/django/core/validators.py:310
+msgid ""
+"Enter a valid “slug” consisting of letters, numbers, underscores or hyphens."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:318
+msgid ""
+"Enter a valid “slug” consisting of Unicode letters, numbers, underscores, or "
+"hyphens."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:330
+#: venv/lib/python3.13/site-packages/django/core/validators.py:339
+#: venv/lib/python3.13/site-packages/django/core/validators.py:353
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2215
+#, python-format
+msgid "Enter a valid %(protocol)s address."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:332
+msgid "IPv4"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:341
+#: venv/lib/python3.13/site-packages/django/utils/ipv6.py:43
+msgid "IPv6"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:355
+msgid "IPv4 or IPv6"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:396
+msgid "Enter only digits separated by commas."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:402
+#, python-format
+msgid "Ensure this value is %(limit_value)s (it is %(show_value)s)."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:437
+#, python-format
+msgid "Ensure this value is less than or equal to %(limit_value)s."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:446
+#, python-format
+msgid "Ensure this value is greater than or equal to %(limit_value)s."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:455
+#, python-format
+msgid "Ensure this value is a multiple of step size %(limit_value)s."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:462
+#, python-format
+msgid ""
+"Ensure this value is a multiple of step size %(limit_value)s, starting from "
+"%(offset)s, e.g. %(offset)s, %(valid_value1)s, %(valid_value2)s, and so on."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:494
+#, python-format
+msgid ""
+"Ensure this value has at least %(limit_value)d character (it has "
+"%(show_value)d)."
+msgid_plural ""
+"Ensure this value has at least %(limit_value)d characters (it has "
+"%(show_value)d)."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:512
+#, python-format
+msgid ""
+"Ensure this value has at most %(limit_value)d character (it has "
+"%(show_value)d)."
+msgid_plural ""
+"Ensure this value has at most %(limit_value)d characters (it has "
+"%(show_value)d)."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:535
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:359
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:398
+#, fuzzy
+#| msgid "Enter your last name"
+msgid "Enter a number."
+msgstr "Wprowadź swoje nazwisko"
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:537
+#, python-format
+msgid "Ensure that there are no more than %(max)s digit in total."
+msgid_plural "Ensure that there are no more than %(max)s digits in total."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:542
+#, python-format
+msgid "Ensure that there are no more than %(max)s decimal place."
+msgid_plural "Ensure that there are no more than %(max)s decimal places."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:547
+#, python-format
+msgid ""
+"Ensure that there are no more than %(max)s digit before the decimal point."
+msgid_plural ""
+"Ensure that there are no more than %(max)s digits before the decimal point."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:618
+#, python-format
+msgid ""
+"File extension “%(extension)s” is not allowed. Allowed extensions are: "
+"%(allowed_extensions)s."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:680
+msgid "Null characters are not allowed."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/base.py:1572
+#: venv/lib/python3.13/site-packages/django/forms/models.py:908
+msgid "and"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/base.py:1574
+#, python-format
+msgid "%(model_name)s with this %(field_labels)s already exists."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/constraints.py:22
+#, python-format
+msgid "Constraint “%(name)s” is violated."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:134
+#, python-format
+msgid "Value %(value)r is not a valid choice."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:135
+msgid "This field cannot be null."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:136
+msgid "This field cannot be blank."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:137
+#, python-format
+msgid "%(model_name)s with this %(field_label)s already exists."
+msgstr ""
+
+#. Translators: The 'lookup_type' is one of 'date', 'year' or
+#. 'month'. Eg: "Title must be unique for pub_date year"
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:141
+#, python-format
+msgid ""
+"%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:180
+#, python-format
+msgid "Field of type: %(field_type)s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1156
+#, python-format
+msgid "“%(value)s” value must be either True or False."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1157
+#, python-format
+msgid "“%(value)s” value must be either True, False, or None."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1159
+msgid "Boolean (Either True or False)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1209
+#, python-format
+msgid "String (up to %(max_length)s)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1211
+msgid "String (unlimited)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1320
+msgid "Comma-separated integers"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1421
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid date format. It must be in YYYY-MM-DD "
+"format."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1425
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1560
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (YYYY-MM-DD) but it is an invalid "
+"date."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1429
+msgid "Date (without time)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1556
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in YYYY-MM-DD "
+"HH:MM[:ss[.uuuuuu]][TZ] format."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1564
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (YYYY-MM-DD HH:MM[:ss[.uuuuuu]]"
+"[TZ]) but it is an invalid date/time."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1569
+msgid "Date (with time)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1696
+#, python-format
+msgid "“%(value)s” value must be a decimal number."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1698
+#, fuzzy
+#| msgid "Telephone number"
+msgid "Decimal number"
+msgstr "Numer telefonu"
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1859
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in [DD] "
+"[[HH:]MM:]ss[.uuuuuu] format."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1863
+#, fuzzy
+#| msgid "Description"
+msgid "Duration"
+msgstr "Opis"
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1915
+msgid "Email address"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1940
+msgid "File path"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2018
+#, python-format
+msgid "“%(value)s” value must be a float."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2020
+msgid "Floating point number"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2060
+#, python-format
+msgid "“%(value)s” value must be an integer."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2062
+msgid "Integer"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2158
+msgid "Big (8 byte) integer"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2175
+msgid "Small integer"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2183
+msgid "IPv4 address"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2214
+msgid "IP address"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2305
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2306
+#, python-format
+msgid "“%(value)s” value must be either None, True or False."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2308
+msgid "Boolean (Either True, False or None)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2359
+msgid "Positive big integer"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2374
+msgid "Positive integer"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2389
+msgid "Positive small integer"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2405
+#, python-format
+msgid "Slug (up to %(max_length)s)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2441
+msgid "Text"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2521
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in HH:MM[:ss[.uuuuuu]] "
+"format."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2525
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (HH:MM[:ss[.uuuuuu]]) but it is an "
+"invalid time."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2529
+msgid "Time"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2637
+msgid "URL"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2661
+msgid "Raw binary data"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2726
+#, python-format
+msgid "“%(value)s” is not a valid UUID."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2728
+msgid "Universally unique identifier"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/files.py:244
+#, fuzzy
+#| msgid "Profile"
+msgid "File"
+msgstr "Pliki"
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/json.py:24
+msgid "A JSON object"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/json.py:26
+msgid "Value must be valid JSON."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/related.py:932
+#, python-format
+msgid "%(model)s instance with %(field)s %(value)r does not exist."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/related.py:934
+msgid "Foreign Key (type determined by related field)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/related.py:1228
+msgid "One-to-one relationship"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/related.py:1285
+#, python-format
+msgid "%(from)s-%(to)s relationship"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/related.py:1287
+#, python-format
+msgid "%(from)s-%(to)s relationships"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/related.py:1335
+msgid "Many-to-many relationship"
+msgstr ""
+
+#. Translators: If found as last label character, these punctuation
+#. characters will prevent the default label_suffix to be appended to the label
+#: venv/lib/python3.13/site-packages/django/forms/boundfield.py:185
+msgid ":?.!"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:95
+msgid "This field is required."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:308
+#, fuzzy
+#| msgid "Enter your telephone number"
+msgid "Enter a whole number."
+msgstr "Wprowadź swój numer telefonu"
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:479
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:1260
+msgid "Enter a valid date."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:502
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:1261
+msgid "Enter a valid time."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:529
+msgid "Enter a valid date/time."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:563
+msgid "Enter a valid duration."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:564
+#, python-brace-format
+msgid "The number of days must be between {min_days} and {max_days}."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:633
+msgid "No file was submitted. Check the encoding type on the form."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:634
+msgid "No file was submitted."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:635
+msgid "The submitted file is empty."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:637
+#, python-format
+msgid "Ensure this filename has at most %(max)d character (it has %(length)d)."
+msgid_plural ""
+"Ensure this filename has at most %(max)d characters (it has %(length)d)."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:642
+msgid "Please either submit a file or check the clear checkbox, not both."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:710
+msgid ""
+"Upload a valid image. The file you uploaded was either not an image or a "
+"corrupted image."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:882
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:968
+#: venv/lib/python3.13/site-packages/django/forms/models.py:1592
+#, python-format
+msgid "Select a valid choice. %(value)s is not one of the available choices."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:970
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:1089
+#: venv/lib/python3.13/site-packages/django/forms/models.py:1590
+#, fuzzy
+#| msgid "Enter your last name"
+msgid "Enter a list of values."
+msgstr "Wprowadź swoje nazwisko"
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:1090
+#, fuzzy
+#| msgid "Enter your company name"
+msgid "Enter a complete value."
+msgstr "Wprowadź nazwę swojej firmy"
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:1332
+msgid "Enter a valid UUID."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:1362
+msgid "Enter a valid JSON."
+msgstr ""
+
+#. Translators: This is the default suffix added to form field labels
+#: venv/lib/python3.13/site-packages/django/forms/forms.py:94
+msgid ":"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/forms.py:230
+#, python-format
+msgid "(Hidden field %(name)s) %(error)s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/formsets.py:61
+#, python-format
+msgid ""
+"ManagementForm data is missing or has been tampered with. Missing fields: "
+"%(field_names)s. You may need to file a bug report if the issue persists."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/formsets.py:65
+#, python-format
+msgid "Please submit at most %(num)d form."
+msgid_plural "Please submit at most %(num)d forms."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: venv/lib/python3.13/site-packages/django/forms/formsets.py:70
+#, python-format
+msgid "Please submit at least %(num)d form."
+msgid_plural "Please submit at least %(num)d forms."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: venv/lib/python3.13/site-packages/django/forms/formsets.py:484
+#: venv/lib/python3.13/site-packages/django/forms/formsets.py:491
+msgid "Order"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/models.py:901
+#, python-format
+msgid "Please correct the duplicate data for %(field)s."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/models.py:906
+#, python-format
+msgid "Please correct the duplicate data for %(field)s, which must be unique."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/models.py:913
+#, python-format
+msgid ""
+"Please correct the duplicate data for %(field_name)s which must be unique "
+"for the %(lookup)s in %(date_field)s."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/models.py:922
+msgid "Please correct the duplicate values below."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/models.py:1359
+msgid "The inline value did not match the parent instance."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/models.py:1450
+msgid "Select a valid choice. That choice is not one of the available choices."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/models.py:1594
+#, python-format
+msgid "“%(pk)s” is not a valid value."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/utils.py:227
+#, python-format
+msgid ""
+"%(datetime)s couldn’t be interpreted in time zone %(current_timezone)s; it "
+"may be ambiguous or it may not exist."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/widgets.py:462
+msgid "Currently"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/widgets.py:463
+#, fuzzy
+#| msgid "Save changes"
+msgid "Change"
+msgstr "Zapisz zmiany"
+
+#: venv/lib/python3.13/site-packages/django/forms/widgets.py:800
+#, fuzzy
+#| msgid "Unknown error"
+msgid "Unknown"
+msgstr "Nieznany błąd"
+
+#: venv/lib/python3.13/site-packages/django/forms/widgets.py:801
+msgid "Yes"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/widgets.py:802
+msgid "No"
+msgstr ""
+
+#. Translators: Please do not add spaces around commas.
+#: venv/lib/python3.13/site-packages/django/template/defaultfilters.py:873
+msgid "yes,no,maybe"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/template/defaultfilters.py:903
+#: venv/lib/python3.13/site-packages/django/template/defaultfilters.py:920
+#, python-format
+msgid "%(size)d byte"
+msgid_plural "%(size)d bytes"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: venv/lib/python3.13/site-packages/django/template/defaultfilters.py:922
+#, python-format
+msgid "%s KB"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/template/defaultfilters.py:924
+#, python-format
+msgid "%s MB"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/template/defaultfilters.py:926
+#, python-format
+msgid "%s GB"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/template/defaultfilters.py:928
+#, python-format
+msgid "%s TB"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/template/defaultfilters.py:930
+#, python-format
+msgid "%s PB"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dateformat.py:74
+msgid "p.m."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dateformat.py:75
+msgid "a.m."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dateformat.py:80
+msgid "PM"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dateformat.py:81
+msgid "AM"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dateformat.py:153
+msgid "midnight"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dateformat.py:155
+msgid "noon"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:7
+msgid "Monday"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:8
+msgid "Tuesday"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:9
+msgid "Wednesday"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:10
+msgid "Thursday"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:11
+msgid "Friday"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:12
+msgid "Saturday"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:13
+msgid "Sunday"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:16
+msgid "Mon"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:17
+msgid "Tue"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:18
+msgid "Wed"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:19
+msgid "Thu"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:20
+msgid "Fri"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:21
+#, fuzzy
+#| msgid "Status"
+msgid "Sat"
+msgstr "Status"
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:22
+#, fuzzy
+#| msgid "Sum"
+msgid "Sun"
+msgstr "Suma"
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:25
+msgid "January"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:26
+msgid "February"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:27
+#, fuzzy
+#| msgid "Search"
+msgid "March"
+msgstr "Szukaj"
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:28
+msgid "April"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:29
+msgid "May"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:30
+msgid "June"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:31
+msgid "July"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:32
+msgid "August"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:33
+msgid "September"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:34
+msgid "October"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:35
+msgid "November"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:36
+msgid "December"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:39
+msgid "jan"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:40
+msgid "feb"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:41
+msgid "mar"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:42
+msgid "apr"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:43
+msgid "may"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:44
+msgid "jun"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:45
+msgid "jul"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:46
+msgid "aug"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:47
+msgid "sep"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:48
+#, fuzzy
+#| msgid "Product"
+msgid "oct"
+msgstr "Produkt"
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:49
+msgid "nov"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:50
+msgid "dec"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:53
+msgctxt "abbrev. month"
+msgid "Jan."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:54
+msgctxt "abbrev. month"
+msgid "Feb."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:55
+#, fuzzy
+#| msgid "Search"
+msgctxt "abbrev. month"
+msgid "March"
+msgstr "Szukaj"
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:56
+msgctxt "abbrev. month"
+msgid "April"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:57
+msgctxt "abbrev. month"
+msgid "May"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:58
+msgctxt "abbrev. month"
+msgid "June"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:59
+msgctxt "abbrev. month"
+msgid "July"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:60
+msgctxt "abbrev. month"
+msgid "Aug."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:61
+msgctxt "abbrev. month"
+msgid "Sept."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:62
+msgctxt "abbrev. month"
+msgid "Oct."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:63
+msgctxt "abbrev. month"
+msgid "Nov."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:64
+msgctxt "abbrev. month"
+msgid "Dec."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:67
+msgctxt "alt. month"
+msgid "January"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:68
+msgctxt "alt. month"
+msgid "February"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:69
+#, fuzzy
+#| msgid "Search"
+msgctxt "alt. month"
+msgid "March"
+msgstr "Szukaj"
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:70
+msgctxt "alt. month"
+msgid "April"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:71
+msgctxt "alt. month"
+msgid "May"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:72
+msgctxt "alt. month"
+msgid "June"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:73
+msgctxt "alt. month"
+msgid "July"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:74
+msgctxt "alt. month"
+msgid "August"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:75
+msgctxt "alt. month"
+msgid "September"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:76
+msgctxt "alt. month"
+msgid "October"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:77
+msgctxt "alt. month"
+msgid "November"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:78
+msgctxt "alt. month"
+msgid "December"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/ipv6.py:20
+msgid "This is not a valid IPv6 address."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/text.py:75
+#, python-format
+msgctxt "String to return when truncating text"
+msgid "%(truncated_text)s…"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/text.py:286
+msgid "or"
+msgstr ""
+
+#. Translators: This string is used as a separator between list elements
+#: venv/lib/python3.13/site-packages/django/utils/text.py:305
+#: venv/lib/python3.13/site-packages/django/utils/timesince.py:135
+msgid ", "
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/timesince.py:8
+#, python-format
+msgid "%(num)d year"
+msgid_plural "%(num)d years"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: venv/lib/python3.13/site-packages/django/utils/timesince.py:9
+#, python-format
+msgid "%(num)d month"
+msgid_plural "%(num)d months"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: venv/lib/python3.13/site-packages/django/utils/timesince.py:10
+#, python-format
+msgid "%(num)d week"
+msgid_plural "%(num)d weeks"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: venv/lib/python3.13/site-packages/django/utils/timesince.py:11
+#, python-format
+msgid "%(num)d day"
+msgid_plural "%(num)d days"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: venv/lib/python3.13/site-packages/django/utils/timesince.py:12
+#, python-format
+msgid "%(num)d hour"
+msgid_plural "%(num)d hours"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: venv/lib/python3.13/site-packages/django/utils/timesince.py:13
+#, python-format
+msgid "%(num)d minute"
+msgid_plural "%(num)d minutes"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: venv/lib/python3.13/site-packages/django/views/csrf.py:29
+msgid "Forbidden"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/csrf.py:30
+msgid "CSRF verification failed. Request aborted."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/csrf.py:34
+msgid ""
+"You are seeing this message because this HTTPS site requires a “Referer "
+"header” to be sent by your web browser, but none was sent. This header is "
+"required for security reasons, to ensure that your browser is not being "
+"hijacked by third parties."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/csrf.py:40
+msgid ""
+"If you have configured your browser to disable “Referer” headers, please re-"
+"enable them, at least for this site, or for HTTPS connections, or for “same-"
+"origin” requests."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/csrf.py:45
+msgid ""
+"If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or "
+"including the “Referrer-Policy: no-referrer” header, please remove them. The "
+"CSRF protection requires the “Referer” header to do strict referer checking. "
+"If you’re concerned about privacy, use alternatives like <a "
+"rel=\"noreferrer\" …> for links to third-party sites."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/csrf.py:54
+msgid ""
+"You are seeing this message because this site requires a CSRF cookie when "
+"submitting forms. This cookie is required for security reasons, to ensure "
+"that your browser is not being hijacked by third parties."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/csrf.py:60
+msgid ""
+"If you have configured your browser to disable cookies, please re-enable "
+"them, at least for this site, or for “same-origin” requests."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/csrf.py:66
+msgid "More information is available with DEBUG=True."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:44
+msgid "No year specified"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:64
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:115
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:214
+msgid "Date out of range"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:94
+msgid "No month specified"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:147
+msgid "No day specified"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:194
+msgid "No week specified"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:349
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:380
+#, python-format
+msgid "No %(verbose_name_plural)s available"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:652
+#, python-format
+msgid ""
+"Future %(verbose_name_plural)s not available because "
+"%(class_name)s.allow_future is False."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:692
+#, python-format
+msgid "Invalid date string “%(datestr)s” given format “%(format)s”"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/detail.py:56
+#, python-format
+msgid "No %(verbose_name)s found matching the query"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/list.py:70
+msgid "Page is not “last”, nor can it be converted to an int."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/list.py:77
+#, python-format
+msgid "Invalid page (%(page_number)s): %(message)s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/list.py:169
+#, python-format
+msgid "Empty list and “%(class_name)s.allow_empty” is False."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/static.py:49
+msgid "Directory indexes are not allowed here."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/static.py:51
+#, python-format
+msgid "“%(path)s” does not exist"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/static.py:68
+#: venv/lib/python3.13/site-packages/django/views/templates/directory_index.html:8
+#: venv/lib/python3.13/site-packages/django/views/templates/directory_index.html:11
+#, python-format
+msgid "Index of %(directory)s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:7
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:204
+msgid "The install worked successfully! Congratulations!"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:206
+#, python-format
+msgid ""
+"View <a href=\"https://docs.djangoproject.com/en/%(version)s/releases/\" "
+"target=\"_blank\" rel=\"noopener\">release notes</a> for Django %(version)s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:208
+#, python-format
+msgid ""
+"You are seeing this page because <a href=\"https://docs.djangoproject.com/en/"
+"%(version)s/ref/settings/#debug\" target=\"_blank\" "
+"rel=\"noopener\">DEBUG=True</a> is in your settings file and you have not "
+"configured any URLs."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:217
+msgid "Django Documentation"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:218
+msgid "Topics, references, &amp; how-to’s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:226
+msgid "Tutorial: A Polling App"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:227
+msgid "Get started with Django"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:235
+msgid "Django Community"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:236
+msgid "Connect, get help, or contribute"
+msgstr ""
+
+#, fuzzy
+#~| msgid "With transport"
+#~ msgid "Total w/transport"
+#~ msgstr "Całkowity koszt z transportem"
+
+#~ msgid "Gallery Image"
+#~ msgstr "Galeria"
+
+#~ msgid "Previous"
+#~ msgstr "Poprzedni"
+
+#~ msgid "Next"
+#~ msgstr "Następny"
+
+#, fuzzy
+#~| msgid "Client Details"
+#~ msgid "Client header:"
+#~ msgstr "Szczegóły klienta"
 
 #~ msgid "First Name:"
 #~ msgstr "Imię:"

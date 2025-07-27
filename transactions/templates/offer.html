@@ -1,12 +1,35 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% block title %}
+    {% trans "Offer" %}
+{% endblock %}
+<style>
+/* Fix for low-rendered text */
+.select2-selection__rendered {
+    line-height: normal !important;
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+    transform: translateY(-1px); /* Fine-tune if needed */
+}
 
-{% block title %}{% trans "Offer" %}{% endblock %}
+/* Fix arrow positioning */
+.select2-selection__arrow {
+    height: 100% !important;
+    top: 0 !important;
+}
 
+/* Adjust overall selection height if needed */
+.select2-container .select2-selection--single {
+    height: 38px; /* Standard Bootstrap form control height */
+}
+</style>
 {% block content %}
-    <div id="successAlert" class="alert alert-success alert-dismissible fade show alert-custom" role="alert"
-         style="display: none;">
+    <div id="successAlert"
+         class="alert alert-success alert-dismissible fade show alert-custom"
+         role="alert"
+         style="display: none">
         {% trans "Item added successfully!" %}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
@@ -18,203 +41,257 @@
                 {% trans "New offer" %}
             {% endif %}
         </h1>
-
-        <form method="POST" class="mt-3" onsubmit="return validateOffer();" id="edit-form">
+        <form method="POST"
+              class="mt-3"
+              onsubmit="return validateOffer();"
+              id="edit-form">
             {% csrf_token %}
-            <input type="hidden" name="mode" id="mode"/>
-
+            <input type="hidden" name="mode" id="mode" />
             {% if not request.session.logged_user.user %}
                 <div class="mb-3 text-center">
                     <label for="client" class="form-label h5">{% trans "Client" %}:</label>
-                    <select name="client" class="form-select" id="client" style="max-width: 300px; margin: 0 auto;">
-                        {% for client in clients %}
-                        <option value="{{ client }}">{{ client }}</option>
-                        {% endfor %}
-                        <option value="null">{% trans "Type in client data" %}</option>
+                    <select name="selectClient"
+                            class="form-select"
+                            id="client"
+                            style="max-width: 300px">
+                        <!-- {% for client in clients %}<option value="{{ client }}">{{ client }}</option>{% endfor %} -->
                     </select>
                 </div>
             {% endif %}
-            <div id="client-textarea" style="display: none" class="mt-2">
+            <div id="textareaDiv" style="display: none" class="mt-2">
                 <label for="client-name">{% trans "Client name" %}:</label>
                 <input class="form-control" type="text" name="client-name" id="client-name">
                 <label for="client-address">{% trans "Client address" %}:</label>
                 <textarea name="client-address" id="client-address" class="form-control mb-3"></textarea>
             </div>
-
-            <button type="button" data-bs-toggle="modal" data-bs-target="#searchModal"
-                    class="btn btn-sm btn-outline-success mt-2 mb-1">
-                {% trans "Add item" %}
-            </button>
+            <button type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#searchModal"
+                    class="btn btn-sm btn-outline-success mt-2 mb-1">{% trans "Add item" %}</button>
             <div class="table-responsive">
                 <table class="table table-bordered text-center mt-3">
                     <thead class="table-light">
-                    <tr>
-                        <th scope="col">{% trans "SKU" %}</th>
-                        <th scope="col" class="text-start">{% trans "Product" %}</th>
-                        <th scope="col">{% trans "Amount" %}</th>
-                        <th scope="col">{% trans "Price" %}</th>
-                        <th scope="col" class="text-end">{% trans "Total" %}</th>
-                        <th class="removable"></th>
-                        <th></th>
-                    </tr>
+                        <tr>
+                            <th scope="col">{% trans "SKU" %}</th>
+                            <th scope="col" class="text-start">{% trans "Product" %}</th>
+                            <th scope="col">{% trans "Amount" %}</th>
+                            <th scope="col">{% trans "Price" %}</th>
+                            <th scope="col" class="text-end">{% trans "Total" %}</th>
+                            <th class="removable"></th>
+                            <th></th>
+                        </tr>
                     </thead>
                     <tbody>
-                    {% for item in request.session.current_offer %}
-                        <tr id={{ item.sku }}>
-                            <input type="hidden" name="sku-{{ item.sku }}" value="{{ item.sku }}"/>
-                            <td>{{ item.sku }}</td>
-                            {% if 'NA' not in item.sku %}
-                                <input type="hidden" name="name-{{ item.sku }}" value="{{ item.name }}"/>
-                                <td class="ps-2 text-start">{{ item.name }}</td>
-                            {% else %}
-                                <td><input type="text" name="name-{{ item.sku }}" value="{{ item.name }}"
-                                           class="form-control"/></td>
-                            {% endif %}
-                            <td>
-                                <div class="input-group text-center" style="margin: 0 auto;">
-                                    <input id="amount-{{ item.sku }}" name="amount-{{ item.sku }}" type="number"
-                                           value="{{ item.amount }}" min="0.01" step="0.01"
-                                           class="form-control ms-auto separator-input" style="max-width: 100px;"
-                                           onchange="calculateTotal('{{ item.sku }}')">
-                                    <span class="input-group-text me-auto">kg<span>
-                                </div>
-                            </td>
-                            <td>
-                                {% if request.session.logged_user.user and 'NA' not in item.sku %}
-                                    <input id="price-{{ item.sku }}" name="price-{{ item.sku }}"
-                                           type="hidden" value="{{ item.price }}" min="0.01" step="0.01"
-                                           onchange="calculateTotal('{{ item.sku }}')" required/>
-                                    <div class="text-start">{{ item.price }} €</div>
+                        {% for item in request.session.current_offer %}
+                            <tr id={{ item.sku }}>
+                                <input type="hidden" name="sku-{{ item.sku }}" value="{{ item.sku }}" />
+                                <td>{{ item.sku }}</td>
+                                {% if 'NA' not in item.sku %}
+                                    <input type="hidden" name="name-{{ item.sku }}" value="{{ item.name }}" />
+                                    <td class="ps-2 text-start">{{ item.name }}</td>
                                 {% else %}
-                                    <div class="input-group">
-                                        <input id="price-{{ item.sku }}" name="price-{{ item.sku }}"
-                                               type="number"
-                                               value="{{ item.price }}" min="0.01" step="0.01" required
-                                               class="form-control ms-auto separator-input"
-                                               style="max-width: 100px; margin: 0;"
-                                               onchange="calculateTotal('{{ item.sku }}')"><span
-                                            class="input-group-text me-auto">€<span>
-                                    </div>
+                                    <td>
+                                        <input type="text"
+                                               name="name-{{ item.sku }}"
+                                               value="{{ item.name }}"
+                                               class="form-control" />
+                                    </td>
                                 {% endif %}
-                            </td>
-                            <td class="text-end" style="white-space: nowrap;"><span class="separator"
-                                                                                    id="totalPrice-{{ item.sku }}">{{ item.total }}</span>
-                                €
-                            </td>
-                            <input type="hidden" name="additionalInfo-{{ item.sku }}" id="additionalInfo-{{ item.sku }}"
-                                   value="{{ item.additionalInfo }}"/>
-                            <td class="removable" id="comment-{{ item.sku }}">{{ item.additionalInfo }}</td>
-                            <td>
-                                <div class="d-grid gap-1 w-100">
-                                    <button class="btn btn-outline-secondary btn-sm" type="button"
-                                            data-bs-target="#commentModal" data-bs-toggle="modal"
-                                            data-bs-sku="{{ item.sku }}">{% trans "Add comment" %}</button>
-                                    <button class="btn btn-outline-danger btn-sm" type="button"
-                                            onclick="deleteItem(event, '{{ item.sku }}');">{% trans "Delete" %}</button>
-                                </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <tr>
-                        <td colspan="7" class="text-center" id="alert-no-items" style="display: hidden;">
-                            <div class="alert alert-secondary">
-                                {% trans "No items added to the offer, add some items from the price list" %}
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                                <td>
+                                    <div class="input-group text-center" style="margin: 0 auto;">
+                                        <input id="amount-{{ item.sku }}"
+                                               name="amount-{{ item.sku }}"
+                                               type="text"
+                                               value="{{ item.amount }}"
+                                               class="form-control ms-auto separator-input"
+                                               pattern="-?[0-9]{1,5}([.,][0-9]{1,2})?"
+                                               inputmode="numeric"
+                                               style="max-width: 100px"
+                                               onchange="calculateTotal('{{ item.sku }}')">
+                                        <span class="input-group-text me-auto">kg<span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if request.session.logged_user.user and 'NA' not in item.sku %}
+                                            <input id="price-{{ item.sku }}"
+                                                   name="price-{{ item.sku }}"
+                                                   type="hidden"
+                                                   value="{{ item.price }}"
+                                                   min="-999.99"
+                                                   max="999.99"
+                                                   step="0.01"
+                                                   onchange="calculateTotal('{{ item.sku }}')"
+                                                   required />
+                                            <div class="text-start">{{ item.price }} €</div>
+                                        {% else %}
+                                            <div class="input-group">
+                                                <input id="price-{{ item.sku }}"
+                                                       name="price-{{ item.sku }}"
+                                                       type="text"
+                                                       pattern="-?[0-9]{1,5}([.,][0-9]{1,2})?"
+                                                       inputmode="numeric"
+                                                       value="{{ item.price }}"
+                                                       required
+                                                       class="form-control ms-auto separator-input"
+                                                       style="max-width: 100px;
+                                                              margin: 0"
+                                                       onchange="calculateTotal('{{ item.sku }}')">
+                                                <span class="input-group-text me-auto">€<span>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-end" style="white-space: nowrap;">
+                                            <span class="separator" id="totalPrice-{{ item.sku }}">{{ item.total }}</span>
+                                            €
+                                        </td>
+                                        <input type="hidden"
+                                               name="additionalInfo-{{ item.sku }}"
+                                               id="additionalInfo-{{ item.sku }}"
+                                               value="{{ item.additionalInfo }}" />
+                                        <td class="removable" id="comment-{{ item.sku }}">{{ item.additionalInfo }}</td>
+                                        <td>
+                                            <div class="d-grid gap-1 w-100">
+                                                <button class="btn btn-outline-secondary btn-sm"
+                                                        type="button"
+                                                        data-bs-target="#commentModal"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-sku="{{ item.sku }}">{% trans "Add comment" %}</button>
+                                                <button class="btn btn-outline-danger btn-sm"
+                                                        type="button"
+                                                        onclick="deleteItem(event, '{{ item.sku }}');">
+                                                    {% trans "Delete" %}
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td colspan="7"
+                                        class="text-center"
+                                        id="alert-no-items"
+                                        style="display: hidden">
+                                        <div class="alert alert-secondary">{% trans "No items added to the offer, add some items from the price list" %}</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr>
+                    <div class="text-end mt-3">
+                        <h5 style="white-space: nowrap;">
+                            <strong>{% trans "Total price" %}:</strong> <span id="totalPrice">{{ totals.price }}</span> €
+                        </h5>
+                        <h5 style="white-space: nowrap;">
+                            <strong>{% trans "Total quantity" %}:</strong> <span id="totalAmount">{{ totals.mass }}</span> kg
+                        </h5>
+                    </div>
+                    <hr>
+                    <h3 class="mt-4">{% trans "Comment" %}</h3>
+                    <textarea name="transaction_description"
+                              class="form-control"
+                              rows="3"
+                              style="max-width: 100%"></textarea>
+                    <a href="{% url 'price_list' %}" class="btn btn-secondary mt-3">{% trans "Back" %}</a>
+                    <button type="submit"
+                            name="action"
+                            value="make"
+                            class="btn btn-success mt-3 float-end">
+                        {% if request.session.logged_user.user %}
+                            {% trans "Make proposition" %}
+                        {% else %}
+                            {% trans "Make offer" %}
+                        {% endif %}
+                    </button>
+                    <button id="saveButton"
+                            name="action"
+                            class="btn btn-success mt-3"
+                            style="display: none"
+                            value="save"
+                            type="submit">{% trans "Save changes" %}</button>
+                </form>
             </div>
-            <hr>
-            <div class="text-end mt-3">
-                <h5 style="white-space: nowrap;"><strong>{% trans "Total price" %}:</strong> <span
-                        id="totalPrice">{{ totals.price }}</span> €</h5>
-                <h5 style="white-space: nowrap;"><strong>{% trans "Total quantity" %}:</strong> <span
-                        id="totalAmount">{{ totals.mass }}</span> kg</h5>
-            </div>
-            <hr>
-            <h3 class="mt-4">{% trans "Comment" %}</h3>
-            <textarea name="transaction_description" class="form-control" rows="3" style="max-width: 100%;"></textarea>
-            <a href="{% url 'price_list' %}" class="btn btn-secondary mt-3">{% trans "Back" %}</a>
-            <button type="submit" name="action" value="make" class="btn btn-success mt-3 float-end">
-                {% if request.session.logged_user.user %}{% trans "Make proposition" %}{% else %}
-                    {% trans "Make offer" %}{% endif %}
-            </button>
-            <button id="saveButton" name="action" class="btn btn-success mt-3" style="display: none;" value="save"
-                    type="submit">{% trans "Save changes" %}</button>
-        </form>
-    </div>
-
-    <div class="modal fade" id="emptyOfferModal" tabindex="-1" aria-labelledby="emptyOfferModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="emptyOfferModalLabel">{% trans "Warning" %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    {% trans "You cannot submit an empty offer." %}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            <div class="modal fade"
+                 id="emptyOfferModal"
+                 tabindex="-1"
+                 aria-labelledby="emptyOfferModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="emptyOfferModalLabel">{% trans "Warning" %}</h5>
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">{% trans "You cannot submit an empty offer." %}</div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="commentModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans "Add comment" %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <label for="comment">{% trans "Comment" %}:</label>
-                    <input type="text" class="form-control" id="comment"/>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
-                    <button type="button" class="btn btn-primary"
-                            id="modalSaveButton">{% trans "Save changes" %}</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal" id="searchModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans "Add item" %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <label for="comment">{% trans "Search" %}:</label>
-                    <input type="text" class="form-control" id="searchQuery"/>
-                    <p class="text-body-secondary mb-2">{% trans "Empty search query returns all items" %}</p>
-                    <div id="searchResults"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal"
-                            onclick="addItemToTransaction('', '', 0);">{% trans "Create new item" %}</button>
-                    <button type="button" class="btn btn-primary" id="searchBtn">{% trans "Search" %}</button>
+            <div class="modal fade" id="commentModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{% trans "Add comment" %}</h5>
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label for="comment">{% trans "Comment" %}:</label>
+                            <input type="text" class="form-control" id="comment" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+                            <button type="button" class="btn btn-primary" id="modalSaveButton">{% trans "Save changes" %}</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script id="skus">
+            <div class="modal" id="searchModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{% trans "Add item" %}</h5>
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label for="comment">{% trans "Search" %}:</label>
+                            <input type="text" class="form-control" id="searchQuery" />
+                            <p class="text-body-secondary mb-2">{% trans "Empty search query returns all items" %}</p>
+                            <div id="searchResults"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+                            <button type="button"
+                                    class="btn btn-outline-primary"
+                                    data-bs-dismiss="modal"
+                                    onclick="addItemToTransaction('', '', 0);">{% trans "Create new item" %}</button>
+                            <button type="button" class="btn btn-primary" id="searchBtn">{% trans "Search" %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+            <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+                  rel="stylesheet" />
+            <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+            <script id="skus">
         [{% for item in request.session.current_offer %}"{{ item.sku }}"{% if not forloop.last %}, {% endif %}{% endfor %}]
-    </script>
-    <script id="delete-confirm">"{% trans "Are you sure you want to delete this item" %}"</script>
-    <script id="delete-label">"{% trans "Delete" %}"</script>
-    <script id="add-comment-label">"{% trans "Add comment" %}"</script>
-    <script id="save-changes-confirm">"{% trans "Are you sure you want to save changes" %}"</script>
-    <script id="default-value">""</script>
-    <script id="isAdmin">{% if request.session.logged_user.user %}false{% else %}true{% endif %}</script>
-    <script src={% static "js/offer.js" %}></script>
-{% endblock %}
+            </script>
+            <script id="delete-confirm">"{% trans "Are you sure you want to delete this item" %}"</script>
+            <script id="delete-label">"{% trans "Delete" %}"</script>
+            <script id="add-comment-label">"{% trans "Add comment" %}"</script>
+            <script id="save-changes-confirm">"{% trans "Are you sure you want to save changes" %}"</script>
+            <script id="default-value">""</script>
+            <script id="isAdmin">{% if request.session.logged_user.user %}false{% else %}true{% endif %}</script>
+            <script id="type-in-text">"{% trans "Type in client data" %}"</script>
+            <script src={% static "js/offer.js" %}></script>
+        {% endblock %}
