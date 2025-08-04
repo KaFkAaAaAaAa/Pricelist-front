@@ -6,32 +6,20 @@ from decimal import Decimal, getcontext
 from functools import wraps
 from http.client import INTERNAL_SERVER_ERROR
 from json import JSONDecodeError
-from math import floor
 from pathlib import Path
 from typing import Union
-from uuid import uuid4
 
 import requests
 from django.contrib import messages
 from django.core.files.storage.filesystem import FileSystemStorage
-from django.http.response import (
-    HttpResponseForbidden,
-    HttpResponseNotFound,
-    HttpResponseServerError,
-)
+from django.http.response import (HttpResponseForbidden, HttpResponseNotFound,
+                                  HttpResponseServerError)
 from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
 from requests.exceptions import Timeout
 
-from Pricelist.settings import (
-    ADMIN_GROUPS,
-    API_BASE_URL,
-    CLIENT_GROUPS,
-    GROUPS_ROMAN,
-    LOGGING_CONFIG,
-    SUPPORT_GROUPS,
-    TRANSACTION_ROOT,
-)
+from Pricelist.settings import (ADMIN_GROUPS, API_BASE_URL, CLIENT_GROUPS,
+                                GROUPS_ROMAN, SUPPORT_GROUPS)
 
 RESPONSE_FORBIDDEN = HttpResponseForbidden(
     f"<h1>{_('You do not have access to that page')}<h1>".encode("utf-8")
@@ -47,7 +35,7 @@ def _price_to_store(price: Union[str, int, float, None]) -> int:
         return 0
     try:
         # Use Decimal for perfect decimal arithmetic
-        return int((Decimal(str(price).strip()) * Decimal(100)).to_integral_value())
+        return int((Decimal(str(price).strip().replace(",", ".")) * Decimal(100)).to_integral_value())
     except (ValueError, TypeError):
         return 0
 
@@ -58,7 +46,7 @@ def _amount_to_store(amount: Union[str, int, float, None]) -> int:
         return 0
     try:
         # Use Decimal for perfect decimal arithmetic
-        return int((Decimal(str(amount).strip()) * Decimal(10)).to_integral_value())
+        return int((Decimal(str(amount).strip().replace(",", ".")) * Decimal(10)).to_integral_value())
     except (ValueError, TypeError):
         return 0
 

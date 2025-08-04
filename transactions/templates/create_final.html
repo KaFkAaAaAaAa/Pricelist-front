@@ -58,7 +58,9 @@
                     <td>
                         <div class="input-group">
                             <input name="amount-{{ item.uuid }}"  id="amount-{{ item.uuid }}" class="form-control separator-input"
-                                type="number" min="0.1" step="0.1" value="{{ item.amount }}"
+                                type="text" value="{{ item.amount }}"
+                                pattern="[0-9]{1,5}([.,][0-9]{1,2})?"
+                                inputmode="numeric"
                                 onchange="calculateTotal('{{ item.uuid }}')"/>
                             <span class="input-group-text">kg</span>
                         </div>
@@ -66,7 +68,9 @@
                     <td>
                         <div class="input-group">
                             <input name="alku-{{ item.uuid }}" id="alku-{{ item.uuid }}" class="form-control separator-input"
-                                type="number" min="0.1" step="0.1" value="{{ item.amount }}"
+                                type="text" value="{{ item.amount }}"
+                                pattern="[0-9]{1,5}([.,][0-9]{1,2})?"
+                                inputmode="numeric"
                                 onchange="calculateTotal('{{ item.uuid }}')"/>
                             <span class="input-group-text">kg</span>
                         </div>
@@ -74,7 +78,9 @@
                     <td>
                         <div class="input-group">
                             <input name="price-{{ item.uuid }}" id="price-{{ item.uuid }}" class="form-control separator-input"
-                                type="number" min="0.01" step="0.01" value="{{ item.price }}"
+                                type="text" value="{{ item.price }}"
+                                pattern="-?[0-9]{1,5}([.,][0-9]{1,2})?"
+                                inputmode="numeric"
                                 onchange="calculateTotal('{{ item.uuid }}')"/>
                             <span class="input-group-text">€</span>
                         </div>
@@ -117,15 +123,15 @@
 <script>
         function calculateTotal(uuidChanged) {
             let allTotalPrice = 0.0, allTotalAmount = 0.0, allTotalAlku = 0.0;
-            let amount = parseFloat(document.getElementById(`amount-${uuidChanged}`).value) || 0;
-            let alku = parseFloat(document.getElementById(`alku-${uuidChanged}`).value) || 0;
-            let pricePerKg = parseFloat(document.getElementById(`price-${uuidChanged}`).value) || 0;
+            let amount = parseFloat(document.getElementById(`amount-${uuidChanged}`).value.replace(",", "." )) || 0;
+            let alku = parseFloat(document.getElementById(`alku-${uuidChanged}`).value.replace(",", "." )) || 0;
+            let pricePerKg = parseFloat(document.getElementById(`price-${uuidChanged}`).value.replace(",", "." )) || 0;
             document.getElementById(`total-${uuidChanged}`).textContent = (alku * pricePerKg).toFixed(2);
 
             uuids.forEach(uuid => {
-                let amount = parseFloat(document.getElementById(`amount-${uuid}`).value) || 0;
-                let alku = parseFloat(document.getElementById(`alku-${uuid}`).value) || 0;
-                let pricePerKg = parseFloat(document.getElementById(`price-${uuid}`).value) || 0;
+                let amount = parseFloat(document.getElementById(`amount-${uuid}`).value.replace(",", "." )) || 0;
+                let alku = parseFloat(document.getElementById(`alku-${uuid}`).value.replace(",", "." )) || 0;
+                let pricePerKg = parseFloat(document.getElementById(`price-${uuid}`).value.replace(",", "." )) || 0;
                 allTotalPrice += alku * pricePerKg;
                 allTotalAlku += alku
                 allTotalAmount += amount;

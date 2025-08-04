@@ -134,10 +134,9 @@
                                         <td>
                                             {% if transaction.status == 'PROPOSITION' %}
                                                 <div class="input-group">
-                                                    <input type="number"
-                                                           step="0.01"
-                                                           min="0.01"
-                                                           max="99999.9"
+                                                    <input type="text"
+                                                           pattern="[0-9]{1,5}([.,][0-9]{1,2})?"
+                                                           inputmode="numeric"
                                                            name="amount-{{ item.uuid }}"
                                                            id="amount-{{ item.uuid }}"
                                                            value="{{ item.amount }}"
@@ -169,10 +168,9 @@
                                             {% if transaction.status == 'PROPOSITION' %}
                                                 {% if item.sku|slice:":2" == "NA" %}
                                                     <div class="input-group">
-                                                        <input type="number"
-                                                               step="0.01"
-                                                               min="0.01"
-                                                               max="999.99"
+                                                        <input type="text"
+                                                               pattern="-?[0-9]{1,5}([.,][0-9]{1,2})?"
+                                                               inputmode="numeric"
                                                                id="price-{{ item.uuid }}"
                                                                name="price-{{ item.uuid }}"
                                                                value="{{ item.price }}"
@@ -501,12 +499,23 @@
         priceField = `
             ${image}
             <div class="input-group">
-            <input id="price-${uuid}" name="price-${uuid}" type="number" value="${price}" min="0.01" step="0.01" required class="form-control ms-auto" onchange="calculateTotal('${uuid}')"><span class="input-group-text me-auto">€<span>
+            <input id="price-${uuid}" name="price-${uuid}"
+            type="text" value="${price}"
+            pattern="-?[0-9]{1,5}([.,][0-9]{1,2})?"
+            inputmode="numeric"
+            required class="form-control ms-auto" onchange="calculateTotal('${uuid}')"><span class="input-group-text me-auto">€<span>
             </div>
         `;
       } else {
         priceField = `
-            <input id="price-${uuid}" name="price-${uuid}" type="hidden" value="${price}" min="0.01" step="0.01" onchange="calculateTotal('${uuid}')" required />
+            <input id="price-${uuid}"
+            name="price-${uuid}"
+            type="hidden"
+            value="${price}"
+            <!-- pattern="-?[0-9]{1,5}([.,][0-9]{1,2})?" -->
+            value="0.0"
+            class="form-control ms-auto"
+            onchange="calculateTotal('${uuid}')" required />
             <div class="ps-2 text-start">${price} €</div>
 
         `;
@@ -519,7 +528,14 @@
             <td>${nameField}</td>
             <td>
                 <div class="input-group text-center" style="margin: 0 auto;">
-                    <input id="amount-${uuid}" name="amount-${uuid}" type="number" value="0.0" min="0.01" step="0.01" class="form-control ms-auto" onchange="calculateTotal('${uuid}')">
+                    <input id="amount-${uuid}"
+                    name="amount-${uuid}"
+                    pattern="[0-9]{1,5}([.,][0-9]{1,2})?"
+                    inputmode="numeric"
+                    type="text"
+                    value="0.0"
+                    class="form-control ms-auto"
+                    onchange="calculateTotal('${uuid}')">
                     <span class="input-group-text me-auto">kg<span>
                 </div>
             </td>
@@ -555,21 +571,21 @@
         }
         function calculateTotal(uuidChanged) {
             let allTotalPrice = 0.0, allTotalAmount = 0.0, allTotalAlku = 0.0;
-            let amount = parseFloat(document.getElementById(`amount-${uuidChanged}`).value) || 0;
-            let pricePerKg = parseFloat(document.getElementById(`price-${uuidChanged}`).value) || 0;
+            let amount = parseFloat(document.getElementById(`amount-${uuidChanged}`).value.replace(",", "." )) || 0;
+            let pricePerKg = parseFloat(document.getElementById(`price-${uuidChanged}`).value.replace(",", "." )) || 0;
             {% if transaction.status == "FINAL_C" %}
-                let alku = parseFloat(document.getElementById(`alku-${uuidChanged}`).value) || 0;
+                let alku = parseFloat(document.getElementById(`alku-${uuidChanged}`).value.replace(",", "." )) || 0;
                 document.getElementById(`total-${uuidChanged}`).textContent = (alku * pricePerKg).toFixed(2);
             {% else %}
                 document.getElementById(`total-${uuidChanged}`).textContent = (amount * pricePerKg).toFixed(2);
             {% endif %}
 
             uuids.forEach(uuid => {
-                let amount = parseFloat(document.getElementById(`amount-${uuid}`).value) || 0;
+                let amount = parseFloat(document.getElementById(`amount-${uuid}`).value.replace(",", "." )) || 0;
                 {% if transaction.status == "FINAL_C" %}
-                    let alku = parseFloat(document.getElementById(`alku-${uuid}`).value) || 0;
+                    let alku = parseFloat(document.getElementById(`alku-${uuid}`).value.replace(",", "." )) || 0;
                 {% endif %}
-                let pricePerKg = parseFloat(document.getElementById(`price-${uuid}`).value) || 0;
+                let pricePerKg = parseFloat(document.getElementById(`price-${uuid}`).value.replace(",", "." )) || 0;
                 {% if transaction.status == "FINAL_C" %}
                     allTotalPrice += alku * pricePerKg;
                     allTotalAlku += alku;
