@@ -750,12 +750,12 @@
 
         {% if transaction.status == "OFFER" %}
         document.getElementById("EXW").addEventListener("click", function (event) {
-            document.getElementById("description").value = "{% trans "- Shipping costs are covered by the buyer.\n" %}{% trans "- Payment deadline - 7 business days from delivery." %}"
+            document.getElementById("description").value = '{% trans "- Shipping costs are covered by the buyer." %}\n{% trans "- Payment deadline - 7 business days from delivery." %}';
             saveButton.style.display = "inline-block";
         });
 
         document.getElementById("DDP").addEventListener("click", function (event) {
-            document.getElementById("description").value = "{% trans "- Delivered to Alku.\n" %}{% trans "- Payment deadline - 7 business days from delivery." %}"
+            document.getElementById("description").value = '{% trans "- Delivered to Alku." %}\n{% trans "- Payment deadline - 7 business days from delivery." %}';
             saveButton.style.display = "inline-block";
         });
         {% endif %}

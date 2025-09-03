@@ -660,8 +660,14 @@ def print_prognose(request, data, status=""):
     total_amount = float(data["total"]["mass"])
     total_price = float(data["total"]["price"])
     data["transport"] = {}
-    data["transport"]["transportPerKg"] = transport / total_amount
-    data["transport"]["transportPercent"] = transport / total_price * 100
+    if total_amount != 0:
+        data["transport"]["transportPerKg"] = transport / total_amount
+    else:
+        data["transport"]["transportPerKg"] = 0
+    if total_price != 0:
+        data["transport"]["transportPercent"] = transport / total_price * 100
+    else:
+        data["transport"]["transportPercent"] = 0
     data["total"]["wTransport"] = transport + total_price
     # data["auth_group"] = _get_group(request)
     return generate_pdf(
@@ -707,13 +713,22 @@ def print_final_admin(request, data):
         data["total"]["amount"] += item["alku"]
         data["total"]["price"] += item["total"]
     data["transport"] = {}
-    data["transport"]["transportPerKg"] = transport / data["total"]["amount"]
-    data["transport"]["transportPercent"] = transport / data["total"]["price"] * 100
+    if data["total"]["amount"] != 0:
+        data["transport"]["transportPerKg"] = transport / data["total"]["amount"]
+    else:
+        data["transport"]["transportPerKg"] = 0
+    if data["total"]["price"] != 0:
+        data["transport"]["transportPercent"] = transport / data["total"]["price"] * 100
+    else
+        data["transport"]["transportPercent"] = 0
     for item in data["transaction"]["itemsOrdered"]:
         item["total_transport"] = (
             1 + data["transport"]["transportPercent"] / 100
         ) * item["total"]
-        item["price_transport"] = item["total_transport"] / item["alku"]
+        if item["alku"] != 0:
+            item["price_transport"] = item["total_transport"] / item["alku"]
+        else:
+            item["price_transport"] = 0
     data["total"]["price_transport"] = transport + data["total"]["price"]
     return generate_pdf(
         request,
