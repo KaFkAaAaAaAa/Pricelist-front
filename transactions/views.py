@@ -719,7 +719,7 @@ def print_final_admin(request, data):
         data["transport"]["transportPerKg"] = 0
     if data["total"]["price"] != 0:
         data["transport"]["transportPercent"] = transport / data["total"]["price"] * 100
-    else
+    else:
         data["transport"]["transportPercent"] = 0
     for item in data["transaction"]["itemsOrdered"]:
         item["total_transport"] = (
