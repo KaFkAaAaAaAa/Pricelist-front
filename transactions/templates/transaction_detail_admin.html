@@ -337,6 +337,14 @@
                            style="display: none"
                            type="submit"
                            value="{% trans "Save changes" %}">
+                    {% if transaction.status == "FINAL" %}
+                    <button type="button"
+                            class="btn btn-outline-success"
+                            href="/transactions/{{ transaction.uuid }}/change-status/?select_status=FINAL_C"
+                            onclick="event.stopPropagation(); return confirm('{% trans "Are you sure you want to send this transaction final to client?" %}');">
+                    {% trans "Send final to client" %}
+                    </button>
+                    {% endif %}
                     <button type="button"
                             data-bs-toggle="modal"
                             data-bs-target="#changeStatusModal"
