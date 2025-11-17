@@ -27,3 +27,4 @@ pricelist-front.log
 */__pycache__
 locale/de/LC_MESSAGES/django.mo
 locale/pl/LC_MESSAGES/django.mo
+__pycache__
